@@ -35,9 +35,9 @@ Before you continue, ensure you meet the following requirements:
 - You have installed Dart sdk with version >= 3.4
     
 ## Documents
-- [Plan Training Flutter Advanced](https://docs.google.com/document/d/1zCMCYPK5DHO_5FYVHBUazRirM4LX0E7pKEQcUDL7a3c/edit)
-- [Estimate](https://docs.google.com/document/d/1n18975kA_qqnYDn0qf391Ew0WILNyV4SO2RlZZHMaGs/edit?tab=t.0#heading=h.r7uza4gjahs1)
-- [Issues board Gitlab for management plan](https://gitlab.asoft-python.com/sang.duong/flutter-training/-/boards)
+- [Plan Training Flutter Advanced](https://docs.google.com/document/d/1U1_x4db5QM8R_xdveuhCVKvEkcbzCArKmGUhSHsc1gc/edit)
+- [Estimate](https://docs.google.com/document/d/1U1_x4db5QM8R_xdveuhCVKvEkcbzCArKmGUhSHsc1gc/edit)
+- [Issues board Gitlab for management plan](https://gitlab.asoft-python.com/hien.nguyendinhthe/flutter-training/-/boards)
 ​
 ## Deployment Plan
 - [X] Epic 1: Overview UI development
@@ -49,25 +49,25 @@ Before you continue, ensure you meet the following requirements:
 1. Clone the repository:
 ​
     ```
-   git@gitlab.asoft-python.com:sang.duong/flutter-training.git
+  git@gitlab.asoft-python.com:hien.nguyendinhthe/flutter-training.git
     ```
 2. Checkout branch:
 ​
     ```
-    git checkout <develop> 
+    git checkout <training-overview-ui-development> 
     ```
 3. Pull origin branch:
 ​
     ```
-    git pull origin <develop> 
+    git pull origin <training-overview-ui-development> 
     ```
 4. Run project
    ```
    Run app:
-     flutter run ./laza/lib/main.dart
+   
    ```
 
    ```
    Run Device Preview:
-     flutter run ./laza/lib/main_device_preview.dart
+   
    ```
