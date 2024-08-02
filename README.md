@@ -18,7 +18,7 @@
 ***Start date :*** 29/07/2024
 
 
-***Timeline:*** 4 weeks (24/6/2024 - Update)
+***Timeline:*** 4 weeks (24/9/2024 - Update)
 
 
 ***Target :***
