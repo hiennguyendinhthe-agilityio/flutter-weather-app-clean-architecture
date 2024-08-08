@@ -4,9 +4,6 @@ www.agilityio.com
 # Dart & Flutter training plan
 **30<sup>th</sup> July 2024**
 
-
-# Dart & Flutter training plan - 2024
-
 ## Overview
 
 - A revision of the Dart & Flutter training plan focuses on the latest version of Flutter (3.22.0). It will help trainees learn Dart/Flutter fundamentals step by step following the instructions and hands-on practices to build for mobile and tablet applications on both Android and iOS platforms.
@@ -53,28 +50,3 @@ Before you continue, ensure you meet the following requirements:
 - [X] Epic 4: Applying the widget_book plugin for building UI documentation.
 
 ## Installation
-1. Clone the repository:
-​
-    ```
-  git@gitlab.asoft-python.com:hien.nguyendinhthe/flutter-training.git
-    ```
-2. Checkout branch:
-​
-    ```
-    git checkout <training-overview-ui-development> 
-    ```
-3. Pull origin branch:
-​
-    ```
-    git pull origin <training-overview-ui-development> 
-    ```
-4. Run project
-   ```
-   Run app:
-   
-   ```
-
-   ```
-   Run Device Preview:
-   
-   ```
