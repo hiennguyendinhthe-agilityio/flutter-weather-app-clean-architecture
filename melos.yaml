@@ -1,0 +1,11 @@
+# The name of the project (required) is used for display purposes within IO environments and IDEs.
+name: flutter_training
+
+# A list of paths to local packages that are included in the Melos workspace. Each entry can be a specific path or a glob pattern.
+packages:
+  - apps/**
+  - packages/**
+  
+scripts:
+  postbootstrap: >
+    melos exec -- puro flutter pub get
