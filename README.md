@@ -1,3 +1,10 @@
+<img src="assets/logo_agility.jpg">
+
+www.agilityio.com
+# Dart & Flutter training plan
+**30<sup>th</sup> July 2024**
+
+
 # Dart & Flutter training plan - 2024
 
 ## Overview
