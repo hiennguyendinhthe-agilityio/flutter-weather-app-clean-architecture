@@ -23,10 +23,10 @@ Puro: Puro is a powerful tool for installing and upgrading Flutter versions (htt
     dart pub global activate puro 1.3.1
     ```
     ```
-    puro create flutter_advanced 3.22.3
+    puro create flutter_training 3.22.3
     ```
     ```
-    puro use flutter_advanced
+    puro use flutter_training
     ```
 
 ### Mono repo with Melos
