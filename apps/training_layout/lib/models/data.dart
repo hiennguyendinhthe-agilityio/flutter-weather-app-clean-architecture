@@ -37,10 +37,11 @@ final User user_4 = User(
 );
 final List<Email> emails = [
   Email(
-      sender: user_1,
-      recipients: [],
-      subject: 'Runner',
-      content: 'Runner every time'),
+    sender: user_1,
+    recipients: [],
+    subject: 'Runner',
+    content: 'Runner every time',
+  ),
   Email(
     sender: user_2,
     recipients: [],
@@ -49,12 +50,13 @@ final List<Email> emails = [
         "I think it's time for us to finally try that new noodle shop downtown that doesn't use menus. Anyone else have other suggestions for dinner club this week? I'm so intrigued by this idea of a noodle restaurant where no one gets to order for themselves - could be fun, or terrible, or both :)\n\nSo",
   ),
   Email(
-      sender: user_3,
-      recipients: [],
-      subject: 'This food show is made for you',
-      content:
-          "Ping you'd love this new food show I started watching. It's produced by a Thai drummer who started getting recognized for the amazing vegan food she always brought to shows.",
-      attachments: [const Attachment(url: 'assets/thumbnail_1.png')]),
+    sender: user_3,
+    recipients: [],
+    subject: 'This food show is made for you',
+    content:
+        "Ping you'd love this new food show I started watching. It's produced by a Thai drummer who started getting recognized for the amazing vegan food she always brought to shows.",
+    attachments: [const Attachment(url: 'assets/thumbnail_1.png')],
+  ),
   Email(
     sender: user_4,
     recipients: [],

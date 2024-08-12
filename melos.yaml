@@ -9,3 +9,7 @@ packages:
 scripts:
   postbootstrap: >
     melos exec -- puro flutter pub get
+
+  # Clean all and remove Hanzo git hooks
+  postclean: >
+    melos exec -- puro flutter clean
