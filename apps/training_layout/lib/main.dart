@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:training_layout/animations.dart';
 import 'package:training_layout/models/data.dart' as data;
 import 'package:training_layout/models/models.dart';
+import 'package:training_layout/transitions/list_detail_transition.dart';
 import 'package:training_layout/widgets/animated_floating_action_button.dart';
 import 'package:training_layout/widgets/disappearing_bottom_navigator_bar.dart';
 import 'package:training_layout/widgets/disappearing_navigation_rail.dart';
 import 'package:training_layout/widgets/email_list_view.dart';
+import 'package:training_layout/widgets/reply_list_view.dart';
 
 void main() {
   runApp(const MainApp());
@@ -106,15 +108,21 @@ class _FeedState extends State<Feed> with SingleTickerProviderStateMixin {
               Expanded(
                 child: ColoredBox(
                   color: _backgroundColor,
-                  child: EmailListView(
-                    selectedIndex: selectedIndex,
-                    onSelected: (index) {
-                      setState(() {
-                        selectedIndex = index;
-                      });
-                    },
-                    currentUser: widget.currentUser,
+                  // Update from here ...
+                  child: ListDetailTransition(
+                    animation: _railAnimation,
+                    one: EmailListView(
+                      selectedIndex: selectedIndex,
+                      onSelected: (index) {
+                        setState(() {
+                          selectedIndex = index;
+                        });
+                      },
+                      currentUser: widget.currentUser,
+                    ),
+                    two: const ReplyListView(),
                   ),
+                  // ... to here.
                 ),
               ),
             ],
