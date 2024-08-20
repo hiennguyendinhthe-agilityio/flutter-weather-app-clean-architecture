@@ -12,7 +12,7 @@ class _StarButtonState extends State<StarButton> {
   late final ColorScheme _colorScheme = Theme.of(context).colorScheme;
 
   Icon get icon {
-    final IconData iconData = state ? Icons.star : Icons.star_outline;
+    final iconData = state ? Icons.star : Icons.star_outline;
 
     return Icon(
       iconData,
@@ -39,9 +39,9 @@ class _StarButtonState extends State<StarButton> {
         elevation: 0,
         shape: const CircleBorder(),
         backgroundColor: _colorScheme.surface,
-        onPressed: () => _toggle(),
+        onPressed: _toggle,
         child: Padding(
-          padding: const EdgeInsets.all(10.0),
+          padding: const EdgeInsets.all(10),
           child: icon,
         ),
       ),

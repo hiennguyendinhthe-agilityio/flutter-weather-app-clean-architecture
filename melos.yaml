@@ -13,3 +13,9 @@ scripts:
   # Clean all and remove Hanzo git hooks
   postclean: >
     melos exec -- puro flutter clean
+
+  run:training_layout:
+    run: melos exec -- puro flutter run -t lib/main.dart
+    packageFilters:
+      scope:
+        - training_layout

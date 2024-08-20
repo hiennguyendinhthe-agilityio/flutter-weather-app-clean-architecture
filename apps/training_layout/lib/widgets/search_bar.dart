@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-
-import '../models/models.dart';
+import 'package:training_layout/models/models.dart';
 
 class SearchBar extends StatelessWidget {
   const SearchBar({
-    super.key,
     required this.currentUser,
+    super.key,
   });
 
   final User currentUser;
@@ -21,13 +20,11 @@ class SearchBar extends StatelessWidget {
         ),
         padding: const EdgeInsets.fromLTRB(31, 12, 12, 12),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const Icon(Icons.search),
             const SizedBox(width: 23.5),
             Expanded(
               child: TextField(
-                maxLines: 1,
                 decoration: InputDecoration(
                   isDense: true,
                   border: InputBorder.none,
