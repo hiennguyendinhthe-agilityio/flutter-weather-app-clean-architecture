@@ -36,8 +36,6 @@ class _MyCustomFormState extends State<MyCustomForm> {
 
   @override
   void initState() {
-    // TODO: implement initState
-
     super.initState();
     myFocusNode = FocusNode();
   }
