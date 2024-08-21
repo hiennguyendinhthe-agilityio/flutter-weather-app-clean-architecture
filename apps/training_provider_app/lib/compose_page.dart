@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'model/email_store.dart';
 
 class ComposePage extends StatelessWidget {
-  const ComposePage({Key? key}) : super(key: key);
+  const ComposePage({super.key});
 
   @override
   Widget build(BuildContext context) {

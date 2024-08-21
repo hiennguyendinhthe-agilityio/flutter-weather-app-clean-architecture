@@ -22,7 +22,7 @@ const double _kFlingVelocity = 2.0;
 const _kAnimationDuration = Duration(milliseconds: 300);
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   HomePageState createState() => HomePageState();
@@ -118,20 +118,20 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
     _drawerCurve = CurvedAnimation(
       parent: _drawerController,
-      curve: standardEasing,
-      reverseCurve: standardEasing.flipped,
+      curve: Easing.legacy,
+      reverseCurve: Easing.legacy.flipped,
     );
 
     _dropArrowCurve = CurvedAnimation(
       parent: _dropArrowController,
-      curve: standardEasing,
-      reverseCurve: standardEasing.flipped,
+      curve: Easing.legacy,
+      reverseCurve: Easing.legacy.flipped,
     );
 
     _bottomAppBarCurve = CurvedAnimation(
       parent: _bottomAppBarController,
-      curve: standardEasing,
-      reverseCurve: standardEasing.flipped,
+      curve: Easing.legacy,
+      reverseCurve: Easing.legacy.flipped,
     );
   }
 
@@ -172,8 +172,8 @@ class HomePageState extends State<HomePage> with TickerProviderStateMixin {
         context,
         listen: false,
       ).bottomDrawerVisible = true;
-      _drawerController.animateTo(0.4, curve: standardEasing);
-      _dropArrowController.animateTo(0.35, curve: standardEasing);
+      _drawerController.animateTo(0.4, curve: Easing.legacy);
+      _dropArrowController.animateTo(0.35, curve: Easing.legacy);
       return;
     }
 
@@ -346,7 +346,7 @@ class _AnimatedBottomAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var fadeOut = Tween<double>(begin: 1, end: -1).animate(
-      drawerController.drive(CurveTween(curve: standardEasing)),
+      drawerController.drive(CurveTween(curve: Easing.legacy)),
     );
 
     return Selector<EmailStore, bool>(
@@ -388,7 +388,6 @@ class _AnimatedBottomAppBar extends StatelessWidget {
                           const SizedBox(width: 8),
                           const _ReplyLogo(),
                           const SizedBox(width: 10),
-                          // TODO: Add Fade through transition between disappearing mailbox title (Motion)
                           onMailView
                               ? const SizedBox(width: 48)
                               : FadeTransition(
@@ -472,7 +471,6 @@ class _BottomAppBarActionItems extends StatelessWidget {
               : ReplyColors.white50;
         }
 
-        // TODO: Add Fade through transition between bottom app bar actions (Motion)
         return drawerVisible
             ? Align(
                 alignment: AlignmentDirectional.bottomEnd,
@@ -683,7 +681,7 @@ class _MailRouter extends StatelessWidget {
 }
 
 class _ReplyLogo extends StatelessWidget {
-  const _ReplyLogo({Key? key}) : super(key: key);
+  const _ReplyLogo();
 
   @override
   Widget build(BuildContext context) {
@@ -707,7 +705,6 @@ class _ReplyFab extends StatefulWidget {
 
 class _ReplyFabState extends State<_ReplyFab>
     with SingleTickerProviderStateMixin {
-  // TODO: Add Fade through transition between compose and reply FAB (Motion)
   static const double _mobileFabDimension = 56;
 
   @override
@@ -718,7 +715,6 @@ class _ReplyFabState extends State<_ReplyFab>
     return Selector<EmailStore, bool>(
       selector: (context, emailStore) => emailStore.onMailView,
       builder: (context, onMailView, child) {
-        // TODO: Add Fade through transition between compose and reply FAB (Motion)
         final fabSwitcher = onMailView
             ? const Icon(
                 Icons.reply_all,
@@ -730,7 +726,6 @@ class _ReplyFabState extends State<_ReplyFab>
               );
         final tooltip = onMailView ? 'Reply' : 'Compose';
 
-        // TODO: Add Container Transform from FAB to compose email page (Motion)
         return Material(
           color: theme.colorScheme.secondary,
           shape: circleFabBorder,

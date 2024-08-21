@@ -44,7 +44,6 @@ class MailPreviewCard extends StatelessWidget {
         ).currentlySelectedInbox ==
         'Starred';
 
-    // TODO: Add Container Transform transition from email list to email detail page (Motion)
     return Material(
       color: theme.cardColor,
       child: InkWell(
@@ -117,8 +116,6 @@ class MailPreviewCard extends StatelessWidget {
     );
   }
 }
-
-// TODO: Add Container Transform transition from email list to email detail page (Motion)
 
 class _DismissibleContainer extends StatelessWidget {
   const _DismissibleContainer({

@@ -4,8 +4,8 @@ class ProfileAvatar extends StatelessWidget {
   const ProfileAvatar({
     required this.avatar,
     this.radius = 20,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final String avatar;
   final double radius;

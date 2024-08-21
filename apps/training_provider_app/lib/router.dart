@@ -46,7 +46,6 @@ class ReplyRouterDelegate extends RouterDelegate<ReplyRoutePath>
             key: navigatorKey,
             onPopPage: _handlePopPage,
             pages: [
-              // TODO: Add Shared Z-Axis transition from search icon to search view page (Motion)
               const CustomTransitionPage(
                 transitionKey: ValueKey('Home'),
                 screen: HomePage(),
@@ -94,8 +93,6 @@ class ReplyHomePath extends ReplyRoutePath {
 class ReplySearchPath extends ReplyRoutePath {
   const ReplySearchPath();
 }
-
-// TODO: Add Shared Z-Axis transition from search icon to search view page (Motion)
 
 class ReplyRouteInformationParser
     extends RouteInformationParser<ReplyRoutePath> {

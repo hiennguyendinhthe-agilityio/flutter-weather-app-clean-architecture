@@ -49,7 +49,7 @@ class ProductCard extends StatelessWidget {
           child: imageWidget,
         ),
         SizedBox(
-          height: kTextBoxHeight * MediaQuery.of(context).textScaleFactor,
+          height: kTextBoxHeight * MediaQuery.of(context).textScaler.scale(3),
           width: 121.0,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
