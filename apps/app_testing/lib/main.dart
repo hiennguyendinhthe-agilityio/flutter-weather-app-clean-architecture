@@ -1,5 +1,7 @@
 import 'package:app_testing/about.dart';
+import 'package:app_testing/counter.dart';
 import 'package:app_testing/home.dart';
+import 'package:app_testing/models/counter_porvider.dart';
 import 'package:app_testing/models/ui.dart';
 import 'package:app_testing/settings.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +22,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => UI(),
         ),
+        ChangeNotifierProvider(create: (_) => CounterPorvider())
       ],
       child: MaterialApp(
         initialRoute: '/',
@@ -27,6 +30,7 @@ class MyApp extends StatelessWidget {
           '/': (context) => const Home(),
           '/about': (context) => const About(),
           '/settings': (context) => const Settings(),
+          '/counter': (context) => const Counter(),
         },
       ),
     );
