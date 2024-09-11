@@ -1,0 +1,17 @@
+{
+    "@@locale": "en_US",
+    "errorEmailClient": "There was a temporary problem launch email system. Please try again later.",
+    "signInPageWelcomeBack": "Welcome Back 👋",
+    "signInPageLogin": "Login",
+    "signInPageYourAccount": "Sign to your account",
+    "signInPageEmail": "Email", 
+    "signInPageYourEmail": "Your email",
+    "signInPagePassword": "Password",
+    "signInPageYourPassword": "Your password",
+    "signInPageForgotPassword": "Forgot Password?",
+    "signInPageOrWith": "Or with",
+    "signInPageWithGoogle": "Sign in with Google",
+    "signInPageWithApple": "Sign in with Apple",
+    "signInPageDontHaveAnAccount": "Don’t have an account?",
+    "signInPageSignUp": "Sign Up"
+}

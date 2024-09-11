@@ -14,8 +14,30 @@ scripts:
   postclean: >
     melos exec -- puro flutter clean
 
+  # Generation i18n file
+  dev:generate:i18n:
+    run: melos exec -- "puro flutter pub run intl_utils:generate"
+    description: "Generation localizations"
+    packageFilters:
+      flutter: true
+      scope:
+        - bazar_books_app
+        - bazar_books_design
+       
   run:training_layout:
     run: melos exec -- puro flutter run -t lib/main.dart
     packageFilters:
       scope:
+        - training_layout
+
+  build_runner:
+    run: |
+      melos exec -- "puro flutter pub run build_runner build --delete-conflicting-outputs"
+    packageFilters:
+      ignore:
+        - app_testing
+        - reply
+        - shrine
+        - training_form
+        - training_key
         - training_layout
