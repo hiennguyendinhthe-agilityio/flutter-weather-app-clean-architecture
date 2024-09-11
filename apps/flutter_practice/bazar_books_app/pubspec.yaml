@@ -1,0 +1,90 @@
+name: bazar_books_app
+description: "The skeleton application for Flutter with Clean Arch"
+
+publish_to: 'none'
+
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.4.3 <4.0.0'
+
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  flutter_localizations:
+    sdk: flutter
+  # i18n
+  intl: 0.19.0
+
+  # An SVG rendering and widget library for Flutter
+  flutter_svg: 2.0.9
+
+  bazar_books_design:
+    path: ../bazar_books_design
+
+  cupertino_icons: ^1.0.6
+
+  flutter_rating_bar: ^4.0.1
+
+  
+
+  flutter_native_splash: ^2.4.1
+
+    # Responsive utilities
+  responsive_framework: 0.2.0
+
+    # Navigation and routing
+  go_router: 14.1.4
+
+  google_fonts: ^5.0.0
+
+  shared_preferences: ^2.3.2
+
+  http: ^1.2.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  # Generate Dart codes library
+  build_runner: 2.4.11
+
+  flutter_lints: ^3.0.0
+
+  # Customize Flutter's default white native splash screen with background color and splash image. Supports dark mode, full screen, and more.
+  flutter_bloc: ^8.1.6
+flutter:
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - ../bazar_books_design/assets/
+
+
+  fonts:
+    - family: Roboto
+      fonts:
+        - asset: ../bazar_books_design/assets/fonts/Roboto-Regular.ttf
+        - asset: ../bazar_books_design/assets/fonts/Roboto-Bold.ttf
+        - asset: ../bazar_books_design/assets/fonts/Roboto-Medium.ttf
+
+
+    - family: OpenSans
+      fonts:
+        - asset: ../bazar_books_design/assets/fonts/OpenSans-Regular.ttf
+        - asset: ../bazar_books_design/assets/fonts/OpenSans-Bold.ttf
+          weight: 700
+  uses-material-design: true
+
+# Config gen splash screen
+flutter_native_splash:
+  image: ../bazar_books_design/assets/images/splash_logo_screen.png
+  color: "#54408C"
+
+  web: false
+  android_12:
+    color: "#54408C"
+    image: ../bazar_books_design/assets/images/splash_logo_screen.png
+    image_dark: ../bazar_books_design/assets/images/splash_logo_screen.png
