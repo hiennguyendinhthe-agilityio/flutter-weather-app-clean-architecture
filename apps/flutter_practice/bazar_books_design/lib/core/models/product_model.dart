@@ -1,11 +1,11 @@
-class ProductModel {
+class Product {
   final String id;
   final String title;
-  final double price;
-  final int discount;
+  final String price;
+  final String discount;
   final String imageUrl;
 
-  ProductModel({
+  Product({
     required this.id,
     required this.title,
     required this.price,
@@ -13,8 +13,8 @@ class ProductModel {
     required this.imageUrl,
   });
 
-  factory ProductModel.fromJson(Map<String, dynamic> json) {
-    return ProductModel(
+  factory Product.fromJson(Map<String, dynamic> json) {
+    return Product(
       id: json['id'],
       title: json['title'],
       price: json['price'],

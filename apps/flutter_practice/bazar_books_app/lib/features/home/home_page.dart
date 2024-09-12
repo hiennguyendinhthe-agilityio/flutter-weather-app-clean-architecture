@@ -1,13 +1,17 @@
-import 'package:bazar_books_app/features/home/models/home_models.dart';
-import 'package:bazar_books_app/features/home/src/author/author_page.dart';
-import 'package:bazar_books_app/features/home/src/vandors_page/vendors_page.dart';
+import 'package:bazar_books_app/features/home/widgets/product/products.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
+import 'package:bazar_books_design/core/apis/api_sercvice.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
 import 'package:bazar_books_design/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'bloc/product_bloc.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  HomePage({super.key});
+
+  final productApi = ApiService();
 
   @override
   Widget build(BuildContext context) {
@@ -30,51 +34,12 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CarouselWithDots(),
-            const SizedBox(height: 20),
-            BazUiTextButton(
-              text: 'See all',
-              title: 'Top of Week',
-              onSeeAllPressed: () {},
-            ),
-            const SizedBox(height: 10),
-            const TopOfWeekBooks(),
-            const SizedBox(height: 20),
-            BazUiTextButton(
-              text: 'See all',
-              title: 'Best Vendors',
-              onSeeAllPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const VendorsPage(),
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: 10),
-            const BestVendors(),
-            BazUiTextButton(
-              text: 'See all',
-              title: 'Authors',
-              onSeeAllPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AuthorsPage(),
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: 10),
-            const AuthorsSection(),
-          ],
-        ),
+      body: BlocProvider(
+        create: (context) => ProductBloc(productApi)
+          ..add(
+            GetProductsEvent(),
+          ),
+        child: const Products(),
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: [
