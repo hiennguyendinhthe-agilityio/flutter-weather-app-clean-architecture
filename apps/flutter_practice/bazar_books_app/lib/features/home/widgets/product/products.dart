@@ -1,11 +1,9 @@
 import 'package:bazar_books_app/features/home/bloc/product_bloc.dart';
 import 'package:bazar_books_app/features/home/widgets/book_card.dart';
-import 'package:bazar_books_design/bazar_books_design.dart';
+import 'package:bazar_books_design/core/models/product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-
-import '../detail_menu/detail_menu_page.dart';
 
 class Products extends StatelessWidget {
   const Products({
@@ -25,32 +23,37 @@ class Products extends StatelessWidget {
                 textAlign: TextAlign.center,
                 'Error: ${state.message}',
               );
-            } else if (state is GetProductsStateLoaded) {
-              return Skeletonizer(
-                enabled: state is GetProductsStateLoading,
-                child: ListView.builder(
-                  itemCount: state.products.length,
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (BuildContext context, int index) {
-                    final product = state.products[index];
-                    return BookCard(
-                      onTap: () {
-                        BazUiBottomSheet.showModal(
-                          context,
-                          child: const DetailMenuPage(),
+            }
+            // Status loading
+            final bool loading = state is GetProductsStateLoading;
+            // Get product list after Products loaded
+            final List<Product> products =
+                state is GetProductsStateLoaded ? state.products : [];
+            final int itemCount = products.length;
+            final isEmpty = itemCount == 0 && !loading;
+            // FIXME: please update empty widget
+            return Skeletonizer(
+              enabled: loading,
+              child: isEmpty
+                  ? const Text(
+                      textAlign: TextAlign.center,
+                      'Empty',
+                    )
+                  : ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: loading ? 3 : itemCount,
+                      itemBuilder: (_, index) {
+                        final Product product = loading
+                            ? Product(id: index.toString())
+                            : products[index];
+                        return BookCard(
+                          title: product.title,
+                          price: product.price,
+                          imageUrl: product.imageUrl,
                         );
                       },
-                      title: product.title,
-                      price: product.price,
-                      imageUrl: product.imageUrl,
-                    );
-                  },
-                ),
-              );
-            } else {
-              return const SizedBox.shrink();
-            }
+                    ),
+            );
           },
         ),
       ),
