@@ -1,5 +1,6 @@
 import 'package:bazar_books_design/core/apis/api_sercvice.dart';
 import 'package:bazar_books_design/core/models/product_model.dart';
+import 'package:bazar_books_design/core/network/error_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -10,6 +11,7 @@ class ProductBloc extends Bloc<ProductEvent, GetProductsState> {
   ProductBloc(this.productApi) : super(GetProductsStateInitial()) {
     on<GetProductsEvent>(_onGetProducts);
   }
+
   final ApiService productApi;
 
   Future<void> _onGetProducts(
@@ -22,7 +24,7 @@ class ProductBloc extends Bloc<ProductEvent, GetProductsState> {
     } catch (e) {
       emit(
         GetProductsStateError(
-          message: 'Failed to fetch products',
+          message: ErrorHandler.handle(e).failure.message,
         ),
       );
     }
