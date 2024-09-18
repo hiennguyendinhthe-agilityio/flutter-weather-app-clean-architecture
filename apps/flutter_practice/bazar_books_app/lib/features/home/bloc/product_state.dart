@@ -1,30 +1,30 @@
 part of 'product_bloc.dart';
 
-@immutable
-sealed class GetProductsState {}
-
-class GetProductsStateInitial extends GetProductsState {
-  GetProductsStateInitial();
+abstract class GetProductsState extends Equatable {
+  const GetProductsState();
+  @override
+  List<Object> get props => [];
 }
 
+class ProductsInitial extends GetProductsState {}
+
 class GetProductsStateLoading extends GetProductsState {
-  GetProductsStateLoading();
+  const GetProductsStateLoading();
 }
 
 class GetProductsStateLoaded extends GetProductsState {
-  GetProductsStateLoaded(this.products);
-
   final List<Product> products;
+  const GetProductsStateLoaded({required this.products});
 
-  List<Object?> get props => [products];
+  @override
+  List<Object> get props => [products];
 }
 
 class GetProductsStateError extends GetProductsState {
-  GetProductsStateError({
-    required this.message,
-  });
+  const GetProductsStateError(this.message);
 
   final String message;
 
-  List<Object?> get props => [message];
+  @override
+  List<Object> get props => [message];
 }
