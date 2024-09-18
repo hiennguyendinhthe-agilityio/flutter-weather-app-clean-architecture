@@ -1,4 +1,4 @@
-import 'package:bazar_books_app/features/home/src/author/models/author_inner_model.dart';
+import 'package:bazar_books_app/features/home/widgets/author/models/author_inner_model.dart';
 import 'package:bazar_books_design/widgets/author_profile/author_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -31,7 +31,7 @@ class AuthorInnerPage extends StatelessWidget {
       ),
       description:
           'Gunty was born and raised in South Bend, Indiana. She graduated from the University of Notre Dame with a Bachelor of Arts in English and from New York University.',
-      products: products,
+      products: modelauthorexample,
     );
   }
 }

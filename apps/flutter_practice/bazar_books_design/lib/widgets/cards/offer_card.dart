@@ -2,6 +2,7 @@ import 'package:bazar_books_design/bazar_books_design.dart';
 import 'package:bazar_books_design/core/apis/api_sercvice.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
 import 'package:bazar_books_design/core/models/product_model.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -75,7 +76,7 @@ class SpecialOfferCard extends StatelessWidget {
 
 class CarouselWithDots extends StatelessWidget {
   CarouselWithDots({super.key});
-  final ApiService apiService = ApiService();
+  final ApiService apiService = ApiService(Dio());
 
   final PageController _pageController = PageController();
   @override
@@ -84,7 +85,7 @@ class CarouselWithDots extends StatelessWidget {
       children: [
         SizedBox(
           height: 200,
-          child: FutureBuilder<List<ProductModel>>(
+          child: FutureBuilder<List<Product>>(
             future: apiService.fetchProducts(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {

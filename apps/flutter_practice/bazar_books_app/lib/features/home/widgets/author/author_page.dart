@@ -1,5 +1,5 @@
-import 'package:bazar_books_app/features/home/src/author/author_inner_page.dart';
-import 'package:bazar_books_app/features/home/src/author/models/author_inner_model.dart';
+import 'package:bazar_books_app/features/home/widgets/author/author_inner_page.dart';
+import 'package:bazar_books_app/features/home/widgets/author/models/author_inner_model.dart';
 import 'package:bazar_books_design/widgets/list_title/listtile.dart';
 import 'package:flutter/material.dart';
 

@@ -14,9 +14,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       LoginButtonPressed event, Emitter<AuthState> emit) async {
     emit(LoginLoading());
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? savedEmail = prefs.getString('email');
-    String? savedPassword = prefs.getString('password');
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? savedEmail = prefs.getString('email');
+    final String? savedPassword = prefs.getString('password');
 
     if (event.email == savedEmail && event.password == savedPassword) {
       emit(LoginSuccess());
