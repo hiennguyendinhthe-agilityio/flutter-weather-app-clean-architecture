@@ -189,6 +189,226 @@ class BazUiS {
       args: [],
     );
   }
+
+  /// `Top of Week`
+  String get homePageTopOfWeek {
+    return Intl.message(
+      'Top of Week',
+      name: 'homePageTopOfWeek',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Best Vendors`
+  String get homePageBestVendors {
+    return Intl.message(
+      'Best Vendors',
+      name: 'homePageBestVendors',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Authors`
+  String get homePageAuthors {
+    return Intl.message(
+      'Authors',
+      name: 'homePageAuthors',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Loading...`
+  String get generalLoading {
+    return Intl.message(
+      'Loading...',
+      name: 'generalLoading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `See All`
+  String get generalSeeAll {
+    return Intl.message(
+      'See All',
+      name: 'generalSeeAll',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Product is empty`
+  String get homePageProductEmpty {
+    return Intl.message(
+      'Product is empty',
+      name: 'homePageProductEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Refresh`
+  String get generalRefresh {
+    return Intl.message(
+      'Refresh',
+      name: 'generalRefresh',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `success`
+  String get generalSuccess {
+    return Intl.message(
+      'success',
+      name: 'generalSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please check your internet connection.`
+  String get errorNoInternetConnection {
+    return Intl.message(
+      'Please check your internet connection.',
+      name: 'errorNoInternetConnection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Success with no data (no content).`
+  String get errorNoContent {
+    return Intl.message(
+      'Success with no data (no content).',
+      name: 'errorNoContent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failure, API rejected request`
+  String get errorBadRequest {
+    return Intl.message(
+      'Failure, API rejected request',
+      name: 'errorBadRequest',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failure, user is not authorised`
+  String get errorUnauthorized {
+    return Intl.message(
+      'Failure, user is not authorised',
+      name: 'errorUnauthorized',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failure, user is not authorised`
+  String get errorForbidden {
+    return Intl.message(
+      'Failure, user is not authorised',
+      name: 'errorForbidden',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not found error`
+  String get errorNotFound {
+    return Intl.message(
+      'Not found error',
+      name: 'errorNotFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Conflict error`
+  String get errorConflict {
+    return Intl.message(
+      'Conflict error',
+      name: 'errorConflict',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Internal Server error`
+  String get errorInternalServer {
+    return Intl.message(
+      'Internal Server error',
+      name: 'errorInternalServer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unknown error`
+  String get errorUnknown {
+    return Intl.message(
+      'Unknown error',
+      name: 'errorUnknown',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Timeout error`
+  String get errorTimeout {
+    return Intl.message(
+      'Timeout error',
+      name: 'errorTimeout',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recieve error`
+  String get errorRecieve {
+    return Intl.message(
+      'Recieve error',
+      name: 'errorRecieve',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Default error`
+  String get errorDefault {
+    return Intl.message(
+      'Default error',
+      name: 'errorDefault',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cache error`
+  String get errorCache {
+    return Intl.message(
+      'Cache error',
+      name: 'errorCache',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Send timeout in connection with API server`
+  String get errorSendTimeout {
+    return Intl.message(
+      'Send timeout in connection with API server',
+      name: 'errorSendTimeout',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<BazUiS> {

@@ -19,7 +19,7 @@ final List<Map<String, String>> authors = [
   },
 ];
 
-final List<Map<String, String>> products = [
+final List<Map<String, String>> modelauthorexample = [
   {
     'imageUrl':
         'https://www.hubspot.com/hs-fs/hubfs/parts-url_1.webp?width=1190&height=800&name=parts-url_1.webp',

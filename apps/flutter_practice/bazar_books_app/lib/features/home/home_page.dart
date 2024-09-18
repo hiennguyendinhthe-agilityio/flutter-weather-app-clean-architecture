@@ -1,8 +1,10 @@
+import 'package:bazar_books_app/features/auth/presentation/sign_in.dart';
 import 'package:bazar_books_app/features/home/widgets/product/products.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
 import 'package:bazar_books_design/core/apis/api_sercvice.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
 import 'package:bazar_books_design/widgets/widgets.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -11,7 +13,7 @@ import 'bloc/product_bloc.dart';
 class HomePage extends StatelessWidget {
   HomePage({super.key});
 
-  final productApi = ApiService();
+  final productApi = ApiService(Dio());
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +22,12 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         leading: IconButton(
           icon: BazUiBuiltInImage.icSearch(),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const LoginScreen()),
+            );
+          },
         ),
         title: Text(
           'Home',

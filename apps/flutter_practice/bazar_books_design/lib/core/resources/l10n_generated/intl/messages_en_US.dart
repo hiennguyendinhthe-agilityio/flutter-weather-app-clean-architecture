@@ -22,8 +22,41 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "errorBadRequest": MessageLookupByLibrary.simpleMessage(
+            "Failure, API rejected request"),
+        "errorCache": MessageLookupByLibrary.simpleMessage("Cache error"),
+        "errorConflict": MessageLookupByLibrary.simpleMessage("Conflict error"),
+        "errorDefault": MessageLookupByLibrary.simpleMessage("Default error"),
         "errorEmailClient": MessageLookupByLibrary.simpleMessage(
             "There was a temporary problem launch email system. Please try again later."),
+        "errorForbidden": MessageLookupByLibrary.simpleMessage(
+            "Failure, user is not authorised"),
+        "errorInternalServer":
+            MessageLookupByLibrary.simpleMessage("Internal Server error"),
+        "errorNoContent": MessageLookupByLibrary.simpleMessage(
+            "Success with no data (no content)."),
+        "errorNoInternetConnection": MessageLookupByLibrary.simpleMessage(
+            "Please check your internet connection."),
+        "errorNotFound":
+            MessageLookupByLibrary.simpleMessage("Not found error"),
+        "errorRecieve": MessageLookupByLibrary.simpleMessage("Recieve error"),
+        "errorSendTimeout": MessageLookupByLibrary.simpleMessage(
+            "Send timeout in connection with API server"),
+        "errorTimeout": MessageLookupByLibrary.simpleMessage("Timeout error"),
+        "errorUnauthorized": MessageLookupByLibrary.simpleMessage(
+            "Failure, user is not authorised"),
+        "errorUnknown": MessageLookupByLibrary.simpleMessage("Unknown error"),
+        "generalLoading": MessageLookupByLibrary.simpleMessage("Loading..."),
+        "generalRefresh": MessageLookupByLibrary.simpleMessage("Refresh"),
+        "generalSeeAll": MessageLookupByLibrary.simpleMessage("See All"),
+        "generalSuccess": MessageLookupByLibrary.simpleMessage("success"),
+        "homePageAuthors": MessageLookupByLibrary.simpleMessage("Authors"),
+        "homePageBestVendors":
+            MessageLookupByLibrary.simpleMessage("Best Vendors"),
+        "homePageProductEmpty":
+            MessageLookupByLibrary.simpleMessage("Product is empty"),
+        "homePageTopOfWeek":
+            MessageLookupByLibrary.simpleMessage("Top of Week"),
         "signInPageDontHaveAnAccount":
             MessageLookupByLibrary.simpleMessage("Don’t have an account?"),
         "signInPageEmail": MessageLookupByLibrary.simpleMessage("Email"),

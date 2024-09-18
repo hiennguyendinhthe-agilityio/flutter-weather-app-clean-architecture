@@ -24,22 +24,22 @@ WidgetbookComponent cardWidgetBooks() {
               const SizedBox(
                 height: 20,
               ),
-              Row(
+              const Row(
                 children: [
-                  BookCard(
-                    imageUrl:
-                        'https://www.hubspot.com/hs-fs/hubfs/parts-url_1.webp?width=1190&height=800&name=parts-url_1.webp',
-                    title: 'dqd',
-                    price: '123123asd',
-                    onTap: () {},
-                  ),
-                  BookCard(
-                    imageUrl:
-                        'https://www.hubspot.com/hs-fs/hubfs/parts-url_1.webp?width=1190&height=800&name=parts-url_1.webp',
-                    title: '123213',
-                    price: '123123',
-                    onTap: () {},
-                  ),
+                  // BookCard(
+                  //   imageUrl:
+                  //       'https://www.hubspot.com/hs-fs/hubfs/parts-url_1.webp?width=1190&height=800&name=parts-url_1.webp',
+                  //   title: 'dqd',
+                  //   price: '123123asd',
+                  //   onTap: () {},
+                  // ),
+                  // BookCard(
+                  //   imageUrl:
+                  //       'https://www.hubspot.com/hs-fs/hubfs/parts-url_1.webp?width=1190&height=800&name=parts-url_1.webp',
+                  //   title: '123213',
+                  //   price: '123123',
+                  //   onTap: () {},
+                  // ),
                 ],
               ),
               const SizedBox(
