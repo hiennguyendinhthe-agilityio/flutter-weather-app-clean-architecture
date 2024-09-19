@@ -1,26 +1,27 @@
+import 'package:bazar_books_design/constants.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
 import 'package:flutter/material.dart';
 
 class BookCard extends StatelessWidget {
   const BookCard({
     super.key,
-    this.title = '',
-    this.price = '',
-    this.imageUrl = '',
+    this.title,
+    this.price,
+    this.imageUrl,
     this.width = 120,
     this.height = 120,
     this.style,
     this.borderRadius,
-    required this.onTap,
+    this.onTap,
   });
-  final String title;
-  final String price;
-  final String imageUrl;
+  final String? title;
+  final String? price;
+  final String? imageUrl;
   final double width;
   final double height;
   final TextStyle? style;
   final BorderRadiusGeometry? borderRadius;
-  final void Function() onTap;
+  final Function()? onTap;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -38,19 +39,26 @@ class BookCard extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: Image.network(
-                  imageUrl,
-                  fit: BoxFit.cover,
-                  height: height,
-                ),
+                child: imageUrl == null || (imageUrl?.isEmpty ?? false)
+                    ? Image.network(
+                        Constants.imgUrlDefault,
+                        fit: BoxFit.cover,
+                        height: height,
+                      )
+                    : Image.network(
+                        imageUrl!,
+                        fit: BoxFit.cover,
+                        height: height,
+                      ),
               ),
               const SizedBox(height: 10),
               Text(
-                title,
+                maxLines: 1,
+                title ?? Constants.titleDefault,
                 style: style ?? context.textTheme.bodyMedium,
               ),
               Text(
-                price,
+                '\$$price',
                 style: style ?? context.textTheme.bodySmall,
               ),
             ],
