@@ -1,4 +1,3 @@
-import 'package:bazar_books_app/features/home/widgets/book_card.dart';
 import 'package:bazar_books_app/features/home/widgets/detail_menu/detail_menu_page.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
 import 'package:flutter/material.dart';
@@ -56,42 +55,6 @@ class TopOfWeekBooks extends StatelessWidget {
             },
             title: 'The Kite Runner',
             price: '\$14.99',
-            imageUrl:
-                'https://www.hubspot.com/hs-fs/hubfs/parts-url_1.webp?width=1190&height=800&name=parts-url_1.webp',
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class BestVendors extends StatelessWidget {
-  const BestVendors({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 160,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        children: const [
-          VendorCard(
-            imageUrl:
-                'https://www.hubspot.com/hs-fs/hubfs/parts-url_1.webp?width=1190&height=800&name=parts-url_1.webp',
-          ),
-          VendorCard(
-            imageUrl:
-                'https://www.hubspot.com/hs-fs/hubfs/parts-url_1.webp?width=1190&height=800&name=parts-url_1.webp',
-          ),
-          VendorCard(
-            imageUrl:
-                'https://www.hubspot.com/hs-fs/hubfs/parts-url_1.webp?width=1190&height=800&name=parts-url_1.webp',
-          ),
-          VendorCard(
-            imageUrl:
-                'https://www.hubspot.com/hs-fs/hubfs/parts-url_1.webp?width=1190&height=800&name=parts-url_1.webp',
-          ),
-          VendorCard(
             imageUrl:
                 'https://www.hubspot.com/hs-fs/hubfs/parts-url_1.webp?width=1190&height=800&name=parts-url_1.webp',
           ),

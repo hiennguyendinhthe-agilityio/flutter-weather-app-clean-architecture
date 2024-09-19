@@ -2,8 +2,8 @@ import 'package:bazar_books_app/features/home/models/home_models.dart';
 import 'package:bazar_books_design/widgets/tabbar/tabbar.dart';
 import 'package:flutter/material.dart';
 
-class VendorsPage extends StatelessWidget {
-  const VendorsPage({super.key});
+class Vendors extends StatelessWidget {
+  const Vendors({super.key});
 
   @override
   Widget build(BuildContext context) {

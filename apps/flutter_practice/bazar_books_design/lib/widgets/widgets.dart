@@ -4,4 +4,5 @@ export 'cards/cards.dart';
 export 'empty/empty.dart';
 export 'images/image.dart';
 export 'indicators/circular_progress_indicator.dart';
+export 'section/section.dart';
 export 'text_field/text_field.dart';

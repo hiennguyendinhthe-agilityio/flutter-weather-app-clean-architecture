@@ -35,5 +35,6 @@
     "errorRecieve": "Recieve error",
     "errorDefault": "Default error",
     "errorCache": "Cache error",
-    "errorSendTimeout": "Send timeout in connection with API server"
+    "errorSendTimeout": "Send timeout in connection with API server",
+    "generalListEmpty": "No content available"
 }
