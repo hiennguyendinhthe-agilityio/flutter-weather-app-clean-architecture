@@ -1,10 +1,11 @@
+import 'package:bazar_books_design/constants.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
 import 'package:flutter/material.dart';
 
 class VendorCard extends StatelessWidget {
   const VendorCard({
     super.key,
-    this.imageUrl = '',
+    this.imageUrl,
     this.headlines = '',
     this.subheads,
     this.width = 100,
@@ -12,7 +13,7 @@ class VendorCard extends StatelessWidget {
     this.borderRadius,
     this.style,
   });
-  final String imageUrl;
+  final String? imageUrl;
   final String headlines;
   final Widget? subheads;
   final double width;
@@ -33,11 +34,17 @@ class VendorCard extends StatelessWidget {
           ),
           child: Padding(
             padding: const EdgeInsets.all(8),
-            child: Image.network(
-              imageUrl,
-              width: width,
-              height: height,
-            ),
+            child: imageUrl == null || (imageUrl?.isEmpty ?? false)
+                ? Image.network(
+                    Constants.imgUrlDefault,
+                    fit: BoxFit.cover,
+                    height: height,
+                  )
+                : Image.network(
+                    imageUrl!,
+                    fit: BoxFit.cover,
+                    height: height,
+                  ),
           ),
         ),
         const SizedBox(height: 10),

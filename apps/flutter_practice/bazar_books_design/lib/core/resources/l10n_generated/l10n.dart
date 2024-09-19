@@ -409,6 +409,16 @@ class BazUiS {
       args: [],
     );
   }
+
+  /// `No content available`
+  String get generalListEmpty {
+    return Intl.message(
+      'No content available',
+      name: 'generalListEmpty',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<BazUiS> {

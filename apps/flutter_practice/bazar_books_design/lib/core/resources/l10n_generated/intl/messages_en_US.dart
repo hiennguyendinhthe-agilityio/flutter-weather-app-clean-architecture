@@ -46,6 +46,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "errorUnauthorized": MessageLookupByLibrary.simpleMessage(
             "Failure, user is not authorised"),
         "errorUnknown": MessageLookupByLibrary.simpleMessage("Unknown error"),
+        "generalListEmpty":
+            MessageLookupByLibrary.simpleMessage("No content available"),
         "generalLoading": MessageLookupByLibrary.simpleMessage("Loading..."),
         "generalRefresh": MessageLookupByLibrary.simpleMessage("Refresh"),
         "generalSeeAll": MessageLookupByLibrary.simpleMessage("See All"),
