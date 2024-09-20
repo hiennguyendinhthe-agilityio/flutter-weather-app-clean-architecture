@@ -1,3 +1,4 @@
+import 'package:bazar_books_app/features/home/bloc/data_state.dart';
 import 'package:bazar_books_app/features/home/bloc/vendor_bloc.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
 import 'package:bazar_books_design/core/models/vendor_model.dart';
@@ -12,9 +13,9 @@ class BestVendors extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 160,
-      child: BlocBuilder<VendorBloc, GetVendorsState>(
+      child: BlocBuilder<VendorBloc, FetchDataState<Vendor>>(
         builder: (context, state) {
-          if (state.status == GetVendorsStatus.error) {
+          if (state.status == FetchDataStatus.error) {
             return Text(
               textAlign: TextAlign.center,
               'Error: ${state.errorMessage}',
@@ -22,10 +23,9 @@ class BestVendors extends StatelessWidget {
           }
 
           return Skeletonizer(
-            enabled: state.status == GetVendorsStatus.loading,
-            child: (state.status == GetVendorsStatus.loaded
-                    ? (state.vendors?.isEmpty ?? true)
-                    : state.status != GetVendorsStatus.loading)
+            enabled: state.status == FetchDataStatus.loading,
+            child: ((state.status == FetchDataStatus.loaded) &&
+                    (state.data?.isEmpty ?? false))
                 ? BazUiEmpty(
                     onPressed: () {
                       context.read<VendorBloc>().add(GetVendorsEvent());
@@ -33,14 +33,14 @@ class BestVendors extends StatelessWidget {
                   )
                 : ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: (state.status == GetVendorsStatus.loaded
-                        ? state.vendors?.length ?? 0
+                    itemCount: (state.status == FetchDataStatus.loaded
+                        ? state.data?.length ?? 0
                         : 3),
                     itemBuilder: (_, index) {
                       final Vendor vendor =
-                          state.status == GetVendorsStatus.loading
+                          state.status == FetchDataStatus.loading
                               ? Vendor(id: index.toString())
-                              : state.vendors![index];
+                              : state.data![index];
 
                       return VendorCard(
                         imageUrl: vendor.imageUrl,

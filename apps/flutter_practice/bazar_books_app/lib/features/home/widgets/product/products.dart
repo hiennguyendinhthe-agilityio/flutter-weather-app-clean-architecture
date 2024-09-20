@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+import '../../bloc/data_state.dart';
+
 class Products extends StatelessWidget {
   const Products({
     super.key,
@@ -15,24 +17,19 @@ class Products extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 180,
-      child: BlocBuilder<ProductBloc, GetProductsState>(
+      child: BlocBuilder<ProductBloc, FetchDataState<Product>>(
         builder: (context, state) {
-          if (state is GetProductsStateError) {
+          if (state.status == FetchDataStatus.error) {
             return Text(
               textAlign: TextAlign.center,
-              'Error: ${state.message}',
+              'Error: ${state.errorMessage}',
             );
           }
-          // Status loading
-          final bool loading = state is GetProductsStateLoading;
-          // Get product list after Products loaded
-          final List<Product> products =
-              state is GetProductsStateLoaded ? state.products : [];
-          final int itemCount = products.length;
-          final isEmpty = itemCount == 0 && !loading;
+
           return Skeletonizer(
-            enabled: loading,
-            child: isEmpty
+            enabled: state.status == FetchDataStatus.loading,
+            child: ((state.status == FetchDataStatus.loaded) &&
+                    (state.data?.isEmpty ?? false))
                 ? BazUiEmpty(
                     onPressed: () {
                       context.read<ProductBloc>().add(GetProductsEvent());
@@ -40,13 +37,14 @@ class Products extends StatelessWidget {
                   )
                 : ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: loading ? 3 : itemCount,
+                    itemCount: (state.status == FetchDataStatus.loaded
+                        ? state.data?.length ?? 0
+                        : 3),
                     itemBuilder: (_, index) {
-                      final Product product = loading
-                          ? Product(
-                              id: index.toString(),
-                            )
-                          : products[index];
+                      final Product product =
+                          state.status == FetchDataStatus.loading
+                              ? Product(id: index.toString())
+                              : state.data![index];
                       return BookCard(
                         title: product.title,
                         price: product.price,
