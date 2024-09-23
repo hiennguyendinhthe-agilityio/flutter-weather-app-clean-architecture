@@ -1,21 +1,16 @@
 import 'package:bazar_books_app/features/auth/presentation/sign_in.dart';
-import 'package:bazar_books_app/features/home/bloc/vendor_bloc.dart';
+import 'package:bazar_books_app/features/home/widgets/offer/offer.dart';
 import 'package:bazar_books_app/features/home/widgets/product/products.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
-import 'package:bazar_books_design/core/apis/api_sercvice.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
 import 'package:bazar_books_design/widgets/widgets.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'bloc/product_bloc.dart';
+import 'widgets/author/authors.dart';
 import 'widgets/vendors/best_vendors.dart';
 
 class HomePage extends StatelessWidget {
-  HomePage({super.key});
-
-  final apiService = ApiService(Dio());
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -45,23 +40,10 @@ class HomePage extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 23),
-        child: MultiBlocProvider(
-          providers: [
-            BlocProvider<ProductBloc>(
-              create: (BuildContext context) => ProductBloc(apiService)
-                ..add(
-                  GetProductsEvent(),
-                ),
-            ),
-            BlocProvider<VendorBloc>(
-              create: (BuildContext context) => VendorBloc(apiService)
-                ..add(
-                  GetVendorsEvent(),
-                ),
-            ),
-          ],
+        child: SingleChildScrollView(
           child: Column(
             children: [
+              const Offer(),
               BazUiSection(
                 title: context.bazS.homePageTopOfWeek,
                 onSeeAllPressed: () {},
@@ -73,6 +55,12 @@ class HomePage extends StatelessWidget {
                 text: context.bazS.generalSeeAll,
               ),
               const BestVendors(),
+              BazUiSection(
+                title: context.bazS.homePageAuthors,
+                text: context.bazS.generalSeeAll,
+                onSeeAllPressed: () {},
+              ),
+              const AuthorsSection(),
             ],
           ),
         ),
