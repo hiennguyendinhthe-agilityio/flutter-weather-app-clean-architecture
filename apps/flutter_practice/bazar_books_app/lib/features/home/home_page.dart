@@ -1,3 +1,4 @@
+import 'package:bazar_books_app/di.dart';
 import 'package:bazar_books_app/features/auth/presentation/sign_in.dart';
 import 'package:bazar_books_app/features/home/widgets/offer/offer.dart';
 import 'package:bazar_books_app/features/home/widgets/product/products.dart';
@@ -5,7 +6,10 @@ import 'package:bazar_books_design/bazar_books_design.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
 import 'package:bazar_books_design/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'bloc/product_bloc.dart';
+import 'bloc/vendor_bloc.dart';
 import 'widgets/author/authors.dart';
 import 'widgets/vendors/best_vendors.dart';
 
@@ -38,30 +42,46 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 23),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              const Offer(),
-              BazUiSection(
-                title: context.bazS.homePageTopOfWeek,
-                onSeeAllPressed: () {},
+      body: MultiBlocProvider(
+        providers: [
+          BlocProvider<ProductBloc>(
+            create: (BuildContext context) => DI().productBloc
+              ..add(
+                GetProductsEvent(),
               ),
-              const Products(),
-              BazUiSection(
-                title: context.bazS.homePageBestVendors,
-                onSeeAllPressed: () {},
-                text: context.bazS.generalSeeAll,
+          ),
+          BlocProvider<VendorBloc>(
+            create: (BuildContext context) => DI().vendorBloc
+              ..add(
+                GetVendorsEvent(),
               ),
-              const BestVendors(),
-              BazUiSection(
-                title: context.bazS.homePageAuthors,
-                text: context.bazS.generalSeeAll,
-                onSeeAllPressed: () {},
-              ),
-              const AuthorsSection(),
-            ],
+          ),
+        ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 23),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                const Offer(),
+                BazUiSection(
+                  title: context.bazS.homePageTopOfWeek,
+                  onSeeAllPressed: () {},
+                ),
+                const Products(),
+                BazUiSection(
+                  title: context.bazS.homePageBestVendors,
+                  onSeeAllPressed: () {},
+                  text: context.bazS.generalSeeAll,
+                ),
+                const BestVendors(),
+                BazUiSection(
+                  title: context.bazS.homePageAuthors,
+                  text: context.bazS.generalSeeAll,
+                  onSeeAllPressed: () {},
+                ),
+                const AuthorsSection(),
+              ],
+            ),
           ),
         ),
       ),
