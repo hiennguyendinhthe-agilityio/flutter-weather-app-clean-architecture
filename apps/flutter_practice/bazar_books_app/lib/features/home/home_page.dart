@@ -1,4 +1,3 @@
-import 'package:bazar_books_app/di.dart';
 import 'package:bazar_books_app/features/auth/presentation/sign_in.dart';
 import 'package:bazar_books_app/features/home/widgets/offer/offer.dart';
 import 'package:bazar_books_app/features/home/widgets/product/products.dart';
@@ -7,6 +6,7 @@ import 'package:bazar_books_design/core/extensions/context_extension.dart';
 import 'package:bazar_books_design/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 
 import 'bloc/product_bloc.dart';
 import 'bloc/vendor_bloc.dart';
@@ -45,13 +45,13 @@ class HomePage extends StatelessWidget {
       body: MultiBlocProvider(
         providers: [
           BlocProvider<ProductBloc>(
-            create: (BuildContext context) => DI().productBloc
+            create: (BuildContext context) => GetIt.I<ProductBloc>()
               ..add(
                 GetProductsEvent(),
               ),
           ),
           BlocProvider<VendorBloc>(
-            create: (BuildContext context) => DI().vendorBloc
+            create: (BuildContext context) => GetIt.I<VendorBloc>()
               ..add(
                 GetVendorsEvent(),
               ),
