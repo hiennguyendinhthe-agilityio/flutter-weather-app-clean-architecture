@@ -1,3 +1,4 @@
+import 'package:bazar_books_app/di.dart';
 import 'package:bazar_books_app/features/auth/presentation/sign_in.dart';
 import 'package:bazar_books_app/routes.dart';
 import 'package:bazar_books_design/core/core.dart';
@@ -13,6 +14,7 @@ void main() async {
   await prefs.setString('email', '');
   await prefs.setString('password', '');
 
+  await initGetIt();
   runApp(const MainApp());
 }
 

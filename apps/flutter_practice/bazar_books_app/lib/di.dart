@@ -1,5 +1,6 @@
 import 'package:bazar_books_design/core/apis/api_service.dart';
 import 'package:dio/dio.dart';
+import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'features/home/bloc/product_bloc.dart';
@@ -7,29 +8,25 @@ import 'features/home/bloc/vendor_bloc.dart';
 import 'features/home/data/repository.dart';
 import 'features/home/data/repository_impl.dart';
 
-class DI {
-  static final DI _instance = DI._internal();
+final getIt = GetIt.instance;
 
-  factory DI() => _instance;
+Future<void> initGetIt() async {
+  getIt.registerLazySingleton<Dio>(() => Dio());
 
-  late final Dio dio;
-  late final SharedPreferences sharedPreferences;
-  late final ApiService apiService;
+  final sharedPreferences = await SharedPreferences.getInstance();
+  getIt.registerLazySingleton<SharedPreferences>(() => sharedPreferences);
 
-  late final Repository repository;
+  getIt.registerLazySingleton<ApiService>(() => ApiService(getIt<Dio>()));
 
-  late final ProductBloc productBloc;
-  late final VendorBloc vendorBloc;
+  getIt.registerLazySingleton<Repository>(
+    () => RepositoryImpl(getIt<ApiService>()),
+  );
 
-  DI._internal() {
-    dio = Dio();
+  getIt.registerFactory<ProductBloc>(
+    () => ProductBloc(productRepository: getIt<Repository>()),
+  );
 
-    apiService = ApiService(dio);
-
-    repository = RepositoryImpl(apiService);
-
-    productBloc = ProductBloc(productRepository: repository);
-
-    vendorBloc = VendorBloc(vendorRepository: repository);
-  }
+  getIt.registerFactory<VendorBloc>(
+    () => VendorBloc(vendorRepository: getIt<Repository>()),
+  );
 }
