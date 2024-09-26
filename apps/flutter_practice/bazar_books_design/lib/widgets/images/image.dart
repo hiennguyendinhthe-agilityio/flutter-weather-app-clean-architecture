@@ -152,6 +152,22 @@ class BazUiBuiltInImage {
     Color? color,
     double? width,
   }) icUnPassword = _BazIcUnPassword.new;
+  static Widget Function({
+    Color? color,
+    double? width,
+  }) icAdd = _BazIcAdd.new;
+  static Widget Function({
+    Color? color,
+    double? width,
+  }) icLess = _BazIcLess.new;
+  static Widget Function({
+    Color? color,
+    double? width,
+  }) icLoveFill = _BazIcLoveFill.new;
+  static Widget Function({
+    Color? color,
+    double? width,
+  }) icStar = _BazIcStar.new;
 }
 
 class _BazSlpashScreenImage extends StatelessWidget {
@@ -374,6 +390,74 @@ class _BazIcUnPassword extends StatelessWidget {
     return BazUiAssetImage(
       type: ImageLoaderType.assetSVG,
       path: Assets.images.icOgraphyUnpasswordOutline.path,
+      width: width,
+      color: color,
+    );
+  }
+}
+
+class _BazIcAdd extends StatelessWidget {
+  const _BazIcAdd({this.color, this.width});
+
+  final Color? color;
+  final double? width;
+
+  @override
+  Widget build(BuildContext context) {
+    return BazUiAssetImage(
+      type: ImageLoaderType.assetSVG,
+      path: Assets.images.icAdd.path,
+      width: width,
+      color: color,
+    );
+  }
+}
+
+class _BazIcLess extends StatelessWidget {
+  const _BazIcLess({this.color, this.width});
+
+  final Color? color;
+  final double? width;
+
+  @override
+  Widget build(BuildContext context) {
+    return BazUiAssetImage(
+      type: ImageLoaderType.assetSVG,
+      path: Assets.images.icLess.path,
+      width: width,
+      color: color,
+    );
+  }
+}
+
+class _BazIcLoveFill extends StatelessWidget {
+  const _BazIcLoveFill({this.color, this.width});
+
+  final Color? color;
+  final double? width;
+
+  @override
+  Widget build(BuildContext context) {
+    return BazUiAssetImage(
+      type: ImageLoaderType.assetSVG,
+      path: Assets.images.icOgraphyLoveFill.path,
+      width: width,
+      color: color,
+    );
+  }
+}
+
+class _BazIcStar extends StatelessWidget {
+  const _BazIcStar({this.color, this.width});
+
+  final Color? color;
+  final double? width;
+
+  @override
+  Widget build(BuildContext context) {
+    return BazUiAssetImage(
+      type: ImageLoaderType.assetSVG,
+      path: Assets.images.icOgraphyStar.path,
       width: width,
       color: color,
     );

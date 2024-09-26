@@ -1,24 +1,25 @@
 import 'package:bazar_books_design/bazar_books_design.dart';
-import 'package:bazar_books_design/core/apis/api_sercvice.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
-import 'package:bazar_books_design/core/models/product_model.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class SpecialOfferCard extends StatelessWidget {
-  const SpecialOfferCard({
-    super.key,
-    this.discountText = '',
-    this.imageUrl,
-    this.width = double.infinity,
-    this.borderRadius,
-  });
+import '../../constants.dart';
 
-  final String discountText;
+class BazUiOfferCard extends StatelessWidget {
+  const BazUiOfferCard(
+      {super.key,
+      this.discount = '',
+      this.imageUrl,
+      this.width = double.infinity,
+      this.borderRadius,
+      this.onTap,
+      this.height = 180});
+
+  final String? discount;
   final String? imageUrl;
   final double width;
   final BorderRadiusGeometry? borderRadius;
+  final Function()? onTap;
+  final double height;
 
   @override
   Widget build(BuildContext context) {
@@ -39,18 +40,18 @@ class SpecialOfferCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Special Offer',
+                      context.bazS.specialOffer,
                       style: context.textTheme.titleLarge,
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Discount $discountText%',
+                      'Discount $discount%',
                       style: context.textTheme.titleSmall,
                     ),
                     const SizedBox(height: 16),
                     BazUiElevatedButton(
-                      onPressed: () {},
-                      text: 'Order Now',
+                      onPressed: onTap,
+                      text: context.bazS.orderNow,
                     ),
                   ],
                 ),
@@ -59,69 +60,23 @@ class SpecialOfferCard extends StatelessWidget {
             const SizedBox(width: 16),
             Expanded(
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(8.0),
-                child: Image.network(
-                  imageUrl ?? '',
-                  height: 180,
-                  fit: BoxFit.fill,
-                ),
+                borderRadius: BorderRadius.circular(8),
+                child: imageUrl == null || (imageUrl?.isEmpty ?? false)
+                    ? Image.network(
+                        Constants.imgUrlDefault,
+                        fit: BoxFit.cover,
+                        height: height,
+                      )
+                    : Image.network(
+                        imageUrl!,
+                        fit: BoxFit.cover,
+                        height: height,
+                      ),
               ),
             ),
           ],
         ),
       ),
-    );
-  }
-}
-
-class CarouselWithDots extends StatelessWidget {
-  CarouselWithDots({super.key});
-  final ApiService apiService = ApiService(Dio());
-
-  final PageController _pageController = PageController();
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(
-          height: 200,
-          child: FutureBuilder<List<Product>>(
-            future: apiService.fetchProducts(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: BazUiCircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return const Center(child: Text('Failed to load offers'));
-              } else if (snapshot.hasData && snapshot.data != null) {
-                final offers = snapshot.data!;
-
-                return PageView.builder(
-                  controller: _pageController,
-                  itemCount: offers.length,
-                  itemBuilder: (context, index) {
-                    return SpecialOfferCard(
-                      discountText: offers[index].discount.toString(),
-                      imageUrl: offers[index].imageUrl,
-                    );
-                  },
-                );
-              }
-
-              return const Center(child: Text('No offers available'));
-            },
-          ),
-        ),
-        const SizedBox(height: 10),
-        SmoothPageIndicator(
-          controller: _pageController,
-          count: 3,
-          effect: ScaleEffect(
-            dotWidth: 8,
-            dotHeight: 8,
-            activeDotColor: context.colorScheme.primary,
-          ),
-        ),
-      ],
     );
   }
 }

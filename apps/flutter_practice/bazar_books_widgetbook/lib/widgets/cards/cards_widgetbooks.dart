@@ -54,13 +54,13 @@ WidgetbookComponent cardWidgetBooks() {
               ),
               const Row(
                 children: [
-                  Author(
+                  BazUiAuthor(
                     imageUrl:
                         'https://www.hubspot.com/hs-fs/hubfs/parts-url_1.webp?width=1190&height=800&name=parts-url_1.webp',
                     name: 'dqd',
                     role: '123123asd',
                   ),
-                  Author(
+                  BazUiAuthor(
                     imageUrl:
                         'https://www.hubspot.com/hs-fs/hubfs/parts-url_1.webp?width=1190&height=800&name=parts-url_1.webp',
                     name: 'dqd',

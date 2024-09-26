@@ -14,6 +14,9 @@ import 'package:flutter/services.dart';
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  /// File path: assets/images/ic_add.svg
+  SvgGenImage get icAdd => const SvgGenImage('assets/images/ic_add.svg');
+
   /// File path: assets/images/ic_apple_original.svg
   SvgGenImage get icAppleOriginal =>
       const SvgGenImage('assets/images/ic_apple_original.svg');
@@ -21,6 +24,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/ic_google_original.svg
   SvgGenImage get icGoogleOriginal =>
       const SvgGenImage('assets/images/ic_google_original.svg');
+
+  /// File path: assets/images/ic_less.svg
+  SvgGenImage get icLess => const SvgGenImage('assets/images/ic_less.svg');
 
   /// File path: assets/images/ic_ography_Calendar.svg
   SvgGenImage get icOgraphyCalendar =>
@@ -183,8 +189,10 @@ class $AssetsImagesGen {
 
   /// List of all assets
   List<dynamic> get values => [
+        icAdd,
         icAppleOriginal,
         icGoogleOriginal,
+        icLess,
         icOgraphyCalendar,
         icOgraphyCheck,
         icOgraphyFire,

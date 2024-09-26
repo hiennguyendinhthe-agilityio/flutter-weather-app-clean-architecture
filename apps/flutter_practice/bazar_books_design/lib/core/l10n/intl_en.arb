@@ -36,5 +36,16 @@
     "errorDefault": "Default error",
     "errorCache": "Cache error",
     "errorSendTimeout": "Send timeout in connection with API server",
-    "generalListEmpty": "No content available"
+    "generalListEmpty": "No content available",
+    "generalTitleHome": "Home",
+    "generalTitleCategory": "Category",
+    "generalTitleCart": "Cart",
+    "generalTitleProfile": "Profile",
+    "orderNow": "Order Now",
+    "specialOffer": "Special Offer",
+    "continueButton": "Continue shopping",
+    "viewButton": "View cart",
+    "reviewTitle": "Review",
+    "detailMenuDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Viverra dignissim ac ac ac.",
+    "detailMenuGoodDayTitle": "GoodDay"
 }

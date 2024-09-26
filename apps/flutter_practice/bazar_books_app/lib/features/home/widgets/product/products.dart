@@ -1,4 +1,4 @@
-import 'package:bazar_books_app/features/home/bloc/product_bloc.dart';
+import 'package:bazar_books_app/features/home/bloc/product_bloc/product_bloc.dart';
 import 'package:bazar_books_design/core/models/product_model.dart';
 import 'package:bazar_books_design/widgets/widgets.dart';
 import 'package:flutter/material.dart';

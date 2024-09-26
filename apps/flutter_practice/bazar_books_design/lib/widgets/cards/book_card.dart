@@ -2,8 +2,8 @@ import 'package:bazar_books_design/constants.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
 import 'package:flutter/material.dart';
 
-class BookCard extends StatelessWidget {
-  const BookCard({
+class BazUiBookCard extends StatelessWidget {
+  const BazUiBookCard({
     super.key,
     this.title,
     this.price,

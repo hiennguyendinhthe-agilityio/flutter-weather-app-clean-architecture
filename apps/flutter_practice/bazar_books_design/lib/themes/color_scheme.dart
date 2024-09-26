@@ -11,7 +11,7 @@ final ColorScheme _lightColorScheme = ColorScheme(
   secondaryContainer: BazColorTokens.generalPurples[3],
   onSecondaryContainer: BazColorTokens.generalGreyscale[900],
   tertiary: BazColorTokens.generalGreyscale[500],
-  onTertiary: BazColorTokens.generalGreyscale[1],
+  onTertiary: BazColorTokens.generalYellows,
   tertiaryContainer: BazColorTokens.generalPurples[5],
   onTertiaryContainer: BazColorTokens.generalPurples[5],
   surfaceBright: BazColorTokens.generalPurples[3],

@@ -3,8 +3,8 @@ import 'package:bazar_books_app/features/home/widgets/author/models/author_inner
 import 'package:bazar_books_design/widgets/list_title/listtile.dart';
 import 'package:flutter/material.dart';
 
-class AuthorsPage extends StatelessWidget {
-  const AuthorsPage({
+class Authors extends StatelessWidget {
+  const Authors({
     super.key,
   });
 

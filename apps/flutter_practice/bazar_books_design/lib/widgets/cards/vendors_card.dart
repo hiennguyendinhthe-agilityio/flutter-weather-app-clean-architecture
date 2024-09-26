@@ -2,8 +2,8 @@ import 'package:bazar_books_design/constants.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
 import 'package:flutter/material.dart';
 
-class VendorCard extends StatelessWidget {
-  const VendorCard({
+class BazUiVendorCard extends StatelessWidget {
+  const BazUiVendorCard({
     super.key,
     this.imageUrl,
     this.headlines = '',
