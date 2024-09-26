@@ -3,7 +3,6 @@
 import 'package:bazar_books_app/features/home/bloc/data_state.dart';
 import 'package:bazar_books_app/features/home/data/repository.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
-import 'package:bazar_books_design/core/models/vendor_model.dart';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 

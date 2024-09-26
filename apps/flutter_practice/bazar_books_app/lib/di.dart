@@ -3,8 +3,6 @@ import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'features/home/bloc/product_bloc.dart';
-import 'features/home/bloc/vendor_bloc.dart';
 import 'features/home/data/repository.dart';
 import 'features/home/data/repository_impl.dart';
 
@@ -20,13 +18,5 @@ Future<void> initGetIt() async {
 
   getIt.registerLazySingleton<Repository>(
     () => RepositoryImpl(getIt<ApiService>()),
-  );
-
-  getIt.registerFactory<ProductBloc>(
-    () => ProductBloc(productRepository: getIt<Repository>()),
-  );
-
-  getIt.registerFactory<VendorBloc>(
-    () => VendorBloc(vendorRepository: getIt<Repository>()),
   );
 }

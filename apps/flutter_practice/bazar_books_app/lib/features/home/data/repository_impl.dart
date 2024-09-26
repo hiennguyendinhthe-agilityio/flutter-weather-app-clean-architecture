@@ -1,6 +1,4 @@
 import 'package:bazar_books_design/core/core.dart';
-import 'package:bazar_books_design/core/models/product_model.dart';
-import 'package:bazar_books_design/core/models/vendor_model.dart';
 
 import '../bloc/data_state.dart';
 import 'repository.dart';
@@ -8,15 +6,15 @@ import 'repository.dart';
 class RepositoryImpl implements Repository {
   final ApiService apiService;
 
-  // Constructor to inject DataService
+  // Constructor to inject ApiService
   RepositoryImpl(this.apiService);
 
-  // Fetch products using the DataService
+  // Fetch products using the ApiService
   @override
   Future<List<Product>> fetchProducts() async {
     try {
-      // Call the appropriate method from DataService to fetch products
-      final products = await apiService.fetchProducts();
+      // Call the appropriate method from ApiService to fetch products
+      final products = await apiService.getProducts();
       return products;
     } catch (e) {
       throw (FetchDataState<Product>.error(
@@ -24,13 +22,25 @@ class RepositoryImpl implements Repository {
     }
   }
 
-  // Fetch vendors using the DataService
+  // Fetch vendors using the ApiService
   @override
   Future<List<Vendor>> fetchVendors() async {
     try {
-      // Call the appropriate method from DataService to fetch vendors
-      final vendors = await apiService.fetchVendors();
+      // Call the appropriate method from ApiService to fetch vendors
+      final vendors = await apiService.getVendors();
       return vendors;
+    } catch (e) {
+      // Handle errors appropriately, maybe log them or rethrow with a custom exception
+      throw ErrorHandler.handle(e).failure;
+    }
+  }
+
+  @override
+  Future<List<Author>> fetchAuthors() async {
+    try {
+      // Call the appropriate method from ApiService to fetch vendors
+      final authors = await apiService.getAuthors();
+      return authors;
     } catch (e) {
       // Handle errors appropriately, maybe log them or rethrow with a custom exception
       throw ErrorHandler.handle(e).failure;

@@ -1,4 +1,6 @@
+import 'package:bazar_books_app/di.dart';
 import 'package:bazar_books_app/features/auth/presentation/sign_in.dart';
+import 'package:bazar_books_app/features/home/data/repository.dart';
 import 'package:bazar_books_app/features/home/widgets/offer/offer.dart';
 import 'package:bazar_books_app/features/home/widgets/product/products.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
@@ -6,11 +8,10 @@ import 'package:bazar_books_design/core/extensions/context_extension.dart';
 import 'package:bazar_books_design/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 
-import 'bloc/product_bloc.dart';
-import 'bloc/vendor_bloc.dart';
-import 'widgets/author/authors.dart';
+import 'bloc/product_bloc/product_bloc.dart';
+import 'bloc/vendor_bloc/vendor_bloc.dart';
+import 'widgets/author/authors_section.dart';
 import 'widgets/vendors/best_vendors.dart';
 
 class HomePage extends StatelessWidget {
@@ -31,7 +32,7 @@ class HomePage extends StatelessWidget {
           },
         ),
         title: Text(
-          'Home',
+          context.bazS.generalTitleHome,
           style: context.textTheme.titleLarge,
         ),
         centerTitle: true,
@@ -45,16 +46,18 @@ class HomePage extends StatelessWidget {
       body: MultiBlocProvider(
         providers: [
           BlocProvider<ProductBloc>(
-            create: (BuildContext context) => GetIt.I<ProductBloc>()
-              ..add(
-                GetProductsEvent(),
-              ),
+            create: (BuildContext context) =>
+                ProductBloc(productRepository: getIt<Repository>())
+                  ..add(
+                    GetProductsEvent(),
+                  ),
           ),
           BlocProvider<VendorBloc>(
-            create: (BuildContext context) => GetIt.I<VendorBloc>()
-              ..add(
-                GetVendorsEvent(),
-              ),
+            create: (BuildContext context) =>
+                VendorBloc(vendorRepository: getIt<Repository>())
+                  ..add(
+                    GetVendorsEvent(),
+                  ),
           ),
         ],
         child: Padding(
@@ -90,22 +93,22 @@ class HomePage extends StatelessWidget {
           BottomNavigationBarItem(
             icon: BazUiBuiltInImage.icHomeFill(
                 color: context.colorScheme.primary),
-            label: 'Home',
+            label: context.bazS.generalTitleHome,
           ),
           BottomNavigationBarItem(
             icon: BazUiBuiltInImage.icMenuFill(
                 color: context.colorScheme.tertiary),
-            label: 'Category',
+            label: context.bazS.generalTitleCategory,
           ),
           BottomNavigationBarItem(
             icon: BazUiBuiltInImage.icCardFill(
                 color: context.colorScheme.tertiary),
-            label: 'Cart',
+            label: context.bazS.generalTitleCart,
           ),
           BottomNavigationBarItem(
             icon: BazUiBuiltInImage.icProfileFill(
                 color: context.colorScheme.tertiary),
-            label: 'Profile',
+            label: context.bazS.generalTitleProfile,
           ),
         ],
         currentIndex: 0,
