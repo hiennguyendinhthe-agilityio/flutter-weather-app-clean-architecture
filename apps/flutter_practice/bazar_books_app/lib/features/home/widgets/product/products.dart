@@ -1,12 +1,12 @@
 import 'package:bazar_books_app/features/home/bloc/product_bloc.dart';
 import 'package:bazar_books_design/core/models/product_model.dart';
-import 'package:bazar_books_design/widgets/cards/book_card.dart';
-import 'package:bazar_books_design/widgets/empty/empty.dart';
+import 'package:bazar_books_design/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../bloc/data_state.dart';
+import '../detail_menu/detail_menu.dart';
 
 class Products extends StatelessWidget {
   const Products({
@@ -41,11 +41,26 @@ class Products extends StatelessWidget {
                         ? state.data?.length ?? 0
                         : 3),
                     itemBuilder: (_, index) {
-                      final Product product =
-                          state.status == FetchDataStatus.loading
-                              ? Product(id: index.toString())
-                              : state.data![index];
-                      return BookCard(
+                      final bool isLoadingOrDataNull =
+                          state.status == FetchDataStatus.loading ||
+                              state.data == null;
+                      Product createDefaultProduct(int index) {
+                        return Product(id: index.toString());
+                      }
+
+                      final Product product = isLoadingOrDataNull
+                          ? createDefaultProduct(index)
+                          : state.data?[index] ?? createDefaultProduct(index);
+
+                      return BazUiBookCard(
+                        onTap: () {
+                          BazUiBottomSheet.showModal(
+                            context,
+                            child: DetailMenu(
+                              product: product,
+                            ),
+                          );
+                        },
                         title: product.title,
                         price: product.price,
                         imageUrl: product.imageUrl,
