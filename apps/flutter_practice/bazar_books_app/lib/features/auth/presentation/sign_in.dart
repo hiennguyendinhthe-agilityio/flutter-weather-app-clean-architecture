@@ -51,7 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
             if (state is LoginSuccess) {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => HomePage()),
+                MaterialPageRoute(builder: (context) => const HomePage()),
               );
             } else if (state is LoginFailure) {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -89,23 +89,20 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 20),
                     BazUiTextField(
                       obscureText: _obscureText,
-                      suffixIcon: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                _obscureText = !_obscureText;
-                              });
-                            },
-                            icon: _obscureText
-                                ? BazUiBuiltInImage.icPassword(
-                                    color: context.colorScheme.tertiary,
-                                  )
-                                : BazUiBuiltInImage.icUnPassword(
-                                    color: context
-                                        .colorScheme.onSecondaryContainer,
-                                  )),
-                      ),
+                      suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _obscureText = !_obscureText;
+                            });
+                          },
+                          icon: _obscureText
+                              ? BazUiBuiltInImage.icPassword(
+                                  color: context.colorScheme.tertiary,
+                                )
+                              : BazUiBuiltInImage.icUnPassword(
+                                  color:
+                                      context.colorScheme.onSecondaryContainer,
+                                )),
                       controller: passwordController,
                       labelText: context.bazS.signInPagePassword,
                       hintText: context.bazS.signInPageYourPassword,

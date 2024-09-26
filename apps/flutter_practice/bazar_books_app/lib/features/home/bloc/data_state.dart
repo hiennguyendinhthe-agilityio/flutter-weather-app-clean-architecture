@@ -1,16 +1,15 @@
 enum FetchDataStatus { initial, loading, loaded, error }
 
 class FetchDataState<T> {
-  final FetchDataStatus status;
-  final List<T>? data;
-  final String? errorMessage;
-
   const FetchDataState._({
     this.status = FetchDataStatus.initial,
     this.data,
     this.errorMessage,
   });
 
+  final FetchDataStatus status;
+  final List<T>? data;
+  final String? errorMessage;
   const FetchDataState.initial() : this._();
 
   const FetchDataState.loading() : this._(status: FetchDataStatus.loading);

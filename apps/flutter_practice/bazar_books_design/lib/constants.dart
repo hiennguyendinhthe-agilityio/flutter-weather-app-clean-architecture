@@ -9,5 +9,8 @@ class Constants {
   static const String imgUrlDefault =
       'https://www.hubspot.com/hs-fs/hubfs/parts-url_1.webp?width=1190&height=800&name=parts-url_1.webp';
 
+  static const String apiUrlAuthor =
+      "https://66dfe9422fb67ac16f278487.mockapi.io/api/v1/";
+
   static const String titleDefault = 'No Title';
 }

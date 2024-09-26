@@ -1,8 +1,8 @@
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
 import 'package:flutter/material.dart';
 
-class Author extends StatelessWidget {
-  const Author({
+class BazUiAuthor extends StatelessWidget {
+  const BazUiAuthor({
     super.key,
     this.name = '',
     this.role = '',

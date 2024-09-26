@@ -419,6 +419,116 @@ class BazUiS {
       args: [],
     );
   }
+
+  /// `Home`
+  String get generalTitleHome {
+    return Intl.message(
+      'Home',
+      name: 'generalTitleHome',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Category`
+  String get generalTitleCategory {
+    return Intl.message(
+      'Category',
+      name: 'generalTitleCategory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cart`
+  String get generalTitleCart {
+    return Intl.message(
+      'Cart',
+      name: 'generalTitleCart',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Profile`
+  String get generalTitleProfile {
+    return Intl.message(
+      'Profile',
+      name: 'generalTitleProfile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Order Now`
+  String get orderNow {
+    return Intl.message(
+      'Order Now',
+      name: 'orderNow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Special Offer`
+  String get specialOffer {
+    return Intl.message(
+      'Special Offer',
+      name: 'specialOffer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue shopping`
+  String get continueButton {
+    return Intl.message(
+      'Continue shopping',
+      name: 'continueButton',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View cart`
+  String get viewButton {
+    return Intl.message(
+      'View cart',
+      name: 'viewButton',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Review`
+  String get reviewTitle {
+    return Intl.message(
+      'Review',
+      name: 'reviewTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Viverra dignissim ac ac ac.`
+  String get detailMenuDescription {
+    return Intl.message(
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Viverra dignissim ac ac ac.',
+      name: 'detailMenuDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `GoodDay`
+  String get detailMenuGoodDayTitle {
+    return Intl.message(
+      'GoodDay',
+      name: 'detailMenuGoodDayTitle',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<BazUiS> {

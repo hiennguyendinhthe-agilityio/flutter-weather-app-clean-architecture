@@ -22,6 +22,12 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "continueButton":
+            MessageLookupByLibrary.simpleMessage("Continue shopping"),
+        "detailMenuDescription": MessageLookupByLibrary.simpleMessage(
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Viverra dignissim ac ac ac."),
+        "detailMenuGoodDayTitle":
+            MessageLookupByLibrary.simpleMessage("GoodDay"),
         "errorBadRequest": MessageLookupByLibrary.simpleMessage(
             "Failure, API rejected request"),
         "errorCache": MessageLookupByLibrary.simpleMessage("Cache error"),
@@ -52,6 +58,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "generalRefresh": MessageLookupByLibrary.simpleMessage("Refresh"),
         "generalSeeAll": MessageLookupByLibrary.simpleMessage("See All"),
         "generalSuccess": MessageLookupByLibrary.simpleMessage("success"),
+        "generalTitleCart": MessageLookupByLibrary.simpleMessage("Cart"),
+        "generalTitleCategory":
+            MessageLookupByLibrary.simpleMessage("Category"),
+        "generalTitleHome": MessageLookupByLibrary.simpleMessage("Home"),
+        "generalTitleProfile": MessageLookupByLibrary.simpleMessage("Profile"),
         "homePageAuthors": MessageLookupByLibrary.simpleMessage("Authors"),
         "homePageBestVendors":
             MessageLookupByLibrary.simpleMessage("Best Vendors"),
@@ -59,6 +70,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Product is empty"),
         "homePageTopOfWeek":
             MessageLookupByLibrary.simpleMessage("Top of Week"),
+        "orderNow": MessageLookupByLibrary.simpleMessage("Order Now"),
+        "reviewTitle": MessageLookupByLibrary.simpleMessage("Review"),
         "signInPageDontHaveAnAccount":
             MessageLookupByLibrary.simpleMessage("Don’t have an account?"),
         "signInPageEmail": MessageLookupByLibrary.simpleMessage("Email"),
@@ -79,6 +92,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "signInPageYourEmail":
             MessageLookupByLibrary.simpleMessage("Your email"),
         "signInPageYourPassword":
-            MessageLookupByLibrary.simpleMessage("Your password")
+            MessageLookupByLibrary.simpleMessage("Your password"),
+        "specialOffer": MessageLookupByLibrary.simpleMessage("Special Offer"),
+        "viewButton": MessageLookupByLibrary.simpleMessage("View cart")
       };
 }
