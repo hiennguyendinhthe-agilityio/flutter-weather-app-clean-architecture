@@ -1,6 +1,7 @@
+import 'package:bazar_books_app/di.dart';
 import 'package:bazar_books_app/features/auth/presentation/sign_in.dart';
 import 'package:bazar_books_app/routes.dart';
-import 'package:bazar_books_design/core/resources/l10n_generated/l10n.dart';
+import 'package:bazar_books_design/core/core.dart';
 import 'package:bazar_books_design/themes/light_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -12,6 +13,8 @@ void main() async {
 
   await prefs.setString('email', '');
   await prefs.setString('password', '');
+
+  await initGetIt();
   runApp(const MainApp());
 }
 
