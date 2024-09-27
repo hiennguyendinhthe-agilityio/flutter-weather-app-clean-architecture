@@ -35,12 +35,6 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: BazUiBuiltInImage.icArrowLeft(),
-          onPressed: () {
-            // Handle back action
-          },
-        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -67,7 +61,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 40),
                     Text(
                       context.bazS.signInPageWelcomeBack,
                       style: context.textTheme.headlineSmall,
@@ -193,7 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 20),
             ],
           ),
         ),
