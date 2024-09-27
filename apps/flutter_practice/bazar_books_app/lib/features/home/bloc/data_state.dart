@@ -1,7 +1,6 @@
 enum FetchDataStatus { initial, loading, loadMore, loaded, error }
 
 class FetchDataState<T> {
-  // Constructor private cho phép dùng chung cho các named constructors
   const FetchDataState._({
     this.status = FetchDataStatus.initial,
     this.data,
