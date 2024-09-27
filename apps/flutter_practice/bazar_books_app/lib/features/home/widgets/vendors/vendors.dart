@@ -1,5 +1,7 @@
-import 'package:bazar_books_app/features/home/models/home_models.dart';
+import 'package:bazar_books_app/features/home/widgets/vendors/vendors_grid.dart';
+import 'package:bazar_books_design/core/extensions/context_extension.dart';
 import 'package:bazar_books_design/widgets/tabbar/tabbar.dart';
+import 'package:bazar_books_design/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 class Vendors extends StatelessWidget {
@@ -8,8 +10,40 @@ class Vendors extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            icon: BazUiBuiltInImage.icSearch(),
+            onPressed: () {},
+          ),
+        ],
+        title: Text(
+          context.bazS.vendorTitle,
+          style: context.textTheme.titleLarge,
+        ),
+        centerTitle: true,
+      ),
       body: BazUiTabbarView(
+        headline: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 23),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                context.bazS.vendorSubtitle,
+                style: context.textTheme.labelMedium?.copyWith(
+                  fontSize: 16,
+                ),
+              ),
+              Text(
+                context.bazS.vendorTitle,
+                style: context.textTheme.titleLarge
+                    ?.copyWith(color: context.colorScheme.primary),
+              ),
+              const SizedBox(height: 30),
+            ],
+          ),
+        ),
         tabs: const [
           Tab(text: 'All'),
           Tab(text: 'Books'),
@@ -18,13 +52,13 @@ class Vendors extends StatelessWidget {
           Tab(text: 'Stationery'),
           Tab(text: 'Stationery'),
         ],
-        child: [
+        child: const [
           VendorsGrid(),
-          const Center(child: Text('Books')),
-          const Center(child: Text('Poems')),
-          const Center(child: Text('Special for you')),
-          const Center(child: Text('Stationery')),
-          const Center(child: Text('Stationery')),
+          Center(child: Text('Books')),
+          Center(child: Text('Poems')),
+          Center(child: Text('Special for you')),
+          Center(child: Text('Stationery')),
+          Center(child: Text('Stationery')),
         ],
       ),
     );
