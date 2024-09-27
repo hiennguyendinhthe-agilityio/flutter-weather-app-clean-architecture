@@ -46,4 +46,16 @@ class RepositoryImpl implements Repository {
       throw ErrorHandler.handle(e).failure;
     }
   }
+
+  @override
+  Future<Product> fetchProductDetails(String productId) async {
+    try {
+      // Call the appropriate method from ApiService to fetch products
+      final products = await apiService.fetchProductDetails(productId);
+      return products;
+    } catch (e) {
+      throw (FetchDataState<Product>.error(
+          ErrorHandler.handle(e).failure.message));
+    }
+  }
 }

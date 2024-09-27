@@ -32,6 +32,23 @@ class ApiService {
     }
   }
 
+  Future<Product> fetchProductDetails(String productId) async {
+    try {
+      // Send a GET request to the API endpoint
+      final response =
+          await _dio.get('${Constants.apiUrlProduct}product/$productId');
+      if (response.statusCode != 200) {
+        throw ErrorHandler.handle(response).failure;
+      }
+      final result = response.data;
+      log('$result');
+      // Decode the JSON response body into a list of dynamic objects
+      return Product.fromJson(response.data);
+    } catch (e) {
+      throw ErrorHandler.handle(e).failure;
+    }
+  }
+
   Future<List<Vendor>> getVendors() async {
     try {
       // Send a GET request to the API endpoint

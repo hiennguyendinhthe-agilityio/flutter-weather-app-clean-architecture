@@ -23,5 +23,16 @@
           "aapps/flutter_practice/bazar_books_widgetbook/lib/main.dart"
         ]
       },
+      {
+        "name": "Run Device preview",
+        "request": "launch",
+        "type": "dart",
+        "program": "apps/flutter_practice/bazar_books_app/lib/main_device_preview.dart",
+        "args": [
+          "Devicepreview",
+          "target",
+          "aapps/flutter_practice/bazar_books_widgetbook/lib/main_device_preview.dart"
+        ]
+      },
   ]
 }

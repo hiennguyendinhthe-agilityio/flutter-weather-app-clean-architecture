@@ -45,7 +45,7 @@ class BazUiOfferCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Discount $discount%',
+                      '$discount%',
                       style: context.textTheme.titleSmall,
                     ),
                     const SizedBox(height: 16),
