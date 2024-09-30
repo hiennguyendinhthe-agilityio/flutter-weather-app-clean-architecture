@@ -8,4 +8,6 @@ abstract class Repository {
   Future<List<Vendor>> fetchVendors();
 
   Future<List<Author>> fetchAuthors();
+
+  Future<Author> fetchAuthorProfile(String productId);
 }

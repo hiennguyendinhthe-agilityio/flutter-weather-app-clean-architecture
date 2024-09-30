@@ -2,30 +2,51 @@
 
 import 'package:bazar_books_app/features/home/bloc/data_state.dart';
 import 'package:bazar_books_app/features/home/data/repository.dart';
-import 'package:bazar_books_design/core/models/product_model.dart';
+import 'package:bazar_books_design/core/models/author_model.dart';
 import 'package:bazar_books_design/core/network/error_handler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'author_event.dart';
 
-class AuthorBloc extends Bloc<AuthorEvent, FetchDataState<Product>> {
-  final Repository productRepository;
-  AuthorBloc({required this.productRepository})
-      : super(const FetchDataState<Product>.initial()) {
-    on<GetProductsEvent>(_onGetProducts);
+class AuthorBloc extends Bloc<AuthorEvent, FetchDataState<Author>> {
+  final Repository repository;
+
+  AuthorBloc({required this.repository})
+      : super(const FetchDataState<Author>.initial()) {
+    on<GetAuthorsEvent>(_onFetchAuthors);
+    on<FetchAllAuthorsEvent>(_onFetchAuthors);
+    on<FetchAuthorProfileEvent>(_onFetchAuthorProfile);
   }
 
-  Future<void> _onGetProducts(
-      GetProductsEvent event, Emitter<FetchDataState<Product>> emit) async {
-    emit(const FetchDataState<Product>.loading());
+  Future<void> _onFetchAuthors(
+      AuthorEvent event, Emitter<FetchDataState<Author>> emit) async {
+    emit(const FetchDataState<Author>.loading());
 
     try {
-      final products = await productRepository.fetchProducts();
+      final authors = await repository.fetchAuthors();
 
-      emit(FetchDataState<Product>.loaded(products));
+      if (authors.isEmpty) {
+        emit(const FetchDataState<Author>.initial());
+      } else {
+        emit(FetchDataState<Author>.loaded(authors));
+      }
     } catch (e) {
-      emit(FetchDataState<Product>.error(
-          ErrorHandler.handle(e).failure.message));
+      emit(
+          FetchDataState<Author>.error(ErrorHandler.handle(e).failure.message));
+    }
+  }
+
+  Future<void> _onFetchAuthorProfile(FetchAuthorProfileEvent event,
+      Emitter<FetchDataState<Author>> emit) async {
+    emit(const FetchDataState<Author>.loading());
+
+    try {
+      final authors = await repository.fetchAuthorProfile(event.id);
+
+      emit(FetchDataState<Author>.loaded([authors]));
+    } catch (e) {
+      emit(
+          FetchDataState<Author>.error(ErrorHandler.handle(e).failure.message));
     }
   }
 }

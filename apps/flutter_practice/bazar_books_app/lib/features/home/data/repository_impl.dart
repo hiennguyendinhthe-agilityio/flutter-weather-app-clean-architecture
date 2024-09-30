@@ -58,4 +58,16 @@ class RepositoryImpl implements Repository {
           ErrorHandler.handle(e).failure.message));
     }
   }
+
+  @override
+  Future<Author> fetchAuthorProfile(String productId) async {
+    try {
+      // Call the appropriate method from ApiService to fetch authors
+      final authors = await apiService.fetchAuthorProfile(productId);
+      return authors;
+    } catch (e) {
+      // Handle errors appropriately, maybe log them or rethrow with a custom exception
+      throw ErrorHandler.handle(e).failure;
+    }
+  }
 }

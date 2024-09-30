@@ -4,4 +4,15 @@ sealed class AuthorEvent {
   List<Object?> get props => [];
 }
 
-class GetProductsEvent extends AuthorEvent {}
+class GetAuthorsEvent extends AuthorEvent {}
+
+class FetchAllAuthorsEvent extends AuthorEvent {}
+
+class FetchAuthorProfileEvent extends AuthorEvent {
+  final String id;
+
+  FetchAuthorProfileEvent(this.id);
+
+  @override
+  List<Object?> get props => [id];
+}
