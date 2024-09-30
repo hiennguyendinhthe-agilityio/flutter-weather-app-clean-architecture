@@ -88,7 +88,7 @@ class ApiService {
   Future<Author> fetchAuthorProfile(String id) async {
     try {
       // Send a GET request to the API endpoint
-      final response = await _dio.get('${Constants.apiUrlProduct}authors/$id');
+      final response = await _dio.get('${Constants.apiUrlAuthor}authors/$id');
       if (response.statusCode != 200) {
         throw ErrorHandler.handle(response).failure;
       }
