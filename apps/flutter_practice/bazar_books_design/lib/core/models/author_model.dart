@@ -1,25 +1,28 @@
 class Author {
   final String id;
-  final String? flullName;
+  final String? fullName;
   final String? occupation;
   final String? biography;
   final String? avatarUrl;
+  final int? starRating;
 
   Author({
     required this.id,
-    this.flullName,
+    this.fullName,
     this.occupation,
     this.biography,
     this.avatarUrl,
+    this.starRating,
   });
 
   factory Author.fromJson(Map<String, dynamic> json) {
     return Author(
       id: json['id'],
-      flullName: json['flullName'],
+      fullName: json['fullName'],
       occupation: json['occupation'],
       biography: json['biography'],
       avatarUrl: json['avatarUrl'],
+      starRating: json['starRating'],
     );
   }
 }
