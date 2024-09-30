@@ -6,7 +6,6 @@ class FetchDataState<T> {
     this.data,
     this.errorMessage,
   });
-
   final FetchDataStatus status;
   final List<T>? data;
   final String? errorMessage;

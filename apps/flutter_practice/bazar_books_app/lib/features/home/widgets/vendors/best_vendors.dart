@@ -27,7 +27,7 @@ class BestVendors extends StatelessWidget {
                     (state.data?.isEmpty ?? false))
                 ? BazUiEmpty(
                     onPressed: () {
-                      context.read<VendorBloc>().add(GetVendorsEvent());
+                      context.read<VendorBloc>().add(GetBestVendorsEvent());
                     },
                   )
                 : ListView.builder(

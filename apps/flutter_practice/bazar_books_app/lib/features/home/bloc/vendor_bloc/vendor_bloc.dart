@@ -37,6 +37,8 @@ class VendorBloc extends Bloc<VendorEvent, FetchDataState<Vendor>> {
 
     try {
       final vendors = await vendorRepository.fetchVendors();
+
+      // Add vendors to the state
       emit(FetchDataState<Vendor>.loaded(vendors));
     } catch (e) {
       emit(
