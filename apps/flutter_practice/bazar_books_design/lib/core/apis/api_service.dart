@@ -84,4 +84,20 @@ class ApiService {
       throw ErrorHandler.handle(e).failure;
     }
   }
+
+  Future<Author> fetchAuthorProfile(String id) async {
+    try {
+      // Send a GET request to the API endpoint
+      final response = await _dio.get('${Constants.apiUrlProduct}authors/$id');
+      if (response.statusCode != 200) {
+        throw ErrorHandler.handle(response).failure;
+      }
+      final result = response.data;
+      log('$result');
+      // Decode the JSON response body into a list of dynamic objects
+      return Author.fromJson(response.data);
+    } catch (e) {
+      throw ErrorHandler.handle(e).failure;
+    }
+  }
 }
