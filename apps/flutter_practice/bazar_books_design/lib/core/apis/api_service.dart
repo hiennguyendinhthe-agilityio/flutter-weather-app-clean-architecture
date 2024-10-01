@@ -49,18 +49,24 @@ class ApiService {
     }
   }
 
-  Future<List<Vendor>> getVendors() async {
+  Future<List<Vendor>> getVendors({int page = 1, int limit = 10}) async {
     try {
-      // Send a GET request to the API endpoint
-      final response = await _dio.get('${Constants.apiUrlVendor}vendor');
+      // Send request to API with pagination parameter
+      final response = await _dio.get(
+        '${Constants.apiUrlVendor}vendor',
+        queryParameters: {
+          'page': page,
+          'limit': limit,
+        },
+      );
+
       if (response.statusCode != 200) {
         throw ErrorHandler.handle(response).failure;
       }
 
-      // Decode the JSON response body into a list of dynamic objects
+      // Parse the response JSON into a list of Providers
       final List<dynamic> result = response.data;
       log('$result');
-      // Convert each dynamic object to a VendorModel instance
       return result.map((json) => Vendor.fromJson(json)).toList();
     } catch (e) {
       throw ErrorHandler.handle(e).failure;

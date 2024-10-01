@@ -18,20 +18,34 @@ class _VendorsGridState extends State<VendorsGrid> {
   final ScrollController _scrollController = ScrollController();
 
   @override
+
+  /// Adds a listener to the scroll controller to listen to the scroll
+  /// position of the grid view. When the user scrolls to the bottom of the
+  /// list, and the state is not loading or loading more, it triggers the
+  /// [FetchMoreVendorsEvent] to fetch more vendors.
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
   }
 
+  /// Listen to the scroll position of the grid view. When the user scrolls
+  /// to the bottom of the list, and the state is not loading or loading more,
+  /// it triggers the [FetchMoreVendorsEvent] to fetch more vendors.
   void _onScroll() {
+    final state = context.read<VendorBloc>().state;
+
     if (_scrollController.position.pixels >=
-            _scrollController.position.maxScrollExtent - 200 &&
-        context.read<VendorBloc>().state.status != FetchDataStatus.loadMore) {
+            _scrollController.position.maxScrollExtent - 100 &&
+        state.status != FetchDataStatus.loadMore &&
+        state.status != FetchDataStatus.loading) {
       context.read<VendorBloc>().add(FetchMoreVendorsEvent());
     }
   }
 
   @override
+
+  /// Removes the scroll listener and disposes of the scroll controller to
+  /// prevent memory leaks when the widget is disposed.
   void dispose() {
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
@@ -46,52 +60,46 @@ class _VendorsGridState extends State<VendorsGrid> {
     return BlocBuilder<VendorBloc, FetchDataState<Vendor>>(
       builder: (context, state) {
         if (state.status == FetchDataStatus.error) {
-          return Text(
-            'Error: ${state.errorMessage}',
-            textAlign: TextAlign.center,
+          return Center(
+            child: Text('Error: ${state.errorMessage}'),
           );
         }
 
         return Skeletonizer(
           enabled: state.status == FetchDataStatus.loading,
-          child: ((state.status == FetchDataStatus.loaded) &&
-                  (state.data?.isEmpty ?? false))
-              ? BazUiEmpty(
-                  onPressed: () {
-                    context.read<VendorBloc>().add(FetchAllVendorsEvent());
-                  },
-                )
-              : GridView.builder(
-                  controller: _scrollController,
-                  padding: const EdgeInsets.symmetric(horizontal: 23),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                    childAspectRatio: aspectRatio,
+          child: GridView.builder(
+            controller: _scrollController,
+            padding: const EdgeInsets.symmetric(horizontal: 23),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+              childAspectRatio: aspectRatio,
+            ),
+            physics: const AlwaysScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: (state.data?.length ?? 0) +
+                (state.status == FetchDataStatus.loadMore ? 1 : 0),
+            itemBuilder: (context, index) {
+              if (index >= state.data!.length) {
+                return const Center(child: BazUiCircularProgressIndicator());
+              }
+
+              final Vendor vendor = state.data![index];
+
+              return BazUiVendorCard(
+                headlines: vendor.headlines ?? Constants.titleDefault,
+                imageUrl: vendor.imageUrl,
+                subheads: StarRating(
+                  rating: vendor.numberStar ?? 0,
+                  numberStar: const SizedBox(
+                    width: 10,
+                    height: 10,
                   ),
-                  itemCount: (state.data?.length ?? 0) +
-                      (state.status == FetchDataStatus.loadMore ? 1 : 0),
-                  itemBuilder: (context, index) {
-                    if (index >= state.data!.length) {
-                      return const Center(
-                          child: BazUiCircularProgressIndicator());
-                    }
-
-                    final Vendor vendor = state.data![index];
-
-                    return BazUiVendorCard(
-                      headlines: vendor.headlines ?? Constants.titleDefault,
-                      imageUrl: vendor.imageUrl,
-                      subheads: StarRating(
-                        rating: vendor.numberStar ?? 0,
-                        numberStar: const SizedBox(
-                          width: 10,
-                        ),
-                      ),
-                    );
-                  },
                 ),
+              );
+            },
+          ),
         );
       },
     );

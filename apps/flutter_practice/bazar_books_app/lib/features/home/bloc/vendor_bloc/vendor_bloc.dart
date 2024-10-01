@@ -17,6 +17,10 @@ class VendorBloc extends Bloc<VendorEvent, FetchDataState<Vendor>> {
   }
 
   final Repository vendorRepository;
+  int currentPage = 1;
+  final int limit = 10;
+  bool hasReachedEnd = false;
+
   Future<void> _onGetVendors(
       GetBestVendorsEvent event, Emitter<FetchDataState<Vendor>> emit) async {
     emit(const FetchDataState<Vendor>.loading());
@@ -48,16 +52,38 @@ class VendorBloc extends Bloc<VendorEvent, FetchDataState<Vendor>> {
 
   Future<void> _onFetchMoreVendors(
       FetchMoreVendorsEvent event, Emitter<FetchDataState<Vendor>> emit) async {
+    if (state.status == FetchDataStatus.loading ||
+        state.status == FetchDataStatus.loadMore) {
+      return;
+    }
+
     emit(FetchDataState<Vendor>.loadingMore(state.data ?? []));
 
     try {
-      final List<Vendor> newVendors = await vendorRepository.fetchVendors();
+      // Call API to get new page data, using currentPage variable
+      final List<Vendor> newVendors = await vendorRepository.fetchVendors(
+        page: currentPage,
+        limit: limit,
+      );
 
+      // Check if there is no new data, stop requesting more
+      // Check if the API returns an empty list, meaning all data has been loaded
+      if (newVendors.isEmpty) {
+        hasReachedEnd = true;
+      } else {
+        currentPage++; // Increment current page for next load
+      }
+
+      currentPage++;
+
+      // Update Vendor list by concatenating new data with existing data
       final updatedVendors = List<Vendor>.from(state.data ?? [])
         ..addAll(newVendors);
 
+      // Emit loaded state with updated list
       emit(FetchDataState<Vendor>.loaded(updatedVendors));
     } catch (e) {
+      // If there is an error, output an error status
       emit(
           FetchDataState<Vendor>.error(ErrorHandler.handle(e).failure.message));
     }

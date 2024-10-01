@@ -24,10 +24,16 @@ class RepositoryImpl implements Repository {
 
   // Fetch vendors using the ApiService
   @override
-  Future<List<Vendor>> fetchVendors() async {
+  Future<List<Vendor>> fetchVendors({
+    int page = 1,
+    int limit = 10,
+  }) async {
     try {
       // Call the appropriate method from ApiService to fetch vendors
-      final vendors = await apiService.getVendors();
+      final vendors = await apiService.getVendors(
+        page: page,
+        limit: limit,
+      );
       return vendors;
     } catch (e) {
       // Handle errors appropriately, maybe log them or rethrow with a custom exception

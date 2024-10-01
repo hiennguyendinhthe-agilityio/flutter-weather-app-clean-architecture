@@ -5,7 +5,10 @@ abstract class Repository {
 
   Future<Product> fetchProductDetails(String productId);
 
-  Future<List<Vendor>> fetchVendors();
+  Future<List<Vendor>> fetchVendors({
+    int page = 1,
+    int limit = 10,
+  });
 
   Future<List<Author>> fetchAuthors();
 
