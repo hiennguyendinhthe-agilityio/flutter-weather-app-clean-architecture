@@ -1,8 +1,11 @@
 import 'package:bazar_books_app/di.dart';
 import 'package:bazar_books_app/features/auth/presentation/sign_in.dart';
+import 'package:bazar_books_app/features/home/bloc/author_bloc/author_bloc.dart';
 import 'package:bazar_books_app/features/home/data/repository.dart';
+import 'package:bazar_books_app/features/home/widgets/author/authors.dart';
 import 'package:bazar_books_app/features/home/widgets/offer/offer.dart';
 import 'package:bazar_books_app/features/home/widgets/product/products.dart';
+import 'package:bazar_books_app/features/home/widgets/vendors/vendors.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
 import 'package:bazar_books_design/widgets/widgets.dart';
@@ -56,7 +59,14 @@ class HomePage extends StatelessWidget {
             create: (BuildContext context) =>
                 VendorBloc(vendorRepository: getIt<Repository>())
                   ..add(
-                    GetVendorsEvent(),
+                    GetBestVendorsEvent(),
+                  ),
+          ),
+          BlocProvider<AuthorBloc>(
+            create: (BuildContext context) =>
+                AuthorBloc(repository: getIt<Repository>())
+                  ..add(
+                    GetAuthorsEvent(),
                   ),
           ),
         ],
@@ -73,14 +83,41 @@ class HomePage extends StatelessWidget {
                 const Products(),
                 BazUiSection(
                   title: context.bazS.homePageBestVendors,
-                  onSeeAllPressed: () {},
+                  onSeeAllPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BlocProvider<VendorBloc>(
+                          create: (BuildContext context) =>
+                              VendorBloc(vendorRepository: getIt<Repository>())
+                                ..add(
+                                  FetchAllVendorsEvent(),
+                                ),
+                          child: const Vendors(),
+                        ),
+                      ),
+                    );
+                  },
                   text: context.bazS.generalSeeAll,
                 ),
                 const BestVendors(),
                 BazUiSection(
-                  title: context.bazS.homePageAuthors,
+                  title: context.bazS.authorsTtile,
                   text: context.bazS.generalSeeAll,
-                  onSeeAllPressed: () {},
+                  onSeeAllPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BlocProvider<AuthorBloc>(
+                            create: (BuildContext context) =>
+                                AuthorBloc(repository: getIt<Repository>())
+                                  ..add(
+                                    FetchAllAuthorsEvent(),
+                                  ),
+                            child: const Authors(),
+                          ),
+                        ));
+                  },
                 ),
                 const AuthorsSection(),
               ],

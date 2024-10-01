@@ -36,11 +36,21 @@ class _BazUiTabbarViewState extends State<BazUiTabbarView>
       children: [
         widget.headline,
         TabBar(
-          tabAlignment: TabAlignment.start,
-          isScrollable: true,
-          controller: _tabController,
-          tabs: widget.tabs,
-        ),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            dividerColor: Colors.transparent,
+            tabAlignment: TabAlignment.start,
+            isScrollable: true,
+            controller: _tabController,
+            tabs: widget.tabs,
+            labelStyle: TextStyle(
+              color: Theme.of(context).colorScheme.onSecondaryContainer,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+            unselectedLabelStyle: TextStyle(
+              color: Theme.of(context).colorScheme.tertiary,
+              fontSize: 16,
+            )),
         Expanded(
           child: TabBarView(
             controller: _tabController,

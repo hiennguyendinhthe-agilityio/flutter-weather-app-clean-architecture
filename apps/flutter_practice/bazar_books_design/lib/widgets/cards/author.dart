@@ -1,17 +1,18 @@
+import 'package:bazar_books_design/constants.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
 import 'package:flutter/material.dart';
 
 class BazUiAuthor extends StatelessWidget {
   const BazUiAuthor({
     super.key,
-    this.name = '',
-    this.role = '',
+    this.fullName,
+    this.occupation = '',
     this.imageUrl,
     this.width = 127,
     this.style,
   });
-  final String name;
-  final String role;
+  final String? fullName;
+  final String? occupation;
   final String? imageUrl;
   final double width;
   final TextStyle? style;
@@ -25,15 +26,17 @@ class BazUiAuthor extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 60,
-            backgroundImage: NetworkImage(imageUrl ?? ''),
+            backgroundImage: NetworkImage(
+              imageUrl ?? Constants.imgUrlDefault,
+            ),
           ),
           const SizedBox(height: 10),
           Text(
-            name,
+            fullName ?? Constants.titleDefault,
             style: style ?? context.textTheme.labelLarge,
           ),
           Text(
-            role,
+            occupation ?? Constants.titleDefault,
             style: style ?? context.textTheme.labelMedium,
           ),
         ],

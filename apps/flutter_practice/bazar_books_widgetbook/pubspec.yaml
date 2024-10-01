@@ -20,6 +20,15 @@ dependencies:
 
   http: ^1.2.2
 
+  # A Flutter package that helps developers catalog their widgets, test them quickly on multiple devices
+  widgetbook: 3.3.0
+  
+  widgetbook_annotation: 3.0.0
+  
+  get_it: ^7.7.0
+
+  # Customize Flutter's default white native splash screen with background color and splash image. Supports dark mode, full screen, and more.
+  flutter_bloc: ^8.1.6
 
 dev_dependencies:
   build_runner: 2.4.11
@@ -57,9 +66,7 @@ dev_dependencies:
   intl: 0.19.0
 
 
-  # A Flutter package that helps developers catalog their widgets, test them quickly on multiple devices
-  widgetbook: 3.3.0
-  widgetbook_annotation: 3.0.0
+
 
   flutter_localizations:
     sdk: flutter

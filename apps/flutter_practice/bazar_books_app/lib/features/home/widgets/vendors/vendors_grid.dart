@@ -8,7 +8,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class VendorsGrid extends StatefulWidget {
-  const VendorsGrid({super.key});
+  final String category;
+  const VendorsGrid({super.key, required this.category});
 
   @override
   State<VendorsGrid> createState() => _VendorsGridState();
@@ -33,19 +34,15 @@ class _VendorsGridState extends State<VendorsGrid> {
   /// it triggers the [FetchMoreVendorsEvent] to fetch more vendors.
   void _onScroll() {
     final state = context.read<VendorBloc>().state;
-
     if (_scrollController.position.pixels >=
             _scrollController.position.maxScrollExtent - 100 &&
         state.status != FetchDataStatus.loadMore &&
         state.status != FetchDataStatus.loading) {
-      context.read<VendorBloc>().add(FetchMoreVendorsEvent());
+      context.read<VendorBloc>().add(FetchMoreVendorsEvent(widget.category));
     }
   }
 
   @override
-
-  /// Removes the scroll listener and disposes of the scroll controller to
-  /// prevent memory leaks when the widget is disposed.
   void dispose() {
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
@@ -65,6 +62,12 @@ class _VendorsGridState extends State<VendorsGrid> {
           );
         }
 
+        final filteredVendors = widget.category == 'All'
+            ? state.data
+            : state.data
+                ?.where((vendor) => vendor.publications == widget.category)
+                .toList();
+
         return Skeletonizer(
           enabled: state.status == FetchDataStatus.loading,
           child: GridView.builder(
@@ -78,24 +81,20 @@ class _VendorsGridState extends State<VendorsGrid> {
             ),
             physics: const AlwaysScrollableScrollPhysics(),
             shrinkWrap: true,
-            itemCount: (state.data?.length ?? 0) +
+            itemCount: (filteredVendors?.length ?? 0) +
                 (state.status == FetchDataStatus.loadMore ? 1 : 0),
             itemBuilder: (context, index) {
-              if (index >= state.data!.length) {
+              if (index >= filteredVendors!.length) {
                 return const Center(child: BazUiCircularProgressIndicator());
               }
 
-              final Vendor vendor = state.data![index];
-
+              final Vendor vendor = filteredVendors[index];
               return BazUiVendorCard(
                 headlines: vendor.headlines ?? Constants.titleDefault,
                 imageUrl: vendor.imageUrl,
                 subheads: StarRating(
                   rating: vendor.numberStar ?? 0,
-                  numberStar: const SizedBox(
-                    width: 10,
-                    height: 10,
-                  ),
+                  numberStar: const SizedBox(width: 10, height: 10),
                 ),
               );
             },

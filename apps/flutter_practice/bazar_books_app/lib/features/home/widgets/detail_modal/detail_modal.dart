@@ -29,8 +29,7 @@ class DetailModal extends StatelessWidget {
 
           switch (fetchDataState.status) {
             case FetchDataStatus.initial:
-              return const Center(
-                  child: Text('Ready to load product details...'));
+              return const Center(child: BazUiCircularProgressIndicator());
             case FetchDataStatus.loading:
               final product = fetchDataState.data?.first;
               return Skeletonizer(
@@ -42,6 +41,8 @@ class DetailModal extends StatelessWidget {
             case FetchDataStatus.error:
               return Center(
                   child: Text('Error: ${fetchDataState.errorMessage}'));
+            case FetchDataStatus.loadMore:
+              return const Center(child: BazUiCircularProgressIndicator());
           }
         },
       ),
@@ -65,7 +66,7 @@ class DetailModal extends StatelessWidget {
               children: [
                 Expanded(
                   child: DetailTitle(
-                    title: product?.title ?? '',
+                    title: product?.title ?? Constants.titleDefault,
                   ),
                 ),
                 FavoriteButton(
@@ -82,7 +83,7 @@ class DetailModal extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             DetailDescription(
-              description: product?.description ?? '',
+              description: product?.description ?? Constants.titleDefault,
             ),
             const SizedBox(height: 24),
             Text(
@@ -93,10 +94,12 @@ class DetailModal extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            StarRating(rating: product?.starRating ?? 0),
+            StarRating(
+              rating: product?.starRating ?? 0,
+            ),
             const SizedBox(height: 16),
             Amount(
-              price: product?.price ?? '',
+              price: product?.price ?? Constants.titleDefault,
               amount: state.quantity,
               onIncrement: () =>
                   bloc.add(UpdateAmountEvent(state.quantity + 1)),

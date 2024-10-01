@@ -11,7 +11,7 @@ WidgetbookComponent textFiledWidgetBooks() {
     name: 'BazUiTextField',
     useCases: [
       WidgetbookUseCase(
-        name: 'BazUiTextField',
+        name: 'TextField',
         builder: (context) => BazUiWidgetbook(
           copyCode: 'BazUiTextField()',
           child: Column(

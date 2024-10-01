@@ -11,42 +11,42 @@ WidgetbookComponent cardWidgetBooks() {
     name: 'BazUiCard',
     useCases: [
       WidgetbookUseCase(
-        name: 'BazUiCard',
+        name: 'Card',
         builder: (context) => BazUiWidgetbook(
           copyCode: 'cardWidgetBooks()',
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               BazUiRegularBodyText3(
-                text: 'card books WidgetBooks',
+                text: 'BookCard',
                 color: Theme.of(context).colorScheme.primary,
               ),
               const SizedBox(
                 height: 20,
               ),
-              const Row(
+              Row(
                 children: [
-                  // BookCard(
-                  //   imageUrl:
-                  //       'https://www.hubspot.com/hs-fs/hubfs/parts-url_1.webp?width=1190&height=800&name=parts-url_1.webp',
-                  //   title: 'dqd',
-                  //   price: '123123asd',
-                  //   onTap: () {},
-                  // ),
-                  // BookCard(
-                  //   imageUrl:
-                  //       'https://www.hubspot.com/hs-fs/hubfs/parts-url_1.webp?width=1190&height=800&name=parts-url_1.webp',
-                  //   title: '123213',
-                  //   price: '123123',
-                  //   onTap: () {},
-                  // ),
+                  BazUiBookCard(
+                    imageUrl:
+                        'https://www.hubspot.com/hs-fs/hubfs/parts-url_1.webp?width=1190&height=800&name=parts-url_1.webp',
+                    title: 'dqd',
+                    price: '123123asd',
+                    onTap: () {},
+                  ),
+                  BazUiBookCard(
+                    imageUrl:
+                        'https://www.hubspot.com/hs-fs/hubfs/parts-url_1.webp?width=1190&height=800&name=parts-url_1.webp',
+                    title: '123213',
+                    price: '123123',
+                    onTap: () {},
+                  ),
                 ],
               ),
               const SizedBox(
                 height: 20,
               ),
               BazUiRegularBodyText3(
-                text: 'card books WidgetBooks',
+                text: 'Author card',
                 color: Theme.of(context).colorScheme.primary,
               ),
               const SizedBox(
@@ -57,14 +57,14 @@ WidgetbookComponent cardWidgetBooks() {
                   BazUiAuthor(
                     imageUrl:
                         'https://www.hubspot.com/hs-fs/hubfs/parts-url_1.webp?width=1190&height=800&name=parts-url_1.webp',
-                    name: 'dqd',
-                    role: '123123asd',
+                    fullName: 'dqd',
+                    occupation: '123123asd',
                   ),
                   BazUiAuthor(
                     imageUrl:
                         'https://www.hubspot.com/hs-fs/hubfs/parts-url_1.webp?width=1190&height=800&name=parts-url_1.webp',
-                    name: 'dqd',
-                    role: '123123asd',
+                    fullName: 'dqd',
+                    occupation: '123123asd',
                   ),
                 ],
               ),

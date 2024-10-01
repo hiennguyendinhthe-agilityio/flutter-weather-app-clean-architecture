@@ -57,6 +57,7 @@ class BazUiBookCard extends StatelessWidget {
                 title ?? Constants.titleDefault,
                 style: style ?? context.textTheme.bodyMedium,
               ),
+              const SizedBox(height: 4),
               Text(
                 '\$$price',
                 style: style ?? context.textTheme.bodySmall,
