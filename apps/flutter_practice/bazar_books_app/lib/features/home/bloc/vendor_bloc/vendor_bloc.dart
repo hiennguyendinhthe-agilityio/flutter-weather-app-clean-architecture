@@ -52,11 +52,6 @@ class VendorBloc extends Bloc<VendorEvent, FetchDataState<Vendor>> {
 
   Future<void> _onFetchMoreVendors(
       FetchMoreVendorsEvent event, Emitter<FetchDataState<Vendor>> emit) async {
-    if (state.status == FetchDataStatus.loading ||
-        state.status == FetchDataStatus.loadMore) {
-      return;
-    }
-
     emit(FetchDataState<Vendor>.loadingMore(state.data ?? []));
 
     try {
