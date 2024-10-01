@@ -43,21 +43,19 @@ class Vendors extends StatelessWidget {
             ],
           ),
         ),
-        tabs: const [
-          Tab(text: 'All'),
-          Tab(text: 'Books'),
-          Tab(text: 'Poems'),
-          Tab(text: 'Special for you'),
-          Tab(text: 'Stationery'),
-          Tab(text: 'Stationery'),
+        tabs: [
+          Tab(text: context.bazS.allTabBar),
+          Tab(text: context.bazS.booksTabBar),
+          Tab(text: context.bazS.poemsTabBar),
+          Tab(text: context.bazS.specialForYouTabBar),
+          Tab(text: context.bazS.stationeryTabBar),
         ],
-        child: const [
-          VendorsGrid(),
-          Center(child: Text('Books')),
-          Center(child: Text('Poems')),
-          Center(child: Text('Special for you')),
-          Center(child: Text('Stationery')),
-          Center(child: Text('Stationery')),
+        child: [
+          VendorsGrid(category: context.bazS.allTabBar),
+          VendorsGrid(category: context.bazS.booksTabBar),
+          VendorsGrid(category: context.bazS.poemsTabBar),
+          VendorsGrid(category: context.bazS.specialForYouTabBar),
+          VendorsGrid(category: context.bazS.stationeryTabBar),
         ],
       ),
     );

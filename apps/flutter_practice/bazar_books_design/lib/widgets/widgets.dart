@@ -7,4 +7,5 @@ export 'empty/empty.dart';
 export 'images/image.dart';
 export 'indicators/circular_progress_indicator.dart';
 export 'section/section.dart';
+export 'tabbar/tabbar.dart';
 export 'text_field/text_field.dart';

@@ -26,32 +26,34 @@ class BazUiVendorCard extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Card(
-          color: context.colorScheme.onPrimary,
-          shadowColor: Colors.transparent,
-          shape: RoundedRectangleBorder(
-            borderRadius: borderRadius ?? BorderRadius.circular(8),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(8),
-            child: imageUrl == null || (imageUrl?.isEmpty ?? false)
-                ? Image.network(
-                    Constants.imgUrlDefault,
-                    fit: BoxFit.cover,
-                    height: height,
-                  )
-                : Image.network(
-                    imageUrl!,
-                    fit: BoxFit.cover,
-                    height: height,
-                  ),
+        Expanded(
+          child: Card(
+            color: context.colorScheme.onPrimary,
+            shadowColor: Colors.transparent,
+            shape: RoundedRectangleBorder(
+              borderRadius: borderRadius ?? BorderRadius.circular(8),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: imageUrl == null || (imageUrl?.isEmpty ?? false)
+                  ? Image.network(
+                      Constants.imgUrlDefault,
+                      fit: BoxFit.cover,
+                      height: height,
+                    )
+                  : Image.network(
+                      imageUrl!,
+                      fit: BoxFit.cover,
+                      height: height,
+                    ),
+            ),
           ),
         ),
-        const SizedBox(height: 10),
         // Title Section
         Text(
           headlines,
           style: style ?? context.textTheme.bodyMedium,
+          maxLines: 1,
         ),
         subheads ?? const SizedBox.shrink(),
       ],

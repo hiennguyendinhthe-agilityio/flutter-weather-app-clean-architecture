@@ -7,4 +7,7 @@ class GetBestVendorsEvent extends VendorEvent {}
 
 class FetchAllVendorsEvent extends VendorEvent {}
 
-class FetchMoreVendorsEvent extends VendorEvent {}
+class FetchMoreVendorsEvent extends VendorEvent {
+  final String category;
+  FetchMoreVendorsEvent(this.category);
+}

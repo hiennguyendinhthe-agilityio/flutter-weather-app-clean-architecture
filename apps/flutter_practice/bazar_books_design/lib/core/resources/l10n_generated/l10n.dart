@@ -211,10 +211,10 @@ class BazUiS {
   }
 
   /// `Authors`
-  String get homePageAuthors {
+  String get authorsTtile {
     return Intl.message(
       'Authors',
-      name: 'homePageAuthors',
+      name: 'authorsTtile',
       desc: '',
       args: [],
     );
@@ -230,10 +230,10 @@ class BazUiS {
     );
   }
 
-  /// `See All`
+  /// `See all`
   String get generalSeeAll {
     return Intl.message(
-      'See All',
+      'See all',
       name: 'generalSeeAll',
       desc: '',
       args: [],
@@ -525,6 +525,146 @@ class BazUiS {
     return Intl.message(
       'GoodDay',
       name: 'detailMenuGoodDayTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vendors`
+  String get vendorTitle {
+    return Intl.message(
+      'Vendors',
+      name: 'vendorTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Our Vendors`
+  String get vendorSubtitle {
+    return Intl.message(
+      'Our Vendors',
+      name: 'vendorSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Check the authors`
+  String get authorSubtitle {
+    return Intl.message(
+      'Check the authors',
+      name: 'authorSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Products`
+  String get productTitle {
+    return Intl.message(
+      'Products',
+      name: 'productTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `About`
+  String get aboutTitle {
+    return Intl.message(
+      'About',
+      name: 'aboutTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All`
+  String get allTabBar {
+    return Intl.message(
+      'All',
+      name: 'allTabBar',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Poets`
+  String get poetsTabBar {
+    return Intl.message(
+      'Poets',
+      name: 'poetsTabBar',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Playwrights`
+  String get playwrightsTabBar {
+    return Intl.message(
+      'Playwrights',
+      name: 'playwrightsTabBar',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Novelists`
+  String get novelistsTabBar {
+    return Intl.message(
+      'Novelists',
+      name: 'novelistsTabBar',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Journalists`
+  String get journalistsTabBar {
+    return Intl.message(
+      'Journalists',
+      name: 'journalistsTabBar',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Stationery`
+  String get stationeryTabBar {
+    return Intl.message(
+      'Stationery',
+      name: 'stationeryTabBar',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Books`
+  String get booksTabBar {
+    return Intl.message(
+      'Books',
+      name: 'booksTabBar',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Poems`
+  String get poemsTabBar {
+    return Intl.message(
+      'Poems',
+      name: 'poemsTabBar',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Special for you`
+  String get specialForYouTabBar {
+    return Intl.message(
+      'Special for you',
+      name: 'specialForYouTabBar',
       desc: '',
       args: [],
     );

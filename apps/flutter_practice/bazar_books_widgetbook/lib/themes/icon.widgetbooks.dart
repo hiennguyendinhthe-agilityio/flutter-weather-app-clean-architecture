@@ -95,7 +95,7 @@ WidgetbookComponent iconsWidgetBooks() {
                                   ),
                                   _IconWidgetbookItem(
                                     builder: (context) =>
-                                        BazUiBuiltInImage.icHomeFill(
+                                        BazUiBuiltInImage.icMenuFill(
                                       color: Theme.of(context)
                                           .colorScheme
                                           .onPrimaryContainer,
@@ -103,7 +103,7 @@ WidgetbookComponent iconsWidgetBooks() {
                                   ),
                                   _IconWidgetbookItem(
                                     builder: (context) =>
-                                        BazUiBuiltInImage.icHomeFill(
+                                        BazUiBuiltInImage.icCardFill(
                                       color: Theme.of(context)
                                           .colorScheme
                                           .onPrimaryContainer,
@@ -111,7 +111,7 @@ WidgetbookComponent iconsWidgetBooks() {
                                   ),
                                   _IconWidgetbookItem(
                                     builder: (context) =>
-                                        BazUiBuiltInImage.icHomeFill(
+                                        BazUiBuiltInImage.icProfileFill(
                                       color: Theme.of(context)
                                           .colorScheme
                                           .onPrimaryContainer,
@@ -119,7 +119,7 @@ WidgetbookComponent iconsWidgetBooks() {
                                   ),
                                   _IconWidgetbookItem(
                                     builder: (context) =>
-                                        BazUiBuiltInImage.icHomeFill(
+                                        BazUiBuiltInImage.icBellOutline(
                                       color: Theme.of(context)
                                           .colorScheme
                                           .onPrimaryContainer,
@@ -127,7 +127,59 @@ WidgetbookComponent iconsWidgetBooks() {
                                   ),
                                   _IconWidgetbookItem(
                                     builder: (context) =>
-                                        BazUiBuiltInImage.icHomeFill(
+                                        BazUiBuiltInImage.icSearch(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimaryContainer,
+                                    ),
+                                  ),
+                                  _IconWidgetbookItem(
+                                    builder: (context) =>
+                                        BazUiBuiltInImage.icArrowLeft(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimaryContainer,
+                                    ),
+                                  ),
+                                  _IconWidgetbookItem(
+                                    builder: (context) =>
+                                        BazUiBuiltInImage.icPassword(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimaryContainer,
+                                    ),
+                                  ),
+                                  _IconWidgetbookItem(
+                                    builder: (context) =>
+                                        BazUiBuiltInImage.icUnPassword(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimaryContainer,
+                                    ),
+                                  ),
+                                  _IconWidgetbookItem(
+                                    builder: (context) =>
+                                        BazUiBuiltInImage.icAdd(),
+                                  ),
+                                  _IconWidgetbookItem(
+                                    builder: (context) =>
+                                        BazUiBuiltInImage.icLess(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimaryContainer,
+                                    ),
+                                  ),
+                                  _IconWidgetbookItem(
+                                    builder: (context) =>
+                                        BazUiBuiltInImage.icLoveFill(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimaryContainer,
+                                    ),
+                                  ),
+                                  _IconWidgetbookItem(
+                                    builder: (context) =>
+                                        BazUiBuiltInImage.icStar(
                                       color: Theme.of(context)
                                           .colorScheme
                                           .onPrimaryContainer,

@@ -1,16 +1,18 @@
+import 'package:bazar_books_design/constants.dart';
+import 'package:bazar_books_design/core/extensions/context_extension.dart';
 import 'package:flutter/material.dart';
 
 class BazUiListTile extends StatelessWidget {
   const BazUiListTile(
       {super.key,
-      required this.leading,
+      this.leading,
       required this.title,
       required this.subtitle,
       this.onTap});
 
-  final String leading;
-  final String title;
-  final String subtitle;
+  final String? leading;
+  final String? title;
+  final String? subtitle;
   final void Function()? onTap;
 
   @override
@@ -20,19 +22,18 @@ class BazUiListTile extends StatelessWidget {
       child: ListTile(
         leading: CircleAvatar(
           radius: 30,
-          backgroundImage: NetworkImage(leading),
+          backgroundImage: NetworkImage(
+            leading ?? Constants.imgUrlDefault,
+          ),
         ),
         title: Text(
-          title,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-          ),
+          title ?? Constants.titleDefault,
+          style: context.textTheme.titleMedium,
         ),
         subtitle: Text(
           maxLines: 2,
-          subtitle,
-          style: const TextStyle(fontSize: 14),
+          subtitle ?? Constants.titleDefault,
+          style: context.textTheme.titleSmall,
           overflow: TextOverflow.ellipsis,
         ),
       ),

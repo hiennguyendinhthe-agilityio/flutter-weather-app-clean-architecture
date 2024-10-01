@@ -14,6 +14,9 @@ class BazUiTextButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
+      style: const ButtonStyle(
+          padding: WidgetStatePropertyAll(EdgeInsets.zero),
+          alignment: Alignment.centerRight),
       onPressed: onSeeAllPressed,
       child: Text(
         text,
