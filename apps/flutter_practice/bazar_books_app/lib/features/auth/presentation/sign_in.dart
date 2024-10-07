@@ -5,6 +5,7 @@ import 'package:bazar_books_app/features/auth/blocs/auth_event.dart';
 import 'package:bazar_books_app/features/auth/blocs/auth_state.dart';
 import 'package:bazar_books_app/features/home/home_page.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
+import 'package:bazar_books_design/constants.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,19 +18,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController emailController = TextEditingController();
-
-  final TextEditingController passwordController = TextEditingController();
-
-  // Initially password is obscure
-  bool _obscureText = true;
-
-  // Toggles the password show status
-  void toggle() {
-    setState(() {
-      _obscureText = !_obscureText;
-    });
-  }
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -40,24 +29,11 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       body: BlocProvider(
         create: (context) => AuthBloc(),
-        child: BlocListener<AuthBloc, AuthState>(
-          listener: (context, state) {
-            if (state is LoginSuccess) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const HomePage()),
-              );
-            } else if (state is LoginFailure) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.error)),
-              );
-            }
-          },
+        child: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
+                padding: const EdgeInsets.symmetric(horizontal: 23.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -74,58 +50,75 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     const SizedBox(height: 40),
-                    BazUiTextField(
-                      controller: emailController,
-                      labelText: context.bazS.signInPageEmail,
-                      hintText: context.bazS.signInPageYourEmail,
-                    ),
-                    const SizedBox(height: 20),
-                    BazUiTextField(
-                      obscureText: _obscureText,
-                      suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _obscureText = !_obscureText;
-                            });
-                          },
-                          icon: _obscureText
-                              ? BazUiBuiltInImage.icPassword(
-                                  color: context.colorScheme.tertiary,
-                                )
-                              : BazUiBuiltInImage.icUnPassword(
-                                  color:
-                                      context.colorScheme.onSecondaryContainer,
-                                )),
-                      controller: passwordController,
-                      labelText: context.bazS.signInPagePassword,
-                      hintText: context.bazS.signInPageYourPassword,
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          BazUiTextField(
+                            labelText: context.bazS.signInPageEmail,
+                            hintText: context.bazS.signInPageYourEmail,
+                            validator: Constants.emailValidator,
+                            keyboardType: TextInputType.emailAddress,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 16.0),
+                            child: BlocBuilder<AuthBloc, AuthState>(
+                              builder: (context, state) {
+                                bool isObscured = true;
+                                if (state is PasswordVisibilityChanged) {
+                                  isObscured = state.isObscured;
+                                }
+                                return BazUiTextField(
+                                  obscureText: isObscured,
+                                  labelText: context.bazS.signInPagePassword,
+                                  hintText: context.bazS.signInPageYourPassword,
+                                  suffixIcon: IconButton(
+                                    onPressed: () {
+                                      context
+                                          .read<AuthBloc>()
+                                          .add(TogglePasswordVisibilityEvent());
+                                    },
+                                    icon: isObscured
+                                        ? BazUiBuiltInImage.icPassword(
+                                            color: context.colorScheme.tertiary,
+                                          )
+                                        : BazUiBuiltInImage.icUnPassword(
+                                            color: context.colorScheme
+                                                .onSecondaryContainer,
+                                          ),
+                                  ),
+                                  validator: Constants.passwordValidator,
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                     const SizedBox(height: 20),
                     Align(
                       alignment: Alignment.centerLeft,
-                      child: Text(
-                        context.bazS.signInPageForgotPassword,
+                      child: BazUiTextButton(
+                        text: context.bazS.signInPageForgotPassword,
                         style: context.textTheme.bodySmall,
+                        onSeeAllPressed: () {},
                       ),
                     ),
                     const SizedBox(height: 30),
-                    BlocBuilder<AuthBloc, AuthState>(
-                      builder: (context, state) {
-                        if (state is LoginLoading) {
-                          return const BazUiCircularProgressIndicator();
+                    BazUiElevatedButton(
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          _formKey.currentState!.save();
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const HomePage(),
+                            ),
+                          );
                         }
-                        return BazUiElevatedButton(
-                          onPressed: () {
-                            BlocProvider.of<AuthBloc>(context).add(
-                              LoginButtonPressed(
-                                email: emailController.text.trim(),
-                                password: passwordController.text.trim(),
-                              ),
-                            );
-                          },
-                          text: context.bazS.signInPageLogin,
-                        );
                       },
+                      text: context.bazS.signInPageLogin,
                     ),
                     const SizedBox(height: 20),
                     Row(
@@ -146,10 +139,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ],
                     ),
+                    const SizedBox(height: 20),
                   ],
                 ),
               ),
-              const Spacer(),
               Row(
                 children: [
                   Expanded(

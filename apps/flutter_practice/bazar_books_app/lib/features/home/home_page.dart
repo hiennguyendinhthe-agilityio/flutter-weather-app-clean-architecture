@@ -3,8 +3,10 @@ import 'package:bazar_books_app/features/auth/presentation/sign_in.dart';
 import 'package:bazar_books_app/features/home/bloc/author_bloc/author_bloc.dart';
 import 'package:bazar_books_app/features/home/data/repository.dart';
 import 'package:bazar_books_app/features/home/widgets/author/authors.dart';
+import 'package:bazar_books_app/features/home/widgets/author/authors_section.dart';
 import 'package:bazar_books_app/features/home/widgets/offer/offer.dart';
 import 'package:bazar_books_app/features/home/widgets/product/products.dart';
+import 'package:bazar_books_app/features/home/widgets/vendors/best_vendors.dart';
 import 'package:bazar_books_app/features/home/widgets/vendors/vendors.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
@@ -14,8 +16,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'bloc/product_bloc/product_bloc.dart';
 import 'bloc/vendor_bloc/vendor_bloc.dart';
-import 'widgets/author/authors_section.dart';
-import 'widgets/vendors/best_vendors.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -73,6 +73,7 @@ class HomePage extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 23),
           child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
             child: Column(
               children: [
                 const Offer(),

@@ -6,10 +6,12 @@ class BazUiTextButton extends StatelessWidget {
     super.key,
     required this.onSeeAllPressed,
     this.text = '',
+    this.style,
   });
 
   final VoidCallback onSeeAllPressed;
   final String text;
+  final TextStyle? style;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +22,7 @@ class BazUiTextButton extends StatelessWidget {
       onPressed: onSeeAllPressed,
       child: Text(
         text,
-        style: context.textTheme.bodySmall,
+        style: style ?? context.textTheme.bodySmall,
       ),
     );
   }

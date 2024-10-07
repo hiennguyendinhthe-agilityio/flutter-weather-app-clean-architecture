@@ -1,5 +1,6 @@
 import 'package:bazar_books_design/constants.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
+import 'package:bazar_books_design/core/extensions/responsive_extension.dart';
 import 'package:flutter/material.dart';
 
 class BazUiAuthor extends StatelessWidget {
@@ -8,14 +9,14 @@ class BazUiAuthor extends StatelessWidget {
     this.fullName,
     this.occupation = '',
     this.imageUrl,
-    this.width = 127,
     this.style,
   });
+
   final String? fullName;
   final String? occupation;
   final String? imageUrl;
-  final double width;
   final TextStyle? style;
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -25,19 +26,28 @@ class BazUiAuthor extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CircleAvatar(
-            radius: 60,
+            radius: context.getWidgetSize(mobile: 60, tablet: 80),
             backgroundImage: NetworkImage(
+              scale: 200,
               imageUrl ?? Constants.imgUrlDefault,
             ),
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: context.getPadding(mobile: 10, tablet: 14)),
           Text(
             fullName ?? Constants.titleDefault,
-            style: style ?? context.textTheme.labelLarge,
+            style: style ??
+                context.textTheme.labelLarge?.copyWith(
+                  fontSize: context.getFontSize(mobile: 16, tablet: 20),
+                ),
+            textAlign: TextAlign.center,
           ),
           Text(
             occupation ?? Constants.titleDefault,
-            style: style ?? context.textTheme.labelMedium,
+            style: style ??
+                context.textTheme.labelMedium?.copyWith(
+                  fontSize: context.getFontSize(mobile: 14, tablet: 18),
+                ),
+            textAlign: TextAlign.center,
           ),
         ],
       ),

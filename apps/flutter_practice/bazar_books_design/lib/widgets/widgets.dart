@@ -1,11 +1,11 @@
 export 'bottom_sheet/bottom_sheet.dart';
 export 'buttons/buttons.dart';
 export 'cards/cards.dart';
-export 'carousel/carousel.dart';
 export 'detail_modal/detail_modal.dart';
 export 'empty/empty.dart';
 export 'images/image.dart';
 export 'indicators/circular_progress_indicator.dart';
+export 'page_indicator/page_indicator.dart';
 export 'section/section.dart';
 export 'tabbar/tabbar.dart';
 export 'text_field/text_field.dart';

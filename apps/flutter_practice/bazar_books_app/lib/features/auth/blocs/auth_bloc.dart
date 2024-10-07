@@ -3,25 +3,20 @@
 import 'package:bazar_books_app/features/auth/blocs/auth_event.dart';
 import 'package:bazar_books_app/features/auth/blocs/auth_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc() : super(LoginInitial()) {
-    on<LoginButtonPressed>(_handleOnLoginButtonPressed);
+    on<TogglePasswordVisibilityEvent>(_handleOnTogglePasswordVisibilityEvent);
   }
 
-  Future<void> _handleOnLoginButtonPressed(
-      LoginButtonPressed event, Emitter<AuthState> emit) async {
-    emit(LoginLoading());
-
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? savedEmail = prefs.getString('email');
-    final String? savedPassword = prefs.getString('password');
-
-    if (event.email == savedEmail && event.password == savedPassword) {
-      emit(LoginSuccess());
+  void _handleOnTogglePasswordVisibilityEvent(
+      TogglePasswordVisibilityEvent event, Emitter<AuthState> emit) {
+    if (state is PasswordVisibilityChanged) {
+      final isPasswordObscured =
+          (state as PasswordVisibilityChanged).isObscured;
+      emit(PasswordVisibilityChanged(!isPasswordObscured));
     } else {
-      emit(LoginFailure(error: "Email or password is incorrect"));
+      emit(PasswordVisibilityChanged(false));
     }
   }
 }

@@ -1,5 +1,6 @@
 import 'package:bazar_books_design/constants.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
+import 'package:bazar_books_design/core/extensions/responsive_extension.dart';
 import 'package:flutter/material.dart';
 
 class BazUiVendorCard extends StatelessWidget {
@@ -13,6 +14,7 @@ class BazUiVendorCard extends StatelessWidget {
     this.borderRadius,
     this.style,
   });
+
   final String? imageUrl;
   final String headlines;
   final Widget? subheads;
@@ -37,11 +39,15 @@ class BazUiVendorCard extends StatelessWidget {
               padding: const EdgeInsets.all(8),
               child: imageUrl == null || (imageUrl?.isEmpty ?? false)
                   ? Image.network(
+                      cacheWidth: 200,
+                      cacheHeight: 200,
                       Constants.imgUrlDefault,
                       fit: BoxFit.cover,
                       height: height,
                     )
                   : Image.network(
+                      cacheWidth: 200,
+                      cacheHeight: 200,
                       imageUrl!,
                       fit: BoxFit.cover,
                       height: height,
@@ -49,12 +55,17 @@ class BazUiVendorCard extends StatelessWidget {
             ),
           ),
         ),
-        // Title Section
+        const SizedBox(height: 8),
         Text(
           headlines,
-          style: style ?? context.textTheme.bodyMedium,
+          style: style ??
+              context.textTheme.bodyMedium?.copyWith(
+                fontSize: context.getFontSize(), // Font size responsive
+              ),
           maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
+        const SizedBox(height: 4),
         subheads ?? const SizedBox.shrink(),
       ],
     );
