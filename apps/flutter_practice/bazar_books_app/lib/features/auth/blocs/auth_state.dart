@@ -20,3 +20,9 @@ class LoginFailure extends AuthState {
   @override
   List<Object?> get props => [error];
 }
+
+class PasswordVisibilityChanged extends AuthState {
+  final bool isObscured;
+
+  PasswordVisibilityChanged(this.isObscured);
+}

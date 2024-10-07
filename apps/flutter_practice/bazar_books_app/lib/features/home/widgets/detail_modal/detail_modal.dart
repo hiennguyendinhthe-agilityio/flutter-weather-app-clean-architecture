@@ -4,6 +4,7 @@ import 'package:bazar_books_app/features/home/bloc/detail_bloc/bloc/detail_bloc.
 import 'package:bazar_books_app/features/home/data/repository.dart';
 import 'package:bazar_books_design/constants.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
+import 'package:bazar_books_design/core/extensions/responsive_extension.dart';
 import 'package:bazar_books_design/core/models/product_model.dart';
 import 'package:bazar_books_design/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -52,9 +53,10 @@ class DetailModal extends StatelessWidget {
   Widget _buildProductDetails(
       BuildContext context, Product? product, DetailState state) {
     final bloc = context.read<DetailBloc>();
+
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(context.getPadding()), // Responsive padding
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -79,7 +81,7 @@ class DetailModal extends StatelessWidget {
             ),
             Image.network(
               product?.logoVendor ?? Constants.imgUrlDefault,
-              height: 80,
+              height: context.getImageHeight(),
             ),
             const SizedBox(height: 12),
             DetailDescription(
@@ -88,12 +90,14 @@ class DetailModal extends StatelessWidget {
             const SizedBox(height: 24),
             Text(
               context.bazS.reviewTitle,
-              style: const TextStyle(
+              style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 18,
+                fontSize: context.getFontSize(
+                    mobile: 18, tablet: 24), // Responsive font size
               ),
             ),
             const SizedBox(height: 8),
+            // Đánh giá sao
             StarRating(
               rating: product?.starRating ?? 0,
             ),
@@ -120,7 +124,7 @@ class DetailModal extends StatelessWidget {
                     text: context.bazS.continueButton,
                   ),
                 ),
-                const SizedBox(width: 16),
+                SizedBox(width: context.getButtonSpacing()),
                 Expanded(
                   child: BazUiElevatedButton(
                     style: ButtonStyle(
@@ -129,13 +133,13 @@ class DetailModal extends StatelessWidget {
                             context.colorScheme.primary,
                       ),
                       backgroundColor: WidgetStateProperty.resolveWith(
-                          (Set<WidgetState> states) {
-                        if (states.contains(WidgetState.disabled)) {
-                          return context.colorScheme.secondaryContainer;
-                        }
-
-                        return context.colorScheme.onPrimary;
-                      }),
+                        (Set<WidgetState> states) {
+                          if (states.contains(WidgetState.disabled)) {
+                            return context.colorScheme.secondaryContainer;
+                          }
+                          return context.colorScheme.onPrimary;
+                        },
+                      ),
                     ),
                     onPressed: () {},
                     text: context.bazS.viewButton,

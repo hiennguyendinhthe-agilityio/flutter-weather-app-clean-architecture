@@ -1,4 +1,6 @@
 // api_constants.dart
+import 'package:form_field_validator/form_field_validator.dart';
+
 class Constants {
   static const String apiUrlProduct =
       "https://66dfe9422fb67ac16f278487.mockapi.io/api/v1/";
@@ -13,4 +15,24 @@ class Constants {
       "https://66dfe9422fb67ac16f278487.mockapi.io/api/v1/";
 
   static const String titleDefault = 'No Title';
+
+  static const emailError = 'Enter a valid email address';
+  static const requiredField = "This field is required";
+
+  static final passwordValidator = MultiValidator(
+    [
+      RequiredValidator(errorText: 'Password is required'),
+      MinLengthValidator(8,
+          errorText: 'Password must be at least 8 digits long'),
+      PatternValidator(r'(?=.*?[#?!@$%^&*-])',
+          errorText: 'Passwords must have at least one special character'),
+    ],
+  ).call;
+
+  static final emailValidator = MultiValidator(
+    [
+      RequiredValidator(errorText: Constants.requiredField),
+      EmailValidator(errorText: Constants.emailError),
+    ],
+  ).call;
 }

@@ -50,7 +50,7 @@ class Offer extends StatelessWidget {
 
                           return BazUiOfferCard(
                             discount: product.discount,
-                            imageUrl: product.imageUrl,
+                            imageUrls: product.imageUrlOffer,
                             onTap: () {
                               BazUiBottomSheet.showModal(
                                 context,
@@ -67,7 +67,7 @@ class Offer extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 10),
-        BazUiCarousel(
+        BazUiPageIndicator(
           pageController: pageController,
         ),
       ],

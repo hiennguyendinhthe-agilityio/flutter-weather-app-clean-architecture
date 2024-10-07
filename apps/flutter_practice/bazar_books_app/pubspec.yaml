@@ -58,6 +58,7 @@ dependencies:
 
   get_it: ^7.7.0
 
+  form_field_validator: ^1.1.0
 
 dev_dependencies:
   flutter_test:
@@ -71,6 +72,7 @@ dev_dependencies:
 
 flutter:
 
+  
   # To add assets to your application, add an assets section, like this:
   assets:
     - ../bazar_books_design/assets/
@@ -101,3 +103,4 @@ flutter_native_splash:
     color: "#54408C"
     image: ../bazar_books_design/assets/images/splash_logo_screen.png
     image_dark: ../bazar_books_design/assets/images/splash_logo_screen.png
+  enable-impeller: true

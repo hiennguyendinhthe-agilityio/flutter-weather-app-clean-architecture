@@ -8,6 +8,7 @@ class Product {
     this.description,
     this.starRating,
     this.logoVendor,
+    this.imageUrlOffer,
   });
 
   final String id;
@@ -16,6 +17,7 @@ class Product {
   final String? logoVendor;
   final String? discount;
   final String? imageUrl;
+  final List<String>? imageUrlOffer;
   final String? description;
   final int? starRating;
 
@@ -25,6 +27,7 @@ class Product {
       title: json['title'],
       price: json['price'],
       imageUrl: json['imageUrl'],
+      imageUrlOffer: json['imageUrlOffer']?.cast<String>(),
       discount: json['discount'],
       logoVendor: json['logoVendor'],
       description: json['description'],

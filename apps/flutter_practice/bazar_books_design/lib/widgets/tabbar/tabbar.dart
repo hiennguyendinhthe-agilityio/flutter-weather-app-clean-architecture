@@ -1,3 +1,4 @@
+import 'package:bazar_books_design/core/extensions/responsive_extension.dart';
 import 'package:flutter/material.dart';
 
 class BazUiTabbarView extends StatefulWidget {
@@ -44,12 +45,12 @@ class _BazUiTabbarViewState extends State<BazUiTabbarView>
             tabs: widget.tabs,
             labelStyle: TextStyle(
               color: Theme.of(context).colorScheme.onSecondaryContainer,
-              fontSize: 18,
+              fontSize: context.getFontSize(tablet: 24),
               fontWeight: FontWeight.bold,
             ),
             unselectedLabelStyle: TextStyle(
               color: Theme.of(context).colorScheme.tertiary,
-              fontSize: 16,
+              fontSize: context.getFontSize(tablet: 22),
             )),
         Expanded(
           child: TabBarView(
