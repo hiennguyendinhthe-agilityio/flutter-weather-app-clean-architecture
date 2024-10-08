@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 library;
 
 import 'dart:developer';
@@ -60,11 +62,6 @@ enum ImageLoaderType { assetPNG, assetSVG }
 /// Contains almost images for applications.
 ///
 class _BazUiImageLoader extends StatelessWidget {
-  /// Creates properties for image.
-  ///
-  /// The [errorBuilder], must be null. The [url], [type]
-  /// must not be null.
-  ///
   const _BazUiImageLoader({
     required this.type,
     required this.url,
@@ -76,18 +73,10 @@ class _BazUiImageLoader extends StatelessWidget {
     this.boxFit = BoxFit.cover,
   });
 
-  /// Image type is for provide different image loader with enum type
-  /// it provide image changes as asset, svg, network, or cached
   final ImageLoaderType type;
-
-  /// Url path of image is the path of the image that will be loaded from
   final String url;
-
   final String? package;
-
-  /// Error builders have default value in case of null
   final Widget? errorBuilder;
-
   final double? width;
   final double? height;
   final Color? color;
@@ -97,35 +86,42 @@ class _BazUiImageLoader extends StatelessWidget {
   Widget build(BuildContext context) {
     switch (type) {
       case ImageLoaderType.assetPNG:
-        return Image.asset(
-          url,
-          package: package,
-          fit: boxFit,
-          errorBuilder:
-              (BuildContext context, Object error, StackTrace? stackTrace) {
-            log('Image $url load failed. Error: $error');
-
-            return errorBuilder ??
-                Image.asset(
-                  Assets.images.imgNotFound.path,
-                  package: package,
-                );
-          },
-          width: width,
-          height: height,
-          color: color,
-        );
+        return _buildAssetPNGImage();
       case ImageLoaderType.assetSVG:
-        return SvgPicture.asset(
-          url,
-          package: package,
-          fit: boxFit ?? BoxFit.contain,
-          width: width,
-          height: height,
-          // ignore: deprecated_member_use
-          color: color,
-        );
+        return _buildAssetSVGImage();
     }
+  }
+
+  Widget _buildAssetPNGImage() {
+    return Image.asset(
+      url,
+      package: package,
+      fit: boxFit,
+      errorBuilder:
+          (BuildContext context, Object error, StackTrace? stackTrace) {
+        log('Image $url load failed. Error: $error');
+
+        return errorBuilder ??
+            Image.asset(
+              Assets.images.imgNotFound.path,
+              package: package,
+            );
+      },
+      width: width,
+      height: height,
+      color: color,
+    );
+  }
+
+  Widget _buildAssetSVGImage() {
+    return SvgPicture.asset(
+      url,
+      package: package,
+      fit: boxFit ?? BoxFit.contain,
+      width: width,
+      height: height,
+      color: color,
+    );
   }
 }
 

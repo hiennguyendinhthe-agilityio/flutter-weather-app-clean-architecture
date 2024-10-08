@@ -6,7 +6,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../bloc/data_state.dart';
 import '../../bloc/product_bloc/product_bloc.dart';
-import '../detail_modal/detail_modal.dart';
+import '../product/product_detail/product_detail.dart';
 
 class Offer extends StatelessWidget {
   const Offer({super.key});
@@ -54,7 +54,7 @@ class Offer extends StatelessWidget {
                             onTap: () {
                               BazUiBottomSheet.showModal(
                                 context,
-                                child: DetailModal(
+                                child: ProductDetail(
                                   productId: product.id,
                                 ),
                               );

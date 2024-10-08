@@ -135,14 +135,6 @@ WidgetbookComponent iconsWidgetBooks() {
                                   ),
                                   _IconWidgetbookItem(
                                     builder: (context) =>
-                                        BazUiBuiltInImage.icArrowLeft(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onPrimaryContainer,
-                                    ),
-                                  ),
-                                  _IconWidgetbookItem(
-                                    builder: (context) =>
                                         BazUiBuiltInImage.icPassword(
                                       color: Theme.of(context)
                                           .colorScheme

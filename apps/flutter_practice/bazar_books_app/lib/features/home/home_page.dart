@@ -1,5 +1,5 @@
 import 'package:bazar_books_app/di.dart';
-import 'package:bazar_books_app/features/auth/presentation/sign_in.dart';
+import 'package:bazar_books_app/features/auth/sign_in.dart';
 import 'package:bazar_books_app/features/home/bloc/author_bloc/author_bloc.dart';
 import 'package:bazar_books_app/features/home/data/repository.dart';
 import 'package:bazar_books_app/features/home/widgets/author/authors.dart';
@@ -10,6 +10,7 @@ import 'package:bazar_books_app/features/home/widgets/vendors/best_vendors.dart'
 import 'package:bazar_books_app/features/home/widgets/vendors/vendors.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
+import 'package:bazar_books_design/core/extensions/responsive_extension.dart';
 import 'package:bazar_books_design/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -36,7 +37,9 @@ class HomePage extends StatelessWidget {
         ),
         title: Text(
           context.bazS.generalTitleHome,
-          style: context.textTheme.titleLarge,
+          style: context.textTheme.titleLarge?.copyWith(
+            fontSize: context.getFontSize(tablet: 30),
+          ),
         ),
         centerTitle: true,
         actions: [
