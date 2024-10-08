@@ -2,14 +2,7 @@
 
 import 'package:bazar_books_design/constants.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
-import 'package:bazar_books_design/widgets/bottom_sheet/bottom_sheet.dart';
-import 'package:bazar_books_design/widgets/buttons/buttons.dart';
-import 'package:bazar_books_design/widgets/detail_modal/amount.dart';
-import 'package:bazar_books_design/widgets/detail_modal/description.dart';
-import 'package:bazar_books_design/widgets/detail_modal/favorite_button.dart';
-import 'package:bazar_books_design/widgets/detail_modal/image_url.dart';
-import 'package:bazar_books_design/widgets/detail_modal/star_rating.dart';
-import 'package:bazar_books_design/widgets/detail_modal/title.dart';
+import 'package:bazar_books_design/widgets/widgets.dart';
 import 'package:bazar_books_widgetbook/widgetbook.container.dart';
 import 'package:flutter/material.dart';
 import 'package:widgetbook/widgetbook.dart';
@@ -60,18 +53,27 @@ class Example extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const ImageUrl(
-              imageUrl: Constants.imgUrlDefault,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 69),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Image.network(
+                  Constants.imgUrlDefault,
+                  fit: BoxFit.fill,
+                ),
+              ),
             ),
             const SizedBox(height: 16),
             Row(
               children: [
-                const Expanded(
-                  child: DetailTitle(
-                    title: Constants.titleDefault,
+                Expanded(
+                  child: Text(
+                    Constants.titleDefault,
+                    style: Theme.of(context).textTheme.titleLarge,
+                    maxLines: 1,
                   ),
                 ),
-                FavoriteButton(
+                BazUiIconButton.favorite(
                   isFavorite: true,
                   onPressed: () {},
                 ),
@@ -82,8 +84,9 @@ class Example extends StatelessWidget {
               height: 80,
             ),
             const SizedBox(height: 12),
-            const DetailDescription(
-              description: Constants.titleDefault,
+            Text(
+              Constants.titleDefault,
+              style: Theme.of(context).textTheme.labelMedium,
             ),
             const SizedBox(height: 24),
             Text(
@@ -98,7 +101,7 @@ class Example extends StatelessWidget {
               rating: 3,
             ),
             const SizedBox(height: 16),
-            Amount(
+            BazUiAmount(
               price: Constants.titleDefault,
               amount: 3,
               onIncrement: () {},

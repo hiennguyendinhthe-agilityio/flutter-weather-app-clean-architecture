@@ -60,7 +60,8 @@ class BazUiVendorCard extends StatelessWidget {
           headlines,
           style: style ??
               context.textTheme.bodyMedium?.copyWith(
-                fontSize: context.getFontSize(), // Font size responsive
+                fontSize:
+                    context.getFontSize(tablet: 22), // Font size responsive
               ),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,

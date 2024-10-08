@@ -3,7 +3,7 @@ import 'package:bazar_books_app/features/home/bloc/author_bloc/author_bloc.dart'
 import 'package:bazar_books_app/features/home/bloc/data_state.dart';
 import 'package:bazar_books_app/features/home/bloc/product_bloc/product_bloc.dart';
 import 'package:bazar_books_app/features/home/data/repository.dart';
-import 'package:bazar_books_app/features/home/widgets/detail_modal/detail_modal.dart';
+import 'package:bazar_books_app/features/home/widgets/product/product_detail/product_detail.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
 import 'package:bazar_books_design/constants.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
@@ -155,10 +155,10 @@ class AuthorProfile extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount:
-                    context.getGridCrossAxisCount(mobile: 3, tablet: 4),
+                    context.getGridCrossAxisCount(mobile: 2, tablet: 4),
                 crossAxisSpacing: 8.0,
                 mainAxisSpacing: 8.0,
-                childAspectRatio: 0.65,
+                childAspectRatio: 0.75,
               ),
               itemCount: products?.length ?? 0,
               itemBuilder: (context, index) {
@@ -167,7 +167,7 @@ class AuthorProfile extends StatelessWidget {
                   onTap: () {
                     BazUiBottomSheet.showModal(
                       context,
-                      child: DetailModal(
+                      child: ProductDetail(
                         productId: product.id,
                       ),
                     );

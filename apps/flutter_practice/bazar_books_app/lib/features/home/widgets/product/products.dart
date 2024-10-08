@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../bloc/data_state.dart';
-import '../detail_modal/detail_modal.dart';
+import 'product_detail/product_detail.dart';
 
 class Products extends StatelessWidget {
   const Products({super.key});
@@ -63,7 +63,7 @@ class Products extends StatelessWidget {
                             onTap: () {
                               BazUiBottomSheet.showModal(
                                 context,
-                                child: DetailModal(
+                                child: ProductDetail(
                                   productId: product.id,
                                 ),
                               );
@@ -97,7 +97,7 @@ class Products extends StatelessWidget {
                             onTap: () {
                               BazUiBottomSheet.showModal(
                                 context,
-                                child: DetailModal(
+                                child: ProductDetail(
                                   productId: product.id,
                                 ),
                               );

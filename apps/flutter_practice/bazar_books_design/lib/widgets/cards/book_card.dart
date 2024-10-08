@@ -62,7 +62,7 @@ class BazUiBookCard extends StatelessWidget {
               Text(
                 title ?? Constants.titleDefault,
                 style: context.textTheme.bodyMedium?.copyWith(
-                  fontSize: context.getFontSize(),
+                  fontSize: context.getFontSize(mobile: 10, tablet: 18),
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -71,7 +71,7 @@ class BazUiBookCard extends StatelessWidget {
               Text(
                 '\$$price',
                 style: context.textTheme.bodySmall?.copyWith(
-                  fontSize: context.getFontSize(mobile: 12, tablet: 16),
+                  fontSize: context.getFontSize(mobile: 10, tablet: 18),
                 ),
               ),
             ],

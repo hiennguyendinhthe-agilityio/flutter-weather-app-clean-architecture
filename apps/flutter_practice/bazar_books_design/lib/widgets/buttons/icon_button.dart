@@ -1,5 +1,6 @@
 library;
 
+import 'package:bazar_books_design/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 class BazUiIconButton extends StatelessWidget {
@@ -13,7 +14,6 @@ class BazUiIconButton extends StatelessWidget {
   final bool isCircular;
 
   const BazUiIconButton({
-    /// The icon to display inside the [IconButton].
     required this.icon,
     this.onPressed,
     this.style,
@@ -48,6 +48,28 @@ class BazUiIconButton extends StatelessWidget {
             color: borderColor ?? Colors.transparent,
           ),
       isCircular: true,
+      key: key,
+    );
+  }
+
+  /// Factory constructor for creating a favorite button.
+  factory BazUiIconButton.favorite({
+    required bool isFavorite,
+    required VoidCallback onPressed,
+    Color? activeColor,
+    Color? inactiveColor,
+    Key? key,
+  }) {
+    return BazUiIconButton(
+      icon: isFavorite
+          ? BazUiBuiltInImage.icLoveFill(
+              color: activeColor ?? Colors.red,
+            )
+          : Icon(
+              Icons.favorite_border,
+              color: inactiveColor ?? Colors.grey,
+            ),
+      onPressed: onPressed,
       key: key,
     );
   }

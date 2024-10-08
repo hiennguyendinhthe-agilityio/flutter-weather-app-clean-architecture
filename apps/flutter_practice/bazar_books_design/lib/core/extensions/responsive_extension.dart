@@ -9,7 +9,7 @@ extension ResponsiveExtension on BuildContext {
     return isTablet ? tablet : mobile;
   }
 
-  int responsiveValueInt({required int mobile, required int tablet}) {
+  int responsiveSize({required int mobile, required int tablet}) {
     return isTablet ? tablet : mobile;
   }
 
@@ -22,7 +22,7 @@ extension ResponsiveExtension on BuildContext {
   }
 
   int getWidgetSizeInt({int mobile = 100, int tablet = 150}) {
-    return responsiveValueInt(mobile: mobile, tablet: tablet);
+    return responsiveSize(mobile: mobile, tablet: tablet);
   }
 
   double getPadding({double mobile = 8, double tablet = 16}) {
@@ -42,10 +42,6 @@ extension ResponsiveExtension on BuildContext {
   }
 
   int getGridCrossAxisCount({int mobile = 1, int tablet = 3}) {
-    return isTablet ? tablet : mobile;
-  }
-
-  double getCrossAxisSpacing({double mobile = 8, double tablet = 1}) {
     return isTablet ? tablet : mobile;
   }
 

@@ -1,5 +1,5 @@
 import 'package:bazar_books_app/di.dart';
-import 'package:bazar_books_app/features/auth/presentation/sign_in.dart';
+import 'package:bazar_books_app/features/auth/sign_in.dart';
 import 'package:bazar_books_app/routes.dart';
 import 'package:bazar_books_design/core/core.dart';
 import 'package:bazar_books_design/themes/light_theme.dart';
