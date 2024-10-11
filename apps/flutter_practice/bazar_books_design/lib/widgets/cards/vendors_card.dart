@@ -1,6 +1,6 @@
 import 'package:bazar_books_design/constants.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
-import 'package:bazar_books_design/core/extensions/responsive_extension.dart';
+import 'package:bazar_books_design/core/utils/size_type.dart';
 import 'package:flutter/material.dart';
 
 class BazUiVendorCard extends StatelessWidget {
@@ -60,8 +60,7 @@ class BazUiVendorCard extends StatelessWidget {
           headlines,
           style: style ??
               context.textTheme.bodyMedium?.copyWith(
-                fontSize:
-                    context.getFontSize(tablet: 22), // Font size responsive
+                fontSize: context.fontSize(SizeType.l), // Font size responsive
               ),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,

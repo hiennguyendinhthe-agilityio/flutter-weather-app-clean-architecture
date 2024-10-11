@@ -1,5 +1,5 @@
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
-import 'package:bazar_books_design/core/extensions/responsive_extension.dart';
+import 'package:bazar_books_design/core/utils/size_type.dart';
 import 'package:bazar_books_design/widgets/buttons/text_button.dart';
 import 'package:flutter/material.dart';
 
@@ -25,14 +25,14 @@ class BazUiSection extends StatelessWidget {
             Text(
               title,
               style: context.textTheme.titleMedium?.copyWith(
-                fontSize: context.getFontSize(tablet: 26),
+                fontSize: context.fontSize(SizeType.l),
               ),
             ),
             BazUiTextButton(
               onSeeAllPressed: onSeeAllPressed,
               text: text,
               style: context.textTheme.bodySmall?.copyWith(
-                fontSize: context.getFontSize(tablet: 24),
+                fontSize: context.fontSize(SizeType.l),
               ),
             ),
           ],

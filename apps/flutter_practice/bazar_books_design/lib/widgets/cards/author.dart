@@ -1,6 +1,7 @@
 import 'package:bazar_books_design/constants.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
 import 'package:bazar_books_design/core/extensions/responsive_extension.dart';
+import 'package:bazar_books_design/core/utils/size_type.dart';
 import 'package:flutter/material.dart';
 
 class BazUiAuthor extends StatelessWidget {
@@ -37,7 +38,7 @@ class BazUiAuthor extends StatelessWidget {
             fullName ?? Constants.titleDefault,
             style: style ??
                 context.textTheme.labelLarge?.copyWith(
-                  fontSize: context.getFontSize(mobile: 16, tablet: 20),
+                  fontSize: context.fontSize(SizeType.m),
                 ),
             textAlign: TextAlign.center,
           ),
@@ -45,7 +46,7 @@ class BazUiAuthor extends StatelessWidget {
             occupation ?? Constants.titleDefault,
             style: style ??
                 context.textTheme.labelMedium?.copyWith(
-                  fontSize: context.getFontSize(mobile: 14, tablet: 18),
+                  fontSize: context.fontSize(SizeType.s),
                 ),
             textAlign: TextAlign.center,
           ),

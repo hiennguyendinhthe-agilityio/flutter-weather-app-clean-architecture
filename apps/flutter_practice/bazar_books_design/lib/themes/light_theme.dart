@@ -1,3 +1,4 @@
+import 'package:bazar_books_design/core/responsive/size_extension.dart';
 import 'package:bazar_books_design/themes/colors.dart';
 import 'package:bazar_books_design/themes/typogaraphy.dart';
 import 'package:flutter/material.dart';
@@ -142,7 +143,8 @@ final bazUiLightTheme = ThemeData.light().copyWith(
         (Set<WidgetState> states) => Size.infinite,
       ),
       textStyle: WidgetStateProperty.resolveWith(
-        (Set<WidgetState> states) => BazUiTypographyFoundation.h6TextStyle,
+        (Set<WidgetState> states) =>
+            BazUiTypographyFoundation.h6TextStyle.copyWith(fontSize: 16.0.sp),
       ),
       iconColor: WidgetStateProperty.resolveWith(
         (Set<WidgetState> states) => _lightColorScheme.onPrimary,
@@ -169,13 +171,11 @@ final bazUiLightTheme = ThemeData.light().copyWith(
   inputDecorationTheme: InputDecorationTheme(
     labelStyle: TextStyle(
       color: _lightColorScheme.tertiary,
-      fontSize: 14,
+      fontSize: 14.0.sp,
     ),
     hintStyle: TextStyle(
       color: _lightColorScheme.tertiary,
-      fontSize: 16.0,
     ),
-    // hintText: widget.hintText,
     contentPadding: const EdgeInsets.only(
       top: 10,
       bottom: 12,
