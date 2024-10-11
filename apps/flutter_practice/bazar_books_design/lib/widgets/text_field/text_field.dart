@@ -1,4 +1,5 @@
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
+import 'package:bazar_books_design/core/responsive/size_extension.dart';
 import 'package:bazar_books_design/themes/typogaraphy.dart';
 import 'package:bazar_books_design/widgets/texts/texts.dart';
 import 'package:flutter/material.dart';
@@ -68,7 +69,7 @@ class BazUiTextField extends StatelessWidget {
           controller: controller,
           style: BazUiTypographyFoundation.bodyMediumRegular.copyWith(
             color: context.colorScheme.onSecondaryContainer,
-            fontSize: 16,
+            fontSize: 16.0.sp,
             fontWeight: FontWeight.w500,
           ),
           decoration: InputDecoration(

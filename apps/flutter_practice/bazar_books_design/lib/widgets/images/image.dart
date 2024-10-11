@@ -6,6 +6,7 @@ import 'dart:developer';
 
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
 import 'package:bazar_books_design/core/resources/assets_generated/assets.gen.dart';
+import 'package:bazar_books_design/core/responsive/size_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -208,8 +209,8 @@ class _BazIcAppleOriginal extends StatelessWidget {
     return BazUiAssetImage(
       type: ImageLoaderType.assetSVG,
       path: Assets.images.icAppleOriginal.path,
-      width: 18,
-      height: 18,
+      width: 18.0.w,
+      height: 18.0.h,
     );
   }
 }
@@ -222,8 +223,8 @@ class _BazIcGoodleOriginal extends StatelessWidget {
     return BazUiAssetImage(
       type: ImageLoaderType.assetSVG,
       path: Assets.images.icGoogleOriginal.path,
-      width: 18,
-      height: 18,
+      width: 18.0.w,
+      height: 18.0.h,
     );
   }
 }

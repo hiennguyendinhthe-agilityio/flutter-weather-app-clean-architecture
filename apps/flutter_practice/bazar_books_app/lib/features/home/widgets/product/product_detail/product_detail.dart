@@ -6,6 +6,7 @@ import 'package:bazar_books_design/constants.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
 import 'package:bazar_books_design/core/extensions/responsive_extension.dart';
 import 'package:bazar_books_design/core/models/product_model.dart';
+import 'package:bazar_books_design/core/utils/size_type.dart';
 import 'package:bazar_books_design/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -111,8 +112,8 @@ class ProductDetail extends StatelessWidget {
                 context.bazS.reviewTitle,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: context.getFontSize(
-                      mobile: 18, tablet: 24), // Responsive font size
+                  fontSize:
+                      context.fontSize(SizeType.l), // Responsive font size
                 ),
               ),
               const SizedBox(height: 8),

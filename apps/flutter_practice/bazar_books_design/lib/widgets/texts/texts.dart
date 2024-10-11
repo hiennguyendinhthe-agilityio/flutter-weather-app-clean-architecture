@@ -1,6 +1,7 @@
 library;
 
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
+import 'package:bazar_books_design/core/responsive/size_extension.dart';
 import 'package:flutter/material.dart';
 
 ///
@@ -217,6 +218,7 @@ class BazUiBodyText2 extends StatelessWidget {
         color: color,
         leadingDistribution: TextLeadingDistribution.even,
         overflow: overflow,
+        fontSize: 14.0.sp,
       ),
     );
   }

@@ -1,5 +1,3 @@
-// ignore_for_file: depend_on_referenced_packages
-
 import 'package:bazar_books_app/features/auth/blocs/auth_bloc.dart';
 import 'package:bazar_books_app/features/auth/blocs/auth_event.dart';
 import 'package:bazar_books_app/features/auth/blocs/auth_state.dart';
@@ -7,6 +5,7 @@ import 'package:bazar_books_app/features/home/home_page.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
 import 'package:bazar_books_design/constants.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
+import 'package:bazar_books_design/core/responsive/size_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -22,6 +21,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig.init(context, designWidth: 375, designHeight: 812);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -33,23 +34,26 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 23.0),
+                padding: EdgeInsets.symmetric(horizontal: 23.0.w),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       context.bazS.signInPageWelcomeBack,
-                      style: context.textTheme.headlineSmall,
+                      style: context.textTheme.headlineSmall?.copyWith(
+                        fontSize: 24.0.sp, // Scale font size
+                      ),
                     ),
-                    const SizedBox(height: 10),
+                    SizedBox(height: 10.0.h),
                     Text(
                       context.bazS.signInPageYourAccount,
                       style: context.textTheme.bodyLarge!.copyWith(
                         color: context.colorScheme.tertiary,
                         fontWeight: FontWeight.w400,
+                        fontSize: 16.0.sp, // Scale font size
                       ),
                     ),
-                    const SizedBox(height: 40),
+                    SizedBox(height: 40.0.h),
                     Form(
                       key: _formKey,
                       child: Column(
@@ -62,7 +66,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             keyboardType: TextInputType.emailAddress,
                           ),
                           Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 16.0),
+                            padding: EdgeInsets.symmetric(
+                                vertical: 16.0.h), // Scale padding
                             child: BlocBuilder<AuthBloc, AuthState>(
                               builder: (context, state) {
                                 bool isObscured = true;
@@ -96,16 +101,18 @@ class _LoginScreenState extends State<LoginScreen> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20.0.h),
                     Align(
                       alignment: Alignment.centerLeft,
                       child: BazUiTextButton(
                         text: context.bazS.signInPageForgotPassword,
-                        style: context.textTheme.bodySmall,
+                        style: context.textTheme.bodySmall?.copyWith(
+                          fontSize: 14.0.sp, // Scale font size
+                        ),
                         onSeeAllPressed: () {},
                       ),
                     ),
-                    const SizedBox(height: 30),
+                    SizedBox(height: 30.0.h),
                     BazUiElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
@@ -120,66 +127,76 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                       text: context.bazS.signInPageLogin,
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20.0.h),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
                           context.bazS.signInPageDontHaveAnAccount,
-                          style: context.textTheme.bodyLarge!.copyWith(
+                          style: context.textTheme.bodyLarge?.copyWith(
                             color: context.colorScheme.tertiary,
+                            fontSize: 14.0.sp,
                           ),
                         ),
-                        const SizedBox(width: 5),
+                        SizedBox(width: 5.0.w),
                         Text(
                           context.bazS.signInPageSignUp,
-                          style: context.textTheme.bodyLarge!.copyWith(
+                          style: context.textTheme.bodyLarge?.copyWith(
                             color: context.colorScheme.primary,
+                            fontSize: 14.0.sp,
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20.0.h),
                   ],
                 ),
               ),
               Row(
                 children: [
                   Expanded(
-                    child: Divider(thickness: 1, color: Colors.grey[300]),
+                    child: Divider(
+                        thickness: 1.0.h,
+                        color: Colors.grey[300]), // Scale thickness
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 10.0.w), // Scale padding
                     child: Text(
                       context.bazS.signInPageOrWith,
-                      style: context.textTheme.bodySmall!.copyWith(
+                      style: context.textTheme.bodySmall?.copyWith(
                         color: context.colorScheme.tertiary,
                         fontWeight: FontWeight.w400,
+                        fontSize: 14.0.sp, // Scale font size
                       ),
                     ),
                   ),
                   Expanded(
-                    child: Divider(thickness: 1, color: Colors.grey[300]),
+                    child: Divider(
+                        thickness: 1.0.h,
+                        color: Colors.grey[300]), // Scale thickness
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20.0.h),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
+                padding:
+                    EdgeInsets.symmetric(horizontal: 24.0.w), // Scale padding
                 child: Column(
                   children: [
                     BazUiOutLinedButton.icon(
                       text: context.bazS.signInPageWithGoogle,
                       icon: BazUiBuiltInImage.icGoogleOriginal(),
                     ),
+                    SizedBox(height: 20.0.h), //
                     BazUiOutLinedButton.icon(
                       text: context.bazS.signInPageWithApple,
                       icon: BazUiBuiltInImage.icAppleOriginal(),
-                    )
+                    ),
                   ],
                 ),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20.0.h),
             ],
           ),
         ),

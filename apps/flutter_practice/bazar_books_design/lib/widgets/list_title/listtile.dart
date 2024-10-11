@@ -1,6 +1,7 @@
 import 'package:bazar_books_design/constants.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
 import 'package:bazar_books_design/core/extensions/responsive_extension.dart';
+import 'package:bazar_books_design/core/utils/size_type.dart';
 import 'package:flutter/material.dart';
 
 class BazUiListTile extends StatelessWidget {
@@ -31,7 +32,7 @@ class BazUiListTile extends StatelessWidget {
         title: Text(
           title ?? Constants.titleDefault,
           style: context.textTheme.titleMedium?.copyWith(
-            fontSize: context.getFontSize(),
+            fontSize: context.fontSize(SizeType.m),
           ),
         ),
         subtitle: Text(

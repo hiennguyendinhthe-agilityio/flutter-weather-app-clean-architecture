@@ -8,6 +8,7 @@ import 'package:bazar_books_design/bazar_books_design.dart';
 import 'package:bazar_books_design/constants.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
 import 'package:bazar_books_design/core/extensions/responsive_extension.dart';
+import 'package:bazar_books_design/core/utils/size_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -29,8 +30,9 @@ class AuthorProfile extends StatelessWidget {
         ),
         title: Text(
           context.bazS.authorsTtile,
-          style: context.textTheme.titleLarge
-              ?.copyWith(fontSize: context.getFontSize(tablet: 30)),
+          style: context.textTheme.titleLarge?.copyWith(
+            fontSize: context.fontSize(SizeType.s),
+          ),
         ),
         centerTitle: true,
       ),
@@ -91,15 +93,17 @@ class AuthorProfile extends StatelessWidget {
             Center(
               child: Text(
                 author?.occupation ?? Constants.titleDefault,
-                style: context.textTheme.titleSmall
-                    ?.copyWith(fontSize: context.getFontSize(tablet: 24)),
+                style: context.textTheme.titleSmall?.copyWith(
+                  fontSize: context.fontSize(SizeType.s),
+                ),
               ),
             ),
             const SizedBox(height: 8),
             Text(
               author?.fullName ?? Constants.titleDefault,
-              style: context.textTheme.titleLarge
-                  ?.copyWith(fontSize: context.getFontSize(tablet: 30)),
+              style: context.textTheme.titleLarge?.copyWith(
+                fontSize: context.fontSize(SizeType.s),
+              ),
             ),
             const SizedBox(height: 23),
             StarRating(
@@ -110,8 +114,9 @@ class AuthorProfile extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: Text(
                 context.bazS.aboutTitle,
-                style: context.textTheme.titleMedium
-                    ?.copyWith(fontSize: context.getFontSize(tablet: 30)),
+                style: context.textTheme.titleMedium?.copyWith(
+                  fontSize: context.fontSize(SizeType.m),
+                ),
               ),
             ),
             const SizedBox(height: 8),
@@ -119,8 +124,9 @@ class AuthorProfile extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: Text(
                 author?.biography ?? Constants.titleDefault,
-                style: context.textTheme.titleSmall
-                    ?.copyWith(fontSize: context.getFontSize(tablet: 24)),
+                style: context.textTheme.titleSmall?.copyWith(
+                  fontSize: context.fontSize(SizeType.m),
+                ),
               ),
             ),
             const SizedBox(height: 16),
@@ -128,8 +134,9 @@ class AuthorProfile extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: Text(
                 context.bazS.productTitle,
-                style: context.textTheme.titleMedium
-                    ?.copyWith(fontSize: context.getFontSize(tablet: 30)),
+                style: context.textTheme.titleMedium?.copyWith(
+                  fontSize: context.fontSize(SizeType.m),
+                ),
               ),
             ),
             const SizedBox(height: 8),

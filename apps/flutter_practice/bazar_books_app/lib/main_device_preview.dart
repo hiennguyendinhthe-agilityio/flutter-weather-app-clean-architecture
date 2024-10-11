@@ -7,6 +7,8 @@ import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,31 +28,52 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      locale: DevicePreview.locale(context),
-      builder: DevicePreview.appBuilder,
-      initialRoute: AppRoutes.login,
-      routes: {
-        AppRoutes.login: (context) => const LoginScreen(),
+    SizeConfig.init(
+      context,
+      designWidth: 375,
+      designHeight: 812,
+    );
+
+    return ScreenUtilInit(
+      designSize: const Size(375, 812),
+      builder: (context, child) {
+        return MaterialApp(
+          initialRoute: AppRoutes.login,
+          routes: {
+            AppRoutes.login: (context) => const LoginScreen(),
+          },
+          themeMode: ThemeMode.light,
+          theme: bazUiLightTheme,
+          darkTheme: bazUiDarkTheme,
+          debugShowCheckedModeBanner: false,
+
+          // Locale settings
+          locale: const Locale('en', 'US'),
+          localizationsDelegates: const [
+            BazUiS.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: [
+            ...BazUiS.delegate.supportedLocales,
+            const Locale('en', ''),
+          ],
+
+          // Responsive Wrapper
+          builder: (context, widget) => ResponsiveWrapper.builder(
+            ClampingScrollWrapper.builder(context, widget!),
+            breakpoints: [
+              const ResponsiveBreakpoint.resize(375, name: MOBILE),
+              const ResponsiveBreakpoint.resize(600, name: TABLET),
+              const ResponsiveBreakpoint.resize(800, name: DESKTOP),
+              const ResponsiveBreakpoint.resize(1200, name: '4K'),
+            ],
+            defaultScale: true,
+            background: Container(color: Colors.white),
+          ),
+        );
       },
-
-      themeMode: ThemeMode.light,
-      theme: bazUiLightTheme,
-      darkTheme: bazUiDarkTheme,
-
-      // Disable banner simulator mode
-      debugShowCheckedModeBanner: false,
-
-      localizationsDelegates: const [
-        BazUiS.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: [
-        ...BazUiS.delegate.supportedLocales,
-        const Locale('en', ''),
-      ],
     );
   }
 }

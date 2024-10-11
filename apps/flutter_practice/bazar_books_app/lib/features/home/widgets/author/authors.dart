@@ -2,7 +2,8 @@ import 'package:bazar_books_app/di.dart';
 import 'package:bazar_books_app/features/home/widgets/author/author_profile/author_profile.dart';
 import 'package:bazar_books_design/core/core.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
-import 'package:bazar_books_design/core/extensions/responsive_extension.dart';
+import 'package:bazar_books_design/core/utils/size_type.dart';
+import 'package:bazar_books_design/core/utils/utils.dart';
 import 'package:bazar_books_design/widgets/list_title/listtile.dart';
 import 'package:bazar_books_design/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +32,7 @@ class Authors extends StatelessWidget {
         title: Text(
           context.bazS.authorsTtile,
           style: context.textTheme.titleLarge
-              ?.copyWith(fontSize: context.getFontSize(tablet: 30)),
+              ?.copyWith(fontSize: context.fontSize(SizeType.m)),
         ),
       ),
       body: BazUiTabbarView(
@@ -43,18 +44,14 @@ class Authors extends StatelessWidget {
               Text(
                 context.bazS.authorSubtitle,
                 style: context.textTheme.labelMedium?.copyWith(
-                  fontSize: context.getFontSize(
-                    tablet: 24,
-                  ),
+                  fontSize: context.fontSize(SizeType.m),
                 ),
               ),
               Text(
                 context.bazS.authorsTtile,
                 style: context.textTheme.titleLarge?.copyWith(
                   color: context.colorScheme.primary,
-                  fontSize: context.getFontSize(
-                    tablet: 30,
-                  ),
+                  fontSize: context.fontSize(SizeType.m),
                 ),
               ),
               const SizedBox(height: 30),

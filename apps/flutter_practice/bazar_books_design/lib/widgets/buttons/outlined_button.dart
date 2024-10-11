@@ -1,5 +1,6 @@
 import 'package:bazar_books_design/bazar_books_design.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
+import 'package:bazar_books_design/core/responsive/size_extension.dart';
 import 'package:flutter/material.dart';
 
 class BazUiOutLinedButton extends StatefulWidget {
@@ -60,7 +61,8 @@ class _BazUiOutLinedButtonState extends State<BazUiOutLinedButton> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: widget.width,
+      height: 48.0.h,
+      width: widget.width.w,
       child: OutlinedButton(
         onPressed: widget.onPressed,
         child: widget.isLoading
@@ -72,7 +74,7 @@ class _BazUiOutLinedButtonState extends State<BazUiOutLinedButton> {
                   children: [
                     if (widget.icon != null) ...[
                       widget.icon!,
-                      const SizedBox(width: 16),
+                      SizedBox(width: 16.0.w),
                     ],
                     Text(
                       widget.text,
@@ -80,6 +82,7 @@ class _BazUiOutLinedButtonState extends State<BazUiOutLinedButton> {
                       style: context.textTheme.bodySmall!.copyWith(
                         color: context.colorScheme.onSecondaryContainer,
                         fontWeight: FontWeight.w400,
+                        fontSize: 14.0.sp,
                       ),
                     ),
                   ],

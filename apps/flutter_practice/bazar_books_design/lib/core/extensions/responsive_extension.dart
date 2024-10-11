@@ -13,10 +13,6 @@ extension ResponsiveExtension on BuildContext {
     return isTablet ? tablet : mobile;
   }
 
-  double getFontSize({double mobile = 14, double tablet = 18}) {
-    return responsiveValue(mobile: mobile, tablet: tablet);
-  }
-
   double getWidgetSize({double mobile = 100, double tablet = 150}) {
     return responsiveValue(mobile: mobile, tablet: tablet);
   }

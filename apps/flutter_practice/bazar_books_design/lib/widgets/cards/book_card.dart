@@ -3,6 +3,8 @@ import 'package:bazar_books_design/core/extensions/context_extension.dart';
 import 'package:bazar_books_design/core/extensions/responsive_extension.dart';
 import 'package:flutter/material.dart';
 
+import '../../core/utils/utils.dart';
+
 class BazUiBookCard extends StatelessWidget {
   const BazUiBookCard({
     super.key,
@@ -62,7 +64,7 @@ class BazUiBookCard extends StatelessWidget {
               Text(
                 title ?? Constants.titleDefault,
                 style: context.textTheme.bodyMedium?.copyWith(
-                  fontSize: context.getFontSize(mobile: 10, tablet: 18),
+                  fontSize: context.fontSize(SizeType.xs),
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -71,7 +73,7 @@ class BazUiBookCard extends StatelessWidget {
               Text(
                 '\$$price',
                 style: context.textTheme.bodySmall?.copyWith(
-                  fontSize: context.getFontSize(mobile: 10, tablet: 18),
+                  fontSize: context.fontSize(SizeType.xs),
                 ),
               ),
             ],

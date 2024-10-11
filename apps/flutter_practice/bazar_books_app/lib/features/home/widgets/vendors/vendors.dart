@@ -4,6 +4,7 @@ import 'package:bazar_books_design/constants.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
 import 'package:bazar_books_design/core/extensions/responsive_extension.dart';
 import 'package:bazar_books_design/core/models/vendor_model.dart';
+import 'package:bazar_books_design/core/utils/size_type.dart';
 import 'package:bazar_books_design/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,7 +26,7 @@ class Vendors extends StatelessWidget {
         title: Text(
           context.bazS.vendorTitle,
           style: context.textTheme.titleLarge?.copyWith(
-            fontSize: context.getFontSize(tablet: 30),
+            fontSize: context.fontSize(SizeType.m),
           ),
         ),
         centerTitle: true,
