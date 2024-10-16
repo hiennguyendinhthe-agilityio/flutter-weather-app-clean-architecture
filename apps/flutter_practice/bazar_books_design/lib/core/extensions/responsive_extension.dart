@@ -13,18 +13,6 @@ extension ResponsiveExtension on BuildContext {
     return isTablet ? tablet : mobile;
   }
 
-  double getWidgetSize({double mobile = 100, double tablet = 150}) {
-    return responsiveValue(mobile: mobile, tablet: tablet);
-  }
-
-  int getWidgetSizeInt({int mobile = 100, int tablet = 150}) {
-    return responsiveSize(mobile: mobile, tablet: tablet);
-  }
-
-  double getPadding({double mobile = 8, double tablet = 16}) {
-    return responsiveValue(mobile: mobile, tablet: tablet);
-  }
-
   double getButtonSpacing({double mobile = 16, double tablet = 24}) {
     return responsiveValue(mobile: mobile, tablet: tablet);
   }

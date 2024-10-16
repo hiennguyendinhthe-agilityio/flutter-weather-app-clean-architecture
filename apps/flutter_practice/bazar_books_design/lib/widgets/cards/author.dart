@@ -1,6 +1,6 @@
 import 'package:bazar_books_design/constants.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
-import 'package:bazar_books_design/core/extensions/responsive_extension.dart';
+import 'package:bazar_books_design/core/responsive/size_extension.dart';
 import 'package:bazar_books_design/core/utils/size_type.dart';
 import 'package:flutter/material.dart';
 
@@ -27,18 +27,18 @@ class BazUiAuthor extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CircleAvatar(
-            radius: context.getWidgetSize(mobile: 60, tablet: 80),
+            radius: 40.0.r,
             backgroundImage: NetworkImage(
               scale: 200,
               imageUrl ?? Constants.imgUrlDefault,
             ),
           ),
-          SizedBox(height: context.getPadding(mobile: 10, tablet: 14)),
+          SizedBox(height: 8.0.h),
           Text(
             fullName ?? Constants.titleDefault,
             style: style ??
                 context.textTheme.labelLarge?.copyWith(
-                  fontSize: context.fontSize(SizeType.m),
+                  fontSize: context.fontSize(SizeType.s),
                 ),
             textAlign: TextAlign.center,
           ),
@@ -46,7 +46,7 @@ class BazUiAuthor extends StatelessWidget {
             occupation ?? Constants.titleDefault,
             style: style ??
                 context.textTheme.labelMedium?.copyWith(
-                  fontSize: context.fontSize(SizeType.s),
+                  fontSize: context.fontSize(SizeType.xs),
                 ),
             textAlign: TextAlign.center,
           ),

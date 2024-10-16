@@ -3,7 +3,7 @@
 
 import 'package:bazar_books_app/di.dart';
 import 'package:bazar_books_design/core/resources/l10n_generated/l10n.dart';
-import 'package:bazar_books_design/themes/light_theme.dart';
+import 'package:bazar_books_design/themes/app_theme.dart';
 import 'package:bazar_books_widgetbook/screens/author_profile.dart';
 import 'package:bazar_books_widgetbook/screens/authors.dart';
 import 'package:bazar_books_widgetbook/screens/products.dart';
@@ -82,7 +82,7 @@ class BazUiDesignWidgetbooks extends StatelessWidget {
           themes: [
             WidgetbookTheme(
               name: 'Light',
-              data: bazUiLightTheme,
+              data: bazUiAppTheme,
             ),
             WidgetbookTheme(
               name: 'Dark',

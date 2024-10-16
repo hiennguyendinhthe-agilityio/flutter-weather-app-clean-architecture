@@ -1,6 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages
 
-import 'package:bazar_books_design/themes/light_theme.dart';
+import 'package:bazar_books_design/themes/app_theme.dart';
 import 'package:bazar_books_design/widgets/texts/texts.dart';
 import 'package:bazar_books_widgetbook/widgetbook.container.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +20,7 @@ WidgetbookComponent colorsWidgetBooks() {
                   ),''',
           child: _ColorsSchemaWidget(
             nameTheme: 'Color of light theme',
-            schema: bazUiLightTheme.colorScheme,
+            schema: bazUiAppTheme.colorScheme,
           ),
         ),
       ),

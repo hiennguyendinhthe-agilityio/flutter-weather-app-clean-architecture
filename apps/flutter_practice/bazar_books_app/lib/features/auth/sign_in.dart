@@ -1,13 +1,14 @@
 import 'package:bazar_books_app/features/auth/blocs/auth_bloc.dart';
 import 'package:bazar_books_app/features/auth/blocs/auth_event.dart';
 import 'package:bazar_books_app/features/auth/blocs/auth_state.dart';
-import 'package:bazar_books_app/features/home/home_page.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
 import 'package:bazar_books_design/constants.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
 import 'package:bazar_books_design/core/responsive/size_extension.dart';
+import 'package:bazar_books_design/widgets/texts/texts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -38,11 +39,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      context.bazS.signInPageWelcomeBack,
-                      style: context.textTheme.headlineSmall?.copyWith(
-                        fontSize: 24.0.sp, // Scale font size
-                      ),
+                    BazUiH4Text(
+                      text: context.bazS.signInPageWelcomeBack,
                     ),
                     SizedBox(height: 10.0.h),
                     Text(
@@ -117,12 +115,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           _formKey.currentState!.save();
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const HomePage(),
-                            ),
-                          );
+                          context.go('/home');
                         }
                       },
                       text: context.bazS.signInPageLogin,

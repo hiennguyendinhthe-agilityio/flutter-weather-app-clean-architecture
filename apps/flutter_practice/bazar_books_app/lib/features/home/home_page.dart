@@ -1,5 +1,4 @@
 import 'package:bazar_books_app/di.dart';
-import 'package:bazar_books_app/features/auth/sign_in.dart';
 import 'package:bazar_books_app/features/home/bloc/author_bloc/author_bloc.dart';
 import 'package:bazar_books_app/features/home/data/repository.dart';
 import 'package:bazar_books_app/features/home/widgets/author/authors.dart';
@@ -11,9 +10,9 @@ import 'package:bazar_books_app/features/home/widgets/vendors/vendors.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
 import 'package:bazar_books_design/core/utils/size_type.dart';
-import 'package:bazar_books_design/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import 'bloc/product_bloc/product_bloc.dart';
 import 'bloc/vendor_bloc/vendor_bloc.dart';
@@ -23,16 +22,14 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig.init(context, designWidth: 375, designHeight: 812);
     return Scaffold(
       backgroundColor: context.colorScheme.surface,
       appBar: AppBar(
         leading: IconButton(
           icon: BazUiBuiltInImage.icSearch(),
           onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const LoginScreen()),
-            );
+            context.go('/login');
           },
         ),
         title: Text(
@@ -128,32 +125,6 @@ class HomePage extends StatelessWidget {
             ),
           ),
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: [
-          BottomNavigationBarItem(
-            icon: BazUiBuiltInImage.icHomeFill(
-                color: context.colorScheme.primary),
-            label: context.bazS.generalTitleHome,
-          ),
-          BottomNavigationBarItem(
-            icon: BazUiBuiltInImage.icMenuFill(
-                color: context.colorScheme.tertiary),
-            label: context.bazS.generalTitleCategory,
-          ),
-          BottomNavigationBarItem(
-            icon: BazUiBuiltInImage.icCardFill(
-                color: context.colorScheme.tertiary),
-            label: context.bazS.generalTitleCart,
-          ),
-          BottomNavigationBarItem(
-            icon: BazUiBuiltInImage.icProfileFill(
-                color: context.colorScheme.tertiary),
-            label: context.bazS.generalTitleProfile,
-          ),
-        ],
-        currentIndex: 0,
-        onTap: (index) {},
       ),
     );
   }

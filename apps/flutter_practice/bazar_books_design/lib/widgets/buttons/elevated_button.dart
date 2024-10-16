@@ -1,6 +1,8 @@
 library;
 
+import 'package:bazar_books_design/core/extensions/context_extension.dart';
 import 'package:bazar_books_design/core/responsive/size_extension.dart';
+import 'package:bazar_books_design/core/utils/size_type.dart';
 import 'package:bazar_books_design/widgets/indicators/circular_progress_indicator.dart';
 import 'package:flutter/material.dart';
 
@@ -32,7 +34,7 @@ class BazUiElevatedButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: width.w,
-      height: 48.0.h,
+      height: context.buttonSize(SizeType.s),
       child: ElevatedButton(
         style: style,
         onPressed: onPressed,

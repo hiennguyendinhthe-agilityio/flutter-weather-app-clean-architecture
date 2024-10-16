@@ -6,6 +6,7 @@ import 'package:bazar_books_design/constants.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
 import 'package:bazar_books_design/core/extensions/responsive_extension.dart';
 import 'package:bazar_books_design/core/models/product_model.dart';
+import 'package:bazar_books_design/core/responsive/size_extension.dart';
 import 'package:bazar_books_design/core/utils/size_type.dart';
 import 'package:bazar_books_design/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -64,7 +65,7 @@ class ProductDetail extends StatelessWidget {
       builder: (context, scrollController) => SingleChildScrollView(
         controller: scrollController,
         child: Padding(
-          padding: EdgeInsets.all(context.getPadding()), // Responsive padding
+          padding: 24.0.paddingAll, // Responsive padding
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

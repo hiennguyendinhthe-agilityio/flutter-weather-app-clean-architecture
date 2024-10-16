@@ -16,7 +16,7 @@ class BazColorTokens {
 
   static const int generalGrey = 0xFF080B12;
 
-  static const generalGreyscale = MaterialColor(
+  static const MaterialColor generalGreyscale = MaterialColor(
     generalGrey,
     <int, Color>{
       50: Color(0xFFFAFAFA),
@@ -32,7 +32,7 @@ class BazColorTokens {
     },
   );
 
-  static const generalPrimary = MaterialColor(
+  static const MaterialColor generalPrimary = MaterialColor(
     generalGrey,
     <int, Color>{
       50: Color(0xFFFAF9FD),
@@ -50,7 +50,7 @@ class BazColorTokens {
 
   static const int generalWhite = 0xFFFFFFFF;
 
-  static const generalWhites = MaterialColor(
+  static const MaterialColor generalWhites = MaterialColor(
     generalWhite,
     <int, Color>{
       1: Color(0xFFFFFFFF),
@@ -59,7 +59,7 @@ class BazColorTokens {
 
   static const int generalPurple = 0xFF462B9E;
 
-  static const generalPurples = MaterialColor(
+  static const MaterialColor generalPurples = MaterialColor(
     generalPurple,
     <int, Color>{
       1: Color(0xFF36237B),
@@ -72,7 +72,7 @@ class BazColorTokens {
 
   static const int generalBlue = 0xFF3784FB;
 
-  static const generalBlues = MaterialColor(
+  static const MaterialColor generalBlues = MaterialColor(
     generalBlue,
     <int, Color>{
       1: Color(0xFF205298),
@@ -83,9 +83,9 @@ class BazColorTokens {
     },
   );
 
-  static const int generalYellow = 0xFFCF5BE00;
+  static const int generalYellow = 0xFFCF5BE0; // Fixed incorrect color
 
-  static const generalYellows = MaterialColor(
+  static const MaterialColor generalYellows = MaterialColor(
     generalYellow,
     <int, Color>{
       1: Color(0xFF9C6D1B),
@@ -97,10 +97,9 @@ class BazColorTokens {
   );
 
   static const int generalOrange = 0xFFFF8C39;
-
   static const int generalRed = 0xFFEF5A56;
 
-  static const generalReds = MaterialColor(
+  static const MaterialColor generalReds = MaterialColor(
     generalRed,
     <int, Color>{
       1: Color(0xFF901F2E),
