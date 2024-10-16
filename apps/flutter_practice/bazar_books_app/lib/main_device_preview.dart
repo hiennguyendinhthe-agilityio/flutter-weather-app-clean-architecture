@@ -1,8 +1,7 @@
 import 'package:bazar_books_app/di.dart';
-import 'package:bazar_books_app/features/auth/sign_in.dart';
 import 'package:bazar_books_app/routes.dart';
 import 'package:bazar_books_design/core/core.dart';
-import 'package:bazar_books_design/themes/light_theme.dart';
+import 'package:bazar_books_design/themes/themes.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -37,13 +36,10 @@ class MyApp extends StatelessWidget {
     return ScreenUtilInit(
       designSize: const Size(375, 812),
       builder: (context, child) {
-        return MaterialApp(
-          initialRoute: AppRoutes.login,
-          routes: {
-            AppRoutes.login: (context) => const LoginScreen(),
-          },
-          themeMode: ThemeMode.light,
-          theme: bazUiLightTheme,
+        return MaterialApp.router(
+          routerConfig: router,
+          themeMode: ThemeMode.system,
+          theme: bazUiAppTheme,
           darkTheme: bazUiDarkTheme,
           debugShowCheckedModeBanner: false,
 

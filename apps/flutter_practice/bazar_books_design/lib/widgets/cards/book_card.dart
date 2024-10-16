@@ -1,6 +1,6 @@
 import 'package:bazar_books_design/constants.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
-import 'package:bazar_books_design/core/extensions/responsive_extension.dart';
+import 'package:bazar_books_design/core/responsive/size_extension.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/utils/utils.dart';
@@ -45,17 +45,15 @@ class BazUiBookCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
                 child: imageUrl == null || (imageUrl?.isEmpty ?? false)
                     ? Image.network(
-                        cacheWidth: 200,
-                        cacheHeight: 200,
+                        cacheWidth: 127.0.w.toInt(),
+                        cacheHeight: 150.0.h.toInt(),
                         Constants.imgUrlDefault,
                         fit: BoxFit.cover,
                         height: height,
                       )
                     : Image.network(
-                        cacheWidth: 200,
-                        cacheHeight: 200,
-                        width: context.getWidgetSize(),
-                        height: context.getWidgetSize(),
+                        cacheWidth: 127.0.w.toInt(),
+                        cacheHeight: 150.0.h.toInt(),
                         imageUrl!,
                         fit: BoxFit.cover,
                       ),
@@ -64,7 +62,7 @@ class BazUiBookCard extends StatelessWidget {
               Text(
                 title ?? Constants.titleDefault,
                 style: context.textTheme.bodyMedium?.copyWith(
-                  fontSize: context.fontSize(SizeType.xs),
+                  fontSize: context.fontSize(SizeType.s),
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -73,7 +71,7 @@ class BazUiBookCard extends StatelessWidget {
               Text(
                 '\$$price',
                 style: context.textTheme.bodySmall?.copyWith(
-                  fontSize: context.fontSize(SizeType.xs),
+                  fontSize: context.fontSize(SizeType.s),
                 ),
               ),
             ],

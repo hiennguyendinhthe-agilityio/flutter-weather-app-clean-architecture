@@ -122,6 +122,7 @@ class BazUiH4Text extends StatelessWidget {
     this.textAlign,
     this.overflow,
     this.height,
+    this.fontSize,
   });
 
   final String text;
@@ -129,6 +130,7 @@ class BazUiH4Text extends StatelessWidget {
   final TextAlign? textAlign;
   final TextOverflow? overflow;
   final double? height;
+  final double? fontSize;
 
   @override
   Widget build(BuildContext context) {
@@ -139,6 +141,7 @@ class BazUiH4Text extends StatelessWidget {
         color: color,
         overflow: overflow,
         height: height,
+        fontSize: 24.0.sp,
       ),
     );
   }

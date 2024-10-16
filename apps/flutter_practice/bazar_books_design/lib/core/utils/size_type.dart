@@ -5,4 +5,6 @@ enum SizeType {
   m,
   s,
   xs,
+  xxs,
+  xxxs,
 }

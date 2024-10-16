@@ -6,12 +6,12 @@ class ButtonSizes {
   // Mobile Button Sizes
   static const double mobileLarge = 60.0;
   static const double mobileMedium = 50.0;
-  static const double mobileSmall = 40.0;
+  static const double mobileSmall = 48.0;
 
   // Tablet Button Sizes
   static const double tabletLarge = 70.0;
   static const double tabletMedium = 60.0;
-  static const double tabletSmall = 50.0;
+  static const double tabletSmall = 54.0;
 
   // Desktop Button Sizes
   static const double desktopLarge = 80.0;

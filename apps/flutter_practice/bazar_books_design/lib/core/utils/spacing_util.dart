@@ -4,12 +4,14 @@ class Spacings {
   Spacings._();
 
   // Mobile Spacings
-  static const double mobileXXl = 22.0;
-  static const double mobileXl = 18.0;
-  static const double mobileL = 14.0;
-  static const double mobileM = 10.0;
-  static const double mobileS = 8.0;
-  static const double mobileXs = 6.0;
+  static const double mobileXXl = 24.0;
+  static const double mobileXl = 22.0;
+  static const double mobileL = 18.0;
+  static const double mobileM = 16.0;
+  static const double mobileS = 14.0;
+  static const double mobileXs = 10.0;
+  static const double mobileXXs = 8.0;
+  static const double mobileXXXs = 6.0;
 
   // Tablet Spacings
   static const double tabletXXl = 26.0;
@@ -42,6 +44,8 @@ class Spacings {
         SizeType.m => mobileM,
         SizeType.s => mobileS,
         SizeType.xs => mobileXs,
+        SizeType.xxs => mobileXXs,
+        SizeType.xxxs => mobileXXXs,
       };
 
   static double _getTabletSpacing(SizeType sizeType) => switch (sizeType) {
@@ -51,6 +55,8 @@ class Spacings {
         SizeType.m => tabletM,
         SizeType.s => tabletS,
         SizeType.xs => tabletXs,
+        SizeType.xxs => tabletXs,
+        SizeType.xxxs => tabletXs,
       };
 
   static double _getDesktopSpacing(SizeType sizeType) => switch (sizeType) {
@@ -60,5 +66,7 @@ class Spacings {
         SizeType.m => desktopM,
         SizeType.s => desktopS,
         SizeType.xs => desktopXs,
+        SizeType.xxs => desktopXs,
+        SizeType.xxxs => desktopXs,
       };
 }

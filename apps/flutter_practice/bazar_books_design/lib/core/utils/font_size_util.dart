@@ -4,20 +4,24 @@ class FontSizes {
   FontSizes._();
 
   // Mobile Font Sizes
-  static const double mobileXXl = 28.0;
-  static const double mobileXl = 24.0;
+  static const double mobileXXl = 24.0;
+  static const double mobileXl = 22.0;
   static const double mobileL = 20.0;
-  static const double mobileM = 16.0;
-  static const double mobileS = 14.0;
-  static const double mobileXs = 12.0;
+  static const double mobileM = 18.0;
+  static const double mobileS = 16.0;
+  static const double mobileXs = 14.0;
+  static const double mobileXXs = 12.0;
+  static const double mobileXXXs = 10.0;
 
   // Tablet Font Sizes
   static const double tabletXXl = 32.0;
   static const double tabletXl = 28.0;
   static const double tabletL = 24.0;
   static const double tabletM = 20.0;
-  static const double tabletS = 16.0;
-  static const double tabletXs = 14.0;
+  static const double tabletS = 18.0;
+  static const double tabletXs = 16.0;
+  static const double tabletXXs = 14.0;
+  static const double tabletXXXs = 12.0;
 
   // Desktop Font Sizes
   static const double desktopXXl = 36.0;
@@ -42,6 +46,8 @@ class FontSizes {
         SizeType.m => mobileM,
         SizeType.s => mobileS,
         SizeType.xs => mobileXs,
+        SizeType.xxs => mobileXs,
+        SizeType.xxxs => mobileXs,
       };
   static double _getTabletFontSizes(SizeType sizeType) => switch (sizeType) {
         SizeType.xxl => tabletXXl,
@@ -50,6 +56,8 @@ class FontSizes {
         SizeType.m => tabletM,
         SizeType.s => tabletS,
         SizeType.xs => tabletXs,
+        SizeType.xxs => tabletXs,
+        SizeType.xxxs => tabletXs,
       };
 
   static double _getDesktopFontSizes(SizeType sizeType) => switch (sizeType) {
@@ -59,5 +67,7 @@ class FontSizes {
         SizeType.m => desktopM,
         SizeType.s => desktopS,
         SizeType.xs => desktopXs,
+        SizeType.xxs => desktopXs,
+        SizeType.xxxs => desktopXs,
       };
 }

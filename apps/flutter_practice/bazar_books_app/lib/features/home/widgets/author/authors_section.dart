@@ -4,6 +4,7 @@ import 'package:bazar_books_design/core/core.dart';
 import 'package:bazar_books_design/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class AuthorsSection extends StatelessWidget {
@@ -12,7 +13,7 @@ class AuthorsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 250,
+      height: 183.0.h,
       child: BlocBuilder<AuthorBloc, FetchDataState<Author>>(
         builder: (context, state) {
           if (state.status == FetchDataStatus.error) {

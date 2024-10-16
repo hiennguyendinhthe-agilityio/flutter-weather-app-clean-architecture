@@ -25,14 +25,14 @@ class BazUiSection extends StatelessWidget {
             Text(
               title,
               style: context.textTheme.titleMedium?.copyWith(
-                fontSize: context.fontSize(SizeType.l),
+                fontSize: context.fontSize(SizeType.m),
               ),
             ),
             BazUiTextButton(
               onSeeAllPressed: onSeeAllPressed,
               text: text,
               style: context.textTheme.bodySmall?.copyWith(
-                fontSize: context.fontSize(SizeType.l),
+                fontSize: context.fontSize(SizeType.xs),
               ),
             ),
           ],
