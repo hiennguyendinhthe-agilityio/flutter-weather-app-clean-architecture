@@ -93,6 +93,15 @@ final GoRouter router = GoRouter(
   ],
 );
 
+/// Returns the index of the bottom navigation bar item based on the given location.
+///
+/// The given location is expected to be a string representing a URI.
+///
+/// The mapping of location to index is as follows:
+///   - '/categories' maps to 1
+///   - '/cart' maps to 2
+///   - '/profile' maps to 3
+///   - All other locations map to 0
 int _getSelectedIndex(String location) {
   if (location.startsWith('/categories')) return 1;
   if (location.startsWith('/cart')) return 2;
@@ -100,6 +109,11 @@ int _getSelectedIndex(String location) {
   return 0;
 }
 
+/// Navigates to the route based on the index selected in the bottom navigation bar.
+///
+/// Parameters:
+///   - context: The build context of the widget.
+///   - index: The index of the selected item in the bottom navigation bar.
 void _onItemTapped(BuildContext context, int index) {
   final routes = ['/home', '/categories', '/cart', '/profile'];
   context.go(routes[index]);
