@@ -175,7 +175,7 @@ class AuthorProfile extends StatelessWidget {
                     BazUiBottomSheet.showModal(
                       context,
                       child: ProductDetail(
-                        productId: product.id,
+                        productId: product.apiId,
                       ),
                     );
                   },

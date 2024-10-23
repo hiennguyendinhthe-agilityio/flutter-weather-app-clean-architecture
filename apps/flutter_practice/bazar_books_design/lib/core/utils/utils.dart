@@ -4,3 +4,4 @@ export 'font_size_util.dart';
 export 'margin_util.dart';
 export 'size_type.dart';
 export 'spacing_util.dart';
+export 'talker.dart';

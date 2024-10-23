@@ -1,4 +1,4 @@
-import 'package:bazar_books_design/core/apis/api_service.dart';
+import 'package:bazar_books_design/bazar_books_design.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 
@@ -12,7 +12,18 @@ Future<void> initGetIt() async {
 
   getIt.registerLazySingleton<ApiService>(() => ApiService(getIt<Dio>()));
 
+  getIt.registerLazySingleton<IsarService>(
+    () => IsarService(),
+  );
+
+  getIt.registerLazySingleton<ProductService>(
+    () => ProductService(getIt<Dio>(), isarService: getIt<IsarService>()),
+  );
+
   getIt.registerLazySingleton<Repository>(
-    () => RepositoryImpl(getIt<ApiService>()),
+    () => RepositoryImpl(
+      getIt<ApiService>(),
+      getIt<ProductService>(),
+    ),
   );
 }

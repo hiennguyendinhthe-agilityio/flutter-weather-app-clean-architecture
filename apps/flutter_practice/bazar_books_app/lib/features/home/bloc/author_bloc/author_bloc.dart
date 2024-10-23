@@ -2,8 +2,7 @@
 
 import 'package:bazar_books_app/features/home/bloc/data_state.dart';
 import 'package:bazar_books_app/features/home/data/repository.dart';
-import 'package:bazar_books_design/core/models/author_model.dart';
-import 'package:bazar_books_design/core/network/error_handler.dart';
+import 'package:bazar_books_design/core/core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'author_event.dart';

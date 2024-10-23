@@ -1,6 +1,6 @@
 import 'package:bazar_books_app/features/home/bloc/product_bloc/product_bloc.dart';
+import 'package:bazar_books_design/core/core.dart';
 import 'package:bazar_books_design/core/extensions/responsive_extension.dart';
-import 'package:bazar_books_design/core/models/product_model.dart';
 import 'package:bazar_books_design/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -51,7 +51,7 @@ class Products extends StatelessWidget {
                                   state.data == null;
 
                           Product createDefaultProduct(int index) {
-                            return Product(id: index.toString());
+                            return Product(apiId: index.toString());
                           }
 
                           final Product product = isLoadingOrDataNull
@@ -64,7 +64,7 @@ class Products extends StatelessWidget {
                               BazUiBottomSheet.showModal(
                                 context,
                                 child: ProductDetail(
-                                  productId: product.id,
+                                  productId: product.apiId,
                                 ),
                               );
                             },
@@ -85,7 +85,7 @@ class Products extends StatelessWidget {
                                   state.data == null;
 
                           Product createDefaultProduct(int index) {
-                            return Product(id: index.toString());
+                            return Product(apiId: index.toString());
                           }
 
                           final Product product = isLoadingOrDataNull
@@ -98,7 +98,7 @@ class Products extends StatelessWidget {
                               BazUiBottomSheet.showModal(
                                 context,
                                 child: ProductDetail(
-                                  productId: product.id,
+                                  productId: product.apiId,
                                 ),
                               );
                             },

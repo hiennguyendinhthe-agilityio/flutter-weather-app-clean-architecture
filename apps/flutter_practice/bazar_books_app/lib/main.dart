@@ -1,8 +1,7 @@
 import 'package:bazar_books_app/di.dart';
 import 'package:bazar_books_app/features/home/home_page.dart';
 import 'package:bazar_books_app/routes.dart';
-import 'package:bazar_books_design/core/core.dart';
-import 'package:bazar_books_design/themes/themes.dart';
+import 'package:bazar_books_design/bazar_books_design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
