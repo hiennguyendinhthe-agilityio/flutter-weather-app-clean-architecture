@@ -1,4 +1,4 @@
-import 'package:bazar_books_design/core/models/product_model.dart';
+import 'package:bazar_books_design/core/core.dart';
 import 'package:bazar_books_design/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -44,9 +44,9 @@ class Offer extends StatelessWidget {
                           final Product product =
                               state.status == FetchDataStatus.loading ||
                                       state.data == null
-                                  ? Product(id: index.toString())
+                                  ? Product(apiId: index.toString())
                                   : state.data?[index] ??
-                                      Product(id: index.toString());
+                                      Product(apiId: index.toString());
 
                           return BazUiOfferCard(
                             discount: product.discount,
@@ -55,7 +55,7 @@ class Offer extends StatelessWidget {
                               BazUiBottomSheet.showModal(
                                 context,
                                 child: ProductDetail(
-                                  productId: product.id,
+                                  productId: product.apiId,
                                 ),
                               );
                             },

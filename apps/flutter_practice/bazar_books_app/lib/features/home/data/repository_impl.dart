@@ -1,24 +1,46 @@
-import 'package:bazar_books_design/core/core.dart';
+import 'package:bazar_books_design/bazar_books_design.dart';
+import 'package:flutter/material.dart';
 
 import '../bloc/data_state.dart';
 import 'repository.dart';
 
 class RepositoryImpl implements Repository {
   final ApiService apiService;
+  final ProductService productRepository;
 
-  // Constructor to inject ApiService
-  RepositoryImpl(this.apiService);
+  RepositoryImpl(this.apiService, this.productRepository);
 
-  // Fetch products using the ApiService
   @override
   Future<List<Product>> fetchProducts() async {
+    // Get data from Isar first and return immediately
+    final productsFromIsar = await productRepository.fetchProductsFromIsar();
+
+    // If there is data from Isar, return it for quick display
+    if (productsFromIsar.isNotEmpty) {
+      // Display data from Isar immediately
+      debugPrint('Loaded from Isar: ${productsFromIsar.length} products');
+      return productsFromIsar;
+    }
+
+    // If there is no data in Isar, continue calling API to get data
     try {
-      // Call the appropriate method from ApiService to fetch products
-      final products = await apiService.getProducts();
-      return products;
+      final productsFromApi = await productRepository.fetchProductsFromApi();
+
+      await productRepository.clearProductsFromIsar();
+      await productRepository.saveProductsToIsar(productsFromApi);
+
+      debugPrint(
+          'Loaded from API and updated Isar: ${productsFromApi.length} products');
+
+      return productsFromApi;
     } catch (e) {
-      throw (FetchDataState<Product>.error(
-          ErrorHandler.handle(e).failure.message));
+      debugPrint('API failed, returning data from Isar if available');
+      if (productsFromIsar.isNotEmpty) {
+        return productsFromIsar;
+      } else {
+        throw FetchDataState<List<Product>>.error(
+            ErrorHandler.handle(e).failure.message);
+      }
     }
   }
 
@@ -36,7 +58,7 @@ class RepositoryImpl implements Repository {
       );
       return vendors;
     } catch (e) {
-      // Handle errors appropriately, maybe log them or rethrow with a custom exception
+      // Handle errors appropriately, maybe print them or rethrow with a custom exception
       throw ErrorHandler.handle(e).failure;
     }
   }
@@ -48,7 +70,7 @@ class RepositoryImpl implements Repository {
       final authors = await apiService.getAuthors();
       return authors;
     } catch (e) {
-      // Handle errors appropriately, maybe log them or rethrow with a custom exception
+      // Handle errors appropriately, maybe print them or rethrow with a custom exception
       throw ErrorHandler.handle(e).failure;
     }
   }
@@ -72,7 +94,7 @@ class RepositoryImpl implements Repository {
       final authors = await apiService.fetchAuthorProfile(productId);
       return authors;
     } catch (e) {
-      // Handle errors appropriately, maybe log them or rethrow with a custom exception
+      // Handle errors appropriately, maybe print them or rethrow with a custom exception
       throw ErrorHandler.handle(e).failure;
     }
   }

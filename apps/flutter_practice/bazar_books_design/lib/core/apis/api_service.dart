@@ -1,7 +1,6 @@
-import 'dart:developer';
-
 import 'package:bazar_books_design/constants.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 
 import '../core.dart';
 
@@ -24,7 +23,7 @@ class ApiService {
 
       // Decode the JSON response body into a list of dynamic objects
       final List<dynamic> result = response.data;
-      log('$result');
+      debugPrint('$result');
       // Convert each dynamic object to a ProductModel instance
       return result.map((json) => Product.fromJson(json)).toList();
     } catch (e) {
@@ -41,7 +40,7 @@ class ApiService {
         throw ErrorHandler.handle(response).failure;
       }
       final result = response.data;
-      log('$result');
+      debugPrint('$result');
       // Decode the JSON response body into a list of dynamic objects
       return Product.fromJson(response.data);
     } catch (e) {
@@ -66,7 +65,7 @@ class ApiService {
 
       // Parse the response JSON into a list of Providers
       final List<dynamic> result = response.data;
-      log('$result');
+      debugPrint('$result');
       return result.map((json) => Vendor.fromJson(json)).toList();
     } catch (e) {
       throw ErrorHandler.handle(e).failure;
@@ -83,7 +82,7 @@ class ApiService {
 
       // Decode the JSON response body into a list of dynamic objects
       final List<dynamic> result = response.data;
-      log('$result');
+      debugPrint('$result');
       // Convert each dynamic object to a VendorModel instance
       return result.map((json) => Author.fromJson(json)).toList();
     } catch (e) {
@@ -99,7 +98,7 @@ class ApiService {
         throw ErrorHandler.handle(response).failure;
       }
       final result = response.data;
-      log('$result');
+      debugPrint('$result');
       // Decode the JSON response body into a list of dynamic objects
       return Author.fromJson(response.data);
     } catch (e) {
