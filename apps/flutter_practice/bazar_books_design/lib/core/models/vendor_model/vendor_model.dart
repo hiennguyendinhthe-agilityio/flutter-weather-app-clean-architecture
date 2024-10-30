@@ -1,5 +1,7 @@
-class Vendor {
-  Vendor({
+import 'package:equatable/equatable.dart';
+
+class Vendor extends Equatable {
+  const Vendor({
     required this.id,
     this.headlines,
     this.numberStar,
@@ -24,4 +26,19 @@ class Vendor {
       publications: json['publications'],
     );
   }
+  static List<Vendor> listFromJson(List<dynamic> json) => json
+      .map((dynamic postJson) => Vendor.fromJson(
+            postJson as Map<String, dynamic>,
+          ))
+      .toList();
+
+  @override
+  List<Object?> get props => [
+        id,
+        headlines,
+        numberStar,
+        imageUrl,
+        starRating,
+        publications,
+      ];
 }
