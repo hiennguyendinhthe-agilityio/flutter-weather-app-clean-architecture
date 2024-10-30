@@ -2,6 +2,7 @@ import 'package:bazar_books_app/di.dart';
 import 'package:bazar_books_app/features/home/home_page.dart';
 import 'package:bazar_books_app/routes.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
+import 'package:cached_query_flutter/cached_query_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,7 +11,15 @@ import 'package:responsive_framework/responsive_framework.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  CachedQuery.instance.configFlutter(
+    config: QueryConfigFlutter(
+      refetchOnResume: true,
+      cacheDuration: const Duration(minutes: 5),
+    ),
+  );
+
   await initGetIt();
+
   runApp(const MainApp());
 }
 
