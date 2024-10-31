@@ -7,17 +7,4 @@ abstract class AuthEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class LoginButtonPressed extends AuthEvent {
-  LoginButtonPressed({
-    required this.email,
-    required this.password,
-  });
-
-  final String email;
-  final String password;
-
-  @override
-  List<Object?> get props => [email, password];
-}
-
 class TogglePasswordVisibilityEvent extends AuthEvent {}
