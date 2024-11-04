@@ -13,7 +13,6 @@ class AuthBlocPasswordVisibilityToggledScenario
             Given AuthBloc has state PasswordVisibilityChanged(isObscured: false)
             When TogglePasswordVisibilityEvent is added
             Then AuthBloc should emit PasswordVisibilityChanged with isObscured as true''',
-          setUp: () => {},
           build: () => AuthBloc(),
           act: (bloc) => bloc.add(TogglePasswordVisibilityEvent()),
           expect: () => [

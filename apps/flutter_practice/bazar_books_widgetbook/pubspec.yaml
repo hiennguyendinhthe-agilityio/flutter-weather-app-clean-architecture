@@ -46,7 +46,7 @@ dev_dependencies:
   very_good_analysis: 2.4.0
 
   # Create fake data for testing
-  faker: 2.1.0
+  faker: ^2.2.0
 
   modal_bottom_sheet: 3.0.0-pre
 
