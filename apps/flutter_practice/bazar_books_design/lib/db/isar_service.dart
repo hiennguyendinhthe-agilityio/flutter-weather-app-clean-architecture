@@ -9,11 +9,43 @@ class IsarService {
     if (_isarInstance == null) {
       final dir = await getApplicationDocumentsDirectory();
       _isarInstance = await Isar.open(
-        [ProductSchema],
+        [
+          ProductSchema,
+          UserSchema,
+        ],
         directory: dir.path,
       );
     }
     return _isarInstance!;
+  }
+
+  Future<void> saveUser(User user) async {
+    final isar = await db;
+    await isar.writeTxn(() async {
+      await isar.users.put(user);
+    });
+  }
+
+  Future<bool> isLoggedIn() async {
+    final isar = await db;
+    final user = await isar.users.get(0);
+    return user != null && user.isLoggedIn;
+  }
+
+  Future<User?> getUser() async {
+    final isar = await db;
+    return await isar.users.get(0);
+  }
+
+  Future<void> logout() async {
+    final isar = await db;
+    await isar.writeTxn(() async {
+      final user = await isar.users.get(0);
+      if (user != null) {
+        user.isLoggedIn = false;
+        await isar.users.put(user);
+      }
+    });
   }
 
   Future<void> closeIsar() async {

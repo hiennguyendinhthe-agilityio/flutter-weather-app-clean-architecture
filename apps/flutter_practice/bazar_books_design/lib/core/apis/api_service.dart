@@ -105,4 +105,37 @@ class ApiService {
       throw ErrorHandler.handle(e).failure;
     }
   }
+
+  Future<bool> signUp(String name, String email, String password) async {
+    try {
+      final response = await _dio.post(
+        '${Constants.apiUrlUser}user',
+        data: {
+          'name': name,
+          'email': email,
+          'password': password,
+        },
+      );
+      return response.statusCode == 201;
+    } catch (e) {
+      throw ErrorHandler.handle(e).failure;
+    }
+  }
+
+  Future<User?> logIn(String email, String password) async {
+    try {
+      final response = await _dio.get('${Constants.apiUrlUser}user');
+      if (response.statusCode == 200) {
+        final List users = response.data;
+        for (var user in users) {
+          if (user['email'] == email && user['password'] == password) {
+            return User.fromJson(user);
+          }
+        }
+      }
+      return null;
+    } catch (e) {
+      throw ErrorHandler.handle(e).failure;
+    }
+  }
 }
