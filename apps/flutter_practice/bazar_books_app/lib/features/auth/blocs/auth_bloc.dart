@@ -1,12 +1,30 @@
-// ignore_for_file: depend_on_referenced_packages
-
+import 'package:bazar_books_app/core/l10n_generated/l10n.dart';
 import 'package:bazar_books_app/features/auth/blocs/auth_event.dart';
 import 'package:bazar_books_app/features/auth/blocs/auth_state.dart';
+import 'package:bazar_books_app/features/auth/data/auth_repository_impl.dart';
+import 'package:bazar_books_design/core/network/error_handler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  AuthBloc() : super(LoginInitial()) {
+  final AuthRepositoryImpl authenticationRepository;
+
+  AuthBloc(this.authenticationRepository) : super(AuthenticationInitial()) {
+    on<AppStarted>(_onAppStarted);
     on<TogglePasswordVisibilityEvent>(_handleOnTogglePasswordVisibilityEvent);
+    on<LogInRequested>(_onLogInRequested);
+    on<SignUpSubmitted>(_onSignUpSubmitted);
+    // on<CheckEmailEvent>(_onCheckEmail);
+  }
+
+  Future<void> _onAppStarted(AppStarted event, Emitter<AuthState> emit) async {
+    emit(AuthenticationLoading());
+    final isLoggedIn = await authenticationRepository.isLoggedIn();
+    if (isLoggedIn) {
+      final user = await authenticationRepository.getCurrentUser();
+      emit(Authenticated(user!));
+    } else {
+      emit(Unauthenticated());
+    }
   }
 
   void _handleOnTogglePasswordVisibilityEvent(
@@ -17,6 +35,47 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(PasswordVisibilityChanged(!isPasswordObscured));
     } else {
       emit(PasswordVisibilityChanged(false));
+    }
+  }
+
+  Future<void> _onLogInRequested(
+      LogInRequested event, Emitter<AuthState> emit) async {
+    emit(AuthenticationLoading());
+    try {
+      final user =
+          await authenticationRepository.logIn(event.email, event.password);
+      if (user != null) {
+        emit(AuthenticationSuccess(user));
+      } else {
+        emit(AuthenticationFailure(
+          S.current.authenticationFailure,
+        ));
+      }
+    } catch (e) {
+      emit(AuthenticationFailure(ErrorHandler.handle(e).failure.message));
+    }
+  }
+
+  Future<void> _onSignUpSubmitted(
+      SignUpSubmitted event, Emitter<AuthState> emit) async {
+    emit(AuthenticationLoading());
+
+    try {
+      final response = await authenticationRepository.signUp(
+        event.name,
+        event.email,
+        event.password,
+      );
+
+      if (response) {
+        emit(SignUpSuccess());
+      } else {
+        emit(SignUpFailure(
+          S.current.authenticationFailure,
+        ));
+      }
+    } catch (e) {
+      emit(AuthenticationFailure(ErrorHandler.handle(e).failure.message));
     }
   }
 }

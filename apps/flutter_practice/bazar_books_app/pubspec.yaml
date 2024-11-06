@@ -86,6 +86,16 @@ dependencies:
 
   form_builder_validators: ^11.0.0
 
+  faker: ^2.2.0
+
+  bloc_test: ^9.1.7
+
+  fpdart: ^1.1.0
+
+  mocktail: ^1.0.4
+
+  mockito: ^5.4.4
+
 
 dev_dependencies:
   flutter_test:
@@ -110,7 +120,8 @@ dependency_overrides:
       url: https://github.com/dart-lang/sdk.git
       path: pkg/_fe_analyzer_shared
       ref: main
-      
+  test_api: 0.7.0
+
 flutter:
 
   
