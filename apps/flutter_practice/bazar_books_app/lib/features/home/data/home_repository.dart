@@ -1,6 +1,6 @@
 import 'package:bazar_books_design/core/core.dart';
 
-abstract class Repository {
+abstract class HomeRepository {
   Future<List<Product>> fetchProducts();
 
   Future<Product> fetchProductDetails(String productId);

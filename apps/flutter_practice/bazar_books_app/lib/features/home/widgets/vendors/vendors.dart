@@ -1,5 +1,7 @@
+import 'package:bazar_books_app/di.dart';
 import 'package:bazar_books_app/features/home/bloc/data_state.dart';
 import 'package:bazar_books_app/features/home/bloc/vendor_bloc/vendor_bloc.dart';
+import 'package:bazar_books_app/features/home/data/home_repository.dart';
 import 'package:bazar_books_design/constants.dart';
 import 'package:bazar_books_design/core/core.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
@@ -112,66 +114,71 @@ class _GetListVendorState extends State<GetListVendor> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<VendorBloc, FetchDataState<Vendor>>(
-      builder: (context, state) {
-        // Check if there's an error and display error message
-        if (state.status == FetchDataStatus.error) {
-          return Center(
-            child: Text('Error: ${state.errorMessage}'),
-          );
-        }
+    return BlocProvider(
+      create: (context) => VendorBloc(vendorRepository: getIt<HomeRepository>())
+        ..add(GetBestVendorsEvent()),
+      child: BlocBuilder<VendorBloc, FetchDataState<Vendor>>(
+        builder: (context, state) {
+          // Check if there's an error and display error message
+          if (state.status == FetchDataStatus.error) {
+            return Center(
+              child: Text('Error: ${state.errorMessage}'),
+            );
+          }
 
-        // Filter the vendors based on category
-        final filteredVendors = widget.category == context.bazS.allTabBar
-            ? state.data
-            : state.data
-                ?.where((vendor) => vendor.publications == widget.category)
-                .toList();
+          // Filter the vendors based on category
+          final filteredVendors = widget.category == context.bazS.allTabBar
+              ? state.data
+              : state.data
+                  ?.where((vendor) => vendor.publications == widget.category)
+                  .toList();
 
-        return Stack(
-          children: [
-            GridView.builder(
-              controller: _scrollController,
-              padding: const EdgeInsets.symmetric(horizontal: 23),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                childAspectRatio:
-                    context.getAspectRatio(mobile: 0.8, tablet: 0.9),
-              ),
-              physics: const AlwaysScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: (filteredVendors?.length ?? 0) +
-                  (state.status == FetchDataStatus.loadMore ? 1 : 0),
-              itemBuilder: (context, index) {
-                if (index >= filteredVendors!.length) {
-                  // Show loading spinner if loading more items
-                  return const Center(child: BazUiCircularProgressIndicator());
-                }
-
-                final Vendor vendor = filteredVendors[index];
-                return BazUiVendorCard(
-                  headlines: vendor.headlines ?? Constants.titleDefault,
-                  imageUrl: vendor.imageUrl,
-                  subheads: StarRating(
-                    rating: vendor.numberStar ?? 0,
-                    numberStar: const SizedBox(width: 10, height: 10),
-                  ),
-                );
-              },
-            ),
-            // Show a loading indicator over the GridView if we're in the loading state
-            if (state.status == FetchDataStatus.loading)
-              const Center(
-                child: Skeletonizer(
-                  enabled: true,
-                  child: BazUiCircularProgressIndicator(),
+          return Stack(
+            children: [
+              GridView.builder(
+                controller: _scrollController,
+                padding: const EdgeInsets.symmetric(horizontal: 23),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  childAspectRatio:
+                      context.getAspectRatio(mobile: 0.8, tablet: 0.9),
                 ),
+                physics: const AlwaysScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: (filteredVendors?.length ?? 0) +
+                    (state.status == FetchDataStatus.loadMore ? 1 : 0),
+                itemBuilder: (context, index) {
+                  if (index >= filteredVendors!.length) {
+                    // Show loading spinner if loading more items
+                    return const Center(
+                        child: BazUiCircularProgressIndicator());
+                  }
+
+                  final Vendor vendor = filteredVendors[index];
+                  return BazUiVendorCard(
+                    headlines: vendor.headlines ?? Constants.titleDefault,
+                    imageUrl: vendor.imageUrl,
+                    subheads: StarRating(
+                      rating: vendor.numberStar ?? 0,
+                      numberStar: const SizedBox(width: 10, height: 10),
+                    ),
+                  );
+                },
               ),
-          ],
-        );
-      },
+              // Show a loading indicator over the GridView if we're in the loading state
+              if (state.status == FetchDataStatus.loading)
+                const Center(
+                  child: Skeletonizer(
+                    enabled: true,
+                    child: BazUiCircularProgressIndicator(),
+                  ),
+                ),
+            ],
+          );
+        },
+      ),
     );
   }
 }

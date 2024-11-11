@@ -26,21 +26,25 @@ class IsarService {
     });
   }
 
-  Future<bool> isLoggedIn() async {
+  Future<bool> isUserLoggedIn() async {
     final isar = await db;
-    final user = await isar.users.get(0);
-    return user != null && user.isLoggedIn;
+    final users =
+        await isar.users.where().filter().isLoggedInEqualTo(true).findAll();
+    return users.isNotEmpty;
   }
 
   Future<User?> getUser() async {
     final isar = await db;
-    return await isar.users.get(0);
+    final users =
+        await isar.users.where().filter().isLoggedInEqualTo(true).findAll();
+    return users.isNotEmpty ? users.first : null;
   }
 
-  Future<void> logout() async {
+  Future<void> logoutDB() async {
     final isar = await db;
     await isar.writeTxn(() async {
-      final user = await isar.users.get(0);
+      final user =
+          await isar.users.where().filter().isLoggedInEqualTo(true).findFirst();
       if (user != null) {
         user.isLoggedIn = false;
         await isar.users.put(user);

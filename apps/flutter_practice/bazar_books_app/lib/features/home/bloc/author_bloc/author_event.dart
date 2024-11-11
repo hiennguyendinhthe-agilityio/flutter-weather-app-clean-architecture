@@ -6,8 +6,6 @@ sealed class AuthorEvent {
 
 class GetAuthorsEvent extends AuthorEvent {}
 
-class FetchAllAuthorsEvent extends AuthorEvent {}
-
 class FetchAuthorProfileEvent extends AuthorEvent {
   final String id;
 

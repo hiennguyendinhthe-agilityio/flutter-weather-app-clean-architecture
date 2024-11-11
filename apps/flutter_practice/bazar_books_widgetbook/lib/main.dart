@@ -5,10 +5,8 @@ import 'package:bazar_books_app/di.dart';
 import 'package:bazar_books_design/core/resources/l10n_generated/l10n.dart';
 import 'package:bazar_books_design/themes/app_theme.dart';
 import 'package:bazar_books_widgetbook/screens/author_profile.dart';
-import 'package:bazar_books_widgetbook/screens/authors.dart';
 import 'package:bazar_books_widgetbook/screens/products.dart';
 import 'package:bazar_books_widgetbook/screens/sign_in.dart';
-import 'package:bazar_books_widgetbook/screens/vendors.dart';
 import 'package:bazar_books_widgetbook/themes/colors.widgetbooks.dart';
 import 'package:bazar_books_widgetbook/themes/icon.widgetbooks.dart';
 import 'package:bazar_books_widgetbook/themes/typography.widgetbooks.dart';
@@ -117,8 +115,8 @@ class BazUiDesignWidgetbooks extends StatelessWidget {
           children: [
             loginScreenWidgetbooks(),
             homePageWidgetbooks(),
-            authorsScreenWidgetbooks(),
-            vendorsScreenWidgetbooks(),
+            // authorsScreenWidgetbooks(),
+            // vendorsScreenWidgetbooks(),
             authorProfileScreenWidgetbooks(),
           ],
         ),

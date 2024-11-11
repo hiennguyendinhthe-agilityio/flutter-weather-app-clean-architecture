@@ -13,15 +13,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<TogglePasswordVisibilityEvent>(_handleOnTogglePasswordVisibilityEvent);
     on<LogInRequested>(_onLogInRequested);
     on<SignUpSubmitted>(_onSignUpSubmitted);
-    // on<CheckEmailEvent>(_onCheckEmail);
+    on<LogoutRequested>(_onLogOutRequested);
   }
 
   Future<void> _onAppStarted(AppStarted event, Emitter<AuthState> emit) async {
     emit(AuthenticationLoading());
     final isLoggedIn = await authenticationRepository.isLoggedIn();
+
     if (isLoggedIn) {
       final user = await authenticationRepository.getCurrentUser();
-      emit(Authenticated(user!));
+      if (user != null) {
+        emit(Authenticated(user));
+      } else {
+        emit(Unauthenticated());
+      }
     } else {
       emit(Unauthenticated());
     }
@@ -77,5 +82,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     } catch (e) {
       emit(AuthenticationFailure(ErrorHandler.handle(e).failure.message));
     }
+  }
+
+  Future<void> _onLogOutRequested(
+      LogoutRequested event, Emitter<AuthState> emit) async {
+    emit(AuthenticationLoading());
+    await authenticationRepository.logOut();
+    emit(Unauthenticated());
   }
 }

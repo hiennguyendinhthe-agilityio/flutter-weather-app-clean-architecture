@@ -1,7 +1,7 @@
 import 'package:bazar_books_app/di.dart';
 import 'package:bazar_books_app/features/home/bloc/data_state.dart';
 import 'package:bazar_books_app/features/home/bloc/detail_bloc/bloc/detail_bloc.dart';
-import 'package:bazar_books_app/features/home/data/repository.dart';
+import 'package:bazar_books_app/features/home/data/home_repository.dart';
 import 'package:bazar_books_design/constants.dart';
 import 'package:bazar_books_design/core/core.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
@@ -24,7 +24,7 @@ class ProductDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => DetailBloc(productRepository: getIt<Repository>())
+      create: (_) => DetailBloc(productRepository: getIt<HomeRepository>())
         ..add(FetchProductDetailsEvent(productId)),
       child: BlocBuilder<DetailBloc, DetailState>(
         builder: (context, state) {

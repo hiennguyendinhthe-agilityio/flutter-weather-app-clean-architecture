@@ -30,12 +30,18 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Check the authors"),
         "authorsTtile": MessageLookupByLibrary.simpleMessage("Authors"),
         "booksTabBar": MessageLookupByLibrary.simpleMessage("Books"),
+        "congratulationSubTitle": MessageLookupByLibrary.simpleMessage(
+            "your account is complete, please enjoy the best menu from us."),
+        "congratulationTitle":
+            MessageLookupByLibrary.simpleMessage("Congratulation!"),
         "continueButton":
             MessageLookupByLibrary.simpleMessage("Continue shopping"),
         "detailMenuDescription": MessageLookupByLibrary.simpleMessage(
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Viverra dignissim ac ac ac."),
         "detailMenuGoodDayTitle":
             MessageLookupByLibrary.simpleMessage("GoodDay"),
+        "emailAlreadyExistsMessage":
+            MessageLookupByLibrary.simpleMessage("Email Already Exists"),
         "errorBadRequest": MessageLookupByLibrary.simpleMessage(
             "Failure, API rejected request"),
         "errorCache": MessageLookupByLibrary.simpleMessage("Cache error"),
@@ -54,7 +60,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "errorNotFound":
             MessageLookupByLibrary.simpleMessage("Not found error"),
         "errorRecieve": MessageLookupByLibrary.simpleMessage("Recieve error"),
-        "errorRoute": MessageLookupByLibrary.simpleMessage("Page Not Found"),
         "errorSendTimeout": MessageLookupByLibrary.simpleMessage(
             "Send timeout in connection with API server"),
         "errorTimeout": MessageLookupByLibrary.simpleMessage("Timeout error"),
@@ -72,6 +77,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Category"),
         "generalTitleHome": MessageLookupByLibrary.simpleMessage("Home"),
         "generalTitleProfile": MessageLookupByLibrary.simpleMessage("Profile"),
+        "getStartedTitle": MessageLookupByLibrary.simpleMessage("Get Started"),
         "homePageBestVendors":
             MessageLookupByLibrary.simpleMessage("Best Vendors"),
         "homePageProductEmpty":
@@ -96,6 +102,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "signInPageLogin": MessageLookupByLibrary.simpleMessage("Login"),
         "signInPageOrWith": MessageLookupByLibrary.simpleMessage("Or with"),
         "signInPagePassword": MessageLookupByLibrary.simpleMessage("Password"),
+        "signInPageSignIn": MessageLookupByLibrary.simpleMessage("Sign In"),
         "signInPageSignUp": MessageLookupByLibrary.simpleMessage("Sign Up"),
         "signInPageWelcomeBack":
             MessageLookupByLibrary.simpleMessage("Welcome Back 👋"),
@@ -109,6 +116,17 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Your email"),
         "signInPageYourPassword":
             MessageLookupByLibrary.simpleMessage("Your password"),
+        "signUnPageHaveAnAccount":
+            MessageLookupByLibrary.simpleMessage("Have an account?"),
+        "signUpPageName": MessageLookupByLibrary.simpleMessage("Name"),
+        "signUpPageRegister": MessageLookupByLibrary.simpleMessage("Register"),
+        "signUpPageSubtitle": MessageLookupByLibrary.simpleMessage(
+            "Create account and choose favorite menu"),
+        "signUpPageTerms":
+            MessageLookupByLibrary.simpleMessage("Terms, Data Policy."),
+        "signUpPageTextBottom": MessageLookupByLibrary.simpleMessage(
+            "By clicking Register, you agree to our "),
+        "signUpPageYourName": MessageLookupByLibrary.simpleMessage("Your Name"),
         "specialForYouTabBar":
             MessageLookupByLibrary.simpleMessage("Special for you"),
         "specialOffer": MessageLookupByLibrary.simpleMessage("Special Offer"),

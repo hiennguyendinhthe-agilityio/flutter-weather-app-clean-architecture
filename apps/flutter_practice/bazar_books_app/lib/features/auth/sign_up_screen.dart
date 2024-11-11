@@ -2,7 +2,6 @@ import 'package:bazar_books_app/core/l10n_generated/l10n.dart';
 import 'package:bazar_books_app/features/auth/blocs/auth_bloc.dart';
 import 'package:bazar_books_app/features/auth/blocs/auth_event.dart';
 import 'package:bazar_books_app/features/auth/blocs/auth_state.dart';
-import 'package:bazar_books_app/features/auth/congratulation_screen.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
 import 'package:bazar_books_design/constants.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
@@ -11,6 +10,7 @@ import 'package:bazar_books_design/widgets/texts/texts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:go_router/go_router.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -144,12 +144,7 @@ class _LoginScreenState extends State<SignUpScreen> {
                     },
                     listener: (context, state) {
                       if (state is SignUpSuccess) {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const CongratulationsScreen(),
-                          ),
-                        );
+                        context.go('/congratulations');
                       } else if (state is SignUpFailure) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text(state.error)),
@@ -176,7 +171,7 @@ class _LoginScreenState extends State<SignUpScreen> {
                           fontSize: 14.0.sp,
                         ),
                         onPressed: () {
-                          Navigator.pop(context, '/login');
+                          context.go('/login');
                         },
                       ),
                     ],

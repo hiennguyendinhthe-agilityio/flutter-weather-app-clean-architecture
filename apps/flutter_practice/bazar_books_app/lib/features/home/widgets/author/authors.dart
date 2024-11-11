@@ -12,7 +12,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../bloc/author_bloc/author_bloc.dart';
 import '../../bloc/data_state.dart';
-import '../../data/repository.dart';
+import '../../data/home_repository.dart';
 
 class Authors extends StatelessWidget {
   const Authors({
@@ -89,65 +89,72 @@ class ListViewAuthors extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AuthorBloc, FetchDataState<Author>>(
-      builder: (context, state) {
-        if (state.status == FetchDataStatus.error) {
-          return Text(
-            textAlign: TextAlign.center,
-            'Error: ${state.errorMessage}',
-          );
-        }
+    return BlocProvider(
+      create: (BuildContext context) =>
+          AuthorBloc(repository: getIt<HomeRepository>())
+            ..add(
+              GetAuthorsEvent(),
+            ),
+      child: BlocBuilder<AuthorBloc, FetchDataState<Author>>(
+        builder: (context, state) {
+          if (state.status == FetchDataStatus.error) {
+            return Text(
+              textAlign: TextAlign.center,
+              'Error: ${state.errorMessage}',
+            );
+          }
 
-        final List<Author>? filteredAuthors = _filteredAuthors(state);
+          final List<Author>? filteredAuthors = _filteredAuthors(state);
 
-        final int itemCount = state.status == FetchDataStatus.loaded
-            ? filteredAuthors?.length ?? 0
-            : 3;
+          final int itemCount = state.status == FetchDataStatus.loaded
+              ? filteredAuthors?.length ?? 0
+              : 3;
 
-        return Skeletonizer(
-          enabled: state.status == FetchDataStatus.loading,
-          child: (state.status == FetchDataStatus.loaded &&
-                  (filteredAuthors?.isEmpty ?? true))
-              ? BazUiEmpty(
-                  onPressed: () {
-                    context.read<AuthorBloc>().add(FetchAllAuthorsEvent());
-                  },
-                )
-              : ListView.builder(
-                  itemCount: itemCount,
-                  itemBuilder: (_, index) {
-                    final Author author =
-                        state.status == FetchDataStatus.loading ||
-                                filteredAuthors == null
-                            ? Author(id: index.toString())
-                            : filteredAuthors[index];
+          return Skeletonizer(
+            enabled: state.status == FetchDataStatus.loading,
+            child: (state.status == FetchDataStatus.loaded &&
+                    (filteredAuthors?.isEmpty ?? true))
+                ? BazUiEmpty(
+                    onPressed: () {
+                      context.read<AuthorBloc>().add(GetAuthorsEvent());
+                    },
+                  )
+                : ListView.builder(
+                    itemCount: itemCount,
+                    itemBuilder: (_, index) {
+                      final Author author =
+                          state.status == FetchDataStatus.loading ||
+                                  filteredAuthors == null
+                              ? Author(id: index.toString())
+                              : filteredAuthors[index];
 
-                    return BazUiListTile(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => BlocProvider(
-                              create: (BuildContext context) =>
-                                  AuthorBloc(repository: getIt<Repository>())
-                                    ..add(
-                                      FetchAllAuthorsEvent(),
-                                    ),
-                              child: AuthorProfile(
-                                authorId: author.id,
+                      return BazUiListTile(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BlocProvider(
+                                create: (BuildContext context) => AuthorBloc(
+                                    repository: getIt<HomeRepository>())
+                                  ..add(
+                                    GetAuthorsEvent(),
+                                  ),
+                                child: AuthorProfile(
+                                  authorId: author.id,
+                                ),
                               ),
                             ),
-                          ),
-                        );
-                      },
-                      leading: author.avatarUrl,
-                      title: author.fullName,
-                      subtitle: author.biography,
-                    );
-                  },
-                ),
-        );
-      },
+                          );
+                        },
+                        leading: author.avatarUrl,
+                        title: author.fullName,
+                        subtitle: author.biography,
+                      );
+                    },
+                  ),
+          );
+        },
+      ),
     );
   }
 

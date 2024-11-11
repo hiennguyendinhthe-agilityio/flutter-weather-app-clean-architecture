@@ -26,13 +26,13 @@ class CongratulationsScreen extends StatelessWidget {
               S.of(context).congratulationSubTitle,
               style: const TextStyle(fontSize: 24),
             ),
-            const SizedBox(height: 40),
+            const SizedBox(height: 20),
             BazUiElevatedButton(
               onPressed: () {
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(builder: (context) => const LoginScreen()),
-                  (route) => false,
+                  (route) => true,
                 );
               },
               text: S.of(context).getStartedTitle,

@@ -63,10 +63,10 @@ int _userEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  bytesCount += 3 + object.email.length * 3;
-  bytesCount += 3 + object.name.length * 3;
-  bytesCount += 3 + object.password.length * 3;
-  bytesCount += 3 + object.userId.length * 3;
+  bytesCount += 3 + object.email!.length * 3;
+  bytesCount += 3 + object.name!.length * 3;
+  bytesCount += 3 + object.password!.length * 3;
+  bytesCount += 3 + object.userId!.length * 3;
   return bytesCount;
 }
 
