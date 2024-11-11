@@ -12,42 +12,42 @@ import 'intl/messages_all.dart';
 // ignore_for_file: join_return_with_assignment, prefer_final_in_for_each
 // ignore_for_file: avoid_redundant_argument_values, avoid_escaping_inner_quotes
 
-class BazUiS {
-  BazUiS();
+class S {
+  S();
 
-  static BazUiS? _current;
+  static S? _current;
 
-  static BazUiS get current {
+  static S get current {
     assert(_current != null,
-        'No instance of BazUiS was loaded. Try to initialize the BazUiS delegate before accessing BazUiS.current.');
+        'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.');
     return _current!;
   }
 
   static const AppLocalizationDelegate delegate = AppLocalizationDelegate();
 
-  static Future<BazUiS> load(Locale locale) {
+  static Future<S> load(Locale locale) {
     final name = (locale.countryCode?.isEmpty ?? false)
         ? locale.languageCode
         : locale.toString();
     final localeName = Intl.canonicalizedLocale(name);
     return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
-      final instance = BazUiS();
-      BazUiS._current = instance;
+      final instance = S();
+      S._current = instance;
 
       return instance;
     });
   }
 
-  static BazUiS of(BuildContext context) {
-    final instance = BazUiS.maybeOf(context);
+  static S of(BuildContext context) {
+    final instance = S.maybeOf(context);
     assert(instance != null,
-        'No instance of BazUiS present in the widget tree. Did you add BazUiS.delegate in localizationsDelegates?');
+        'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?');
     return instance!;
   }
 
-  static BazUiS? maybeOf(BuildContext context) {
-    return Localizations.of<BazUiS>(context, BazUiS);
+  static S? maybeOf(BuildContext context) {
+    return Localizations.of<S>(context, S);
   }
 
   /// `There was a temporary problem launch email system. Please try again later.`
@@ -190,6 +190,106 @@ class BazUiS {
     );
   }
 
+  /// `Sign In`
+  String get signInPageSignIn {
+    return Intl.message(
+      'Sign In',
+      name: 'signInPageSignIn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `your account is complete, please enjoy the best menu from us.`
+  String get congratulationSubTitle {
+    return Intl.message(
+      'your account is complete, please enjoy the best menu from us.',
+      name: 'congratulationSubTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Register`
+  String get signUpPageRegister {
+    return Intl.message(
+      'Register',
+      name: 'signUpPageRegister',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Name`
+  String get signUpPageName {
+    return Intl.message(
+      'Name',
+      name: 'signUpPageName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your Name`
+  String get signUpPageYourName {
+    return Intl.message(
+      'Your Name',
+      name: 'signUpPageYourName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Congratulation!`
+  String get congratulationTitle {
+    return Intl.message(
+      'Congratulation!',
+      name: 'congratulationTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Have an account?`
+  String get signUnPageHaveAnAccount {
+    return Intl.message(
+      'Have an account?',
+      name: 'signUnPageHaveAnAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create account and choose favorite menu`
+  String get signUpPageSubtitle {
+    return Intl.message(
+      'Create account and choose favorite menu',
+      name: 'signUpPageSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `By clicking Register, you agree to our `
+  String get signUpPageTextBottom {
+    return Intl.message(
+      'By clicking Register, you agree to our ',
+      name: 'signUpPageTextBottom',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Terms, Data Policy.`
+  String get signUpPageTerms {
+    return Intl.message(
+      'Terms, Data Policy.',
+      name: 'signUpPageTerms',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Top of Week`
   String get homePageTopOfWeek {
     return Intl.message(
@@ -205,6 +305,16 @@ class BazUiS {
     return Intl.message(
       'Best Vendors',
       name: 'homePageBestVendors',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Get Started`
+  String get getStartedTitle {
+    return Intl.message(
+      'Get Started',
+      name: 'getStartedTitle',
       desc: '',
       args: [],
     );
@@ -385,6 +495,16 @@ class BazUiS {
     return Intl.message(
       'Default error',
       name: 'errorDefault',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Email Already Exists`
+  String get emailAlreadyExistsMessage {
+    return Intl.message(
+      'Email Already Exists',
+      name: 'emailAlreadyExistsMessage',
       desc: '',
       args: [],
     );
@@ -679,19 +799,9 @@ class BazUiS {
       args: [],
     );
   }
-
-  /// `Page Not Found`
-  String get errorRoute {
-    return Intl.message(
-      'Page Not Found',
-      name: 'errorRoute',
-      desc: '',
-      args: [],
-    );
-  }
 }
 
-class AppLocalizationDelegate extends LocalizationsDelegate<BazUiS> {
+class AppLocalizationDelegate extends LocalizationsDelegate<S> {
   const AppLocalizationDelegate();
 
   List<Locale> get supportedLocales {
@@ -703,7 +813,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<BazUiS> {
   @override
   bool isSupported(Locale locale) => _isSupported(locale);
   @override
-  Future<BazUiS> load(Locale locale) => BazUiS.load(locale);
+  Future<S> load(Locale locale) => S.load(locale);
   @override
   bool shouldReload(AppLocalizationDelegate old) => false;
 

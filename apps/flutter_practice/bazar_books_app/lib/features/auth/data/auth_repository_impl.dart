@@ -34,7 +34,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   Future<void> logOut() async {
-    await isarService.logout();
+    await isarService.logoutDB();
   }
 
   Future<bool> signUp(String name, String email, String password) async {

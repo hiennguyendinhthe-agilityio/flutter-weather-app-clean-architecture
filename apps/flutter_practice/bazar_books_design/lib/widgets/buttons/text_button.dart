@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 class BazUiTextButton extends StatelessWidget {
   const BazUiTextButton({
     super.key,
-    required this.onSeeAllPressed,
+    required this.onPressed,
     this.text = '',
     this.style,
   });
 
-  final VoidCallback onSeeAllPressed;
+  final VoidCallback onPressed;
   final String text;
   final TextStyle? style;
 
@@ -19,7 +19,7 @@ class BazUiTextButton extends StatelessWidget {
       style: const ButtonStyle(
           padding: WidgetStatePropertyAll(EdgeInsets.zero),
           alignment: Alignment.centerRight),
-      onPressed: onSeeAllPressed,
+      onPressed: onPressed,
       child: Text(
         text,
         style: style ?? context.textTheme.bodySmall,

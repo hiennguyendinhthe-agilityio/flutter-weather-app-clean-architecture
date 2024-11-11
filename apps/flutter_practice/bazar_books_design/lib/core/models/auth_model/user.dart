@@ -6,17 +6,17 @@ part 'user.g.dart';
 class User {
   Id id = Isar.autoIncrement;
 
-  late String userId;
-  late String name;
-  late String email;
-  late String password;
+  late String? userId;
+  late String? name;
+  late String? email;
+  late String? password;
   late bool isLoggedIn;
 
   User({
-    required this.userId,
-    required this.name,
-    required this.email,
-    required this.password,
+    this.userId,
+    this.name,
+    this.email,
+    this.password,
     this.isLoggedIn = false,
   });
 

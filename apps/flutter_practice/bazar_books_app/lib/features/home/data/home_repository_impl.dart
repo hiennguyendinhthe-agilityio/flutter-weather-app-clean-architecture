@@ -2,13 +2,13 @@ import 'package:bazar_books_design/bazar_books_design.dart';
 import 'package:flutter/material.dart';
 
 import '../bloc/data_state.dart';
-import 'repository.dart';
+import 'home_repository.dart';
 
-class RepositoryImpl implements Repository {
+class HomeRepositoryImpl implements HomeRepository {
   final ApiService apiService;
   final ProductService productRepository;
 
-  RepositoryImpl(this.apiService, this.productRepository);
+  HomeRepositoryImpl(this.apiService, this.productRepository);
 
   @override
   Future<List<Product>> fetchProducts() async {

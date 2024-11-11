@@ -165,6 +165,11 @@ class BazUiBuiltInImage {
     Color? color,
     double? width,
   }) icStar = _BazIcStar.new;
+
+  static Widget Function({
+    Color? color,
+    double? width,
+  }) imgCongratulation = _BazImgCongratulation.new;
 }
 
 class _BazSlpashScreenImage extends StatelessWidget {
@@ -455,6 +460,23 @@ class _BazIcStar extends StatelessWidget {
     return BazUiAssetImage(
       type: ImageLoaderType.assetSVG,
       path: Assets.images.icOgraphyStar.path,
+      width: width,
+      color: color,
+    );
+  }
+}
+
+class _BazImgCongratulation extends StatelessWidget {
+  const _BazImgCongratulation({this.color, this.width});
+
+  final Color? color;
+  final double? width;
+
+  @override
+  Widget build(BuildContext context) {
+    return BazUiAssetImage(
+      type: ImageLoaderType.assetSVG,
+      path: Assets.images.imgCongratulation.path,
       width: width,
       color: color,
     );

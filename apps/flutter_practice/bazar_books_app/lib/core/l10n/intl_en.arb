@@ -1,5 +1,5 @@
 {
-    "@@locale": "en_US",
+    "@@locale": "en_US", 
     "errorEmailClient": "There was a temporary problem launch email system. Please try again later.",
     "signInPageWelcomeBack": "Welcome Back 👋",
     "signInPageLogin": "Login",
@@ -14,8 +14,19 @@
     "signInPageWithApple": "Sign in with Apple",
     "signInPageDontHaveAnAccount": "Don’t have an account?",
     "signInPageSignUp": "Sign Up",
+    "signInPageSignIn": "Sign In",
+    "congratulationSubTitle": "your account is complete, please enjoy the best menu from us.",
+    "signUpPageRegister": "Register",
+    "signUpPageName": "Name",        
+    "signUpPageYourName": "Your Name",   
+    "congratulationTitle": "Congratulation!", 
+    "signUnPageHaveAnAccount": "Have an account?",
+    "signUpPageSubtitle": "Create account and choose favorite menu",
+    "signUpPageTextBottom": "By clicking Register, you agree to our ",
+    "signUpPageTerms": "Terms, Data Policy.",
     "homePageTopOfWeek": "Top of Week", 
     "homePageBestVendors": "Best Vendors",
+    "getStartedTitle": "Get Started",
     "authorsTtile": "Authors",
     "generalLoading": "Loading...",
     "generalSeeAll": "See all",
@@ -34,6 +45,7 @@
     "errorTimeout": "Timeout error",
     "errorRecieve": "Recieve error",
     "errorDefault": "Default error",
+    "emailAlreadyExistsMessage": "Email Already Exists",
     "errorCache": "Cache error",
     "errorSendTimeout": "Send timeout in connection with API server",
     "generalListEmpty": "No content available",
@@ -63,6 +75,5 @@
     "poemsTabBar": "Poems",
     "specialForYouTabBar": "Special for you",
     "stationeryTabBar": "Stationery",
-    "authenticationFailure": "Invalid email or password.",
-    "errorRoute": "Page Not Found"
+    "authenticationFailure": "Invalid email or password."
 }
