@@ -1,6 +1,5 @@
-import 'package:equatable/equatable.dart';
-
-class Vendor extends Equatable {
+// @JsonCodable()
+class Vendor {
   const Vendor({
     required this.id,
     this.headlines,
@@ -16,29 +15,12 @@ class Vendor extends Equatable {
   final int? starRating;
   final String? publications;
 
-  factory Vendor.fromJson(Map<String, dynamic> json) {
-    return Vendor(
-      id: json['id'],
-      headlines: json['headlines'],
-      numberStar: json['numberStar'],
-      imageUrl: json['imageUrl'],
-      starRating: json['starRating'],
-      publications: json['publications'],
-    );
-  }
-  static List<Vendor> listFromJson(List<dynamic> json) => json
-      .map((dynamic postJson) => Vendor.fromJson(
-            postJson as Map<String, dynamic>,
-          ))
-      .toList();
-
-  @override
-  List<Object?> get props => [
-        id,
-        headlines,
-        numberStar,
-        imageUrl,
-        starRating,
-        publications,
-      ];
+  factory Vendor.fromJson(Map<String, dynamic> json) => Vendor(
+        id: json['id'],
+        headlines: json['headlines'],
+        numberStar: json['numberStar'],
+        imageUrl: json['imageUrl'],
+        starRating: json['starRating'],
+        publications: json['publications'],
+      );
 }

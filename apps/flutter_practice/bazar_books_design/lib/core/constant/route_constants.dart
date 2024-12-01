@@ -8,5 +8,7 @@ class RoutePaths {
   static const String profile = '/profile';
   static const String productDetails = 'productDetails';
   static const String vendors = 'vendors';
+  static const String account = 'account';
   static const String authors = 'authors';
+  static const String search = 'search';
 }

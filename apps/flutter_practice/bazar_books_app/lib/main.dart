@@ -1,7 +1,6 @@
 import 'package:bazar_books_app/core/l10n_generated/l10n.dart';
 import 'package:bazar_books_app/di.dart';
 import 'package:bazar_books_app/features/auth/blocs/auth_bloc.dart';
-import 'package:bazar_books_app/features/auth/blocs/auth_event.dart';
 import 'package:bazar_books_app/features/auth/data/auth_repository_impl.dart';
 import 'package:bazar_books_app/features/home/home_page.dart';
 import 'package:bazar_books_app/routes.dart';
@@ -47,11 +46,15 @@ class _MainAppState extends State<MainApp> {
       builder: (_, child) {
         final authRepository = getIt<AuthRepositoryImpl>();
 
-        return BlocProvider(
-          create: (context) => AuthBloc(authRepository)
-            ..add(
-              AppStarted(),
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => AuthBloc(authRepository)
+                ..add(
+                  IsLoggedIn(),
+                ),
             ),
+          ],
           child: MaterialApp.router(
             routerConfig: router,
             themeMode: ThemeMode.light,

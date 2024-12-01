@@ -1,22 +1,25 @@
-import 'package:bazar_books_app/core/l10n_generated/l10n.dart';
-import 'package:bazar_books_app/features/auth/blocs/auth_event.dart';
-import 'package:bazar_books_app/features/auth/blocs/auth_state.dart';
 import 'package:bazar_books_app/features/auth/data/auth_repository_impl.dart';
-import 'package:bazar_books_design/core/network/error_handler.dart';
+import 'package:bazar_books_design/core/core.dart';
+import 'package:bazar_books_design/core/utils/error_messages.dart';
+import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+part 'auth_event.dart';
+part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepositoryImpl authenticationRepository;
 
   AuthBloc(this.authenticationRepository) : super(AuthenticationInitial()) {
-    on<AppStarted>(_onAppStarted);
+    on<IsLoggedIn>(_isLoggedIn);
     on<TogglePasswordVisibilityEvent>(_handleOnTogglePasswordVisibilityEvent);
     on<LogInRequested>(_onLogInRequested);
     on<SignUpSubmitted>(_onSignUpSubmitted);
     on<LogoutRequested>(_onLogOutRequested);
   }
 
-  Future<void> _onAppStarted(AppStarted event, Emitter<AuthState> emit) async {
+  Future<void> _isLoggedIn(IsLoggedIn event, Emitter<AuthState> emit) async {
     emit(AuthenticationLoading());
     final isLoggedIn = await authenticationRepository.isLoggedIn();
 
@@ -52,12 +55,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (user != null) {
         emit(AuthenticationSuccess(user));
       } else {
-        emit(AuthenticationFailure(
-          S.current.authenticationFailure,
-        ));
+        emit(
+          AuthenticationFailure(
+            ErrorMessages.invalidEmailOrPassword,
+          ),
+        );
       }
     } catch (e) {
-      emit(AuthenticationFailure(ErrorHandler.handle(e).failure.message));
+      emit(
+        AuthenticationFailure(ErrorHandler.handle(e).failure.message),
+      );
     }
   }
 
@@ -66,6 +73,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthenticationLoading());
 
     try {
+      final isEmailDuplicate =
+          await authenticationRepository.isEmailDuplicateFromAPI(event.email);
+      if (isEmailDuplicate) {
+        emit(SignUpFailure(
+            ErrorHandler.handle(isEmailDuplicate).failure.message));
+        return;
+      }
+
       final response = await authenticationRepository.signUp(
         event.name,
         event.email,
@@ -73,14 +88,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       );
 
       if (response) {
-        emit(SignUpSuccess());
-      } else {
-        emit(SignUpFailure(
-          S.current.authenticationFailure,
+        await authenticationRepository.saveUser(User(
+          name: event.name,
+          email: event.email,
+          password: event.password,
+          isLoggedIn: true,
         ));
+
+        emit(SignUpSuccess());
       }
     } catch (e) {
-      emit(AuthenticationFailure(ErrorHandler.handle(e).failure.message));
+      debugPrint(e.toString());
+      emit(SignUpFailure(
+        e is Failure ? e.message : ErrorMessages.emailAlreadyExists,
+      ));
     }
   }
 

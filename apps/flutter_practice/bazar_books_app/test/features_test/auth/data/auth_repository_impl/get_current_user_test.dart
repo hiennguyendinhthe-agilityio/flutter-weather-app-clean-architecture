@@ -18,7 +18,7 @@ void main() {
 
   group('getCurrentUser', () {
     test('Return User when user is in database', () async {
-      when(() => mockIsarService.getUser())
+      when(() => mockIsarService.getLoggedInUser())
           .thenAnswer((_) async => AuthMocks.getMockCurrentUser);
 
       final result = await authRepository.getCurrentUser();
@@ -27,7 +27,8 @@ void main() {
     });
 
     test('Return null when there is no user in the database', () async {
-      when(() => mockIsarService.getUser()).thenAnswer((_) async => null);
+      when(() => mockIsarService.getLoggedInUser())
+          .thenAnswer((_) async => null);
 
       final result = await authRepository.getCurrentUser();
 
@@ -35,7 +36,7 @@ void main() {
     });
 
     test('Throw Exception when isarService.getUser fails', () async {
-      when(() => mockIsarService.getUser())
+      when(() => mockIsarService.getLoggedInUser())
           .thenThrow(Exception('Database error'));
 
       expect(

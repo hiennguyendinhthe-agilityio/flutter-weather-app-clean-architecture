@@ -1,8 +1,9 @@
 import 'package:bazar_books_app/core/l10n_generated/l10n.dart';
-import 'package:bazar_books_app/features/auth/sign_in.dart';
+import 'package:bazar_books_design/core/constant/route_constants.dart';
 import 'package:bazar_books_design/widgets/buttons/elevated_button.dart';
 import 'package:bazar_books_design/widgets/images/image.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class CongratulationsScreen extends StatelessWidget {
   const CongratulationsScreen({super.key});
@@ -29,11 +30,7 @@ class CongratulationsScreen extends StatelessWidget {
             const SizedBox(height: 20),
             BazUiElevatedButton(
               onPressed: () {
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => const LoginScreen()),
-                  (route) => true,
-                );
+                context.go(RoutePaths.home);
               },
               text: S.of(context).getStartedTitle,
             ),

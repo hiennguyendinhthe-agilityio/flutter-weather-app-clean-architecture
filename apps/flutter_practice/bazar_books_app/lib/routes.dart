@@ -1,18 +1,24 @@
+import 'package:bazar_books_app/di.dart';
 import 'package:bazar_books_app/features/auth/blocs/auth_bloc.dart';
 import 'package:bazar_books_app/features/auth/congratulation_screen.dart';
 import 'package:bazar_books_app/features/auth/sign_in.dart';
-import 'package:bazar_books_app/features/auth/sign_up_screen.dart';
+import 'package:bazar_books_app/features/auth/sign_up.dart';
 import 'package:bazar_books_app/features/cart/cart_screen.dart';
-import 'package:bazar_books_app/features/category/category_screen.dart';
+import 'package:bazar_books_app/features/category/screen/category_screen.dart';
+import 'package:bazar_books_app/features/category/search/bloc/search_bloc.dart';
+import 'package:bazar_books_app/features/category/search/data/search_repository.dart';
 import 'package:bazar_books_app/features/home/home_page.dart';
 import 'package:bazar_books_app/features/home/widgets/author/authors.dart';
 import 'package:bazar_books_app/features/home/widgets/vendors/vendors.dart';
 import 'package:bazar_books_app/features/profile/profile_screen.dart';
+import 'package:bazar_books_app/features/profile/screens/my_account_screen.dart';
 import 'package:bazar_books_design/core/core.dart';
 import 'package:bazar_books_design/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
+import 'features/category/search/screen/search_screen.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: 'root');
@@ -23,7 +29,9 @@ Future<String?> _guard(BuildContext context, GoRouterState state) async {
   final authBloc = BlocProvider.of<AuthBloc>(context);
   final isLoggedIn = await authBloc.authenticationRepository.isLoggedIn();
 
-  if (!isLoggedIn && state.uri.toString() != RoutePaths.signup) {
+  if (!isLoggedIn &&
+      state.uri.toString() != RoutePaths.signup &&
+      state.uri.toString() != RoutePaths.congratulations) {
     return RoutePaths.login;
   }
 
@@ -73,6 +81,18 @@ final GoRouter router = GoRouter(
           builder: (BuildContext context, GoRouterState state) {
             return const HomePage();
           },
+          pageBuilder: (context, state) {
+            return CustomTransitionPage(
+              child: const HomePage(),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return FadeTransition(
+                  opacity: animation,
+                  child: child,
+                );
+              },
+            );
+          },
           routes: [
             GoRoute(
               path: RoutePaths.vendors,
@@ -96,6 +116,33 @@ final GoRouter router = GoRouter(
           builder: (BuildContext context, GoRouterState state) {
             return const CategoryScreen();
           },
+          routes: [
+            GoRoute(
+              path: RoutePaths.search,
+              builder: (BuildContext context, GoRouterState state) {
+                return BlocProvider(
+                  create: (BuildContext context) =>
+                      SearchBloc(searchRepository: getIt<SearchRepository>()),
+                  child: const SearchScreen(),
+                );
+              },
+            ),
+          ],
+          pageBuilder: (context, state) {
+            return CustomTransitionPage(
+              child: const CategoryScreen(),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return SlideTransition(
+                  position: Tween<Offset>(
+                    begin: const Offset(1.0, 0.0),
+                    end: Offset.zero,
+                  ).animate(animation),
+                  child: child,
+                );
+              },
+            );
+          },
         ),
 
         /// The third screen to display in the bottom navigation bar.
@@ -104,11 +151,43 @@ final GoRouter router = GoRouter(
           builder: (BuildContext context, GoRouterState state) {
             return const CartScreen();
           },
+          pageBuilder: (context, state) {
+            return CustomTransitionPage(
+              child: const CartScreen(),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return ScaleTransition(
+                  scale: animation,
+                  child: child,
+                );
+              },
+            );
+          },
         ),
         GoRoute(
           path: RoutePaths.profile,
           builder: (BuildContext context, GoRouterState state) {
             return const ProfileScreen();
+          },
+          routes: [
+            GoRoute(
+              path: RoutePaths.account,
+              builder: (BuildContext context, GoRouterState state) {
+                return const MyAccountScreen();
+              },
+            ),
+          ],
+          pageBuilder: (context, state) {
+            return CustomTransitionPage(
+              child: const ProfileScreen(),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return FadeTransition(
+                  opacity: animation,
+                  child: child,
+                );
+              },
+            );
           },
         ),
       ],

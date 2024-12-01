@@ -3,9 +3,9 @@ import 'package:bazar_books_app/features/home/bloc/data_state.dart';
 import 'package:bazar_books_app/features/home/bloc/detail_bloc/bloc/detail_bloc.dart';
 import 'package:bazar_books_app/features/home/data/home_repository.dart';
 import 'package:bazar_books_design/constants.dart';
-import 'package:bazar_books_design/core/core.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
 import 'package:bazar_books_design/core/extensions/responsive_extension.dart';
+import 'package:bazar_books_design/core/models/product_model/product_model.dart';
 import 'package:bazar_books_design/core/responsive/size_extension.dart';
 import 'package:bazar_books_design/core/utils/size_type.dart';
 import 'package:bazar_books_design/widgets/widgets.dart';
@@ -15,11 +15,11 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 class ProductDetail extends StatelessWidget {
   const ProductDetail({
-    required this.productId,
+    this.productId,
     super.key,
   });
 
-  final String productId;
+  final String? productId;
 
   @override
   Widget build(BuildContext context) {

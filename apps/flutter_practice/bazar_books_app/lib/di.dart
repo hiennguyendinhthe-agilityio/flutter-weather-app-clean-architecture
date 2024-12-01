@@ -1,5 +1,8 @@
 import 'package:bazar_books_app/features/auth/data/auth_repository.dart';
 import 'package:bazar_books_app/features/auth/data/auth_repository_impl.dart';
+import 'package:bazar_books_app/features/category/data/category_repository.dart';
+import 'package:bazar_books_app/features/category/search/data/search_repository.dart';
+import 'package:bazar_books_app/features/category/search/data/search_repository_impl.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
@@ -24,6 +27,20 @@ Future<void> initGetIt() async {
 
   getIt.registerLazySingleton<HomeRepository>(
     () => HomeRepositoryImpl(
+      getIt<ApiService>(),
+      getIt<ProductService>(),
+    ),
+  );
+
+  getIt.registerLazySingleton<CategoryRepository>(
+    () => CategoryRepositoryImpl(
+      getIt<ApiService>(),
+      getIt<ProductService>(),
+    ),
+  );
+
+  getIt.registerLazySingleton<SearchRepository>(
+    () => SearchRepositoryImpl(
       getIt<ApiService>(),
       getIt<ProductService>(),
     ),

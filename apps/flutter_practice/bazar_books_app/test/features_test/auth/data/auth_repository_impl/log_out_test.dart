@@ -18,22 +18,22 @@ void main() {
 
   group('logOut', () {
     test('Successfully calls logoutDB from isarService', () async {
-      when(() => mockIsarService.logoutDB()).thenAnswer((_) async {});
+      when(() => mockIsarService.logoutUser()).thenAnswer((_) async {});
 
       await authRepository.logOut();
 
-      verify(() => mockIsarService.logoutDB()).called(1);
+      verify(() => mockIsarService.logoutUser()).called(1);
     });
 
     test('Throws Exception when logoutDB fails', () async {
-      when(() => mockIsarService.logoutDB()).thenThrow(AuthMocks.failureMock);
+      when(() => mockIsarService.logoutUser()).thenThrow(AuthMocks.failureMock);
 
       expect(
         () => authRepository.logOut(),
         throwsA(isA<Exception>()),
       );
 
-      verify(() => mockIsarService.logoutDB()).called(1);
+      verify(() => mockIsarService.logoutUser()).called(1);
     });
   });
 }

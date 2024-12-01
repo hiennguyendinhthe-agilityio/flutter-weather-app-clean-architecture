@@ -7,22 +7,14 @@ class ErrorHandler implements Exception {
   late Failure failure;
 
   ErrorHandler.handle(dynamic error) {
-    if (error is DioException) {
-      // dio error so its an error from response of the API or from dio itself
-      failure = _handleError(error);
-    } else {
-      // default error
-      failure = DataSource.DEFAULT.getFailure();
-    }
+    failure = _mapErrorToFailure(error);
   }
-  ErrorHandler.failure(dynamic error) {
+
+  Failure _mapErrorToFailure(dynamic error) {
     if (error is DioException) {
-      // dio error so its an error from response of the API or from dio itself
-      failure = _handleError(error);
-    } else {
-      // default error
-      failure = DataSource.DEFAULT.getFailure();
+      return _handleError(error);
     }
+    return _handleBadResponse(error);
   }
 }
 
@@ -39,9 +31,32 @@ Failure _handleError(DioException error) {
           response: final response?
         )
         when response.statusCode != null && response.statusMessage != null:
-      return Failure(response.statusCode ?? 0, response.data["message"] ?? "");
+      return Failure(response.statusCode ?? 0,
+          message: response.data["message"] ?? "");
     default:
-      return DataSource.DEFAULT.getFailure();
+      return _handleBadResponse(error);
+  }
+}
+
+_handleBadResponse(DioException error) {
+  try {
+    final code = error.response?.statusCode ?? ResponseCode.DEFAULT;
+    switch (code) {
+      case ResponseCode.UNAUTORISED:
+        return DataSource.UNAUTORISED.getFailure();
+      case ResponseCode.FORBIDDEN:
+        return DataSource.FORBIDDEN.getFailure();
+      case ResponseCode.NOT_FOUND:
+        return DataSource.NOT_FOUND.getFailure();
+      case ResponseCode.CONFLICT:
+        return DataSource.CONFLICT.getFailure();
+      case ResponseCode.LOGINFAIL:
+        return DataSource.LOGINFAIL.getFailure();
+      default:
+        DataSource.DEFAULT.getFailure();
+    }
+  } catch (e) {
+    return DataSource.DEFAULT.getFailure();
   }
 }
 
@@ -58,6 +73,8 @@ enum DataSource {
   SEND_TIMEOUT,
   CACHE_ERROR,
   NO_INTERNET_CONNECTION,
+  CONFLICT,
+  LOGINFAIL,
   DEFAULT
 }
 
@@ -67,67 +84,77 @@ extension DataSourceExtension on DataSource {
       case DataSource.SUCCESS:
         return Failure(
           ResponseCode.SUCCESS,
-          BazUiS().generalSuccess,
+          message: BazUiS().generalSuccess,
         );
       case DataSource.NO_CONTENT:
         return Failure(
           ResponseCode.NO_CONTENT,
-          BazUiS().errorNoContent,
+          message: BazUiS().errorNoContent,
         );
       case DataSource.BAD_REQUEST:
         return Failure(
           ResponseCode.BAD_REQUEST,
-          BazUiS().errorBadRequest,
+          message: BazUiS().errorBadRequest,
         );
       case DataSource.FORBIDDEN:
         return Failure(
           ResponseCode.FORBIDDEN,
-          BazUiS().errorForbidden,
+          message: BazUiS().errorForbidden,
         );
       case DataSource.UNAUTORISED:
         return Failure(
           ResponseCode.UNAUTORISED,
-          BazUiS().errorUnauthorized,
+          message: BazUiS().errorUnauthorized,
         );
       case DataSource.NOT_FOUND:
         return Failure(
           ResponseCode.NOT_FOUND,
-          BazUiS().errorNotFound,
+          message: BazUiS().errorNotFound,
         );
       case DataSource.INTERNAL_SERVER_ERROR:
         return Failure(
           ResponseCode.INTERNAL_SERVER_ERROR,
-          BazUiS().errorInternalServer,
+          message: BazUiS().errorInternalServer,
         );
       case DataSource.CONNECT_TIMEOUT:
         return Failure(
           ResponseCode.CONNECT_TIMEOUT,
-          BazUiS().errorTimeout,
+          message: BazUiS().errorTimeout,
         );
       case DataSource.RECIEVE_TIMEOUT:
         return Failure(
           ResponseCode.RECIEVE_TIMEOUT,
-          BazUiS().errorTimeout,
+          message: BazUiS().errorTimeout,
         );
       case DataSource.SEND_TIMEOUT:
         return Failure(
           ResponseCode.SEND_TIMEOUT,
-          BazUiS().errorSendTimeout,
+          message: BazUiS().errorSendTimeout,
         );
       case DataSource.CACHE_ERROR:
         return Failure(
           ResponseCode.CACHE_ERROR,
-          BazUiS().errorCache,
+          message: BazUiS().errorCache,
         );
       case DataSource.NO_INTERNET_CONNECTION:
         return Failure(
           ResponseCode.NO_INTERNET_CONNECTION,
-          BazUiS().errorNoInternetConnection,
+          message: BazUiS().errorNoInternetConnection,
+        );
+      case DataSource.CONFLICT:
+        return Failure(
+          ResponseCode.CONFLICT,
+          message: BazUiS().errorConflictEmail,
+        );
+      case DataSource.LOGINFAIL:
+        return Failure(
+          ResponseCode.LOGINFAIL,
+          message: BazUiS().authenticationFailure,
         );
       case DataSource.DEFAULT:
         return Failure(
           ResponseCode.DEFAULT,
-          BazUiS().errorDefault,
+          message: BazUiS().errorDefault,
         );
     }
   }
@@ -141,6 +168,10 @@ class ResponseCode {
   static const int FORBIDDEN = 403; //  failure, API rejected request
   static const int INTERNAL_SERVER_ERROR = 500; // failure, crash in server side
   static const int NOT_FOUND = 404; // failure, not found
+
+  static const int CONFLICT = 409; // failure, API rejected request
+
+  static const int LOGINFAIL = 501;
 
   // local status code
   static const int CONNECT_TIMEOUT = -1;

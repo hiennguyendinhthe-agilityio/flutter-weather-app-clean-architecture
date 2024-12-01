@@ -18,7 +18,7 @@ void main() {
 
   group('isLoggedIn', () {
     test('Returns true if the user exists and is logged in.', () async {
-      when(() => mockIsarService.getUser())
+      when(() => mockIsarService.getLoggedInUser())
           .thenAnswer((_) async => AuthMocks.getMockCurrentUser);
 
       final result = await authRepository.isLoggedIn();
@@ -27,7 +27,8 @@ void main() {
     });
 
     test('Returns false when there is no user in the database', () async {
-      when(() => mockIsarService.getUser()).thenAnswer((_) async => null);
+      when(() => mockIsarService.getLoggedInUser())
+          .thenAnswer((_) async => null);
 
       final result = await authRepository.isLoggedIn();
 
@@ -35,7 +36,7 @@ void main() {
     });
 
     test('Returns false when user exists but is not logged in', () async {
-      when(() => mockIsarService.getUser())
+      when(() => mockIsarService.getLoggedInUser())
           .thenAnswer((_) async => AuthMocks.getMockUser);
 
       final result = await authRepository.isLoggedIn();

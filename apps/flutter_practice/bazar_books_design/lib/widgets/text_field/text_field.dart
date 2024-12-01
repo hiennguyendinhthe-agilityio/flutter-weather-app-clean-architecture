@@ -19,6 +19,7 @@ class BazUiTextField extends StatelessWidget {
     this.suffixIcon,
     this.validator,
     this.keyboardType,
+    this.onChanged,
   });
 
   /// The [FocusNode] that will be used to determine the focus of this text field.
@@ -43,6 +44,8 @@ class BazUiTextField extends StatelessWidget {
   final String? Function(String?)? validator;
 
   final TextInputType? keyboardType;
+
+  final void Function(String)? onChanged;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -52,6 +55,7 @@ class BazUiTextField extends StatelessWidget {
           text: labelText ?? '',
         ),
         TextFormField(
+          onChanged: onChanged,
           keyboardType: keyboardType,
           onSaved: (value) {},
           validator: validator ??

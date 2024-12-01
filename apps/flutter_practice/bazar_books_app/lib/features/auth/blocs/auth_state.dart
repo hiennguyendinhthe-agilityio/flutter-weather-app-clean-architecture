@@ -1,7 +1,4 @@
-// ignore_for_file: depend_on_referenced_packages
-
-import 'package:bazar_books_design/core/models/models.dart';
-import 'package:equatable/equatable.dart';
+part of 'auth_bloc.dart';
 
 abstract class AuthState extends Equatable {
   @override
@@ -50,5 +47,5 @@ class SignUpFailure extends AuthState {
   SignUpFailure(this.error);
 
   @override
-  List<Object> get props => [error];
+  List<Object?> get props => [error];
 }

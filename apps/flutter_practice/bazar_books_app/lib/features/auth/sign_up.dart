@@ -1,7 +1,5 @@
 import 'package:bazar_books_app/core/l10n_generated/l10n.dart';
 import 'package:bazar_books_app/features/auth/blocs/auth_bloc.dart';
-import 'package:bazar_books_app/features/auth/blocs/auth_event.dart';
-import 'package:bazar_books_app/features/auth/blocs/auth_state.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
 import 'package:bazar_books_design/constants.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
@@ -24,6 +22,27 @@ class _LoginScreenState extends State<SignUpScreen> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+
+  bool _hasMinLength = false;
+  bool _hasNumber = false;
+  bool _hasLetter = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _passwordController.addListener(_validatePassword);
+  }
+
+  void _validatePassword() {
+    final password = _passwordController.text;
+
+    setState(() {
+      _hasMinLength = password.length >= 8;
+      _hasNumber = password.contains(RegExp(r'\d'));
+      _hasLetter = password.contains(RegExp(r'[a-zA-Z]'));
+    });
+  }
 
   @override
   void dispose() {
@@ -90,27 +109,50 @@ class _LoginScreenState extends State<SignUpScreen> {
                               if (state is PasswordVisibilityChanged) {
                                 isObscured = state.isObscured;
                               }
-                              return BazUiTextField(
-                                obscureText: isObscured,
-                                labelText: context.bazS.signInPagePassword,
-                                hintText: context.bazS.signInPageYourPassword,
-                                suffixIcon: IconButton(
-                                  onPressed: () {
-                                    context.read<AuthBloc>().add(
-                                          TogglePasswordVisibilityEvent(),
-                                        );
-                                  },
-                                  icon: isObscured
-                                      ? BazUiBuiltInImage.icPassword(
-                                          color: context.colorScheme.tertiary,
-                                        )
-                                      : BazUiBuiltInImage.icUnPassword(
-                                          color: context
-                                              .colorScheme.onSecondaryContainer,
-                                        ),
-                                ),
-                                validator: Constants.passwordValidator,
-                                controller: _passwordController,
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  BazUiTextField(
+                                    obscureText: isObscured,
+                                    labelText: context.bazS.signInPagePassword,
+                                    hintText:
+                                        context.bazS.signInPageYourPassword,
+                                    suffixIcon: IconButton(
+                                      onPressed: () {
+                                        context.read<AuthBloc>().add(
+                                              TogglePasswordVisibilityEvent(),
+                                            );
+                                      },
+                                      icon: isObscured
+                                          ? BazUiBuiltInImage.icPassword(
+                                              color:
+                                                  context.colorScheme.tertiary,
+                                            )
+                                          : BazUiBuiltInImage.icUnPassword(
+                                              color: context.colorScheme
+                                                  .onSecondaryContainer,
+                                            ),
+                                    ),
+                                    validator: Constants.passwordValidator,
+                                    controller: _passwordController,
+                                  ),
+                                  SizedBox(height: 10.0.h),
+                                  _buildPasswordValidationRow(
+                                    context,
+                                    context.bazS.hasMinLength,
+                                    _hasMinLength,
+                                  ),
+                                  _buildPasswordValidationRow(
+                                    context,
+                                    context.bazS.hasNumber,
+                                    _hasNumber,
+                                  ),
+                                  _buildPasswordValidationRow(
+                                    context,
+                                    context.bazS.hasLetter,
+                                    _hasLetter,
+                                  ),
+                                ],
                               );
                             },
                           ),
@@ -144,7 +186,7 @@ class _LoginScreenState extends State<SignUpScreen> {
                     },
                     listener: (context, state) {
                       if (state is SignUpSuccess) {
-                        context.go('/congratulations');
+                        context.go(RoutePaths.congratulations);
                       } else if (state is SignUpFailure) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text(state.error)),
@@ -171,7 +213,7 @@ class _LoginScreenState extends State<SignUpScreen> {
                           fontSize: 14.0.sp,
                         ),
                         onPressed: () {
-                          context.go('/login');
+                          context.go(RoutePaths.login);
                         },
                       ),
                     ],
@@ -180,7 +222,7 @@ class _LoginScreenState extends State<SignUpScreen> {
                 ],
               ),
             ),
-            SizedBox(height: 90.0.h),
+            SizedBox(height: 50.0.h),
             Text(
               S.of(context).signUpPageTextBottom,
               style: context.textTheme.bodyLarge!.copyWith(
@@ -201,6 +243,27 @@ class _LoginScreenState extends State<SignUpScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildPasswordValidationRow(
+      BuildContext context, String text, bool isValid) {
+    return Row(
+      children: [
+        Icon(
+          isValid ? Icons.check : Icons.close,
+          color: isValid ? Colors.green : Colors.red,
+          size: 20,
+        ),
+        const SizedBox(width: 8),
+        Text(
+          text,
+          style: context.textTheme.bodyLarge?.copyWith(
+            color: isValid ? Colors.green : Colors.red,
+            fontSize: 14.0.sp,
+          ),
+        ),
+      ],
     );
   }
 }

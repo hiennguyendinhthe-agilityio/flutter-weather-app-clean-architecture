@@ -1,7 +1,6 @@
 import 'package:bazar_books_app/core/l10n_generated/l10n.dart';
 import 'package:bazar_books_app/di.dart';
 import 'package:bazar_books_app/features/auth/blocs/auth_bloc.dart';
-import 'package:bazar_books_app/features/auth/blocs/auth_event.dart';
 import 'package:bazar_books_app/features/auth/data/auth_repository_impl.dart';
 import 'package:bazar_books_app/routes.dart';
 import 'package:bazar_books_design/core/core.dart';
@@ -45,7 +44,7 @@ class MyApp extends StatelessWidget {
         return BlocProvider(
           create: (context) => AuthBloc(authRepository)
             ..add(
-              AppStarted(),
+              IsLoggedIn(),
             ),
           child: MaterialApp.router(
             routerConfig: router,
