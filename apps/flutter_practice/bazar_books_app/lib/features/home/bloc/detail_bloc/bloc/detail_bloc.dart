@@ -2,7 +2,7 @@
 
 import 'package:bazar_books_app/features/home/bloc/data_state.dart';
 import 'package:bazar_books_app/features/home/data/home_repository.dart';
-import 'package:bazar_books_design/core/core.dart';
+import 'package:bazar_books_design/core/models/product_model/product_model.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';

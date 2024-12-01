@@ -15,7 +15,9 @@ class ProductService {
   Future<List<Product>> fetchProductsFromApi() async {
     try {
       // Send a GET request to the API endpoint
-      final response = await _dio.get('${Constants.apiUrlProduct}product');
+      final response = await _dio.get(
+        '${Constants.apiUrlProduct}product',
+      );
       if (response.statusCode != 200) {
         throw ErrorHandler.handle(response).failure;
       }

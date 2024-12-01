@@ -25,7 +25,7 @@ class BazUiListTile extends StatelessWidget {
       child: ListTile(
         leading: CircleAvatar(
           radius: context.getAvatarRadius(),
-          backgroundImage: NetworkImage(
+          backgroundImage:  NetworkImage(
             leading ?? Constants.imgUrlDefault,
           ),
         ),

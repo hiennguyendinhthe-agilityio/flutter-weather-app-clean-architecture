@@ -110,20 +110,6 @@ dev_dependencies:
     # intl_utils is a dart library that generates Dart localization code from ARB file. Generated code relies on Intl library.
   intl_utils: 2.8.7
 
-dependency_overrides:
-  # Not yet published.
-  macros:
-    git:
-      url: https://github.com/dart-lang/sdk.git
-      path: pkg/macros
-      ref: main
-  _fe_analyzer_shared:
-    git:
-      url: https://github.com/dart-lang/sdk.git
-      path: pkg/_fe_analyzer_shared
-      ref: main
-  test_api: 0.7.0
-
 flutter:
 
   

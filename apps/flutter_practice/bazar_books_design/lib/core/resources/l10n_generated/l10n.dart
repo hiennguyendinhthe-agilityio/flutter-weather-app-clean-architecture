@@ -390,6 +390,16 @@ class BazUiS {
     );
   }
 
+  /// `Email already exists, please check again!`
+  String get errorConflictEmail {
+    return Intl.message(
+      'Email already exists, please check again!',
+      name: 'errorConflictEmail',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Cache error`
   String get errorCache {
     return Intl.message(
@@ -450,11 +460,51 @@ class BazUiS {
     );
   }
 
+  /// `Search`
+  String get generalTitleSearch {
+    return Intl.message(
+      'Search',
+      name: 'generalTitleSearch',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recent Searches`
+  String get titleRecentSearches {
+    return Intl.message(
+      'Recent Searches',
+      name: 'titleRecentSearches',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Profile`
   String get generalTitleProfile {
     return Intl.message(
       'Profile',
       name: 'generalTitleProfile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No results found.`
+  String get foundNoResults {
+    return Intl.message(
+      'No results found.',
+      name: 'foundNoResults',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Start searching for products.`
+  String get startSearching {
+    return Intl.message(
+      'Start searching for products.',
+      name: 'startSearching',
       desc: '',
       args: [],
     );
@@ -685,6 +735,76 @@ class BazUiS {
     return Intl.message(
       'Page Not Found',
       name: 'errorRoute',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Novels`
+  String get novelsTabBar {
+    return Intl.message(
+      'Novels',
+      name: 'novelsTabBar',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Self Love`
+  String get selfLoveTabBar {
+    return Intl.message(
+      'Self Love',
+      name: 'selfLoveTabBar',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Science`
+  String get scienceTabBar {
+    return Intl.message(
+      'Science',
+      name: 'scienceTabBar',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Romantic`
+  String get romanticTabBar {
+    return Intl.message(
+      'Romantic',
+      name: 'romanticTabBar',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Minimum 8 characters`
+  String get hasMinLength {
+    return Intl.message(
+      'Minimum 8 characters',
+      name: 'hasMinLength',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `At least 1 number (1-9)`
+  String get hasNumber {
+    return Intl.message(
+      'At least 1 number (1-9)',
+      name: 'hasNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `At least lowercase or uppercase letter`
+  String get hasLetter {
+    return Intl.message(
+      'At least lowercase or uppercase letter',
+      name: 'hasLetter',
       desc: '',
       args: [],
     );

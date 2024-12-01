@@ -9,8 +9,12 @@
       "args": [
         "dev",
         "target",
-        "aapps/flutter_practice/bazar_books_app/lib/main.dart"
-      ]
+        "apps/flutter_practice/bazar_books_app/lib/main.dart"
+      ],
+    //   "toolArgs": [ "dev",
+    //   "target",
+    //     "--enable-experiment=macros"
+    // ]
     }, 
     {
         "name": "Run widgetbook",
@@ -20,8 +24,11 @@
         "args": [
           "widgetbook",
           "target",
-          "aapps/flutter_practice/bazar_books_widgetbook/lib/main.dart"
-        ]
+          "apps/flutter_practice/bazar_books_widgetbook/lib/main.dart"
+        ],
+        "toolArgs": [
+          "--enable-experiment=macros"
+      ]
       },
       {
         "name": "Run Device preview",
@@ -31,8 +38,11 @@
         "args": [
           "Devicepreview",
           "target",
-          "aapps/flutter_practice/bazar_books_widgetbook/lib/main_device_preview.dart"
-        ]
+          "apps/flutter_practice/bazar_books_widgetbook/lib/main_device_preview.dart"
+        ],
+        "toolArgs": [
+          "--enable-experiment=macros"
+      ]
       },
   ]
 }

@@ -1,6 +1,4 @@
 import 'package:bazar_books_app/features/auth/blocs/auth_bloc.dart';
-import 'package:bazar_books_app/features/auth/blocs/auth_event.dart';
-import 'package:bazar_books_app/features/auth/blocs/auth_state.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
 import 'package:bazar_books_design/constants.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';

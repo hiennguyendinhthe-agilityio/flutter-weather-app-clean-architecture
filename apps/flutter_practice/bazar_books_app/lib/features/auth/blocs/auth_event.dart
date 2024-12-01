@@ -1,8 +1,9 @@
 // ignore_for_file: depend_on_referenced_packages
 
-import 'package:equatable/equatable.dart';
+part of 'auth_bloc.dart';
 
-abstract class AuthEvent extends Equatable {
+@immutable
+sealed class AuthEvent extends Equatable {
   @override
   List<Object?> get props => [];
 }
@@ -19,7 +20,7 @@ class LogInRequested extends AuthEvent {
   List<Object?> get props => [email, password];
 }
 
-class AppStarted extends AuthEvent {}
+class IsLoggedIn extends AuthEvent {}
 
 class SignUpSubmitted extends AuthEvent {
   SignUpSubmitted(

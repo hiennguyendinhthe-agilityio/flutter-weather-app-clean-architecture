@@ -11,6 +11,8 @@ class User {
   late String? email;
   late String? password;
   late bool isLoggedIn;
+  late String? avatarUrl;
+  late String? phoneNumber;
 
   User({
     this.userId,
@@ -18,6 +20,8 @@ class User {
     this.email,
     this.password,
     this.isLoggedIn = false,
+    this.avatarUrl,
+    this.phoneNumber,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -27,6 +31,8 @@ class User {
       email: json['email'],
       password: json['password'],
       isLoggedIn: json['isLoggedIn'] ?? false,
+      avatarUrl: json['avatarUrl'],
+      phoneNumber: json['number'],
     );
   }
 
@@ -37,6 +43,8 @@ class User {
       'email': email,
       'password': password,
       'isLoggedIn': isLoggedIn,
+      'avatarUrl': avatarUrl,
+      'number': phoneNumber,
     };
   }
 }

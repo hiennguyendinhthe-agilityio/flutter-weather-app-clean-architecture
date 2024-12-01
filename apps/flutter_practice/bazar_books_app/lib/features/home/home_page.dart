@@ -1,7 +1,5 @@
 import 'package:bazar_books_app/di.dart';
 import 'package:bazar_books_app/features/auth/blocs/auth_bloc.dart';
-import 'package:bazar_books_app/features/auth/blocs/auth_event.dart';
-import 'package:bazar_books_app/features/auth/blocs/auth_state.dart';
 import 'package:bazar_books_app/features/home/bloc/author_bloc/author_bloc.dart';
 import 'package:bazar_books_app/features/home/data/home_repository.dart';
 import 'package:bazar_books_app/features/home/widgets/author/authors_section.dart';
@@ -27,7 +25,7 @@ class HomePage extends StatelessWidget {
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is Unauthenticated) {
-          context.go('/login');
+          context.go(RoutePaths.login);
         }
       },
       builder: (context, state) {

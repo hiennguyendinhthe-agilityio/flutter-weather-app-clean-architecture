@@ -9,51 +9,54 @@ import 'package:go_router/go_router.dart';
 class MainNavigation extends StatelessWidget {
   const MainNavigation({
     required this.child,
-    this.showBottomNavBar,
+    this.showBottomNavBar = true,
     super.key,
   });
 
   final Widget child;
-  final bool? showBottomNavBar;
+  final bool showBottomNavBar;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: child,
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: _calculateSelectedIndex(context),
-          onTap: (int idx) => _onItemTapped(idx, context),
-          items: [
-            BottomNavigationBarItem(
-              icon: BazUiBuiltInImage.icHomeFill(
-                  color: context.colorScheme.tertiary),
-              label: context.bazS.generalTitleHome,
-              activeIcon: BazUiBuiltInImage.icHomeFill(
-                  color: context.colorScheme.primary),
-            ),
-            BottomNavigationBarItem(
-              icon: BazUiBuiltInImage.icMenuFill(
-                  color: context.colorScheme.tertiary),
-              label: context.bazS.generalTitleCategory,
-              activeIcon: BazUiBuiltInImage.icMenuFill(
-                  color: context.colorScheme.primary),
-            ),
-            BottomNavigationBarItem(
-              icon: BazUiBuiltInImage.icCardFill(
-                  color: context.colorScheme.tertiary),
-              label: context.bazS.generalTitleCart,
-              activeIcon: BazUiBuiltInImage.icCardFill(
-                  color: context.colorScheme.primary),
-            ),
-            BottomNavigationBarItem(
-              icon: BazUiBuiltInImage.icProfileFill(
-                  color: context.colorScheme.tertiary),
-              label: context.bazS.generalTitleProfile,
-              activeIcon: BazUiBuiltInImage.icProfileFill(
-                  color: context.colorScheme.primary),
-            ),
-          ],
-        ));
+      body: child,
+      bottomNavigationBar: showBottomNavBar
+          ? BottomNavigationBar(
+              currentIndex: _calculateSelectedIndex(context),
+              onTap: (int idx) => _onItemTapped(idx, context),
+              items: [
+                BottomNavigationBarItem(
+                  icon: BazUiBuiltInImage.icHomeFill(
+                      color: context.colorScheme.tertiary),
+                  label: context.bazS.generalTitleHome,
+                  activeIcon: BazUiBuiltInImage.icHomeFill(
+                      color: context.colorScheme.primary),
+                ),
+                BottomNavigationBarItem(
+                  icon: BazUiBuiltInImage.icMenuFill(
+                      color: context.colorScheme.tertiary),
+                  label: context.bazS.generalTitleCategory,
+                  activeIcon: BazUiBuiltInImage.icMenuFill(
+                      color: context.colorScheme.primary),
+                ),
+                BottomNavigationBarItem(
+                  icon: BazUiBuiltInImage.icCardFill(
+                      color: context.colorScheme.tertiary),
+                  label: context.bazS.generalTitleCart,
+                  activeIcon: BazUiBuiltInImage.icCardFill(
+                      color: context.colorScheme.primary),
+                ),
+                BottomNavigationBarItem(
+                  icon: BazUiBuiltInImage.icProfileFill(
+                      color: context.colorScheme.tertiary),
+                  label: context.bazS.generalTitleProfile,
+                  activeIcon: BazUiBuiltInImage.icProfileFill(
+                      color: context.colorScheme.primary),
+                ),
+              ],
+            )
+          : null,
+    );
   }
 
   static int _calculateSelectedIndex(BuildContext context) {

@@ -1,6 +1,12 @@
+import 'dart:math';
+
+import 'package:bazar_books_app/features/auth/data/auth_repository_impl.dart';
 import 'package:bazar_books_design/core/apis/api_service.dart';
 import 'package:bazar_books_design/core/models/auth_model/user.dart';
+import 'package:bazar_books_design/core/network/error_handler.dart';
+import 'package:bazar_books_design/core/network/failure.dart';
 import 'package:bazar_books_design/db/isar_service.dart';
+import 'package:dio/dio.dart';
 import 'package:faker/faker.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -8,6 +14,9 @@ import 'package:mocktail/mocktail.dart';
 class MockApiService extends Mock implements ApiService {}
 
 class MockIsarService extends Mock implements IsarService {}
+
+// Mocking AuthRepository
+class MockAuthRepositoryImpl extends Mock implements AuthRepositoryImpl {}
 
 // Data Mocks
 class AuthMocks {
@@ -17,6 +26,19 @@ class AuthMocks {
     email: faker.internet.email(),
     password: faker.internet.password(),
     isLoggedIn: true,
+  );
+
+  static final dioExceptionMock = DioException(
+    requestOptions: RequestOptions(),
+    response: Response(
+      statusMessage: faker.lorem.sentence(),
+      data: Failure(
+        409,
+        message: 'Email already exists, please check again!',
+      ),
+      statusCode: 409,
+      requestOptions: RequestOptions(),
+    ),
   );
 
   static final getMockName = faker.person.name();
@@ -37,4 +59,8 @@ class AuthMocks {
   );
 
   static final failureMock = Exception(faker.lorem.sentence());
+
+  static const getMockEmpty = '';
+
+  static final failureMockMessage = ErrorHandler.handle(e).failure.message;
 }

@@ -76,14 +76,13 @@ class HomeRepositoryImpl implements HomeRepository {
   }
 
   @override
-  Future<Product> fetchProductDetails(String productId) async {
+  Future<Product> fetchProductDetails(String? productId) async {
     try {
       // Call the appropriate method from ApiService to fetch products
       final products = await apiService.fetchProductDetails(productId);
       return products;
     } catch (e) {
-      throw (FetchDataState<Product>.error(
-          ErrorHandler.handle(e).failure.message));
+      throw ErrorHandler.handle(e).failure;
     }
   }
 
@@ -96,6 +95,50 @@ class HomeRepositoryImpl implements HomeRepository {
     } catch (e) {
       // Handle errors appropriately, maybe print them or rethrow with a custom exception
       throw ErrorHandler.handle(e).failure;
+    }
+  }
+
+  @override
+  Future<List<Product>> fetchProductsByCategory(String category) async {
+    if (category == 'All') {
+      return await fetchProducts();
+    }
+    // Get data from Isar first and filter by category
+    final productsFromIsar = await productRepository.fetchProductsFromIsar();
+    final filteredProductsFromIsar = productsFromIsar
+        .where((product) => product.category == category)
+        .toList();
+
+    if (filteredProductsFromIsar.isNotEmpty) {
+      debugPrint(
+          'Loaded filtered data from Isar: ${filteredProductsFromIsar.length} products');
+      return filteredProductsFromIsar;
+    }
+
+    // If no data in Isar, fetch from API
+    try {
+      final productsFromApi = await productRepository.fetchProductsFromApi();
+
+      // Save fetched data to Isar for offline access
+      await productRepository.clearProductsFromIsar();
+      await productRepository.saveProductsToIsar(productsFromApi);
+
+      // Filter by category
+      final filteredProductsFromApi = productsFromApi
+          .where((product) => product.category == category)
+          .toList();
+
+      debugPrint(
+          'Loaded filtered data from API: ${filteredProductsFromApi.length} products');
+      return filteredProductsFromApi;
+    } catch (e) {
+      debugPrint('API failed, attempting to return filtered data from Isar');
+      if (filteredProductsFromIsar.isNotEmpty) {
+        return filteredProductsFromIsar;
+      } else {
+        throw FetchDataState<List<Product>>.error(
+            ErrorHandler.handle(e).failure.message);
+      }
     }
   }
 }

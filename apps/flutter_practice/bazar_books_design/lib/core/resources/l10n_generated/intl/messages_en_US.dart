@@ -40,6 +40,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Failure, API rejected request"),
         "errorCache": MessageLookupByLibrary.simpleMessage("Cache error"),
         "errorConflict": MessageLookupByLibrary.simpleMessage("Conflict error"),
+        "errorConflictEmail": MessageLookupByLibrary.simpleMessage(
+            "Email already exists, please check again!"),
         "errorDefault": MessageLookupByLibrary.simpleMessage("Default error"),
         "errorEmailClient": MessageLookupByLibrary.simpleMessage(
             "There was a temporary problem launch email system. Please try again later."),
@@ -61,6 +63,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "errorUnauthorized": MessageLookupByLibrary.simpleMessage(
             "Failure, user is not authorised"),
         "errorUnknown": MessageLookupByLibrary.simpleMessage("Unknown error"),
+        "foundNoResults":
+            MessageLookupByLibrary.simpleMessage("No results found."),
         "generalListEmpty":
             MessageLookupByLibrary.simpleMessage("No content available"),
         "generalLoading": MessageLookupByLibrary.simpleMessage("Loading..."),
@@ -72,6 +76,13 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Category"),
         "generalTitleHome": MessageLookupByLibrary.simpleMessage("Home"),
         "generalTitleProfile": MessageLookupByLibrary.simpleMessage("Profile"),
+        "generalTitleSearch": MessageLookupByLibrary.simpleMessage("Search"),
+        "hasLetter": MessageLookupByLibrary.simpleMessage(
+            "At least lowercase or uppercase letter"),
+        "hasMinLength":
+            MessageLookupByLibrary.simpleMessage("Minimum 8 characters"),
+        "hasNumber":
+            MessageLookupByLibrary.simpleMessage("At least 1 number (1-9)"),
         "homePageBestVendors":
             MessageLookupByLibrary.simpleMessage("Best Vendors"),
         "homePageProductEmpty":
@@ -81,6 +92,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "journalistsTabBar":
             MessageLookupByLibrary.simpleMessage("Journalists"),
         "novelistsTabBar": MessageLookupByLibrary.simpleMessage("Novelists"),
+        "novelsTabBar": MessageLookupByLibrary.simpleMessage("Novels"),
         "orderNow": MessageLookupByLibrary.simpleMessage("Order Now"),
         "playwrightsTabBar":
             MessageLookupByLibrary.simpleMessage("Playwrights"),
@@ -88,6 +100,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "poetsTabBar": MessageLookupByLibrary.simpleMessage("Poets"),
         "productTitle": MessageLookupByLibrary.simpleMessage("Products"),
         "reviewTitle": MessageLookupByLibrary.simpleMessage("Review"),
+        "romanticTabBar": MessageLookupByLibrary.simpleMessage("Romantic"),
+        "scienceTabBar": MessageLookupByLibrary.simpleMessage("Science"),
+        "selfLoveTabBar": MessageLookupByLibrary.simpleMessage("Self Love"),
         "signInPageDontHaveAnAccount":
             MessageLookupByLibrary.simpleMessage("Don’t have an account?"),
         "signInPageEmail": MessageLookupByLibrary.simpleMessage("Email"),
@@ -112,7 +127,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "specialForYouTabBar":
             MessageLookupByLibrary.simpleMessage("Special for you"),
         "specialOffer": MessageLookupByLibrary.simpleMessage("Special Offer"),
+        "startSearching": MessageLookupByLibrary.simpleMessage(
+            "Start searching for products."),
         "stationeryTabBar": MessageLookupByLibrary.simpleMessage("Stationery"),
+        "titleRecentSearches":
+            MessageLookupByLibrary.simpleMessage("Recent Searches"),
         "vendorSubtitle": MessageLookupByLibrary.simpleMessage("Our Vendors"),
         "vendorTitle": MessageLookupByLibrary.simpleMessage("Vendors"),
         "viewButton": MessageLookupByLibrary.simpleMessage("View cart")

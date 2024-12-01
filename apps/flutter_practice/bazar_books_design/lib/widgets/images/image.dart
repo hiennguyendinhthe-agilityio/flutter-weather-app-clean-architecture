@@ -139,8 +139,12 @@ class BazUiBuiltInImage {
   static Widget Function({Color? color}) icCardFill = _BazIcCardFill.new;
   static Widget Function({Color? color}) icProfileFill = _BazIcProfileFill.new;
   static Widget Function({Color? color}) icBellOutline = _BazIcBellOutline.new;
-  static Widget Function({Color? color}) icSearch = _BazIcSearch.new;
+  static Widget Function({
+    Color? color,
+    double? width,
+  }) icSearch = _BazIcSearch.new;
   static Widget Function({Color? color}) icArrowLeft = _BazIcArrowLeft.new;
+  static Widget Function() imageAvatar = _BazImgAvatar.new;
   static Widget Function({
     Color? color,
     double? width,
@@ -333,16 +337,17 @@ class _BazIcBellOutline extends StatelessWidget {
 }
 
 class _BazIcSearch extends StatelessWidget {
-  const _BazIcSearch({this.color});
+  const _BazIcSearch({this.color, this.width});
 
   final Color? color;
+  final double? width;
 
   @override
   Widget build(BuildContext context) {
     return BazUiAssetImage(
       type: ImageLoaderType.assetSVG,
       path: Assets.images.icOgraphySearch.path,
-      width: 24,
+      width: width,
       color: color,
     );
   }
@@ -479,6 +484,18 @@ class _BazImgCongratulation extends StatelessWidget {
       path: Assets.images.imgCongratulation.path,
       width: width,
       color: color,
+    );
+  }
+}
+
+class _BazImgAvatar extends StatelessWidget {
+  const _BazImgAvatar();
+
+  @override
+  Widget build(BuildContext context) {
+    return BazUiAssetImage(
+      type: ImageLoaderType.assetPNG,
+      path: Assets.images.imageAvatar.path,
     );
   }
 }

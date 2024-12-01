@@ -168,6 +168,10 @@ class $AssetsImagesGen {
   SvgGenImage get icOgraphyWalletFill =>
       const SvgGenImage('assets/images/ic_ography_wallet_fill.svg');
 
+  /// File path: assets/images/image_avatar.png
+  AssetGenImage get imageAvatar =>
+      const AssetGenImage('assets/images/image_avatar.png');
+
   /// File path: assets/images/img_congratulation.svg
   SvgGenImage get imgCongratulation =>
       const SvgGenImage('assets/images/img_congratulation.svg');
@@ -232,6 +236,7 @@ class $AssetsImagesGen {
         icOgraphyProfileFill,
         icOgraphyUnpasswordOutline,
         icOgraphyWalletFill,
+        imageAvatar,
         imgCongratulation,
         imgNotFound,
         slpashScreen,

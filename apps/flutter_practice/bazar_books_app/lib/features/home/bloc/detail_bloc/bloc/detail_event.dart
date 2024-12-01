@@ -7,7 +7,7 @@ sealed class DetailEvent extends Equatable {
 }
 
 class FetchProductDetailsEvent extends DetailEvent {
-  final String id;
+  final String? id;
 
   FetchProductDetailsEvent(this.id);
 

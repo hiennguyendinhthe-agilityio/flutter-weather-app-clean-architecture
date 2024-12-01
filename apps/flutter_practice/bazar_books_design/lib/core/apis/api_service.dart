@@ -31,7 +31,7 @@ class ApiService {
     }
   }
 
-  Future<Product> fetchProductDetails(String productId) async {
+  Future<Product> fetchProductDetails(String? productId) async {
     try {
       // Send a GET request to the API endpoint
       final response =
@@ -106,8 +106,33 @@ class ApiService {
     }
   }
 
+  Future<bool> isEmailExist(String email) async {
+    try {
+      final response = await _dio.get(
+        '${Constants.apiUrlUser}user?email=$email',
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = response.data;
+        return data.isNotEmpty;
+      }
+
+      return false;
+    } catch (e) {
+      if (e is DioException && e.response?.statusCode == 404) {
+        return false;
+      }
+      throw ErrorHandler.handle(e).failure;
+    }
+  }
+
   Future<bool> signUp(String name, String email, String password) async {
     try {
+      final emailExists = await isEmailExist(email);
+      if (emailExists) {
+        throw ErrorHandler.handle(emailExists).failure;
+      }
+
       final response = await _dio.post(
         '${Constants.apiUrlUser}user',
         data: {
@@ -116,7 +141,15 @@ class ApiService {
           'password': password,
         },
       );
-      return response.statusCode == 201;
+
+      if (response.statusCode == 201) {
+        return true;
+      } else {
+        throw DioException(
+          response: response,
+          requestOptions: response.requestOptions,
+        );
+      }
     } catch (e) {
       throw ErrorHandler.handle(e).failure;
     }

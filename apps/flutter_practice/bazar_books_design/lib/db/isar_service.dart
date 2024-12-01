@@ -1,4 +1,6 @@
+import 'package:bazar_books_design/constants.dart';
 import 'package:bazar_books_design/core/core.dart';
+import 'package:dio/dio.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -22,25 +24,23 @@ class IsarService {
   Future<void> saveUser(User user) async {
     final isar = await db;
     await isar.writeTxn(() async {
-      await isar.users.put(user);
+      final existingUser =
+          await isar.users.filter().emailEqualTo(user.email).findFirst();
+      if (existingUser == null) {
+        await isar.users.put(user);
+      } else {
+        existingUser.isLoggedIn = user.isLoggedIn;
+        await isar.users.put(existingUser);
+      }
     });
   }
 
-  Future<bool> isUserLoggedIn() async {
+  Future<User?> getLoggedInUser() async {
     final isar = await db;
-    final users =
-        await isar.users.where().filter().isLoggedInEqualTo(true).findAll();
-    return users.isNotEmpty;
+    return await isar.users.filter().isLoggedInEqualTo(true).findFirst();
   }
 
-  Future<User?> getUser() async {
-    final isar = await db;
-    final users =
-        await isar.users.where().filter().isLoggedInEqualTo(true).findAll();
-    return users.isNotEmpty ? users.first : null;
-  }
-
-  Future<void> logoutDB() async {
+  Future<void> logoutUser() async {
     final isar = await db;
     await isar.writeTxn(() async {
       final user =
@@ -52,8 +52,76 @@ class IsarService {
     });
   }
 
+  Future<void> deleteUserById(int userId) async {
+    final isar = await db;
+    await isar.writeTxn(() async {
+      await isar.users.delete(userId);
+    });
+  }
+
+  Future<void> deleteAllUsers() async {
+    final isar = await db;
+    await isar.writeTxn(() async {
+      await isar.users.clear();
+    });
+  }
+
   Future<void> closeIsar() async {
     await _isarInstance?.close();
     _isarInstance = null;
+  }
+
+  Future<User?> checkAccountFromApi(
+    String email,
+    String password,
+  ) async {
+    try {
+      final response = await Dio().get(
+        '${Constants.apiUrlUser}user',
+        data: {
+          'email': email,
+          'password': password,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return User.fromJson(response.data);
+      } else {
+        throw Exception('Invalid credentials');
+      }
+    } catch (e) {
+      throw Exception('Error checking account from API: $e');
+    }
+  }
+
+  Future<bool> isUserLoggedInFromIsar() async {
+    final isar = await db;
+    final user = await isar.users.filter().isLoggedInEqualTo(true).findFirst();
+    return user != null;
+  }
+
+  Future<void> signIn(
+    String email,
+    String password,
+  ) async {
+    try {
+      final userFromApi = await checkAccountFromApi(
+        email,
+        password,
+      );
+
+      if (userFromApi != null) {
+        final isLoggedIn = await isUserLoggedInFromIsar();
+
+        if (!isLoggedIn) {
+          userFromApi.isLoggedIn = true;
+          await saveUser(userFromApi);
+        }
+      } else {
+        throw Exception('Invalid credentials');
+      }
+    } catch (e) {
+      throw Exception('Sign-in failed: $e');
+    }
   }
 }
