@@ -40,7 +40,7 @@ class MyAccountScreen extends StatelessWidget {
           ),
           centerTitle: true,
         ),
-        body: BlocBuilder<ProfileBloc, MyAccountState>(
+        body: BlocBuilder<ProfileBloc, ProfileState>(
           builder: (context, state) {
             if (state is MyAccountLoadingState) {
               return const Center(child: CircularProgressIndicator());

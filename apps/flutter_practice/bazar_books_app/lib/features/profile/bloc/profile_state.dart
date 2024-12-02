@@ -1,16 +1,16 @@
 import 'package:bazar_books_design/core/models/auth_model/user.dart';
 import 'package:equatable/equatable.dart';
 
-abstract class MyAccountState extends Equatable {
+abstract class ProfileState extends Equatable {
   @override
   List<Object?> get props => [];
 }
 
-class MyAccountInitialState extends MyAccountState {}
+class MyAccountInitialState extends ProfileState {}
 
-class MyAccountLoadingState extends MyAccountState {}
+class MyAccountLoadingState extends ProfileState {}
 
-class ProfileLoadedState extends MyAccountState {
+class ProfileLoadedState extends ProfileState {
   final User user;
 
   ProfileLoadedState(this.user);
@@ -19,7 +19,7 @@ class ProfileLoadedState extends MyAccountState {
   List<Object?> get props => [user];
 }
 
-class ProfileErrorState extends MyAccountState {
+class ProfileErrorState extends ProfileState {
   final String message;
 
   ProfileErrorState(this.message);
@@ -27,3 +27,7 @@ class ProfileErrorState extends MyAccountState {
   @override
   List<Object?> get props => [message];
 }
+
+class AuthenticationLoading extends ProfileState {}
+
+class Unauthenticated extends ProfileState {}

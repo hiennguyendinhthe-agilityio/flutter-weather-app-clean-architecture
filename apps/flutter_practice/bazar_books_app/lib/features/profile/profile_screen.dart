@@ -37,7 +37,7 @@ class ProfileScreen extends StatelessWidget {
           elevation: 0,
           automaticallyImplyLeading: false,
         ),
-        body: BlocBuilder<ProfileBloc, MyAccountState>(
+        body: BlocBuilder<ProfileBloc, ProfileState>(
           builder: (context, state) {
             if (state is MyAccountLoadingState) {
               return const Center(child: CircularProgressIndicator());
@@ -90,7 +90,12 @@ class ProfileScreen extends StatelessWidget {
                         // Logout Button
                         GestureDetector(
                           onTap: () {
-                            // Handle logout action
+                            BazUiBottomSheet.showLogoutModal(context, () {
+                              context.go(RoutePaths.login);
+                              context
+                                  .read<ProfileBloc>()
+                                  .add(LogoutRequested());
+                            });
                           },
                           child: Text(
                             context.bazS.logoutTitle,

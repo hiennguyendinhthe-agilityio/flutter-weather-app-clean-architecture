@@ -440,6 +440,26 @@ class BazUiS {
     );
   }
 
+  /// `Cancel`
+  String get cancelTitle {
+    return Intl.message(
+      'Cancel',
+      name: 'cancelTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to logout?`
+  String get logoutMeassage {
+    return Intl.message(
+      'Are you sure you want to logout?',
+      name: 'logoutMeassage',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Address`
   String get addressTtile {
     return Intl.message(

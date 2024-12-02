@@ -31,6 +31,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Check the authors"),
         "authorsTtile": MessageLookupByLibrary.simpleMessage("Authors"),
         "booksTabBar": MessageLookupByLibrary.simpleMessage("Books"),
+        "cancelTitle": MessageLookupByLibrary.simpleMessage("Cancel"),
         "changePictureTtile":
             MessageLookupByLibrary.simpleMessage("Change Picture"),
         "continueButton":
@@ -98,6 +99,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Top of Week"),
         "journalistsTabBar":
             MessageLookupByLibrary.simpleMessage("Journalists"),
+        "logoutMeassage": MessageLookupByLibrary.simpleMessage(
+            "Are you sure you want to logout?"),
         "logoutTitle": MessageLookupByLibrary.simpleMessage("Logout"),
         "noEmailTitle": MessageLookupByLibrary.simpleMessage("No Email"),
         "noName": MessageLookupByLibrary.simpleMessage("No name"),

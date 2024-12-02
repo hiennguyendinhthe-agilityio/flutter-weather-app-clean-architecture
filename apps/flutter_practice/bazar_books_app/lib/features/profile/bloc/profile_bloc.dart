@@ -1,29 +1,43 @@
-import 'package:bazar_books_app/features/auth/data/auth_repository.dart';
+import 'package:bazar_books_app/features/auth/data/auth_repository_impl.dart';
 import 'package:bazar_books_app/features/profile/bloc/profile_event.dart';
 import 'package:bazar_books_app/features/profile/bloc/profile_state.dart';
 import 'package:bazar_books_design/core/core.dart';
+import 'package:bazar_books_design/core/utils/error_messages.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ProfileBloc extends Bloc<ProfileEvent, MyAccountState> {
-  final AuthRepository authRepository;
+class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
+  final AuthRepositoryImpl authRepository;
 
   ProfileBloc(this.authRepository) : super(MyAccountInitialState()) {
-    on<FetchUserInfoEvent>((event, emit) async {
-      emit(MyAccountLoadingState());
+    on<FetchUserInfoEvent>(_onUserInfo);
+    on<LogoutRequested>(_onLogOutRequested);
+  }
 
-      try {
-        final user = await authRepository.getCurrentUser();
+  Future<void> _onUserInfo(
+      FetchUserInfoEvent event, Emitter<ProfileState> emit) async {
+    emit(MyAccountLoadingState());
 
-        if (user != null) {
-          emit(ProfileLoadedState(user));
-        } else {
-          emit(ProfileErrorState('User not found'));
-        }
-      } catch (e) {
-        emit(
-          ProfileErrorState(ErrorHandler.handle(e).failure.message),
-        );
+    try {
+      final user = await authRepository.getCurrentUser();
+
+      if (user != null) {
+        emit(ProfileLoadedState(user));
+      } else {
+        emit(ProfileErrorState(
+          ErrorMessages.userNotFoundFailure,
+        ));
       }
-    });
+    } catch (e) {
+      emit(
+        ProfileErrorState(ErrorHandler.handle(e).failure.message),
+      );
+    }
+  }
+
+  Future<void> _onLogOutRequested(
+      LogoutRequested event, Emitter<ProfileState> emit) async {
+    emit(AuthenticationLoading());
+    await authRepository.logOut();
+    emit(Unauthenticated());
   }
 }

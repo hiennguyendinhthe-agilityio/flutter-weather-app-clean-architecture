@@ -35,7 +35,9 @@ Future<String?> _guard(BuildContext context, GoRouterState state) async {
     return RoutePaths.login;
   }
 
-  if (isLoggedIn && state.uri.toString() == RoutePaths.login) {
+  if (isLoggedIn &&
+      state.uri.toString() == RoutePaths.login &&
+      state.uri.toString() == RoutePaths.profile) {
     return RoutePaths.home;
   }
 
