@@ -137,7 +137,10 @@ class BazUiBuiltInImage {
   static Widget Function({Color? color}) icHomeFill = _BazIcHomeFill.new;
   static Widget Function({Color? color}) icMenuFill = _BazIcMenuFill.new;
   static Widget Function({Color? color}) icCardFill = _BazIcCardFill.new;
-  static Widget Function({Color? color}) icProfileFill = _BazIcProfileFill.new;
+  static Widget Function({
+    Color? color,
+    double? width,
+  }) icProfileFill = _BazIcProfileFill.new;
   static Widget Function({Color? color}) icBellOutline = _BazIcBellOutline.new;
   static Widget Function({
     Color? color,
@@ -174,6 +177,23 @@ class BazUiBuiltInImage {
     Color? color,
     double? width,
   }) imgCongratulation = _BazImgCongratulation.new;
+
+  static Widget Function() icPhoneOutline = _BazIcPhoneOutline.new;
+
+  static Widget Function({
+    Color? color,
+    double? width,
+  }) icLocation = _BazIcLocation.new;
+
+  static Widget Function({
+    Color? color,
+    double? width,
+  }) icFire = _BazIcFire.new;
+
+  static Widget Function({
+    Color? color,
+    double? width,
+  }) icChat = _BazIcChat.new;
 }
 
 class _BazSlpashScreenImage extends StatelessWidget {
@@ -304,16 +324,18 @@ class _BazIcCardFill extends StatelessWidget {
 }
 
 class _BazIcProfileFill extends StatelessWidget {
-  const _BazIcProfileFill({this.color});
+  const _BazIcProfileFill({this.color, this.width});
 
   final Color? color;
+
+  final double? width;
 
   @override
   Widget build(BuildContext context) {
     return BazUiAssetImage(
       type: ImageLoaderType.assetSVG,
       path: Assets.images.icOgraphyProfileFill.path,
-      width: 18,
+      width: width ?? 18,
       height: 18,
       color: color,
     );
@@ -496,6 +518,72 @@ class _BazImgAvatar extends StatelessWidget {
     return BazUiAssetImage(
       type: ImageLoaderType.assetPNG,
       path: Assets.images.imageAvatar.path,
+    );
+  }
+}
+
+class _BazIcPhoneOutline extends StatelessWidget {
+  const _BazIcPhoneOutline();
+
+  @override
+  Widget build(BuildContext context) {
+    return BazUiAssetImage(
+      type: ImageLoaderType.assetSVG,
+      path: Assets.images.icOgraphyPhoneOutline.path,
+    );
+  }
+}
+
+class _BazIcLocation extends StatelessWidget {
+  const _BazIcLocation({
+    this.color,
+    this.width,
+  });
+  final Color? color;
+  final double? width;
+  @override
+  Widget build(BuildContext context) {
+    return BazUiAssetImage(
+      type: ImageLoaderType.assetSVG,
+      path: Assets.images.icOgraphyLocationLocation.path,
+      width: width,
+      color: color,
+    );
+  }
+}
+
+class _BazIcFire extends StatelessWidget {
+  const _BazIcFire({
+    this.color,
+    this.width,
+  });
+  final Color? color;
+  final double? width;
+  @override
+  Widget build(BuildContext context) {
+    return BazUiAssetImage(
+      type: ImageLoaderType.assetSVG,
+      path: Assets.images.icOgraphyFire.path,
+      width: width,
+      color: color,
+    );
+  }
+}
+
+class _BazIcChat extends StatelessWidget {
+  const _BazIcChat({
+    this.color,
+    this.width,
+  });
+  final Color? color;
+  final double? width;
+  @override
+  Widget build(BuildContext context) {
+    return BazUiAssetImage(
+      type: ImageLoaderType.assetSVG,
+      path: Assets.images.icOgraphyChatFill.path,
+      width: width,
+      color: color,
     );
   }
 }

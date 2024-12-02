@@ -8,20 +8,24 @@ class MenuItem extends StatelessWidget {
     this.onTap,
   });
 
-  final IconData? icon;
+  final Widget? icon;
   final String? title;
   final void Function()? onTap;
   @override
   Widget build(BuildContext context) {
     return ListTile(
       leading: Container(
-          height: 40,
-          width: 40,
-          decoration: BoxDecoration(
-            color: Colors.purple.withOpacity(0.03),
-            shape: BoxShape.circle,
-          ),
-          child: Icon(icon, color: Colors.purple)),
+        height: 40,
+        width: 40,
+        decoration: BoxDecoration(
+          color: Colors.purple.withOpacity(0.03),
+          shape: BoxShape.circle,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: icon,
+        ),
+      ),
       title: Text(
         title ?? '',
         style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),

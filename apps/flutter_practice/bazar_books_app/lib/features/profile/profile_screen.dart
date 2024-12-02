@@ -5,7 +5,9 @@ import 'package:bazar_books_app/features/profile/bloc/profile_event.dart';
 import 'package:bazar_books_app/features/profile/bloc/profile_state.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
 import 'package:bazar_books_design/constants.dart';
+import 'package:bazar_books_design/core/extensions/context_extension.dart';
 import 'package:bazar_books_design/core/responsive/size_extension.dart';
+import 'package:bazar_books_design/core/utils/size_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -24,9 +26,11 @@ class ProfileScreen extends StatelessWidget {
         ),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text(
-            'Profile',
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          title: Text(
+            context.bazS.generalTitleProfile,
+            style: context.textTheme.titleLarge?.copyWith(
+              fontSize: context.fontSize(SizeType.m),
+            ),
           ),
           centerTitle: true,
           backgroundColor: Colors.white,
@@ -69,7 +73,7 @@ class ProfileScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                user.name ?? 'No Name',
+                                user.name ?? context.bazS.noName,
                                 style: const TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
@@ -77,7 +81,7 @@ class ProfileScreen extends StatelessWidget {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                user.phoneNumber ?? 'No Phone Number',
+                                user.phoneNumber ?? context.bazS.noPhone,
                                 style: const TextStyle(color: Colors.grey),
                               ),
                             ],
@@ -88,9 +92,9 @@ class ProfileScreen extends StatelessWidget {
                           onTap: () {
                             // Handle logout action
                           },
-                          child: const Text(
-                            'Logout',
-                            style: TextStyle(
+                          child: Text(
+                            context.bazS.logoutTitle,
+                            style: const TextStyle(
                               color: Colors.red,
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -109,8 +113,11 @@ class ProfileScreen extends StatelessWidget {
                       child: ListView(
                         children: [
                           MenuItem(
-                            icon: Icons.person,
-                            title: 'My Account',
+                            icon: BazUiBuiltInImage.icProfileFill(
+                              color: context.colorScheme.primary,
+                              width: 20.0,
+                            ),
+                            title: context.bazS.generalTitleMyAccount,
                             onTap: () {
                               // Navigate to My Account screen
                               context.go(
@@ -118,25 +125,35 @@ class ProfileScreen extends StatelessWidget {
                               );
                             },
                           ),
-                          const MenuItem(
-                            icon: Icons.location_on,
-                            title: 'Address',
+                          MenuItem(
+                            icon: BazUiBuiltInImage.icLocation(
+                              color: context.colorScheme.primary,
+                            ),
+                            title: context.bazS.addressTtile,
                           ),
-                          const MenuItem(
-                            icon: Icons.local_offer,
-                            title: 'Offers & Promos',
+                          MenuItem(
+                            icon: BazUiBuiltInImage.icFire(
+                              color: context.colorScheme.primary,
+                            ),
+                            title: context.bazS.offersAndPromosTtile,
                           ),
-                          const MenuItem(
-                            icon: Icons.favorite,
-                            title: 'Your Favorites',
+                          MenuItem(
+                            icon: BazUiBuiltInImage.icLoveFill(
+                              color: context.colorScheme.primary,
+                            ),
+                            title: context.bazS.yourFavoritesTtile,
                           ),
-                          const MenuItem(
-                            icon: Icons.history,
-                            title: 'Order History',
+                          MenuItem(
+                            icon: BazUiBuiltInImage.icMenuFill(
+                              color: context.colorScheme.primary,
+                            ),
+                            title: context.bazS.orderHistoryTtile,
                           ),
-                          const MenuItem(
-                            icon: Icons.help,
-                            title: 'Help Center',
+                          MenuItem(
+                            icon: BazUiBuiltInImage.icChat(
+                              color: context.colorScheme.primary,
+                            ),
+                            title: context.bazS.helpCenterTtile,
                           ),
                         ],
                       ),
@@ -145,7 +162,10 @@ class ProfileScreen extends StatelessWidget {
                 ],
               );
             }
-            return const Center(child: Text('Unknown State'));
+            return Center(
+                child: Text(
+              context.bazS.errorUnknown,
+            ));
           },
         ),
       ),

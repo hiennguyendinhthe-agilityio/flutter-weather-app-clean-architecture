@@ -23,6 +23,7 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "aboutTitle": MessageLookupByLibrary.simpleMessage("About"),
+        "addressTtile": MessageLookupByLibrary.simpleMessage("Address"),
         "allTabBar": MessageLookupByLibrary.simpleMessage("All"),
         "authenticationFailure":
             MessageLookupByLibrary.simpleMessage("Invalid email or password."),
@@ -30,6 +31,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Check the authors"),
         "authorsTtile": MessageLookupByLibrary.simpleMessage("Authors"),
         "booksTabBar": MessageLookupByLibrary.simpleMessage("Books"),
+        "changePictureTtile":
+            MessageLookupByLibrary.simpleMessage("Change Picture"),
         "continueButton":
             MessageLookupByLibrary.simpleMessage("Continue shopping"),
         "detailMenuDescription": MessageLookupByLibrary.simpleMessage(
@@ -75,6 +78,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "generalTitleCategory":
             MessageLookupByLibrary.simpleMessage("Category"),
         "generalTitleHome": MessageLookupByLibrary.simpleMessage("Home"),
+        "generalTitleMyAccount":
+            MessageLookupByLibrary.simpleMessage("My Account"),
+        "generalTitleName": MessageLookupByLibrary.simpleMessage("Name"),
         "generalTitleProfile": MessageLookupByLibrary.simpleMessage("Profile"),
         "generalTitleSearch": MessageLookupByLibrary.simpleMessage("Search"),
         "hasLetter": MessageLookupByLibrary.simpleMessage(
@@ -83,6 +89,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Minimum 8 characters"),
         "hasNumber":
             MessageLookupByLibrary.simpleMessage("At least 1 number (1-9)"),
+        "helpCenterTtile": MessageLookupByLibrary.simpleMessage("Help Center"),
         "homePageBestVendors":
             MessageLookupByLibrary.simpleMessage("Best Vendors"),
         "homePageProductEmpty":
@@ -91,9 +98,18 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Top of Week"),
         "journalistsTabBar":
             MessageLookupByLibrary.simpleMessage("Journalists"),
+        "logoutTitle": MessageLookupByLibrary.simpleMessage("Logout"),
+        "noEmailTitle": MessageLookupByLibrary.simpleMessage("No Email"),
+        "noName": MessageLookupByLibrary.simpleMessage("No name"),
+        "noPhone": MessageLookupByLibrary.simpleMessage("No Phone Number"),
         "novelistsTabBar": MessageLookupByLibrary.simpleMessage("Novelists"),
         "novelsTabBar": MessageLookupByLibrary.simpleMessage("Novels"),
+        "offersAndPromosTtile":
+            MessageLookupByLibrary.simpleMessage("Offers & Promos"),
+        "orderHistoryTtile":
+            MessageLookupByLibrary.simpleMessage("Order History"),
         "orderNow": MessageLookupByLibrary.simpleMessage("Order Now"),
+        "phoneNumber": MessageLookupByLibrary.simpleMessage("Phone Number"),
         "playwrightsTabBar":
             MessageLookupByLibrary.simpleMessage("Playwrights"),
         "poemsTabBar": MessageLookupByLibrary.simpleMessage("Poems"),
@@ -101,6 +117,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "productTitle": MessageLookupByLibrary.simpleMessage("Products"),
         "reviewTitle": MessageLookupByLibrary.simpleMessage("Review"),
         "romanticTabBar": MessageLookupByLibrary.simpleMessage("Romantic"),
+        "saveChangesTtile":
+            MessageLookupByLibrary.simpleMessage("Save Changes"),
         "scienceTabBar": MessageLookupByLibrary.simpleMessage("Science"),
         "selfLoveTabBar": MessageLookupByLibrary.simpleMessage("Self Love"),
         "signInPageDontHaveAnAccount":
@@ -134,6 +152,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Recent Searches"),
         "vendorSubtitle": MessageLookupByLibrary.simpleMessage("Our Vendors"),
         "vendorTitle": MessageLookupByLibrary.simpleMessage("Vendors"),
-        "viewButton": MessageLookupByLibrary.simpleMessage("View cart")
+        "viewButton": MessageLookupByLibrary.simpleMessage("View cart"),
+        "yourFavoritesTtile":
+            MessageLookupByLibrary.simpleMessage("Your Favorites")
       };
 }

@@ -100,6 +100,16 @@ class BazUiS {
     );
   }
 
+  /// `No Email`
+  String get noEmailTitle {
+    return Intl.message(
+      'No Email',
+      name: 'noEmailTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Your email`
   String get signInPageYourEmail {
     return Intl.message(
@@ -390,6 +400,116 @@ class BazUiS {
     );
   }
 
+  /// `No name`
+  String get noName {
+    return Intl.message(
+      'No name',
+      name: 'noName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No Phone Number`
+  String get noPhone {
+    return Intl.message(
+      'No Phone Number',
+      name: 'noPhone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Phone Number`
+  String get phoneNumber {
+    return Intl.message(
+      'Phone Number',
+      name: 'phoneNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Logout`
+  String get logoutTitle {
+    return Intl.message(
+      'Logout',
+      name: 'logoutTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Address`
+  String get addressTtile {
+    return Intl.message(
+      'Address',
+      name: 'addressTtile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Offers & Promos`
+  String get offersAndPromosTtile {
+    return Intl.message(
+      'Offers & Promos',
+      name: 'offersAndPromosTtile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your Favorites`
+  String get yourFavoritesTtile {
+    return Intl.message(
+      'Your Favorites',
+      name: 'yourFavoritesTtile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Order History`
+  String get orderHistoryTtile {
+    return Intl.message(
+      'Order History',
+      name: 'orderHistoryTtile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Help Center`
+  String get helpCenterTtile {
+    return Intl.message(
+      'Help Center',
+      name: 'helpCenterTtile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Change Picture`
+  String get changePictureTtile {
+    return Intl.message(
+      'Change Picture',
+      name: 'changePictureTtile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save Changes`
+  String get saveChangesTtile {
+    return Intl.message(
+      'Save Changes',
+      name: 'saveChangesTtile',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Email already exists, please check again!`
   String get errorConflictEmail {
     return Intl.message(
@@ -440,6 +560,16 @@ class BazUiS {
     );
   }
 
+  /// `Name`
+  String get generalTitleName {
+    return Intl.message(
+      'Name',
+      name: 'generalTitleName',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Category`
   String get generalTitleCategory {
     return Intl.message(
@@ -465,6 +595,16 @@ class BazUiS {
     return Intl.message(
       'Search',
       name: 'generalTitleSearch',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `My Account`
+  String get generalTitleMyAccount {
+    return Intl.message(
+      'My Account',
+      name: 'generalTitleMyAccount',
       desc: '',
       args: [],
     );
