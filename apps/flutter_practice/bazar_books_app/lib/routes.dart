@@ -11,7 +11,12 @@ import 'package:bazar_books_app/features/home/home_page.dart';
 import 'package:bazar_books_app/features/home/widgets/author/authors.dart';
 import 'package:bazar_books_app/features/home/widgets/vendors/vendors.dart';
 import 'package:bazar_books_app/features/profile/profile_screen.dart';
+import 'package:bazar_books_app/features/profile/screens/address_screen.dart';
+import 'package:bazar_books_app/features/profile/screens/help_center_screen.dart';
 import 'package:bazar_books_app/features/profile/screens/my_account_screen.dart';
+import 'package:bazar_books_app/features/profile/screens/my_favorite_screen.dart';
+import 'package:bazar_books_app/features/profile/screens/offers_and_promos_screen.dart';
+import 'package:bazar_books_app/features/profile/screens/order_history_screen.dart';
 import 'package:bazar_books_design/core/core.dart';
 import 'package:bazar_books_design/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -35,9 +40,7 @@ Future<String?> _guard(BuildContext context, GoRouterState state) async {
     return RoutePaths.login;
   }
 
-  if (isLoggedIn &&
-      state.uri.toString() == RoutePaths.login &&
-      state.uri.toString() == RoutePaths.profile) {
+  if (isLoggedIn && state.uri.toString() == RoutePaths.login) {
     return RoutePaths.home;
   }
 
@@ -176,6 +179,36 @@ final GoRouter router = GoRouter(
               path: RoutePaths.account,
               builder: (BuildContext context, GoRouterState state) {
                 return const MyAccountScreen();
+              },
+            ),
+            GoRoute(
+              path: RoutePaths.myFavorites,
+              builder: (BuildContext context, GoRouterState state) {
+                return const MyFavorite();
+              },
+            ),
+            GoRoute(
+              path: RoutePaths.address,
+              builder: (BuildContext context, GoRouterState state) {
+                return const AddressScreen();
+              },
+            ),
+            GoRoute(
+              path: RoutePaths.offersAndPromos,
+              builder: (BuildContext context, GoRouterState state) {
+                return const OffersAndPromosScreen();
+              },
+            ),
+            GoRoute(
+              path: RoutePaths.orderHistory,
+              builder: (BuildContext context, GoRouterState state) {
+                return const OrderHistoryScreen();
+              },
+            ),
+            GoRoute(
+              path: RoutePaths.helpCenter,
+              builder: (BuildContext context, GoRouterState state) {
+                return const HelpCenterScreen();
               },
             ),
           ],

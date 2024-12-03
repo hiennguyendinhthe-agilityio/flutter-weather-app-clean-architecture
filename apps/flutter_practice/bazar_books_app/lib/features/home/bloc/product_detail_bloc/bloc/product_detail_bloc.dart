@@ -7,13 +7,13 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
-part 'detail_event.dart';
-part 'detail_state.dart';
+part 'product_detail_event.dart';
+part 'product_detail_state.dart';
 
-class DetailBloc extends Bloc<DetailEvent, DetailState> {
+class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
   final HomeRepository productRepository;
-  DetailBloc({required this.productRepository})
-      : super(const DetailState(
+  ProductDetailBloc({required this.productRepository})
+      : super(const ProductDetailState(
           fetchDataState: FetchDataState.initial(),
           isFavorite: false,
           quantity: 1,
@@ -24,7 +24,7 @@ class DetailBloc extends Bloc<DetailEvent, DetailState> {
   }
 
   void _onFetchProductDetails(
-      FetchProductDetailsEvent event, Emitter<DetailState> emit) async {
+      FetchProductDetailsEvent event, Emitter<ProductDetailState> emit) async {
     emit(state.copyWith(fetchDataState: const FetchDataState.loading()));
     try {
       final product = await productRepository.fetchProductDetails(event.id);
@@ -38,11 +38,13 @@ class DetailBloc extends Bloc<DetailEvent, DetailState> {
     }
   }
 
-  void _onToggleFavorite(ToggleFavoriteEvent event, Emitter<DetailState> emit) {
+  void _onToggleFavorite(
+      ToggleFavoriteEvent event, Emitter<ProductDetailState> emit) {
     emit(state.copyWith(isFavorite: !state.isFavorite));
   }
 
-  void _onUpdateAmount(UpdateAmountEvent event, Emitter<DetailState> emit) {
+  void _onUpdateAmount(
+      UpdateAmountEvent event, Emitter<ProductDetailState> emit) {
     final newAmount = event.newAmount < 1 ? 1 : event.newAmount;
     emit(state.copyWith(amount: newAmount));
   }

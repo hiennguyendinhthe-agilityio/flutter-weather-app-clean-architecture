@@ -63,7 +63,7 @@ class BazUiIconButton extends StatelessWidget {
     return BazUiIconButton(
       icon: isFavorite
           ? BazUiBuiltInImage.icLoveFill(
-              color: activeColor ?? Colors.purple,
+              color: activeColor ?? const Color.fromARGB(255, 128, 39, 176),
             )
           : Icon(
               Icons.favorite_border,

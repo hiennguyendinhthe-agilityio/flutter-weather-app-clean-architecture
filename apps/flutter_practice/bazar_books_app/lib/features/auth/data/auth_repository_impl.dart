@@ -35,8 +35,12 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<bool> isLoggedIn() async {
-    final user = await isarService.getLoggedInUser();
-    return user != null && user.isLoggedIn;
+    try {
+      final user = await isarService.getLoggedInUser();
+      return user != null && user.isLoggedIn;
+    } catch (e) {
+      return false;
+    }
   }
 
   @override

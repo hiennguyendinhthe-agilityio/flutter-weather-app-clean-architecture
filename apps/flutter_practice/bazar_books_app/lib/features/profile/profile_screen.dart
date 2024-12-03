@@ -1,8 +1,8 @@
 import 'package:bazar_books_app/di.dart';
 import 'package:bazar_books_app/features/auth/data/auth_repository_impl.dart';
-import 'package:bazar_books_app/features/profile/bloc/profile_bloc.dart';
-import 'package:bazar_books_app/features/profile/bloc/profile_event.dart';
-import 'package:bazar_books_app/features/profile/bloc/profile_state.dart';
+import 'package:bazar_books_app/features/profile/bloc/profile/profile_bloc.dart';
+import 'package:bazar_books_app/features/profile/bloc/profile/profile_event.dart';
+import 'package:bazar_books_app/features/profile/bloc/profile/profile_state.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
 import 'package:bazar_books_design/constants.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
@@ -91,10 +91,10 @@ class ProfileScreen extends StatelessWidget {
                         GestureDetector(
                           onTap: () {
                             BazUiBottomSheet.showLogoutModal(context, () {
-                              context.go(RoutePaths.login);
-                              context
-                                  .read<ProfileBloc>()
-                                  .add(LogoutRequested());
+                              context.pop();
+                              // context
+                              //     .read<ProfileBloc>()
+                              //     .add(LogoutRequested());
                             });
                           },
                           child: Text(
@@ -135,30 +135,55 @@ class ProfileScreen extends StatelessWidget {
                               color: context.colorScheme.primary,
                             ),
                             title: context.bazS.addressTtile,
+                            onTap: () {
+                              context.go(
+                                '${RoutePaths.profile}/${RoutePaths.address}',
+                              );
+                            },
                           ),
                           MenuItem(
                             icon: BazUiBuiltInImage.icFire(
                               color: context.colorScheme.primary,
                             ),
                             title: context.bazS.offersAndPromosTtile,
+                            onTap: () {
+                              context.go(
+                                '${RoutePaths.profile}/${RoutePaths.offersAndPromos}',
+                              );
+                            },
                           ),
                           MenuItem(
                             icon: BazUiBuiltInImage.icLoveFill(
                               color: context.colorScheme.primary,
                             ),
                             title: context.bazS.yourFavoritesTtile,
+                            onTap: () {
+                              context.go(
+                                '${RoutePaths.profile}/${RoutePaths.myFavorites}',
+                              );
+                            },
                           ),
                           MenuItem(
                             icon: BazUiBuiltInImage.icMenuFill(
                               color: context.colorScheme.primary,
                             ),
                             title: context.bazS.orderHistoryTtile,
+                            onTap: () {
+                              context.go(
+                                '${RoutePaths.profile}/${RoutePaths.orderHistory}',
+                              );
+                            },
                           ),
                           MenuItem(
                             icon: BazUiBuiltInImage.icChat(
                               color: context.colorScheme.primary,
                             ),
                             title: context.bazS.helpCenterTtile,
+                            onTap: () {
+                              context.go(
+                                '${RoutePaths.profile}/${RoutePaths.helpCenter}',
+                              );
+                            },
                           ),
                         ],
                       ),

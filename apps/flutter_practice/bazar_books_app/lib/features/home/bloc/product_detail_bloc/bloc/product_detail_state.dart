@@ -1,22 +1,22 @@
-part of 'detail_bloc.dart';
+part of 'product_detail_bloc.dart';
 
-class DetailState extends Equatable {
+class ProductDetailState extends Equatable {
   final FetchDataState<Product> fetchDataState;
   final bool isFavorite;
   final int quantity;
 
-  const DetailState({
+  const ProductDetailState({
     required this.fetchDataState,
     required this.isFavorite,
     required this.quantity,
   });
 
-  DetailState copyWith({
+  ProductDetailState copyWith({
     FetchDataState<Product>? fetchDataState,
     bool? isFavorite,
     int? amount,
   }) {
-    return DetailState(
+    return ProductDetailState(
       fetchDataState: fetchDataState ?? this.fetchDataState,
       isFavorite: isFavorite ?? this.isFavorite,
       quantity: amount ?? quantity,

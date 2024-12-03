@@ -1,12 +1,12 @@
-part of 'detail_bloc.dart';
+part of 'product_detail_bloc.dart';
 
 @immutable
-sealed class DetailEvent extends Equatable {
+sealed class ProductDetailEvent extends Equatable {
   @override
   List<Object?> get props => [];
 }
 
-class FetchProductDetailsEvent extends DetailEvent {
+class FetchProductDetailsEvent extends ProductDetailEvent {
   final String? id;
 
   FetchProductDetailsEvent(this.id);
@@ -15,9 +15,9 @@ class FetchProductDetailsEvent extends DetailEvent {
   List<Object?> get props => [id];
 }
 
-class ToggleFavoriteEvent extends DetailEvent {}
+class ToggleFavoriteEvent extends ProductDetailEvent {}
 
-class UpdateAmountEvent extends DetailEvent {
+class UpdateAmountEvent extends ProductDetailEvent {
   final int newAmount;
 
   UpdateAmountEvent(this.newAmount);

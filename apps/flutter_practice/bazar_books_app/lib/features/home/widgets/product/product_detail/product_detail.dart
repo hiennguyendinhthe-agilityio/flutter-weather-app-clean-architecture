@@ -1,7 +1,9 @@
 import 'package:bazar_books_app/di.dart';
 import 'package:bazar_books_app/features/home/bloc/data_state.dart';
-import 'package:bazar_books_app/features/home/bloc/detail_bloc/bloc/detail_bloc.dart';
+import 'package:bazar_books_app/features/home/bloc/product_detail_bloc/bloc/product_detail_bloc.dart';
 import 'package:bazar_books_app/features/home/data/home_repository.dart';
+import 'package:bazar_books_app/features/profile/bloc/favorite/favorite_bloc.dart';
+import 'package:bazar_books_app/features/profile/bloc/favorite/favorite_event.dart';
 import 'package:bazar_books_design/constants.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
 import 'package:bazar_books_design/core/extensions/responsive_extension.dart';
@@ -24,9 +26,10 @@ class ProductDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => DetailBloc(productRepository: getIt<HomeRepository>())
-        ..add(FetchProductDetailsEvent(productId)),
-      child: BlocBuilder<DetailBloc, DetailState>(
+      create: (_) =>
+          ProductDetailBloc(productRepository: getIt<HomeRepository>())
+            ..add(FetchProductDetailsEvent(productId)),
+      child: BlocBuilder<ProductDetailBloc, ProductDetailState>(
         builder: (context, state) {
           final fetchDataState = state.fetchDataState;
 
@@ -53,8 +56,8 @@ class ProductDetail extends StatelessWidget {
   }
 
   Widget _buildProductDetails(
-      BuildContext context, Product? product, DetailState state) {
-    final bloc = context.read<DetailBloc>();
+      BuildContext context, Product? product, ProductDetailState state) {
+    final bloc = context.read<ProductDetailBloc>();
 
     return DraggableScrollableSheet(
       snap: true,
@@ -93,9 +96,19 @@ class ProductDetail extends StatelessWidget {
                   ),
                   BazUiIconButton.favorite(
                     isFavorite: state.isFavorite,
-                    onPressed: () => bloc.add(
-                      ToggleFavoriteEvent(),
-                    ),
+                    onPressed: () {
+                      bloc.add(
+                        ToggleFavoriteEvent(),
+                      );
+                      if (state.isFavorite) {
+                        context.read<FavoriteBloc>().add(
+                            RemoveFromFavoritesEvent(
+                                product ?? Product(apiId: '')));
+                      } else {
+                        context.read<FavoriteBloc>().add(
+                            AddToFavoritesEvent(product ?? Product(apiId: '')));
+                      }
+                    },
                   ),
                 ],
               ),

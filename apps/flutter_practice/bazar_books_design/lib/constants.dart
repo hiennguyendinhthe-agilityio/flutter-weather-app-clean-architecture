@@ -46,4 +46,6 @@ class Constants {
           errorText: 'Name must be at least 3 characters long'),
     ],
   ).call;
+
+  static const noFavorites = 'No favorites added yet!';
 }

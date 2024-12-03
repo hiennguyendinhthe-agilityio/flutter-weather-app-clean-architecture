@@ -1,5 +1,5 @@
 import 'package:bazar_books_app/features/home/bloc/data_state.dart';
-import 'package:bazar_books_app/features/home/bloc/detail_bloc/bloc/detail_bloc.dart';
+import 'package:bazar_books_app/features/home/bloc/product_detail_bloc/bloc/product_detail_bloc.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -7,18 +7,18 @@ import 'package:mocktail/mocktail.dart';
 import '../../home_mocks.dart';
 
 void main() {
-  late DetailBloc detailBloc;
+  late ProductDetailBloc detailBloc;
   late MockHomeRepository productRepository;
 
   setUp(() {
     productRepository = MockHomeRepository();
-    detailBloc = DetailBloc(productRepository: productRepository);
+    detailBloc = ProductDetailBloc(productRepository: productRepository);
   });
   tearDown(() {
     detailBloc.close();
   });
   group('Test fetch product details', () {
-    blocTest<DetailBloc, DetailState>(
+    blocTest<ProductDetailBloc, ProductDetailState>(
       '''
       Scenario: Fetch product details successfully
         Given DetailBloc has initial state
@@ -44,7 +44,7 @@ void main() {
       ],
     );
 
-    blocTest<DetailBloc, DetailState>(
+    blocTest<ProductDetailBloc, ProductDetailState>(
       '''
       Scenario: Error fetching product details
         Given DetailBloc has initial state
@@ -67,7 +67,7 @@ void main() {
       ],
     );
 
-    blocTest<DetailBloc, DetailState>(
+    blocTest<ProductDetailBloc, ProductDetailState>(
       '''
       Scenario: Toggle favorite status
         Given DetailBloc has initial favorite status as false
@@ -82,7 +82,7 @@ void main() {
       ],
     );
 
-    blocTest<DetailBloc, DetailState>(
+    blocTest<ProductDetailBloc, ProductDetailState>(
       '''
       Scenario: Update product quantity
         Given DetailBloc has initial quantity of 1
@@ -96,7 +96,7 @@ void main() {
       ],
     );
 
-    blocTest<DetailBloc, DetailState>(
+    blocTest<ProductDetailBloc, ProductDetailState>(
       '''
       Scenario: Update product quantity with a value less than 1
         Given DetailBloc has initial quantity of 1

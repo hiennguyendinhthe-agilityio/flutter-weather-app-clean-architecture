@@ -11,4 +11,9 @@ class RoutePaths {
   static const String account = 'account';
   static const String authors = 'authors';
   static const String search = 'search';
+  static const String myFavorites = 'myFavorites';
+  static const String address = 'address';
+  static const String offersAndPromos = 'offersAndPromos';
+  static const String orderHistory = 'orderHistory';
+  static const String helpCenter = 'helpCenter';
 }
