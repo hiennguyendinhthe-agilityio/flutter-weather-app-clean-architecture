@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 abstract class CategoryRepository {
   Future<List<Product>> fetchProducts();
 
-  Future<List<Product>> fetchCategory(String category);
+  Future<List<Product>> fetchFilterCategory(String category);
 }
 
 class CategoryRepositoryImpl implements CategoryRepository {
@@ -53,7 +53,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
   }
 
   @override
-  Future<List<Product>> fetchCategory(String category) async {
+  Future<List<Product>> fetchFilterCategory(String category) async {
     if (category == 'All') {
       return await fetchProducts();
     }

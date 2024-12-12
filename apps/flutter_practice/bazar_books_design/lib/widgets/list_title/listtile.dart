@@ -1,4 +1,4 @@
-import 'package:bazar_books_design/constants.dart';
+import 'package:bazar_books_design/core/constant/constants.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
 import 'package:bazar_books_design/core/extensions/responsive_extension.dart';
 import 'package:bazar_books_design/core/utils/size_type.dart';
@@ -25,7 +25,7 @@ class BazUiListTile extends StatelessWidget {
       child: ListTile(
         leading: CircleAvatar(
           radius: context.getAvatarRadius(),
-          backgroundImage:  NetworkImage(
+          backgroundImage: NetworkImage(
             leading ?? Constants.imgUrlDefault,
           ),
         ),

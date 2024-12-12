@@ -12,7 +12,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../bloc/author_bloc/author_bloc.dart';
 import '../../bloc/data_state.dart';
-import '../../data/home_repository.dart';
+import '../../data/author_repository/author_repository.dart';
 
 class Authors extends StatelessWidget {
   const Authors({
@@ -91,7 +91,7 @@ class ListViewAuthors extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (BuildContext context) =>
-          AuthorBloc(repository: getIt<HomeRepository>())
+          AuthorBloc(repository: getIt<AuthorRepository>())
             ..add(
               GetAuthorsEvent(),
             ),
@@ -135,7 +135,7 @@ class ListViewAuthors extends StatelessWidget {
                             MaterialPageRoute(
                               builder: (context) => BlocProvider(
                                 create: (BuildContext context) => AuthorBloc(
-                                    repository: getIt<HomeRepository>())
+                                    repository: getIt<AuthorRepository>())
                                   ..add(
                                     GetAuthorsEvent(),
                                   ),

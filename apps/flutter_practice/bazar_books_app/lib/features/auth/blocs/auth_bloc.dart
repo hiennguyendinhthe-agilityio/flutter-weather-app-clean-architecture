@@ -17,6 +17,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<LogInRequested>(_onLogInRequested);
     on<SignUpSubmitted>(_onSignUpSubmitted);
     on<LogoutRequested>(_onLogOutRequested);
+    on<PasswordValidationChanged>(_onPasswordValidationChanged);
   }
 
   Future<void> _isLoggedIn(IsLoggedIn event, Emitter<AuthState> emit) async {
@@ -110,5 +111,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthenticationLoading());
     await authenticationRepository.logOut();
     emit(Unauthenticated());
+  }
+
+  Future<void> _onPasswordValidationChanged(
+      PasswordValidationChanged event, Emitter<AuthState> emit) async {
+    final password = event.password;
+
+    final hasMinLength = password.length >= 8;
+    final hasNumber = password.contains(RegExp(r'\d'));
+    final hasLetter = password.contains(RegExp(r'[a-zA-Z]'));
+
+    emit(PasswordValidationState(
+      hasMinLength: hasMinLength,
+      hasNumber: hasNumber,
+      hasLetter: hasLetter,
+    ));
   }
 }

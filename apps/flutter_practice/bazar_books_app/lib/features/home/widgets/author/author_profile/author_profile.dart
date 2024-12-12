@@ -2,10 +2,10 @@ import 'package:bazar_books_app/di.dart';
 import 'package:bazar_books_app/features/home/bloc/author_bloc/author_bloc.dart';
 import 'package:bazar_books_app/features/home/bloc/data_state.dart';
 import 'package:bazar_books_app/features/home/bloc/product_bloc/product_bloc.dart';
-import 'package:bazar_books_app/features/home/data/home_repository.dart';
+import 'package:bazar_books_app/features/home/data/author_repository/author_repository.dart';
+import 'package:bazar_books_app/features/home/data/product_repository/product_repository.dart';
 import 'package:bazar_books_app/features/home/widgets/product/product_detail/product_detail.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
-import 'package:bazar_books_design/constants.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
 import 'package:bazar_books_design/core/extensions/responsive_extension.dart';
 import 'package:bazar_books_design/core/utils/size_type.dart';
@@ -39,12 +39,12 @@ class AuthorProfile extends StatelessWidget {
       body: MultiBlocProvider(
         providers: [
           BlocProvider(
-            create: (_) => AuthorBloc(repository: getIt<HomeRepository>())
+            create: (_) => AuthorBloc(repository: getIt<AuthorRepository>())
               ..add(FetchAuthorProfileEvent(authorId)),
           ),
           BlocProvider(
             create: (context) =>
-                ProductBloc(productRepository: getIt<HomeRepository>())
+                ProductBloc(productRepository: getIt<ProductRepository>())
                   ..add(
                     GetProductsEvent(),
                   ),

@@ -4,9 +4,9 @@ import 'package:bazar_books_app/features/auth/congratulation_screen.dart';
 import 'package:bazar_books_app/features/auth/sign_in.dart';
 import 'package:bazar_books_app/features/auth/sign_up.dart';
 import 'package:bazar_books_app/features/cart/cart_screen.dart';
+import 'package:bazar_books_app/features/category/categori_search/bloc/search_bloc.dart';
+import 'package:bazar_books_app/features/category/data/category_repository.dart';
 import 'package:bazar_books_app/features/category/screen/category_screen.dart';
-import 'package:bazar_books_app/features/category/search/bloc/search_bloc.dart';
-import 'package:bazar_books_app/features/category/search/data/search_repository.dart';
 import 'package:bazar_books_app/features/home/home_page.dart';
 import 'package:bazar_books_app/features/home/widgets/author/authors.dart';
 import 'package:bazar_books_app/features/home/widgets/vendors/vendors.dart';
@@ -23,7 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import 'features/category/search/screen/search_screen.dart';
+import 'features/category/categori_search/screen/search_screen.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: 'root');
@@ -127,7 +127,7 @@ final GoRouter router = GoRouter(
               builder: (BuildContext context, GoRouterState state) {
                 return BlocProvider(
                   create: (BuildContext context) =>
-                      SearchBloc(searchRepository: getIt<SearchRepository>()),
+                      SearchBloc(searchRepository: getIt<CategoryRepository>()),
                   child: const SearchScreen(),
                 );
               },

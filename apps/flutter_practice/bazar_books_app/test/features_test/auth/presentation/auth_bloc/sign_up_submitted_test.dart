@@ -27,6 +27,9 @@ void main() {
     blocTest<AuthBloc, AuthState>(
       'emits SignUpSuccess when signUp is successful',
       build: () {
+        when(() => mockAuthRepository.isEmailDuplicateFromAPI(
+              AuthMocks.getMockEmail,
+            )).thenAnswer((_) async => false);
         when(() => mockAuthRepository.signUp(
               AuthMocks.getMockName,
               AuthMocks.getMockEmail,
@@ -63,6 +66,9 @@ void main() {
     blocTest<AuthBloc, AuthState>(
       'emits SignUpFailure when sign-up fails',
       setUp: () {
+        when(() => mockAuthRepository.isEmailDuplicateFromAPI(
+              AuthMocks.getMockEmail,
+            )).thenAnswer((_) async => false);
         when(() => mockAuthRepository.signUp(
               AuthMocks.getMockName,
               AuthMocks.getMockEmail,
@@ -83,6 +89,9 @@ void main() {
     blocTest<AuthBloc, AuthState>(
       'emits AuthenticationFailure when an error occurs',
       setUp: () {
+        when(() => mockAuthRepository.isEmailDuplicateFromAPI(
+              AuthMocks.getMockEmail,
+            )).thenAnswer((_) async => false);
         when(() => mockAuthRepository.signUp(AuthMocks.getMockName,
                 AuthMocks.getMockEmail, AuthMocks.getMockPassword))
             .thenThrow(
@@ -100,6 +109,9 @@ void main() {
     blocTest<AuthBloc, AuthState>(
       'emits SignUpFailure when Timeout error is thrown',
       build: () {
+        when(() => mockAuthRepository.isEmailDuplicateFromAPI(
+              AuthMocks.getMockEmail,
+            )).thenAnswer((_) async => false);
         when(() => mockAuthRepository.signUp(any(), any(), any()))
             .thenThrow(Failure(
           ResponseCode.BAD_REQUEST,
@@ -120,6 +132,9 @@ void main() {
     blocTest<AuthBloc, AuthState>(
       'emits SignUpFailure when SendTimeout error is thrown',
       build: () {
+        when(() => mockAuthRepository.isEmailDuplicateFromAPI(
+              AuthMocks.getMockEmail,
+            )).thenAnswer((_) async => false);
         when(() => mockAuthRepository.signUp(any(), any(), any())).thenThrow(
           Failure(
             ResponseCode.BAD_REQUEST,
@@ -142,6 +157,9 @@ void main() {
     blocTest<AuthBloc, AuthState>(
       'emits SignUpFailure when NOT_FOUND error is thrown',
       build: () {
+        when(() => mockAuthRepository.isEmailDuplicateFromAPI(
+              AuthMocks.getMockEmail,
+            )).thenAnswer((_) async => false);
         when(() => mockAuthRepository.signUp(any(), any(), any())).thenThrow(
           Failure(
             ResponseCode.BAD_REQUEST,
@@ -164,6 +182,9 @@ void main() {
     blocTest<AuthBloc, AuthState>(
       'emits SignUpFailure when badResponse error is thrown',
       build: () {
+        when(() => mockAuthRepository.isEmailDuplicateFromAPI(
+              AuthMocks.getMockEmail,
+            )).thenAnswer((_) async => false);
         when(() => mockAuthRepository.signUp(any(), any(), any())).thenThrow(
           Failure(
             ResponseCode.BAD_REQUEST,

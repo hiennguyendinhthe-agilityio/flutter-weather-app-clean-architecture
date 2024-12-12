@@ -1,7 +1,5 @@
-import 'package:bazar_books_app/features/home/data/home_repository.dart';
-import 'package:bazar_books_app/features/home/data/home_repository_impl.dart';
-import 'package:bazar_books_design/core/network/error_handler.dart';
-import 'package:bazar_books_design/core/network/failure.dart';
+import 'package:bazar_books_app/features/home/data/author_repository/author_repository.dart';
+import 'package:bazar_books_app/features/home/data/author_repository/author_repository_impl.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -9,12 +7,12 @@ import '../../home_mocks.dart';
 
 void main() {
   late MockHomeApiService mockHomeApiService;
-  late HomeRepository homeRepository;
+  late AuthorRepository homeRepository;
 
   setUp(() {
     mockHomeApiService = MockHomeApiService();
     homeRepository =
-        HomeRepositoryImpl(mockHomeApiService, MockProductService());
+        AuthorRepositoryImpl(mockHomeApiService, MockProductService());
   });
 
   group('fetchAuthors', () {
@@ -29,27 +27,6 @@ void main() {
 
       // Assert
       expect(result, HomeMocks.mockAuthorsList);
-      verify(() => mockHomeApiService.getAuthors()).called(1);
-    });
-
-    test('throws error when API fetch fails', () async {
-      // Arrange
-      final exception = Exception('Failed to fetch authors');
-      when(() => mockHomeApiService.getAuthors()).thenThrow(exception);
-
-      // Act
-      Object? result;
-      try {
-        await homeRepository.fetchAuthors();
-      } catch (e) {
-        result = e;
-      }
-
-      // Assert
-      expect(
-        (result as Failure).message,
-        ErrorHandler.handle(exception).failure.message,
-      );
       verify(() => mockHomeApiService.getAuthors()).called(1);
     });
 

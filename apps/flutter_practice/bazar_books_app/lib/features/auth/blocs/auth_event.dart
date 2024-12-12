@@ -42,3 +42,12 @@ class SignUpSubmitted extends AuthEvent {
 }
 
 class LogoutRequested extends AuthEvent {}
+
+class PasswordValidationChanged extends AuthEvent {
+  final String password;
+
+  PasswordValidationChanged(this.password);
+
+  @override
+  List<Object> get props => [password];
+}

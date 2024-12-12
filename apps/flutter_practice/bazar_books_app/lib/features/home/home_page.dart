@@ -1,7 +1,9 @@
 import 'package:bazar_books_app/di.dart';
 import 'package:bazar_books_app/features/auth/blocs/auth_bloc.dart';
 import 'package:bazar_books_app/features/home/bloc/author_bloc/author_bloc.dart';
-import 'package:bazar_books_app/features/home/data/home_repository.dart';
+import 'package:bazar_books_app/features/home/bloc/vendor_bloc/vendor_bloc.dart';
+import 'package:bazar_books_app/features/home/data/author_repository/author_repository.dart';
+import 'package:bazar_books_app/features/home/data/product_repository/product_repository.dart';
 import 'package:bazar_books_app/features/home/widgets/author/authors_section.dart';
 import 'package:bazar_books_app/features/home/widgets/offer/offer.dart';
 import 'package:bazar_books_app/features/home/widgets/product/products.dart';
@@ -14,7 +16,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import 'bloc/product_bloc/product_bloc.dart';
-import 'bloc/vendor_bloc/vendor_bloc.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -58,21 +59,20 @@ class HomePage extends StatelessWidget {
             providers: [
               BlocProvider<ProductBloc>(
                 create: (BuildContext context) =>
-                    ProductBloc(productRepository: getIt<HomeRepository>())
+                    ProductBloc(productRepository: getIt<ProductRepository>())
                       ..add(
                         GetProductsEvent(),
                       ),
               ),
               BlocProvider<VendorBloc>(
-                create: (BuildContext context) =>
-                    VendorBloc(vendorRepository: getIt<HomeRepository>())
-                      ..add(
-                        GetBestVendorsEvent(),
-                      ),
+                create: (BuildContext context) => VendorBloc()
+                  ..add(
+                    GetBestVendors(),
+                  ),
               ),
               BlocProvider<AuthorBloc>(
                 create: (BuildContext context) =>
-                    AuthorBloc(repository: getIt<HomeRepository>())
+                    AuthorBloc(repository: getIt<AuthorRepository>())
                       ..add(
                         GetAuthorsEvent(),
                       ),

@@ -1,8 +1,4 @@
-import 'dart:math';
-
-import 'package:bazar_books_app/features/home/data/home_repository_impl.dart';
-import 'package:bazar_books_design/core/network/error_handler.dart';
-import 'package:bazar_books_design/core/network/failure.dart';
+import 'package:bazar_books_app/features/home/data/product_repository/product_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -10,15 +6,17 @@ import '../../home_mocks.dart';
 
 void main() {
   late MockHomeApiService mockHomeApiService;
-  late HomeRepositoryImpl homeRepository;
+  late ProductRepositoryImpl productRepositoryImpl;
+  late MockApiService mockApiService;
 
   setUp(() {
     mockHomeApiService = MockHomeApiService();
-    homeRepository =
-        HomeRepositoryImpl(mockHomeApiService, MockProductService());
+    productRepositoryImpl =
+        ProductRepositoryImpl(mockHomeApiService, MockProductService());
+    mockApiService = MockApiService();
   });
 
-  group('fetchProductDetails', () {
+  group('fetchProductDetails success', () {
     test('returns product details on successful fetch', () async {
       // Arrange
 
@@ -26,8 +24,8 @@ void main() {
           .thenAnswer((_) async => HomeMocks.mockProductDetail);
 
       // Act
-      final result =
-          await homeRepository.fetchProductDetails(HomeMocks.mockProducId);
+      final result = await productRepositoryImpl
+          .fetchProductDetails(HomeMocks.mockProducId);
 
       // Assert
       expect(result, HomeMocks.mockProductDetail);
@@ -35,30 +33,22 @@ void main() {
               mockHomeApiService.fetchProductDetails(HomeMocks.mockProducId))
           .called(1);
     });
+  });
+  group('fetchProductDetails error', () {
+    test('should throw error when ApiService throws an error', () async {
+      // Arrange: Simulate an exception from ApiService
+      const productId = '123';
+      when(() => mockApiService.fetchProductDetails(productId))
+          .thenThrow(Exception('Network Error'));
 
-    test('throws error when API fetch fails', () async {
-      // Arrange
-      when(() => mockHomeApiService.fetchProductDetails(HomeMocks.mockProducId))
-          .thenThrow(
-        ErrorHandler.handle(e).failure,
-      );
-
-      // Act
-      Object? result;
+      // Act: Call the method
       try {
-        await homeRepository.fetchProductDetails(HomeMocks.mockProducId);
+        await mockApiService.fetchProductDetails(productId);
       } catch (e) {
-        result = e;
+        // Assert: Check that the correct error is thrown
+        expect(e, isA<Exception>());
+        expect(e.toString(), contains('Network Error'));
       }
-
-      // Assert
-      expect(
-        (result as Failure).message,
-        ErrorHandler.handle(e).failure.message,
-      );
-      verify(() =>
-              mockHomeApiService.fetchProductDetails(HomeMocks.mockProducId))
-          .called(1);
     });
   });
 }

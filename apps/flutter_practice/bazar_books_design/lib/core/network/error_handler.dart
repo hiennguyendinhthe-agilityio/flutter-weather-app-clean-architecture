@@ -7,10 +7,11 @@ class ErrorHandler implements Exception {
   late Failure failure;
 
   ErrorHandler.handle(dynamic error) {
-    failure = _mapErrorToFailure(error);
+    failure = _mapErrorToFailure(error) ??
+        Failure(ResponseCode.DEFAULT, message: "Unknown error");
   }
 
-  Failure _mapErrorToFailure(dynamic error) {
+  Failure? _mapErrorToFailure(dynamic error) {
     if (error is DioException) {
       return _handleError(error);
     }
@@ -32,7 +33,7 @@ Failure _handleError(DioException error) {
         )
         when response.statusCode != null && response.statusMessage != null:
       return Failure(response.statusCode ?? 0,
-          message: response.data["message"] ?? "");
+          message: response.data["message"] ?? "No error message provided.");
     default:
       return _handleBadResponse(error);
   }
@@ -53,7 +54,7 @@ _handleBadResponse(DioException error) {
       case ResponseCode.LOGINFAIL:
         return DataSource.LOGINFAIL.getFailure();
       default:
-        DataSource.DEFAULT.getFailure();
+        return DataSource.DEFAULT.getFailure();
     }
   } catch (e) {
     return DataSource.DEFAULT.getFailure();

@@ -1,70 +1,88 @@
 // ignore_for_file: depend_on_referenced_packages
 
-import 'package:bazar_books_app/features/home/bloc/data_state.dart';
-import 'package:bazar_books_app/features/home/data/home_repository.dart';
+import 'dart:async';
+
+import 'package:bazar_books_app/features/home/bloc/vendor_bloc/vendor_state.dart';
+import 'package:bazar_books_app/features/home/data/vendor_repository/vendor_repository.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
 import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:cached_query_flutter/cached_query_flutter.dart';
 
 part 'vendor_event.dart';
 
-class VendorBloc extends Bloc<VendorEvent, FetchDataState<Vendor>> {
-  VendorBloc({required this.vendorRepository})
-      : super(const FetchDataState<Vendor>.initial()) {
-    on<GetBestVendorsEvent>(_onGetVendors);
-    on<FetchMoreVendorsEvent>(_onFetchMoreVendors);
+class VendorBloc extends Bloc<VendorEvent, VendorState> {
+  VendorBloc() : super(const VendorState()) {
+    on<VendorFetched>(_onVendorFetched, transformer: restartable());
+    on<VendorNextPage>(_onVendorNextPage);
+    on<VendorRefresh>(_onVendorRefreshRequested);
+    on<GetBestVendors>(_onGetVendors);
   }
 
-  final HomeRepository vendorRepository;
-  int currentPage = 1;
-  final int limit = 10;
-  bool hasReachedEnd = false;
-
+  final _repo = VendorRepositoryImpl();
+  final vendorRepository = VendorRepositoryImpl();
   Future<void> _onGetVendors(
-      GetBestVendorsEvent event, Emitter<FetchDataState<Vendor>> emit) async {
-    emit(const FetchDataState<Vendor>.loading());
+      GetBestVendors event, Emitter<VendorState> emit) async {
+    emit(const VendorState(status: VendorStatus.loading));
 
     try {
       final vendors = await vendorRepository.fetchVendors();
 
-      emit(FetchDataState<Vendor>.loaded(vendors));
+      emit(VendorState(
+        status: VendorStatus.success,
+        vendors: vendors,
+      ));
     } catch (e) {
-      emit(
-          FetchDataState<Vendor>.error(ErrorHandler.handle(e).failure.message));
+      emit(VendorState(
+        status: VendorStatus.failure,
+        errorMessage: ErrorHandler.handle(e).failure.message,
+      ));
     }
   }
 
-  Future<void> _onFetchMoreVendors(
-      FetchMoreVendorsEvent event, Emitter<FetchDataState<Vendor>> emit) async {
-    emit(FetchDataState<Vendor>.loadingMore(state.data ?? []));
+  FutureOr<void> _onVendorFetched(
+    VendorFetched event,
+    Emitter<VendorState> emit,
+  ) async {
+    final query = _repo.getVendors();
 
+    return emit.forEach<InfiniteQueryState<List<Vendor>>>(
+      query.stream,
+      onData: (queryState) {
+        return state.copyWith(
+          vendors: queryState.data?.expand((page) => page).toList() ?? [],
+          status: queryState.status == QueryStatus.loading
+              ? VendorStatus.loading
+              : VendorStatus.success,
+          hasReachedMax: queryState.hasReachedMax,
+        );
+      },
+      onError: (error, stackTrace) => state.copyWith(
+        status: VendorStatus.failure,
+        errorMessage: ErrorHandler.handle(error).failure.message,
+      ),
+    );
+  }
+
+  Future<void> _onVendorRefreshRequested(
+    VendorRefresh event,
+    Emitter<VendorState> emit,
+  ) async {
+    emit(state.copyWith(status: VendorStatus.loading));
     try {
-      // Call API to get new page data, using currentPage variable
-      final List<Vendor> newVendors = await vendorRepository.fetchVendors(
-        page: currentPage,
-        limit: limit,
-      );
-
-      // Check if there is no new data, stop requesting more
-      // Check if the API returns an empty list, meaning all data has been loaded
-      if (newVendors.isEmpty) {
-        hasReachedEnd = true;
-      } else {
-        currentPage++; // Increment current page for next load
-      }
-
-      currentPage++;
-
-      // Update Vendor list by concatenating new data with existing data
-      final updatedVendors = List<Vendor>.from(state.data ?? [])
-        ..addAll(newVendors);
-
-      // Emit loaded state with updated list
-      emit(FetchDataState<Vendor>.loaded(updatedVendors));
-    } catch (e) {
-      // If there is an error, output an error status
+      await _repo.refreshVendors();
+      emit(state.copyWith(status: VendorStatus.success));
+    } catch (error) {
       emit(
-          FetchDataState<Vendor>.error(ErrorHandler.handle(e).failure.message));
+        state.copyWith(
+          status: VendorStatus.failure,
+          errorMessage: ErrorHandler.handle(error).failure.message,
+        ),
+      );
     }
+  }
+
+  void _onVendorNextPage(VendorEvent _, Emitter<VendorState> __) {
+    _repo.getVendors().getNextPage();
   }
 }

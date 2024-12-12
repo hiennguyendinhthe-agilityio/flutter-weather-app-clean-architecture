@@ -4,6 +4,7 @@ import 'package:bazar_books_app/features/home/bloc/author_bloc/author_bloc.dart'
 import 'package:bazar_books_app/features/home/bloc/data_state.dart';
 import 'package:bazar_books_design/core/core.dart';
 import 'package:bloc_test/bloc_test.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -74,8 +75,12 @@ void main() {
         Then AuthorBloc should emit [FetchDataState.loading(), FetchDataState.error("Error message")]
       ''',
       build: () {
-        when(() => mockAuthorRepository.fetchAuthors())
-            .thenThrow(Exception('Failed to load authors'));
+        when(() => mockAuthorRepository.fetchAuthors()).thenThrow(
+          DioException(
+            message: "Failed to load authors",
+            requestOptions: RequestOptions(path: ''),
+          ),
+        );
         return authorBloc;
       },
       act: (bloc) => bloc.add(GetAuthorsEvent()),
@@ -124,8 +129,12 @@ void main() {
         Then AuthorBloc should emit [FetchDataState.loading(), FetchDataState.error("Error message")]
       ''',
       build: () {
-        when(() => mockAuthorRepository.fetchAuthorProfile('1'))
-            .thenThrow(Exception('Failed to load author profile'));
+        when(() => mockAuthorRepository.fetchAuthorProfile('1')).thenThrow(
+          DioException(
+            message: "Failed to load author profile",
+            requestOptions: RequestOptions(path: ''),
+          ),
+        );
         return authorBloc;
       },
       act: (bloc) => bloc.add(FetchAuthorProfileEvent('1')),

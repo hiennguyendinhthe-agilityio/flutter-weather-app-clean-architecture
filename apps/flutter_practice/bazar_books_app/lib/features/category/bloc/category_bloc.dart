@@ -19,7 +19,8 @@ class CategoryBloc extends Bloc<CategoryEvent, FetchDataState<Product>> {
     emit(const FetchDataState<Product>.loading());
 
     try {
-      final products = await categoryRepository.fetchCategory(event.category);
+      final products =
+          await categoryRepository.fetchFilterCategory(event.category);
 
       emit(FetchDataState<Product>.loaded(products));
     } catch (e) {

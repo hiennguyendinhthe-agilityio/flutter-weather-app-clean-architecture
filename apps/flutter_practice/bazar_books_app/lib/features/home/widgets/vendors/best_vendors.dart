@@ -1,5 +1,5 @@
-import 'package:bazar_books_app/features/home/bloc/data_state.dart';
 import 'package:bazar_books_app/features/home/bloc/vendor_bloc/vendor_bloc.dart';
+import 'package:bazar_books_app/features/home/bloc/vendor_bloc/vendor_state.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,9 +12,9 @@ class BestVendors extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 160,
-      child: BlocBuilder<VendorBloc, FetchDataState<Vendor>>(
+      child: BlocBuilder<VendorBloc, VendorState>(
         builder: (context, state) {
-          if (state.status == FetchDataStatus.error) {
+          if (state.status == VendorStatus.failure) {
             return Text(
               textAlign: TextAlign.center,
               'Error: ${state.errorMessage}',
@@ -22,25 +22,26 @@ class BestVendors extends StatelessWidget {
           }
 
           return Skeletonizer(
-            enabled: state.status == FetchDataStatus.loading,
-            child: ((state.status == FetchDataStatus.loaded) &&
-                    (state.data?.isEmpty ?? false))
+            enabled: state.status == VendorStatus.loading,
+            child: ((state.status == VendorStatus.success) &&
+                    (state.vendors?.isEmpty ?? false))
                 ? BazUiEmpty(
                     onPressed: () {
-                      context.read<VendorBloc>().add(GetBestVendorsEvent());
+                      context.read<VendorBloc>().add(GetBestVendors());
                     },
                   )
                 : ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: (state.status == FetchDataStatus.loaded
-                        ? state.data?.length ?? 0
+                    itemCount: (state.status == VendorStatus.success
+                        ? state.vendors?.length ?? 0
                         : 3),
                     itemBuilder: (_, index) {
-                      final Vendor vendor = state.status ==
-                                  FetchDataStatus.loading ||
-                              state.data == null
-                          ? Vendor(id: index.toString())
-                          : state.data?[index] ?? Vendor(id: index.toString());
+                      final Vendor vendor =
+                          state.status == VendorStatus.loading ||
+                                  state.vendors == null
+                              ? Vendor(id: index.toString())
+                              : state.vendors?[index] ??
+                                  Vendor(id: index.toString());
 
                       return BazUiVendorCard(
                         imageUrl: vendor.imageUrl,

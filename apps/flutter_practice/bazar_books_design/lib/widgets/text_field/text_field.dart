@@ -5,7 +5,7 @@ import 'package:bazar_books_design/widgets/texts/texts.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 
-import '../../constants.dart';
+import '../../core/constant/constants.dart';
 
 class BazUiTextField extends StatelessWidget {
   const BazUiTextField({

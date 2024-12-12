@@ -1,12 +1,22 @@
-import 'package:bazar_books_app/features/category/search/data/search_repository.dart';
-import 'package:bazar_books_design/bazar_books_design.dart';
+import 'package:bazar_books_app/features/home/bloc/data_state.dart';
+import 'package:bazar_books_design/core/core.dart';
+import 'package:bazar_books_design/db/db.dart';
 import 'package:flutter/material.dart';
 
-class SearchRepositoryImpl implements SearchRepository {
+abstract class ProductRepository {
+  Future<List<Product>> fetchProducts();
+
+  Future<Product> fetchProductDetails(String? productId);
+}
+
+class ProductRepositoryImpl implements ProductRepository {
   final ApiService apiService;
   final ProductService productRepository;
 
-  SearchRepositoryImpl(this.apiService, this.productRepository);
+  ProductRepositoryImpl(
+    this.apiService,
+    this.productRepository,
+  );
 
   @override
   Future<List<Product>> fetchProducts() async {
@@ -36,8 +46,20 @@ class SearchRepositoryImpl implements SearchRepository {
       if (productsFromIsar.isNotEmpty) {
         return productsFromIsar;
       } else {
-        throw (ErrorHandler.handle(e).failure.message);
+        throw FetchDataState<List<Product>>.error(
+            ErrorHandler.handle(e).failure.message);
       }
+    }
+  }
+
+  @override
+  Future<Product> fetchProductDetails(String? productId) async {
+    try {
+      // Call the appropriate method from ApiService to fetch products
+      final products = await apiService.fetchProductDetails(productId);
+      return products;
+    } catch (e) {
+      throw ErrorHandler.handle(e).failure;
     }
   }
 }

@@ -1,6 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages
 
-import 'package:bazar_books_app/features/category/search/data/search_repository.dart';
+import 'package:bazar_books_app/features/category/data/category_repository.dart';
 import 'package:bazar_books_design/core/models/product_model/product_model.dart';
 import 'package:bazar_books_design/core/network/error_handler.dart';
 import 'package:bloc/bloc.dart';
@@ -10,7 +10,7 @@ part 'search_event.dart';
 part 'search_state.dart';
 
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
-  final SearchRepository searchRepository;
+  final CategoryRepository searchRepository;
 
   SearchBloc({required this.searchRepository}) : super(const SearchState()) {
     on<PerformSearchEvent>(_onPerformSearch);

@@ -19,6 +19,7 @@ class Product {
   int? starRating;
   String? logoVendor;
   String? category;
+  bool? favorite;
 
   Product({
     required this.apiId, // id from API
@@ -31,6 +32,7 @@ class Product {
     this.logoVendor,
     this.imageUrlOffer,
     this.category,
+    this.favorite,
   });
 
   // Convert from API JSON
@@ -45,6 +47,8 @@ class Product {
       logoVendor: json['logoVendor'],
       description: json['description'],
       starRating: json['starRating'],
+      category: json['category'],
+      favorite: json['favorite'],
     );
   }
 }

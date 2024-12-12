@@ -1,15 +1,15 @@
 import 'package:bazar_books_app/di.dart';
 import 'package:bazar_books_app/features/home/bloc/data_state.dart';
 import 'package:bazar_books_app/features/home/bloc/product_detail_bloc/bloc/product_detail_bloc.dart';
-import 'package:bazar_books_app/features/home/data/home_repository.dart';
+import 'package:bazar_books_app/features/home/data/product_repository/product_repository.dart';
 import 'package:bazar_books_app/features/profile/bloc/favorite/favorite_bloc.dart';
 import 'package:bazar_books_app/features/profile/bloc/favorite/favorite_event.dart';
-import 'package:bazar_books_design/constants.dart';
+import 'package:bazar_books_design/core/core.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
 import 'package:bazar_books_design/core/extensions/responsive_extension.dart';
-import 'package:bazar_books_design/core/models/product_model/product_model.dart';
 import 'package:bazar_books_design/core/responsive/size_extension.dart';
 import 'package:bazar_books_design/core/utils/size_type.dart';
+import 'package:bazar_books_design/db/product_service.dart';
 import 'package:bazar_books_design/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,10 +25,20 @@ class ProductDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) =>
-          ProductDetailBloc(productRepository: getIt<HomeRepository>())
-            ..add(FetchProductDetailsEvent(productId)),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) =>
+              ProductDetailBloc(productRepository: getIt<ProductRepository>())
+                ..add(FetchProductDetailsEvent(productId)),
+        ),
+        BlocProvider(
+          create: (context) => FavoriteBloc(
+            getIt<ProductService>(),
+            getIt<ProductRepository>(),
+          )..add(LoadFavoritesEvent()),
+        ),
+      ],
       child: BlocBuilder<ProductDetailBloc, ProductDetailState>(
         builder: (context, state) {
           final fetchDataState = state.fetchDataState;
@@ -46,7 +56,7 @@ class ProductDetail extends StatelessWidget {
               return _buildProductDetails(context, product, state);
             case FetchDataStatus.error:
               return Center(
-                  child: Text('Error: ${fetchDataState.errorMessage}'));
+                  child: Text('Error: //${fetchDataState.errorMessage}'));
             case FetchDataStatus.loadMore:
               return const Center(child: BazUiCircularProgressIndicator());
           }
@@ -102,8 +112,7 @@ class ProductDetail extends StatelessWidget {
                       );
                       if (state.isFavorite) {
                         context.read<FavoriteBloc>().add(
-                            RemoveFromFavoritesEvent(
-                                product ?? Product(apiId: '')));
+                            AddToFavoritesEvent(product ?? Product(apiId: '')));
                       } else {
                         context.read<FavoriteBloc>().add(
                             AddToFavoritesEvent(product ?? Product(apiId: '')));
