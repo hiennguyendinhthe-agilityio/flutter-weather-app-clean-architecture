@@ -1,4 +1,6 @@
-import 'package:bazar_books_app/features/home/data/home_repository.dart';
+import 'package:bazar_books_app/features/home/data/author_repository/author_repository.dart';
+import 'package:bazar_books_app/features/home/data/product_repository/product_repository.dart';
+import 'package:bazar_books_app/features/home/data/vendor_repository/vendor_repository.dart';
 import 'package:bazar_books_design/core/core.dart';
 import 'package:bazar_books_design/db/isar_service.dart';
 import 'package:bazar_books_design/db/product_service.dart';
@@ -12,7 +14,17 @@ class MockProductService extends Mock implements ProductService {}
 
 class MockIsarService extends Mock implements IsarService {}
 
-class MockHomeRepository extends Mock implements HomeRepository {}
+class MockHomeRepository extends Mock implements AuthorRepository {}
+
+class MockProductRepository extends Mock implements ProductRepository {}
+
+class MockProductRepositoryImpl extends Mock implements ProductRepositoryImpl {}
+
+class MockApiService extends Mock implements ApiService {}
+
+class MockErrorHandler extends Mock implements ErrorHandler {}
+
+class MockVendorRepository extends Mock implements VendorRepository {}
 
 // Data Mocks
 class HomeMocks {

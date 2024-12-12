@@ -4,6 +4,7 @@ import 'package:bazar_books_app/features/home/bloc/data_state.dart';
 import 'package:bazar_books_app/features/home/bloc/product_bloc/product_bloc.dart';
 import 'package:bazar_books_design/core/models/product_model/product_model.dart';
 import 'package:bloc_test/bloc_test.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -11,10 +12,10 @@ import '../../home_mocks.dart';
 
 void main() {
   late ProductBloc productBloc;
-  late MockHomeRepository productRepository;
+  late MockProductRepository productRepository;
 
   setUp(() {
-    productRepository = MockHomeRepository();
+    productRepository = MockProductRepository();
     productBloc = ProductBloc(productRepository: productRepository);
   });
 
@@ -84,8 +85,12 @@ void main() {
         Then ProductBloc should emit [FetchDataState.loading(), FetchDataState.error("Failed to load products")]
       ''',
       build: () {
-        when(() => productRepository.fetchProducts())
-            .thenThrow(Exception('Failed to load products'));
+        when(() => productRepository.fetchProducts()).thenThrow(
+          DioException(
+            message: "Failed to load products",
+            requestOptions: RequestOptions(path: ''),
+          ),
+        );
         return productBloc;
       },
       act: (bloc) => bloc.add(GetProductsEvent()),

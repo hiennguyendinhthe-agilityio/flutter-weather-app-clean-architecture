@@ -16,9 +16,12 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   CachedQuery.instance.configFlutter(
+    observers: [BazQueryObserver()],
     config: QueryConfigFlutter(
+      refetchOnConnection: true,
       refetchOnResume: true,
       cacheDuration: const Duration(minutes: 5),
+      refetchDuration: const Duration(seconds: 5),
     ),
   );
 

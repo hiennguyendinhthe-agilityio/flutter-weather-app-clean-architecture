@@ -1,7 +1,6 @@
 import 'package:bazar_books_app/core/l10n_generated/l10n.dart';
 import 'package:bazar_books_app/features/auth/blocs/auth_bloc.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
-import 'package:bazar_books_design/constants.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
 import 'package:bazar_books_design/core/responsive/size_extension.dart';
 import 'package:bazar_books_design/widgets/texts/texts.dart';
@@ -23,25 +22,17 @@ class _LoginScreenState extends State<SignUpScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  bool _hasMinLength = false;
-  bool _hasNumber = false;
-  bool _hasLetter = false;
-
   @override
   void initState() {
     super.initState();
 
-    _passwordController.addListener(_validatePassword);
+    _passwordController.addListener(_onPasswordChanged);
   }
 
-  void _validatePassword() {
-    final password = _passwordController.text;
-
-    setState(() {
-      _hasMinLength = password.length >= 8;
-      _hasNumber = password.contains(RegExp(r'\d'));
-      _hasLetter = password.contains(RegExp(r'[a-zA-Z]'));
-    });
+  void _onPasswordChanged() {
+    context
+        .read<AuthBloc>()
+        .add(PasswordValidationChanged(_passwordController.text));
   }
 
   @override
@@ -137,20 +128,33 @@ class _LoginScreenState extends State<SignUpScreen> {
                                     controller: _passwordController,
                                   ),
                                   SizedBox(height: 10.0.h),
-                                  _buildPasswordValidationRow(
-                                    context,
-                                    context.bazS.hasMinLength,
-                                    _hasMinLength,
-                                  ),
-                                  _buildPasswordValidationRow(
-                                    context,
-                                    context.bazS.hasNumber,
-                                    _hasNumber,
-                                  ),
-                                  _buildPasswordValidationRow(
-                                    context,
-                                    context.bazS.hasLetter,
-                                    _hasLetter,
+                                  BlocBuilder<AuthBloc, AuthState>(
+                                    builder: (context, state) {
+                                      if (state is PasswordValidationState) {
+                                        return Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            _buildPasswordValidationRow(
+                                              context,
+                                              context.bazS.hasMinLength,
+                                              state.hasMinLength,
+                                            ),
+                                            _buildPasswordValidationRow(
+                                              context,
+                                              context.bazS.hasNumber,
+                                              state.hasNumber,
+                                            ),
+                                            _buildPasswordValidationRow(
+                                              context,
+                                              context.bazS.hasLetter,
+                                              state.hasLetter,
+                                            ),
+                                          ],
+                                        );
+                                      }
+                                      return Container();
+                                    },
                                   ),
                                 ],
                               );

@@ -49,3 +49,18 @@ class SignUpFailure extends AuthState {
   @override
   List<Object?> get props => [error];
 }
+
+class PasswordValidationState extends AuthState {
+  final bool hasMinLength;
+  final bool hasNumber;
+  final bool hasLetter;
+
+  PasswordValidationState({
+    required this.hasMinLength,
+    required this.hasNumber,
+    required this.hasLetter,
+  });
+
+  @override
+  List<Object?> get props => [hasMinLength, hasNumber, hasLetter];
+}

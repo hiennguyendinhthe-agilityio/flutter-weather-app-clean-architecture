@@ -1,5 +1,6 @@
 import 'package:bazar_books_app/features/auth/data/auth_repository_impl.dart';
 import 'package:bazar_books_design/core/network/failure.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -9,6 +10,9 @@ void main() {
   late AuthRepositoryImpl authRepository;
   late MockApiService mockApiService;
   late MockIsarService mockIsarService;
+  setUpAll(() {
+    registerFallbackValue(FakeUser());
+  });
 
   setUp(() {
     mockApiService = MockApiService();
@@ -18,55 +22,139 @@ void main() {
   });
 
   group('AuthRepositoryImpl - logIn', () {
-    test('Should return a User when login is successful', () async {
-      when(() => mockApiService.logIn(
-              AuthMocks.getMockEmail, AuthMocks.getMockPassword))
-          .thenAnswer((_) => Future.value(AuthMocks.getMockCurrentUser));
+    test('should return an existing user from IsarService if already logged in',
+        () async {
+      // Arrange
+      when(() => mockIsarService.getLoggedInUser())
+          .thenAnswer((_) async => AuthMocks.getMockCurrentUser);
 
-      when(() => mockIsarService.saveUser(AuthMocks.getMockCurrentUser))
-          .thenAnswer((_) async {
-        return;
-      });
-
+      // Act
       final result = await authRepository.logIn(
           AuthMocks.getMockEmail, AuthMocks.getMockPassword);
 
-      expect(result, isNotNull);
-      expect(result, AuthMocks.getMockCurrentUser);
-      expect(result!.isLoggedIn, true);
-
-      verify(() => mockApiService.logIn(
-          AuthMocks.getMockEmail, AuthMocks.getMockPassword)).called(1);
-      verify(() => mockIsarService.saveUser(AuthMocks.getMockCurrentUser))
-          .called(1);
+      // Assert
+      expect(result, equals(AuthMocks.getMockCurrentUser));
+      verify(() => mockIsarService.getLoggedInUser()).called(1);
+      verifyNever(() => mockApiService.logIn(
+          AuthMocks.getMockEmail, AuthMocks.getMockPassword));
     });
 
-    test('Should return null when apiService.logIn returns null', () async {
-      when(() => mockApiService.logIn(
-              AuthMocks.getMockEmail, AuthMocks.getMockPassword))
-          .thenAnswer((_) async => null);
-
-      final result = await authRepository.logIn(
-          AuthMocks.getMockEmail, AuthMocks.getMockPassword);
-
-      expect(result, isNull);
-
-      verify(() => mockApiService.logIn(
-          AuthMocks.getMockEmail, AuthMocks.getMockPassword)).called(1);
-      verifyNever(() => mockIsarService.saveUser(AuthMocks.getMockCurrentUser));
-    });
-
-    test('Handling exceptions when API encounters errors', () async {
-      when(() => mockApiService.logIn(
-              AuthMocks.getMockEmail, AuthMocks.getMockPassword))
-          .thenThrow(AuthMocks.failureMock);
-
-      await expectLater(
-        authRepository.logIn(AuthMocks.getMockEmail, AuthMocks.getMockPassword),
-        throwsA(isA<Failure>()),
+    test('should throw Failure if an exception occurs', () async {
+      // Arrange
+      when(() => mockIsarService.getLoggedInUser()).thenThrow(
+        DioException(
+          message: "Request was cancelled.",
+          requestOptions: RequestOptions(path: '/user-info'),
+        ),
       );
 
-      verifyNever(() => mockIsarService.saveUser(AuthMocks.getMockCurrentUser));
+      // Act & Assert
+      await expectLater(
+        authRepository.logIn(
+          AuthMocks.getMockEmail,
+          AuthMocks.getMockPassword,
+        ),
+        throwsA(isA<Failure>()),
+      );
+    });
+    test(
+        'should return a user from ApiService and save to IsarService if not already logged in',
+        () async {
+      // Arrange
+      when(() => mockIsarService.getLoggedInUser())
+          .thenAnswer((_) async => null);
+      when(() => mockApiService.logIn(
+            AuthMocks.getMockEmail,
+            AuthMocks.getMockPassword,
+          )).thenAnswer((_) async => AuthMocks.getMockCurrentUser);
+      when(() => mockIsarService.saveUser(any())).thenAnswer((_) async {});
+
+      // Act
+      final result = await authRepository.logIn(
+        AuthMocks.getMockEmail,
+        AuthMocks.getMockPassword,
+      );
+
+      // Assert
+      expect(result, isNotNull);
+      expect(result?.isLoggedIn, isTrue);
+    });
+
+    test('should throw Failure if ApiService.logIn throws an exception',
+        () async {
+      // Arrange
+      when(() => mockIsarService.getLoggedInUser())
+          .thenAnswer((_) async => null);
+      when(() => mockApiService.logIn(
+            AuthMocks.getMockEmail,
+            AuthMocks.getMockPassword,
+          )).thenThrow(DioException(
+        message: "Login failed",
+        requestOptions: RequestOptions(path: '/login'),
+      ));
+
+      // Act & Assert
+      await expectLater(
+        authRepository.logIn(
+          AuthMocks.getMockEmail,
+          AuthMocks.getMockPassword,
+        ),
+        throwsA(isA<Failure>()),
+      );
+      verify(() => mockIsarService.getLoggedInUser()).called(1);
+      verify(() => mockApiService.logIn(
+            AuthMocks.getMockEmail,
+            AuthMocks.getMockPassword,
+          )).called(1);
+    });
+
+    test(
+        'should throw Failure if IsarService.getLoggedInUser throws an exception',
+        () async {
+      // Arrange
+      when(() => mockIsarService.getLoggedInUser()).thenThrow(DioException(
+        message: "Database error",
+        requestOptions: RequestOptions(path: '/isar'),
+      ));
+
+      // Act & Assert
+      await expectLater(
+        authRepository.logIn(
+          AuthMocks.getMockEmail,
+          AuthMocks.getMockPassword,
+        ),
+        throwsA(isA<Failure>()),
+      );
+      verify(() => mockIsarService.getLoggedInUser()).called(1);
+      verifyNever(() => mockApiService.logIn(
+            AuthMocks.getMockEmail,
+            AuthMocks.getMockPassword,
+          ));
+    });
+
+    test('should throw Failure if IsarService.saveUser throws an exception',
+        () async {
+      // Arrange
+      when(() => mockIsarService.getLoggedInUser())
+          .thenAnswer((_) async => null);
+      when(() => mockApiService.logIn(
+            AuthMocks.getMockEmail,
+            AuthMocks.getMockPassword,
+          )).thenAnswer((_) async => AuthMocks.getMockCurrentUser);
+      when(() => mockIsarService.saveUser(any())).thenThrow(DioException(
+        message: "Save user failed",
+        requestOptions: RequestOptions(path: '/save-user'),
+      ));
+
+      // Act & Assert
+      await expectLater(
+        authRepository.logIn(
+          AuthMocks.getMockEmail,
+          AuthMocks.getMockPassword,
+        ),
+        throwsA(isA<Failure>()),
+      );
+      verify(() => mockIsarService.getLoggedInUser()).called(2);
     });
   });
 }

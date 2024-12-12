@@ -1,4 +1,6 @@
-import 'package:bazar_books_design/constants.dart';
+import 'dart:convert';
+
+import 'package:cached_query_flutter/cached_query_flutter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
@@ -48,15 +50,11 @@ class ApiService {
     }
   }
 
-  Future<List<Vendor>> getVendors({int page = 1, int limit = 10}) async {
+  Future<List<Vendor>> getVendors() async {
     try {
       // Send request to API with pagination parameter
       final response = await _dio.get(
         '${Constants.apiUrlVendor}vendor',
-        queryParameters: {
-          'page': page,
-          'limit': limit,
-        },
       );
 
       if (response.statusCode != 200) {
@@ -67,6 +65,41 @@ class ApiService {
       final List<dynamic> result = response.data;
       debugPrint('$result');
       return result.map((json) => Vendor.fromJson(json)).toList();
+    } catch (e) {
+      throw ErrorHandler.handle(e).failure;
+    }
+  }
+
+  Future<Map<String, dynamic>> getVendorsCached() async {
+    final response = await _dio.get(
+      '${Constants.apiUrlVendor}vendor',
+    );
+    if (response.statusCode == 200) {
+      return Future.delayed(
+        const Duration(milliseconds: 400),
+        () => jsonDecode(response.data) as Map<String, dynamic>,
+      );
+    } else {
+      throw Exception();
+    }
+  }
+
+  Future<List<dynamic>> getMoreVendors({
+    required int page,
+    required int limit,
+  }) async {
+    final uri = Uri.parse(
+      '${Constants.apiUrlVendor}vendor?page=$page&limit=$limit',
+    );
+
+    try {
+      final response = await Dio().get(uri.toString());
+      return Future.delayed(
+        const Duration(seconds: 1),
+        () {
+          return response.data;
+        },
+      );
     } catch (e) {
       throw ErrorHandler.handle(e).failure;
     }
@@ -170,5 +203,24 @@ class ApiService {
     } catch (e) {
       throw ErrorHandler.handle(e).failure;
     }
+  }
+
+  Query<List<Product>> getProductsInCached() {
+    return Query<List<Product>>(
+      key: "products",
+      queryFn: () async {
+        try {
+          final response = await _dio.get('${Constants.apiUrlProduct}product');
+          if (response.statusCode != 200) {
+            throw Exception("Failed to fetch products");
+          }
+
+          final List<dynamic> result = response.data;
+          return result.map((json) => Product.fromJson(json)).toList();
+        } catch (e) {
+          throw ErrorHandler.handle(e).failure;
+        }
+      },
+    );
   }
 }

@@ -1,5 +1,5 @@
-import 'package:bazar_books_design/constants.dart';
 import 'package:bazar_books_design/core/core.dart';
+import 'package:cached_query_flutter/cached_query_flutter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
@@ -10,6 +10,29 @@ class ProductService {
   final IsarService isarService;
   final Dio _dio;
   ProductService(this._dio, {required this.isarService});
+  void addToFavorites(Product product) {
+    CachedQuery.instance.updateQuery(
+      key: "favorites",
+      updateFn: (oldData) {
+        if (oldData != null) {
+          return [product, ...oldData];
+        }
+        return [product];
+      },
+    );
+  }
+
+  void removeFromFavorites(Product product) {
+    CachedQuery.instance.updateQuery(
+      key: "favorites",
+      updateFn: (oldData) {
+        if (oldData != null) {
+          return oldData.where((item) => item.apiId != product.apiId).toList();
+        }
+        return [];
+      },
+    );
+  }
 
   // Call API and return product list from server
   Future<List<Product>> fetchProductsFromApi() async {

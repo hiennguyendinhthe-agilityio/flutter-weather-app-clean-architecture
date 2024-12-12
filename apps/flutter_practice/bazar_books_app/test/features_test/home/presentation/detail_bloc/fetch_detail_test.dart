@@ -8,10 +8,10 @@ import '../../home_mocks.dart';
 
 void main() {
   late ProductDetailBloc detailBloc;
-  late MockHomeRepository productRepository;
+  late MockProductRepository productRepository;
 
   setUp(() {
-    productRepository = MockHomeRepository();
+    productRepository = MockProductRepository();
     detailBloc = ProductDetailBloc(productRepository: productRepository);
   });
   tearDown(() {

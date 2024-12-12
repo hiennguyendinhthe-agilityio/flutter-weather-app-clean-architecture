@@ -1,8 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages
 
-import 'package:bazar_books_design/constants.dart';
+import 'package:bazar_books_design/bazar_books_design.dart';
 import 'package:bazar_books_design/core/extensions/context_extension.dart';
-import 'package:bazar_books_design/widgets/widgets.dart';
 import 'package:bazar_books_widgetbook/widgetbook.container.dart';
 import 'package:flutter/material.dart';
 import 'package:widgetbook/widgetbook.dart';

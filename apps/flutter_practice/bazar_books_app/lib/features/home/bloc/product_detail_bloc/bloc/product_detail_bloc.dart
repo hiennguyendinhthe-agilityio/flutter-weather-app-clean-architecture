@@ -1,7 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages
 
 import 'package:bazar_books_app/features/home/bloc/data_state.dart';
-import 'package:bazar_books_app/features/home/data/home_repository.dart';
+import 'package:bazar_books_app/features/home/data/product_repository/product_repository.dart';
 import 'package:bazar_books_design/core/models/product_model/product_model.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -11,7 +11,7 @@ part 'product_detail_event.dart';
 part 'product_detail_state.dart';
 
 class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
-  final HomeRepository productRepository;
+  final ProductRepository productRepository;
   ProductDetailBloc({required this.productRepository})
       : super(const ProductDetailState(
           fetchDataState: FetchDataState.initial(),

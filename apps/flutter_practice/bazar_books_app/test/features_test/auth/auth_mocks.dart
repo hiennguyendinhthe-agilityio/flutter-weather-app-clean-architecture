@@ -18,6 +18,8 @@ class MockIsarService extends Mock implements IsarService {}
 // Mocking AuthRepository
 class MockAuthRepositoryImpl extends Mock implements AuthRepositoryImpl {}
 
+class FakeUser extends Fake implements User {}
+
 // Data Mocks
 class AuthMocks {
 // Function to generate a mock user with random data
@@ -63,4 +65,13 @@ class AuthMocks {
   static const getMockEmpty = '';
 
   static final failureMockMessage = ErrorHandler.handle(e).failure.message;
+
+  static final mockDioError = DioException(
+    requestOptions: RequestOptions(),
+    response: Response(
+      statusCode: 404,
+      statusMessage: 'Not Found',
+      requestOptions: RequestOptions(),
+    ),
+  );
 }

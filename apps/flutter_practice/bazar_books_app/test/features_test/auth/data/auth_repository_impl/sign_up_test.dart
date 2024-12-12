@@ -24,9 +24,6 @@ void main() {
       test('should save user when sign up is successful', () async {
         // Arrange
 
-        when(() => authRepository.isEmailDuplicateFromAPI(
-              AuthMocks.getMockEmail,
-            )).thenAnswer((_) async => false);
         when(() => mockApiService.signUp(
             AuthMocks.getMockName,
             AuthMocks.getMockEmail,
@@ -42,9 +39,6 @@ void main() {
     });
     group('SignUp fails', () {
       test('Returns false when sign-up fails', () async {
-        when(() => authRepository.isEmailDuplicateFromAPI(
-              AuthMocks.getMockEmail,
-            )).thenAnswer((_) async => false);
         when(() => mockApiService.signUp(
               AuthMocks.getMockName,
               AuthMocks.getMockEmail,
@@ -61,9 +55,6 @@ void main() {
       });
 
       test('signUp should return false when the email is empty', () async {
-        when(() => authRepository.isEmailDuplicateFromAPI(
-              AuthMocks.getMockEmail,
-            )).thenAnswer((_) async => false);
         // Arrange
         when(() => mockApiService.signUp(
               AuthMocks.getMockName,
@@ -83,9 +74,6 @@ void main() {
       });
 
       test('signUp should return false when the password is empty', () async {
-        when(() => authRepository.isEmailDuplicateFromAPI(
-              AuthMocks.getMockEmail,
-            )).thenAnswer((_) async => false);
         // Arrange
         when(() => mockApiService.signUp(
               AuthMocks.getMockName,
@@ -106,9 +94,6 @@ void main() {
 
       test('signUp should return false when the email and password are empty',
           () async {
-        when(() => authRepository.isEmailDuplicateFromAPI(
-              AuthMocks.getMockEmail,
-            )).thenAnswer((_) async => false);
         // Arrange
         when(() => mockApiService.signUp(
               AuthMocks.getMockName,
@@ -124,37 +109,8 @@ void main() {
         expect(result, false);
       });
 
-      test(
-          'should throw Error when DioException occurs during email duplicate check',
-          () async {
-        when(() => authRepository.isEmailDuplicateFromAPI(
-              AuthMocks.getMockEmail,
-            )).thenThrow(AuthMocks.dioExceptionMock);
-
-        expect(
-          () async => await authRepository.signUp(
-            AuthMocks.getMockName,
-            AuthMocks.getMockEmail,
-            AuthMocks.getMockPassword,
-          ),
-          throwsA(isA<Failure>()),
-        );
-        verify(() => authRepository.isEmailDuplicateFromAPI(
-              AuthMocks.getMockEmail,
-            )).called(1);
-        verifyNever(() => mockApiService.signUp(
-              AuthMocks.getMockName,
-              AuthMocks.getMockEmail,
-              AuthMocks.getMockPassword,
-            ));
-      });
-
       test('throws Failure when API returns 404 for resource not found',
           () async {
-        when(() => authRepository.isEmailDuplicateFromAPI(
-              AuthMocks.getMockEmail,
-            )).thenAnswer((_) async => true);
-
         when(() => mockApiService.signUp(any(), any(), any()))
             .thenThrow(DioException(
           requestOptions: RequestOptions(),
@@ -177,18 +133,10 @@ void main() {
 
       test('Throws Failure when API returns 400 for invalid data format',
           () async {
-        when(() => authRepository.isEmailDuplicateFromAPI(
-              AuthMocks.getMockEmail,
-            )).thenAnswer((_) async => true);
-
         when(() => mockApiService.signUp(any(), any(), any()))
-            .thenThrow(DioException(
-          requestOptions: RequestOptions(),
-          response: Response(
-            statusCode: 400,
-            statusMessage: 'API rejected request',
-            requestOptions: RequestOptions(),
-          ),
+            .thenThrow(Failure(
+          ResponseCode.BAD_REQUEST,
+          message: 'API rejected request',
         ));
 
         expect(
@@ -202,9 +150,6 @@ void main() {
       });
 
       test('Throws Failure when there is no internet connection', () async {
-        when(() => authRepository.isEmailDuplicateFromAPI(
-              AuthMocks.getMockEmail,
-            )).thenAnswer((_) async => true);
         when(() => mockApiService.signUp(any(), any(), any()))
             .thenThrow(Failure(
           ResponseCode.NO_INTERNET_CONNECTION,
