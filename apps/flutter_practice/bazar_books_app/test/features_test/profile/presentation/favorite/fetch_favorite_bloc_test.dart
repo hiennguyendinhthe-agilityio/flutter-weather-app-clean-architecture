@@ -26,7 +26,7 @@ void main() {
     blocTest<FavoriteBloc, FavoriteState>(
       'emits [FavoriteInitial, FavoriteSuccess] when fetchProducts succeeds with data',
       build: () {
-        when(() => mockProductRepository.fetchProducts())
+        when(() => mockProductRepository.getYourFavorites())
             .thenAnswer((_) async => [ProfileMock.mockProduct]);
         return bloc;
       },
@@ -40,7 +40,7 @@ void main() {
     blocTest<FavoriteBloc, FavoriteState>(
       'emits [FavoriteInitial, FavoriteError] when fetchProducts throws an error',
       build: () {
-        when(() => mockProductRepository.fetchProducts())
+        when(() => mockProductRepository.getYourFavorites())
             .thenThrow(ProfileMock.mockDioError);
         return bloc;
       },
@@ -50,7 +50,7 @@ void main() {
         const FavoriteError('Not found error'),
       ],
       verify: (_) {
-        verify(() => mockProductRepository.fetchProducts()).called(1);
+        verify(() => mockProductRepository.getYourFavorites()).called(1);
       },
     );
   });

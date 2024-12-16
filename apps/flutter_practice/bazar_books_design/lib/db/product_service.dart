@@ -1,5 +1,4 @@
 import 'package:bazar_books_design/core/core.dart';
-import 'package:cached_query_flutter/cached_query_flutter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
@@ -10,28 +9,21 @@ class ProductService {
   final IsarService isarService;
   final Dio _dio;
   ProductService(this._dio, {required this.isarService});
-  void addToFavorites(Product product) {
-    CachedQuery.instance.updateQuery(
-      key: "favorites",
-      updateFn: (oldData) {
-        if (oldData != null) {
-          return [product, ...oldData];
-        }
-        return [product];
-      },
-    );
+  Future<void> addProductToFavorites(Product product) async {
+    try {
+      await _dio.post('${Constants.apiUrlProduct}product',
+          data: product.toJson());
+    } catch (e) {
+      throw ErrorHandler.handle(e).failure;
+    }
   }
 
-  void removeFromFavorites(Product product) {
-    CachedQuery.instance.updateQuery(
-      key: "favorites",
-      updateFn: (oldData) {
-        if (oldData != null) {
-          return oldData.where((item) => item.apiId != product.apiId).toList();
-        }
-        return [];
-      },
-    );
+  Future<void> removeProductFromFavorites(Product product) async {
+    try {
+      await _dio.delete('${Constants.apiUrlProduct}product/${product.apiId}');
+    } catch (e) {
+      throw ErrorHandler.handle(e).failure;
+    }
   }
 
   // Call API and return product list from server

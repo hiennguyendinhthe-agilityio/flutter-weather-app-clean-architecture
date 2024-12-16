@@ -51,4 +51,21 @@ class Product {
       favorite: json['favorite'],
     );
   }
+
+  // Convert to API JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'id': apiId, // id from API
+      'title': title,
+      'price': price,
+      'imageUrl': imageUrl,
+      'imageUrlOffer': imageUrlOffer,
+      'discount': discount,
+      'logoVendor': logoVendor,
+      'description': description,
+      'starRating': starRating,
+      'category': category,
+      'favorite': favorite,
+    };
+  }
 }

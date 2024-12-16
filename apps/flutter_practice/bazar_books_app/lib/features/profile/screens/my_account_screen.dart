@@ -66,7 +66,7 @@ class MyAccountScreen extends StatelessWidget {
                               radius: 50.0.r,
                               backgroundImage: NetworkImage(
                                 scale: 200,
-                                user.avatarUrl ?? Constants.imgUrlDefault,
+                                user.avatarUrl ?? Constants.apiUrlAvatar,
                               ),
                             ),
                             const SizedBox(height: 8),
@@ -75,7 +75,7 @@ class MyAccountScreen extends StatelessWidget {
                               child: Text(
                                 context.bazS.changePictureTtile,
                                 style: const TextStyle(
-                                  color: Colors.purple,
+                                  color: Color.fromARGB(255, 175, 144, 180),
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -115,6 +115,13 @@ class MyAccountScreen extends StatelessWidget {
                       SizedBox(
                         width: double.infinity,
                         child: BazUiElevatedButton(
+                          style: ButtonStyle(
+                              backgroundColor: WidgetStateProperty.all(
+                                  context.colorScheme.secondaryContainer),
+                              shape: WidgetStateProperty.all(
+                                  RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(200),
+                              ))),
                           onPressed: () {}, // Handle save changes
                           text: context.bazS.saveChangesTtile,
                         ),

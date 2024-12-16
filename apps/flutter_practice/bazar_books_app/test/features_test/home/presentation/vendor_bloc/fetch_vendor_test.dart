@@ -39,7 +39,7 @@ void main() {
       },
       act: (bloc) => bloc.add(GetBestVendors()),
       expect: () => [
-        const VendorState(status: VendorStatus.loading),
+        const VendorState(vendors: [], status: VendorStatus.loading),
       ],
     );
 
@@ -67,7 +67,7 @@ void main() {
       },
       act: (bloc) => bloc.add(GetBestVendors()),
       expect: () => [
-        const VendorState(status: VendorStatus.loading),
+        const VendorState(vendors: [], status: VendorStatus.loading),
       ],
     );
   });

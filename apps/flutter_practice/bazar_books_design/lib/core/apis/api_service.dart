@@ -15,7 +15,7 @@ class ApiService {
   ///
   /// Throws an [Exception] if the response status code is not 200
 
-  Future<List<Product>> getProducts() async {
+  Future<List<Product>> getYourFavorites() async {
     try {
       // Send a GET request to the API endpoint
       final response = await _dio.get('${Constants.apiUrlProduct}product');

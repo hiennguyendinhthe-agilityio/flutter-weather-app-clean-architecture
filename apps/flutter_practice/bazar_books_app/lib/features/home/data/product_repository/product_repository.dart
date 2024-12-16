@@ -4,6 +4,8 @@ import 'package:bazar_books_design/db/db.dart';
 import 'package:flutter/material.dart';
 
 abstract class ProductRepository {
+  Future<List<Product>> getYourFavorites();
+
   Future<List<Product>> fetchProducts();
 
   Future<Product> fetchProductDetails(String? productId);
@@ -17,6 +19,17 @@ class ProductRepositoryImpl implements ProductRepository {
     this.apiService,
     this.productRepository,
   );
+
+  @override
+  Future<List<Product>> getYourFavorites() async {
+    try {
+      // Call the appropriate method from ApiService to fetch products
+      final products = await apiService.getYourFavorites();
+      return products;
+    } catch (e) {
+      throw ErrorHandler.handle(e).failure;
+    }
+  }
 
   @override
   Future<List<Product>> fetchProducts() async {

@@ -88,10 +88,12 @@ void main() {
       when(() => mockApiService.logIn(
             AuthMocks.getMockEmail,
             AuthMocks.getMockPassword,
-          )).thenThrow(DioException(
-        message: "Login failed",
-        requestOptions: RequestOptions(path: '/login'),
-      ));
+          )).thenThrow(
+        DioException(
+          message: "Login failed",
+          requestOptions: RequestOptions(path: '/login'),
+        ),
+      );
 
       // Act & Assert
       await expectLater(

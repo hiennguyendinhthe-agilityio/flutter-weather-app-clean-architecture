@@ -21,23 +21,28 @@ class VendorBloc extends Bloc<VendorEvent, VendorState> {
 
   final _repo = VendorRepositoryImpl();
   final vendorRepository = VendorRepositoryImpl();
+
   Future<void> _onGetVendors(
-      GetBestVendors event, Emitter<VendorState> emit) async {
-    emit(const VendorState(status: VendorStatus.loading));
+    GetBestVendors event,
+    Emitter<VendorState> emit,
+  ) async {
+    final query = _repo.getVendorsCached();
 
-    try {
-      final vendors = await vendorRepository.fetchVendors();
-
-      emit(VendorState(
-        status: VendorStatus.success,
-        vendors: vendors,
-      ));
-    } catch (e) {
-      emit(VendorState(
+    return emit.forEach<QueryState<List<Vendor>>>(
+      query.stream,
+      onData: (queryState) {
+        return state.copyWith(
+          vendors: queryState.data ?? [],
+          status: queryState.status == QueryStatus.loading
+              ? VendorStatus.loading
+              : VendorStatus.success,
+        );
+      },
+      onError: (error, stackTrace) => state.copyWith(
         status: VendorStatus.failure,
-        errorMessage: ErrorHandler.handle(e).failure.message,
-      ));
-    }
+        errorMessage: ErrorHandler.handle(error).failure.message,
+      ),
+    );
   }
 
   FutureOr<void> _onVendorFetched(

@@ -17,6 +17,16 @@ class VendorRepositoryImpl implements VendorRepository {
   final _service = ApiService(Dio());
 
   @override
+  Query<List<Vendor>> getVendorsCached() {
+    return Query<List<Vendor>>(
+      key: 'getBestVendors',
+      queryFn: () async {
+        return await _service.getVendors();
+      },
+    );
+  }
+
+  @override
   InfiniteQuery<List<Vendor>, int> getVendors() {
     return InfiniteQuery<List<Vendor>, int>(
       revalidateAll: true,
@@ -48,13 +58,5 @@ class VendorRepositoryImpl implements VendorRepository {
       // Handle errors appropriately, maybe print them or rethrow with a custom exception
       throw ErrorHandler.handle(e).failure;
     }
-  }
-
-  @override
-  Query<List<Vendor>> getVendorsCached() {
-    return Query<List<Vendor>>(
-      key: 'getVenders',
-      queryFn: () async => [Vendor.fromJson(await _service.getVendorsCached())],
-    );
   }
 }

@@ -107,12 +107,11 @@ class ProductDetail extends StatelessWidget {
                   BazUiIconButton.favorite(
                     isFavorite: state.isFavorite,
                     onPressed: () {
-                      bloc.add(
-                        ToggleFavoriteEvent(),
-                      );
+                      bloc.add(ToggleFavoriteEvent());
                       if (state.isFavorite) {
                         context.read<FavoriteBloc>().add(
-                            AddToFavoritesEvent(product ?? Product(apiId: '')));
+                            RemoveFromFavoritesEvent(
+                                product ?? Product(apiId: '')));
                       } else {
                         context.read<FavoriteBloc>().add(
                             AddToFavoritesEvent(product ?? Product(apiId: '')));

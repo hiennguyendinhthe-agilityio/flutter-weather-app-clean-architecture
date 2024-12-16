@@ -1,3 +1,4 @@
+import 'package:bazar_books_design/core/extensions/context_extension.dart';
 import 'package:flutter/material.dart';
 
 class BazUiInfoDisplay extends StatelessWidget {
@@ -44,8 +45,10 @@ class BazUiInfoDisplay extends StatelessWidget {
               Expanded(
                 child: Text(
                   value ?? '',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: context.colorScheme.tertiary,
                   ),
                 ),
               ),

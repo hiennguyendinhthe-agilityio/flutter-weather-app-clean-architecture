@@ -71,8 +71,15 @@ class MyFavorite extends StatelessWidget {
                       product.title ?? Constants.titleDefault,
                     ),
                     subtitle: Text('\$${product.price}'),
-                    trailing: BazUiBuiltInImage.icLoveFill(
-                      color: context.colorScheme.primary,
+                    trailing: GestureDetector(
+                      onTap: () {
+                        context
+                            .read<FavoriteBloc>()
+                            .add(RemoveFromFavoritesEvent(product));
+                      },
+                      child: BazUiBuiltInImage.icLoveFill(
+                        color: context.colorScheme.primary,
+                      ),
                     ),
                   );
                 },

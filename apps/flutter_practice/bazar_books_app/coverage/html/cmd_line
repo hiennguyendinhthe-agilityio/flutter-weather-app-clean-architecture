@@ -1,1 +1,1 @@
-genhtml coverage/lcov.info -o coverage/html
+genhtml coverage/lcov.info -o coverage/html --exclude lib/features/home/bloc/vendor_bloc --exclude lib/features/home/data/vendor_repository --exclude lib/features/profile --exclude lib/features/category

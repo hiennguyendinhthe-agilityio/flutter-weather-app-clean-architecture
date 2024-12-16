@@ -12,6 +12,8 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
   FavoriteBloc(this.productService, this.productRepository)
       : super(const FavoriteInitial([])) {
     on<LoadFavoritesEvent>(_onFetchFavorites);
+    on<AddToFavoritesEvent>(_onAddFavorite);
+    on<RemoveFromFavoritesEvent>(_onRemoveFavorite);
   }
 
   Future<void> _onFetchFavorites(
@@ -19,7 +21,7 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
     emit(const FavoriteInitial([]));
 
     try {
-      final favorite = await productRepository.fetchProducts();
+      final favorite = await productRepository.getYourFavorites();
 
       if (favorite.isEmpty) {
         final currentFavorites = (state as FavoriteInitial).favorites;
@@ -28,6 +30,49 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
         emit(FavoriteSuccess(favorite));
       }
     } catch (e) {
+      emit(FavoriteError(ErrorHandler.handle(e).failure.message));
+    }
+  }
+
+  Future<void> _onAddFavorite(
+      AddToFavoritesEvent event, Emitter<FavoriteState> emit) async {
+    if (state is FavoriteSuccess) {
+      final currentFavorites = (state as FavoriteSuccess).favorites;
+      final updatedFavorites = [...currentFavorites, event.product];
+      emit(FavoriteSuccess(updatedFavorites));
+    }
+
+    try {
+      await productService.addProductToFavorites(event.product);
+    } catch (e) {
+      if (state is FavoriteSuccess) {
+        final currentFavorites = (state as FavoriteSuccess).favorites;
+        final rolledBackFavorites = currentFavorites
+            .where((product) => product.apiId != event.product.apiId)
+            .toList();
+        emit(FavoriteSuccess(rolledBackFavorites));
+      }
+      emit(FavoriteError(ErrorHandler.handle(e).failure.message));
+    }
+  }
+
+  Future<void> _onRemoveFavorite(
+      RemoveFromFavoritesEvent event, Emitter<FavoriteState> emit) async {
+    if (state is FavoriteSuccess) {
+      final currentFavorites = (state as FavoriteSuccess).favorites;
+      final updatedFavorites = currentFavorites
+          .where((product) => product.apiId != event.product.apiId)
+          .toList();
+      emit(FavoriteSuccess(updatedFavorites));
+    }
+
+    try {
+      await productService.removeProductFromFavorites(event.product);
+    } catch (e) {
+      if (state is FavoriteSuccess) {
+        final currentFavorites = (state as FavoriteSuccess).favorites;
+        emit(FavoriteSuccess([...currentFavorites, event.product]));
+      }
       emit(FavoriteError(ErrorHandler.handle(e).failure.message));
     }
   }

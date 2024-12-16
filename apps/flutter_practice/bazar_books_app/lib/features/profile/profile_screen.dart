@@ -62,7 +62,7 @@ class ProfileScreen extends StatelessWidget {
                           radius: 30.0.r,
                           backgroundImage: NetworkImage(
                             scale: 200,
-                            user.avatarUrl ?? Constants.imgUrlDefault,
+                            user.avatarUrl ?? Constants.apiUrlAvatar,
                           ),
                         ),
                         const SizedBox(width: 16),
@@ -91,9 +91,6 @@ class ProfileScreen extends StatelessWidget {
                           onTap: () {
                             BazUiBottomSheet.showLogoutModal(context, () {
                               context.pop();
-                              // context
-                              //     .read<ProfileBloc>()
-                              //     .add(LogoutRequested());
                             });
                           },
                           child: Text(

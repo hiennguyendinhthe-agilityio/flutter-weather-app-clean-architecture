@@ -1,5 +1,7 @@
 import 'package:bazar_books_app/features/home/data/product_repository/product_repository.dart';
 import 'package:bazar_books_design/core/models/product_model/product_model.dart';
+import 'package:bazar_books_design/core/network/failure.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -23,16 +25,42 @@ void main() {
       when(() => mockProductService.fetchProductsFromIsar()).thenAnswer(
           (_) async => [HomeMocks.mockProduct, HomeMocks.mockProduct]);
 
-      // Act: Call the method
       final result = await productRepository.fetchProducts();
 
-      // Assert: Ensure it returns the data from Isar
       expect(result, [HomeMocks.mockProduct, HomeMocks.mockProduct]);
+    });
+
+    test('Returns a list of Product when API call is successful', () async {
+      when(() => mockApiService.getYourFavorites()).thenAnswer(
+          (_) async => [HomeMocks.mockProduct, HomeMocks.mockProduct]);
+
+      final result = await productRepository.getYourFavorites();
+
+      expect(result, isA<List<Product>>());
+      expect(result.length, 2);
+
+      verify(() => mockApiService.getYourFavorites()).called(1);
+    });
+
+    test('Throws an exception when apiService.getYourFavorites fails',
+        () async {
+      when(() => mockApiService.getYourFavorites()).thenThrow(
+        DioException(
+          message: "Error",
+          requestOptions: RequestOptions(path: ''),
+        ),
+      );
+
+      expect(
+        () async => await productRepository.getYourFavorites(),
+        throwsA(isA<Failure>()),
+      );
+
+      verify(() => mockApiService.getYourFavorites()).called(1);
     });
 
     test('should fetch data from API and update Isar if Isar is empty',
         () async {
-      // Arrange: Simulate no data in Isar and a successful API call
       final productsFromIsar = <Product>[];
 
       when(() => mockProductService.fetchProductsFromIsar())
@@ -49,10 +77,8 @@ void main() {
         return;
       });
 
-      // Act: Call the method
       final result = await productRepository.fetchProducts();
 
-      // Assert: Ensure it fetches data from API and updates Isar
       expect(result, [HomeMocks.mockProduct, HomeMocks.mockProduct]);
       verify(() => mockProductService.fetchProductsFromIsar()).called(1);
       verify(() => mockProductService.fetchProductsFromApi()).called(1);
@@ -63,17 +89,13 @@ void main() {
 
     test('should return data from Isar if API fails and Isar has data',
         () async {
-      // Arrange: Simulate no data in Isar and an API failure
-
       when(() => mockProductService.fetchProductsFromIsar()).thenAnswer(
           (_) async => [HomeMocks.mockProduct, HomeMocks.mockProduct]);
       when(() => mockProductService.fetchProductsFromApi())
           .thenThrow(Exception('API Error'));
 
-      // Act: Call the method
       final result = await productRepository.fetchProducts();
 
-      // Assert: Ensure it returns data from Isar since API failed
       expect(result, [HomeMocks.mockProduct, HomeMocks.mockProduct]);
     });
   });
