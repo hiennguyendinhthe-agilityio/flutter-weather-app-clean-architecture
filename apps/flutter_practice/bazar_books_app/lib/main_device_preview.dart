@@ -5,6 +5,7 @@ import 'package:bazar_books_app/features/auth/data/auth_repository_impl.dart';
 import 'package:bazar_books_app/routes.dart';
 import 'package:bazar_books_design/core/core.dart';
 import 'package:bazar_books_design/themes/themes.dart';
+import 'package:cached_query_flutter/cached_query_flutter.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,15 @@ import 'package:responsive_framework/responsive_framework.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  CachedQuery.instance.configFlutter(
+    observers: [BazQueryObserver()],
+    config: QueryConfigFlutter(
+      refetchOnConnection: true,
+      refetchOnResume: true,
+      cacheDuration: const Duration(minutes: 5),
+      refetchDuration: const Duration(seconds: 5),
+    ),
+  );
   await initGetIt();
 
   runApp(
