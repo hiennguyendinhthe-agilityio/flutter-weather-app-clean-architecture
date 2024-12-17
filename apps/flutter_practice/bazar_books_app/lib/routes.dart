@@ -30,22 +30,6 @@ final GlobalKey<NavigatorState> _rootNavigatorKey =
 
 final GlobalKey<NavigatorState> _shellNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: 'shell');
-Future<String?> _guard(BuildContext context, GoRouterState state) async {
-  final authBloc = BlocProvider.of<AuthBloc>(context);
-  final isLoggedIn = await authBloc.authenticationRepository.isLoggedIn();
-
-  if (!isLoggedIn &&
-      state.uri.toString() != RoutePaths.signup &&
-      state.uri.toString() != RoutePaths.congratulations) {
-    return RoutePaths.login;
-  }
-
-  if (isLoggedIn && state.uri.toString() == RoutePaths.login) {
-    return RoutePaths.home;
-  }
-
-  return null;
-}
 
 final GoRouter router = GoRouter(
   navigatorKey: _rootNavigatorKey,
@@ -57,7 +41,7 @@ final GoRouter router = GoRouter(
   routes: [
     GoRoute(
       path: RoutePaths.login,
-      builder: (context, state) => const LoginScreen(),
+      builder: (context, state) => const SignInScreen(),
     ),
     GoRoute(
       path: RoutePaths.signup,
@@ -229,3 +213,19 @@ final GoRouter router = GoRouter(
     ),
   ],
 );
+Future<String?> _guard(BuildContext context, GoRouterState state) async {
+  final authBloc = BlocProvider.of<AuthBloc>(context);
+  final isLoggedIn = await authBloc.authenticationRepository.isLoggedIn();
+
+  if (!isLoggedIn &&
+      state.uri.toString() != RoutePaths.signup &&
+      state.uri.toString() != RoutePaths.congratulations) {
+    return RoutePaths.login;
+  }
+
+  if (isLoggedIn && state.uri.toString() == RoutePaths.login) {
+    return RoutePaths.home;
+  }
+
+  return null;
+}

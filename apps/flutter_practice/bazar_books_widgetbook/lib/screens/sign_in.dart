@@ -10,7 +10,7 @@ WidgetbookComponent loginScreenWidgetbooks() {
       WidgetbookUseCase(
         name: 'LoginScreen',
         builder: (context) {
-          return const LoginScreen();
+          return const SignInScreen();
         },
       ),
     ],
