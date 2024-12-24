@@ -57,7 +57,6 @@ class AuthMocks {
     userId: faker.guid.guid(),
     email: faker.internet.email(),
     password: faker.internet.password(),
-    isLoggedIn: false,
   );
 
   static final failureMock = Exception(faker.lorem.sentence());

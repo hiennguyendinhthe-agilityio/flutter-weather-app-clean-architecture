@@ -40,10 +40,9 @@ class MainApp extends StatefulWidget {
 class _MainAppState extends State<MainApp> {
   @override
   Widget build(BuildContext context) {
-    SizeConfig.init(context, designWidth: 375, designHeight: 812);
+    SizeConfig.init(context);
 
     return ScreenUtilInit(
-      designSize: const Size(360, 690),
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (_, child) {

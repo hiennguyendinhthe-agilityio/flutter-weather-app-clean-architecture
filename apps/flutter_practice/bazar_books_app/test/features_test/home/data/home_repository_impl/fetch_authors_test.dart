@@ -39,7 +39,7 @@ void main() {
     test('Throws Exception when apiService.getAuthors error', () async {
       when(() => mockHomeApiService.getAuthors()).thenThrow(DioException(
         message: "error",
-        requestOptions: RequestOptions(path: ''),
+        requestOptions: RequestOptions(),
       ));
 
       expect(

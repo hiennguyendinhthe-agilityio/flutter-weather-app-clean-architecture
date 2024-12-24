@@ -126,7 +126,6 @@ class _GetListCategoryState extends State<GetListCategory> {
               if (state.status == FetchDataStatus.loading)
                 const Center(
                   child: Skeletonizer(
-                    enabled: true,
                     child: BazUiCircularProgressIndicator(),
                   ),
                 ),

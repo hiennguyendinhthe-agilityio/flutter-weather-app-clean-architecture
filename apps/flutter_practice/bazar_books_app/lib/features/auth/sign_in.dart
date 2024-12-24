@@ -29,7 +29,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig.init(context, designWidth: 375, designHeight: 812);
+    SizeConfig.init(context);
 
     return Scaffold(
       appBar: AppBar(

@@ -88,7 +88,7 @@ void main() {
         when(() => productRepository.fetchProducts()).thenThrow(
           DioException(
             message: "Failed to load products",
-            requestOptions: RequestOptions(path: ''),
+            requestOptions: RequestOptions(),
           ),
         );
         return productBloc;

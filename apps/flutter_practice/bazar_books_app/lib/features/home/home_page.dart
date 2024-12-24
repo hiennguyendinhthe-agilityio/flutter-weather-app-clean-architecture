@@ -22,7 +22,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig.init(context, designWidth: 375, designHeight: 812);
+    SizeConfig.init(context);
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is Unauthenticated) {

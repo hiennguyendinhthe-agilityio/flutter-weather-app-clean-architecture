@@ -24,7 +24,6 @@ class PostListPage extends StatelessWidget {
                   children: [
                     if (state.status == PostStatus.loading)
                       const Align(
-                        alignment: Alignment.center,
                         child: SizedBox(
                           height: 20,
                           width: 20,

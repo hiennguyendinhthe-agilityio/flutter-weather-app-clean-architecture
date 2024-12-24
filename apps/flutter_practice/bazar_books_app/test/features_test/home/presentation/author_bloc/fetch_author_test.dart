@@ -78,7 +78,7 @@ void main() {
         when(() => mockAuthorRepository.fetchAuthors()).thenThrow(
           DioException(
             message: "Failed to load authors",
-            requestOptions: RequestOptions(path: ''),
+            requestOptions: RequestOptions(),
           ),
         );
         return authorBloc;
@@ -132,7 +132,7 @@ void main() {
         when(() => mockAuthorRepository.fetchAuthorProfile('1')).thenThrow(
           DioException(
             message: "Failed to load author profile",
-            requestOptions: RequestOptions(path: ''),
+            requestOptions: RequestOptions(),
           ),
         );
         return authorBloc;

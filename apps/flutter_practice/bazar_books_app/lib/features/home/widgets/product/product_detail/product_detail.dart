@@ -73,7 +73,6 @@ class ProductDetail extends StatelessWidget {
       snap: true,
       initialChildSize: 1.0,
       minChildSize: 0.99,
-      maxChildSize: 1.0,
       expand: false,
       builder: (context, scrollController) => SingleChildScrollView(
         controller: scrollController,

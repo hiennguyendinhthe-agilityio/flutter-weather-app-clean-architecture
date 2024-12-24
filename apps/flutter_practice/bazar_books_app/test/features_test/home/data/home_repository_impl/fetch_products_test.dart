@@ -47,7 +47,7 @@ void main() {
       when(() => mockApiService.getYourFavorites()).thenThrow(
         DioException(
           message: "Error",
-          requestOptions: RequestOptions(path: ''),
+          requestOptions: RequestOptions(),
         ),
       );
 
