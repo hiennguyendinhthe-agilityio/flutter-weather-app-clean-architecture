@@ -4,7 +4,6 @@ import 'package:bazar_books_app/features/home/bloc/product_detail_bloc/bloc/prod
 import 'package:bazar_books_app/features/home/data/product_repository/product_repository.dart';
 import 'package:bazar_books_design/core/core.dart';
 import 'package:bazar_books_design/core/responsive/size_extension.dart';
-import 'package:bazar_books_design/core/utils/size_type.dart';
 import 'package:bazar_books_design/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -101,8 +100,8 @@ class ProductDetail extends StatelessWidget {
                         return;
                       }
 
-                      final productApi = ProductApi(
-                        id: product.id,
+                      final productApi = Product(
+                        apiId: product.apiId,
                         title: product.title ?? Constants.titleDefault,
                         price: product.price ?? Constants.titleDefault,
                         imageUrl: product.imageUrl ?? Constants.imgUrlDefault,

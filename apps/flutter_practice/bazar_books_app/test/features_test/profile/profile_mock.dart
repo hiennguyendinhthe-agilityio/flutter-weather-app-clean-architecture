@@ -1,4 +1,3 @@
-import 'package:bazar_books_app/features/auth/data/auth_repository.dart';
 import 'package:bazar_books_app/features/auth/data/auth_repository_impl.dart';
 import 'package:bazar_books_app/features/category/data/category_repository.dart';
 import 'package:bazar_books_app/features/home/data/product_repository/product_repository.dart';
@@ -24,7 +23,7 @@ class MockCategoryRepository extends Mock implements CategoryRepositoryImpl {}
 
 class MockAuthRepositoryImpl extends Mock implements AuthRepositoryImpl {}
 
-class MockAuthRepository extends Mock implements AuthRepository {}
+// class MockAuthRepository extends Mock implements AuthRepository {}
 
 // Data Mocks
 class ProfileMock {

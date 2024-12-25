@@ -25,7 +25,7 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
   ) async {
     final query = _repo.getFavorites(event.userId);
 
-    return emit.forEach<QueryState<List<ProductApi>>>(
+    return emit.forEach<QueryState<List<Product>>>(
       query.stream,
       onData: (queryState) {
         return state.copyWith(

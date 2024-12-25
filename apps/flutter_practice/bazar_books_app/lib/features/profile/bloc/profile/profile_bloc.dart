@@ -2,7 +2,6 @@ import 'package:bazar_books_app/features/auth/data/auth_repository_impl.dart';
 import 'package:bazar_books_app/features/profile/bloc/profile/profile_event.dart';
 import 'package:bazar_books_app/features/profile/bloc/profile/profile_state.dart';
 import 'package:bazar_books_design/core/core.dart';
-import 'package:bazar_books_design/core/utils/error_messages.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {

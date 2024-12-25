@@ -1,6 +1,6 @@
 import 'package:bazar_books_app/features/auth/data/auth_repository_impl.dart';
 import 'package:bazar_books_design/core/core.dart';
-import 'package:bazar_books_design/core/utils/error_messages.dart';
+import 'package:bazar_books_design/core/models/auth_model/api_user.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -89,7 +89,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       );
 
       if (response) {
-        await authenticationRepository.saveUser(User(
+        await authenticationRepository.saveUser(ApiUser(
           name: event.name,
           email: event.email,
           password: event.password,

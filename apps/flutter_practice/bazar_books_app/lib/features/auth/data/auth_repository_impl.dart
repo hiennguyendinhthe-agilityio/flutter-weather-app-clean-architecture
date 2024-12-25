@@ -1,6 +1,16 @@
-import 'package:bazar_books_app/features/auth/data/auth_repository.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
+import 'package:bazar_books_design/core/models/auth_model/api_user.dart';
 import 'package:dio/dio.dart';
+
+abstract class AuthRepository {
+  Future<ApiUser?> logIn(String email, String password);
+
+  Future<bool> signUp(String name, String email, String password);
+
+  Future<bool> isLoggedIn();
+
+  Future<ApiUser?> getCurrentUser();
+}
 
 class AuthRepositoryImpl implements AuthRepository {
   final ApiService apiService;
@@ -9,25 +19,24 @@ class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl(this.apiService, {required this.isarService});
 
   @override
-  Future<User?> logIn(String email, String password) async {
+  Future<ApiUser?> logIn(String email, String password) async {
     try {
-      final existingUser = await isarService.getLoggedInUser();
-      if (existingUser != null) {
-        return existingUser;
+      final existingIsarUser = await isarService.getLoggedInUser();
+      if (existingIsarUser != null) {
+        return existingIsarUser.toApiUser();
       }
 
-      final user = await apiService.logIn(email, password);
+      final userApi = await apiService.logIn(email, password);
+      if (userApi != null) {
+        userApi.isLoggedIn = true;
 
-      if (user != null) {
-        user.isLoggedIn = true;
+        final userIsar = userApi.toIsarUser();
+        await isarService.saveUser(userIsar);
 
-        final userInIsar = await isarService.getLoggedInUser();
-        if (userInIsar == null) {
-          await isarService.saveUser(user);
-        }
+        return userApi;
       }
 
-      return user;
+      return null;
     } catch (e) {
       throw ErrorHandler.handle(e).failure;
     }
@@ -44,16 +53,18 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<User?> getCurrentUser() async {
-    return await isarService.getLoggedInUser();
+  Future<ApiUser?> getCurrentUser() async {
+    final userIsar = await isarService.getLoggedInUser();
+    return userIsar?.toApiUser();
   }
 
   Future<void> logOut() async {
     await isarService.logoutUser();
   }
 
-  Future<void> saveUser(User user) async {
-    await isarService.saveUser(user);
+  Future<void> saveUser(ApiUser userApi) async {
+    final userIsar = userApi.toIsarUser();
+    await isarService.saveUser(userIsar);
   }
 
   Future<bool> isEmailDuplicateFromAPI(String email) async {
@@ -65,17 +76,18 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       final response = await apiService.signUp(name, email, password);
 
-      if (response) {
-        final user = User(
+      if (response != null) {
+        final userApi = ApiUser(
           name: name,
           email: email,
           password: password,
           isLoggedIn: true,
         );
 
-        await isarService.saveUser(user);
+        final userIsar = userApi.toIsarUser();
+        await isarService.saveUser(userIsar);
       }
-      return response;
+      return response != null;
     } on DioException catch (e) {
       throw ErrorHandler.handle(e).failure;
     }

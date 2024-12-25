@@ -1,9 +1,6 @@
 import 'package:bazar_books_app/features/home/bloc/vendor_bloc/vendor_bloc.dart';
 import 'package:bazar_books_app/features/home/bloc/vendor_bloc/vendor_state.dart';
 import 'package:bazar_books_design/core/core.dart';
-import 'package:bazar_books_design/core/extensions/context_extension.dart';
-import 'package:bazar_books_design/core/extensions/responsive_extension.dart';
-import 'package:bazar_books_design/core/utils/size_type.dart';
 import 'package:bazar_books_design/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

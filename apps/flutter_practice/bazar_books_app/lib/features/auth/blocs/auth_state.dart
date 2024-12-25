@@ -16,7 +16,7 @@ class AuthenticationInitial extends AuthState {}
 class AuthenticationLoading extends AuthState {}
 
 class AuthenticationSuccess extends AuthState {
-  final User user;
+  final ApiUser user;
   AuthenticationSuccess(this.user);
 
   @override
@@ -24,7 +24,7 @@ class AuthenticationSuccess extends AuthState {
 }
 
 class Authenticated extends AuthState {
-  final User user;
+  final ApiUser user;
 
   Authenticated(this.user);
 }

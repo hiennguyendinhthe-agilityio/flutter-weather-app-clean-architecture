@@ -1,4 +1,4 @@
-import 'package:bazar_books_design/core/models/auth_model/user.dart';
+import 'package:bazar_books_design/core/models/auth_model/api_user.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class ProfileState extends Equatable {
@@ -11,7 +11,7 @@ class MyAccountInitialState extends ProfileState {}
 class MyAccountLoadingState extends ProfileState {}
 
 class ProfileLoadedState extends ProfileState {
-  final User user;
+  final ApiUser user;
 
   ProfileLoadedState(this.user);
 
