@@ -37,33 +37,38 @@ const ProductSchema = CollectionSchema(
       name: r'discount',
       type: IsarType.string,
     ),
-    r'imageUrl': PropertySchema(
+    r'favorite': PropertySchema(
       id: 4,
+      name: r'favorite',
+      type: IsarType.bool,
+    ),
+    r'imageUrl': PropertySchema(
+      id: 5,
       name: r'imageUrl',
       type: IsarType.string,
     ),
     r'imageUrlOffer': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'imageUrlOffer',
       type: IsarType.stringList,
     ),
     r'logoVendor': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'logoVendor',
       type: IsarType.string,
     ),
     r'price': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'price',
       type: IsarType.string,
     ),
     r'starRating': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'starRating',
       type: IsarType.long,
     ),
     r'title': PropertySchema(
-      id: 9,
+      id: 10,
       name: r'title',
       type: IsarType.string,
     )
@@ -156,12 +161,13 @@ void _productSerialize(
   writer.writeString(offsets[1], object.category);
   writer.writeString(offsets[2], object.description);
   writer.writeString(offsets[3], object.discount);
-  writer.writeString(offsets[4], object.imageUrl);
-  writer.writeStringList(offsets[5], object.imageUrlOffer);
-  writer.writeString(offsets[6], object.logoVendor);
-  writer.writeString(offsets[7], object.price);
-  writer.writeLong(offsets[8], object.starRating);
-  writer.writeString(offsets[9], object.title);
+  writer.writeBool(offsets[4], object.favorite);
+  writer.writeString(offsets[5], object.imageUrl);
+  writer.writeStringList(offsets[6], object.imageUrlOffer);
+  writer.writeString(offsets[7], object.logoVendor);
+  writer.writeString(offsets[8], object.price);
+  writer.writeLong(offsets[9], object.starRating);
+  writer.writeString(offsets[10], object.title);
 }
 
 Product _productDeserialize(
@@ -175,12 +181,13 @@ Product _productDeserialize(
     category: reader.readStringOrNull(offsets[1]),
     description: reader.readStringOrNull(offsets[2]),
     discount: reader.readStringOrNull(offsets[3]),
-    imageUrl: reader.readStringOrNull(offsets[4]),
-    imageUrlOffer: reader.readStringList(offsets[5]),
-    logoVendor: reader.readStringOrNull(offsets[6]),
-    price: reader.readStringOrNull(offsets[7]),
-    starRating: reader.readLongOrNull(offsets[8]),
-    title: reader.readStringOrNull(offsets[9]),
+    favorite: reader.readBoolOrNull(offsets[4]),
+    imageUrl: reader.readStringOrNull(offsets[5]),
+    imageUrlOffer: reader.readStringList(offsets[6]),
+    logoVendor: reader.readStringOrNull(offsets[7]),
+    price: reader.readStringOrNull(offsets[8]),
+    starRating: reader.readLongOrNull(offsets[9]),
+    title: reader.readStringOrNull(offsets[10]),
   );
   object.idIsa = id;
   return object;
@@ -202,16 +209,18 @@ P _productDeserializeProp<P>(
     case 3:
       return (reader.readStringOrNull(offset)) as P;
     case 4:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readBoolOrNull(offset)) as P;
     case 5:
-      return (reader.readStringList(offset)) as P;
-    case 6:
       return (reader.readStringOrNull(offset)) as P;
+    case 6:
+      return (reader.readStringList(offset)) as P;
     case 7:
       return (reader.readStringOrNull(offset)) as P;
     case 8:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 9:
+      return (reader.readLongOrNull(offset)) as P;
+    case 10:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -872,6 +881,32 @@ extension ProductQueryFilter
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'discount',
         value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Product, Product, QAfterFilterCondition> favoriteIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'favorite',
+      ));
+    });
+  }
+
+  QueryBuilder<Product, Product, QAfterFilterCondition> favoriteIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'favorite',
+      ));
+    });
+  }
+
+  QueryBuilder<Product, Product, QAfterFilterCondition> favoriteEqualTo(
+      bool? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'favorite',
+        value: value,
       ));
     });
   }
@@ -1878,6 +1913,18 @@ extension ProductQuerySortBy on QueryBuilder<Product, Product, QSortBy> {
     });
   }
 
+  QueryBuilder<Product, Product, QAfterSortBy> sortByFavorite() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'favorite', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Product, Product, QAfterSortBy> sortByFavoriteDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'favorite', Sort.desc);
+    });
+  }
+
   QueryBuilder<Product, Product, QAfterSortBy> sortByImageUrl() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'imageUrl', Sort.asc);
@@ -1989,6 +2036,18 @@ extension ProductQuerySortThenBy
     });
   }
 
+  QueryBuilder<Product, Product, QAfterSortBy> thenByFavorite() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'favorite', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Product, Product, QAfterSortBy> thenByFavoriteDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'favorite', Sort.desc);
+    });
+  }
+
   QueryBuilder<Product, Product, QAfterSortBy> thenByIdIsa() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'idIsa', Sort.asc);
@@ -2092,6 +2151,12 @@ extension ProductQueryWhereDistinct
     });
   }
 
+  QueryBuilder<Product, Product, QDistinct> distinctByFavorite() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'favorite');
+    });
+  }
+
   QueryBuilder<Product, Product, QDistinct> distinctByImageUrl(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -2162,6 +2227,12 @@ extension ProductQueryProperty
   QueryBuilder<Product, String?, QQueryOperations> discountProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'discount');
+    });
+  }
+
+  QueryBuilder<Product, bool?, QQueryOperations> favoriteProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'favorite');
     });
   }
 

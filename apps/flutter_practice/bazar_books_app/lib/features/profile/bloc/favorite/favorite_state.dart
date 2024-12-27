@@ -6,6 +6,7 @@ class FavoriteState extends Equatable {
   final FavoriteStatus status;
   final List<ProductApi> favorites;
   final String errorMessage;
+  final bool hasReachedMax;
 
   const FavoriteState({
     this.status = FavoriteStatus.initial,
