@@ -35,9 +35,7 @@ void main() {
               AuthMocks.getMockEmail,
               AuthMocks.getMockPassword,
             )).thenAnswer((_) async => true);
-        when(() => mockAuthRepository.saveUser(any())).thenAnswer((_) async {
-          return;
-        });
+
         return authBloc;
       },
       act: (bloc) => bloc.add(SignUpSubmitted(
@@ -54,9 +52,6 @@ void main() {
               AuthMocks.getMockName,
               AuthMocks.getMockEmail,
               AuthMocks.getMockPassword,
-            )).called(1);
-        verify(() => mockAuthRepository.saveUser(
-              any(),
             )).called(1);
       },
     );

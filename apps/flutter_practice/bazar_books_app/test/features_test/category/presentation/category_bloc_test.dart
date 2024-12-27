@@ -21,9 +21,7 @@ void main() {
   });
   group('CategoryBloc', () {
     const category = 'electronics'; // Example category
-    final products = [
-      Product(apiId: '1', title: 'Product 1')
-    ]; // Example product
+    final products = [Product(id: '1', title: 'Product 1')]; // Example product
 
     blocTest<CategoryBloc, FetchDataState<Product>>(
       'emits [loading, loaded] when products are fetched successfully',

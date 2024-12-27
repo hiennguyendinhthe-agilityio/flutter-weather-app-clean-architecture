@@ -1,9 +1,6 @@
 import 'package:bazar_books_app/di.dart';
 import 'package:bazar_books_app/features/home/widgets/author/author_profile/author_profile.dart';
 import 'package:bazar_books_design/core/core.dart';
-import 'package:bazar_books_design/core/extensions/context_extension.dart';
-import 'package:bazar_books_design/core/utils/size_type.dart';
-import 'package:bazar_books_design/core/utils/utils.dart';
 import 'package:bazar_books_design/widgets/list_title/listtile.dart';
 import 'package:bazar_books_design/widgets/widgets.dart';
 import 'package:flutter/material.dart';

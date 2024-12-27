@@ -19,6 +19,10 @@ class VendorRepositoryImpl implements VendorRepository {
   @override
   Query<List<Vendor>> getVendorsCached() {
     return Query<List<Vendor>>(
+      config: QueryConfig(
+        cacheDuration: const Duration(minutes: 5),
+        refetchDuration: const Duration(minutes: 5),
+      ),
       key: 'getBestVendors',
       queryFn: () async {
         return await _service.getVendors();
@@ -29,6 +33,10 @@ class VendorRepositoryImpl implements VendorRepository {
   @override
   InfiniteQuery<List<Vendor>, int> getVendors() {
     return InfiniteQuery<List<Vendor>, int>(
+      config: QueryConfig(
+        cacheDuration: const Duration(minutes: 5),
+        refetchDuration: const Duration(minutes: 5),
+      ),
       revalidateAll: true,
       key: 'Vendors',
       getNextArg: (state) {

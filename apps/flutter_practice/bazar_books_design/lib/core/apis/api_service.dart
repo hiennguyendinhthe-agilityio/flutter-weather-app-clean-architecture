@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:bazar_books_design/core/models/auth_model/api_user.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +15,7 @@ class ApiService {
   ///
   /// Throws an [Exception] if the response status code is not 200
 
-  Future<List<ProductApi>> getFavorites(String userId) async {
+  Future<List<Product>> getFavorites(String userId) async {
     try {
       final response = await _dio.get(
         '${Constants.apiUrlProduct}product',
@@ -31,13 +32,13 @@ class ApiService {
       final List<dynamic> result = response.data;
       debugPrint('$result');
 
-      return result.map((json) => ProductApi.fromJson(json)).toList();
+      return result.map((json) => Product.fromJson(json)).toList();
     } catch (e) {
       throw ErrorHandler.handle(e).failure;
     }
   }
 
-  Future<ProductApi> addProductToFavorites(ProductApi product) async {
+  Future<Product> addProductToFavorites(Product product) async {
     try {
       final response = await _dio.post(
         '${Constants.apiUrlProduct}product',
@@ -47,12 +48,11 @@ class ApiService {
           'description': product.description,
           'price': product.price,
           'imageUrl': product.imageUrl,
-          'userId': product.userId,
         },
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return ProductApi.fromJson(response.data);
+        return Product.fromJson(response.data);
       } else {
         throw Exception("Failed to add product to favorites");
       }

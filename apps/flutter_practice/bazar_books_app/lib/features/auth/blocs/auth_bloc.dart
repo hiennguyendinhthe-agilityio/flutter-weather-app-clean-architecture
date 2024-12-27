@@ -1,6 +1,6 @@
 import 'package:bazar_books_app/features/auth/data/auth_repository_impl.dart';
 import 'package:bazar_books_design/core/core.dart';
-import 'package:bazar_books_design/core/utils/error_messages.dart';
+import 'package:bazar_books_design/core/models/auth_model/api_user.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -54,18 +54,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final user =
           await authenticationRepository.logIn(event.email, event.password);
       if (user != null) {
-        emit(AuthenticationSuccess(user));
+        emit(Authenticated(user));
       } else {
-        emit(
-          AuthenticationFailure(
-            ErrorMessages.invalidEmailOrPassword,
-          ),
-        );
+        emit(AuthenticationFailure(ErrorMessages.invalidEmailOrPassword));
       }
     } catch (e) {
-      emit(
-        AuthenticationFailure(ErrorHandler.handle(e).failure.message),
-      );
+      emit(AuthenticationFailure(ErrorHandler.handle(e).failure.message));
     }
   }
 
@@ -89,14 +83,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       );
 
       if (response) {
-        await authenticationRepository.saveUser(User(
+        await authenticationRepository.saveUser(ApiUser(
           name: event.name,
           email: event.email,
           password: event.password,
           isLoggedIn: true,
         ));
 
-        emit(SignUpSuccess());
+        emit(Authenticated(ApiUser()));
       }
     } catch (e) {
       debugPrint(e.toString());

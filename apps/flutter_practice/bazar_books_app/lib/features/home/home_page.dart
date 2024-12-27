@@ -9,8 +9,6 @@ import 'package:bazar_books_app/features/home/widgets/offer/offer.dart';
 import 'package:bazar_books_app/features/home/widgets/product/products.dart';
 import 'package:bazar_books_app/features/home/widgets/vendors/best_vendors.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
-import 'package:bazar_books_design/core/extensions/context_extension.dart';
-import 'package:bazar_books_design/core/utils/size_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';

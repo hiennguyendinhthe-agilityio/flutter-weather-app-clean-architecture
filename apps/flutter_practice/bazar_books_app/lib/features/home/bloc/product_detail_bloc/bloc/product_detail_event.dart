@@ -27,7 +27,7 @@ class UpdateAmountEvent extends ProductDetailEvent {
 }
 
 class AddProductToFavoritesEvent extends ProductDetailEvent {
-  final ProductApi product;
+  final Product product;
 
   AddProductToFavoritesEvent(this.product);
 

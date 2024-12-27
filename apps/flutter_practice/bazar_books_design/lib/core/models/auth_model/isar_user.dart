@@ -14,6 +14,8 @@ class IsarUser {
   late String? avatarUrl;
   late String? phoneNumber;
 
+  List<FavoriteProduct>? favoriteProducts;
+
   IsarUser({
     this.userId,
     this.name,
@@ -21,5 +23,13 @@ class IsarUser {
     this.isLoggedIn = false,
     this.avatarUrl,
     this.phoneNumber,
+    this.favoriteProducts,
   });
+}
+
+@embedded
+class FavoriteProduct {
+  late String productId;
+  late String userId;
+  late bool isFavorite;
 }

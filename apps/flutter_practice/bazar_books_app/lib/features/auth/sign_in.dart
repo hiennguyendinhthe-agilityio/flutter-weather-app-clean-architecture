@@ -1,6 +1,5 @@
 import 'package:bazar_books_app/features/auth/blocs/auth_bloc.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
-import 'package:bazar_books_design/core/extensions/context_extension.dart';
 import 'package:bazar_books_design/core/responsive/size_extension.dart';
 import 'package:bazar_books_design/widgets/texts/texts.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +39,7 @@ class _SignInScreenState extends State<SignInScreen> {
       body: SingleChildScrollView(
         child: BlocConsumer<AuthBloc, AuthState>(
           listener: (context, state) {
-            if (state is AuthenticationSuccess) {
+            if (state is Authenticated) {
               context.go('/home');
             } else if (state is AuthenticationFailure) {
               ScaffoldMessenger.of(context).showSnackBar(

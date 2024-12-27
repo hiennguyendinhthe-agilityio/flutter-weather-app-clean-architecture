@@ -29,7 +29,7 @@ class MockVendorRepository extends Mock implements VendorRepository {}
 // Data Mocks
 class HomeMocks {
   static final mockProduct = Product(
-      apiId: faker.guid.guid(),
+      id: faker.guid.guid(),
       title: faker.lorem.word(),
       description: faker.lorem.sentence(),
       imageUrl: faker.image.loremPicsum(),
@@ -38,7 +38,7 @@ class HomeMocks {
       imageUrlOffer: [faker.image.loremPicsum()]);
 
   static final mockProductDetail = Product(
-    apiId: faker.guid.guid(),
+    id: faker.guid.guid(),
     title: faker.lorem.word(),
     description: faker.lorem.sentence(),
     imageUrl: faker.image.loremPicsum(),
@@ -109,7 +109,7 @@ class HomeMocks {
 
   static final mockProductList = [
     Product(
-        apiId: faker.guid.guid(),
+        id: faker.guid.guid(),
         title: faker.lorem.word(),
         description: faker.lorem.sentence(),
         imageUrl: faker.image.loremPicsum(),

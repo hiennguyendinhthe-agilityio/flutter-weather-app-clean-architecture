@@ -11,7 +11,7 @@ abstract class ProductRepository {
 
   Future<Product> fetchProductDetails(String? productId);
 
-  Mutation<ProductApi, ProductApi> createFavorite(ProductApi product);
+  Mutation<Product, Product> createFavorite(Product product);
 }
 
 class ProductRepositoryImpl implements ProductRepository {
@@ -24,8 +24,8 @@ class ProductRepositoryImpl implements ProductRepository {
   );
 
   @override
-  Mutation<ProductApi, ProductApi> createFavorite(ProductApi product) {
-    return Mutation<ProductApi, ProductApi>(
+  Mutation<Product, Product> createFavorite(Product product) {
+    return Mutation<Product, Product>(
       key: "createFavorite",
       invalidateQueries: ['favorites'],
       queryFn: (favorite) async {
@@ -35,12 +35,12 @@ class ProductRepositoryImpl implements ProductRepository {
       },
       onStartMutation: (newFavorite) {
         final query = CachedQuery.instance.getQuery("getFavorites")
-            as Query<List<ProductApi>>;
+            as Query<List<Product>>;
 
         final fallback = query.state.data;
         query.update(
           (old) => [
-            ProductApi(
+            Product(
               id: DateTime.now().millisecondsSinceEpoch.toString(),
               title: newFavorite.title,
               price: newFavorite.price,
@@ -57,7 +57,7 @@ class ProductRepositoryImpl implements ProductRepository {
         CachedQuery.instance.updateQuery(
           key: "getFavorites",
           updateFn: (dynamic old) =>
-              old as List<ProductApi>?, // Ensure type consistency
+              old as List<Product>?, // Ensure type consistency
         );
       },
     );

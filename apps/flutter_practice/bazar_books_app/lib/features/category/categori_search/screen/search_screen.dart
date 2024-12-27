@@ -1,9 +1,6 @@
 import 'package:bazar_books_app/features/category/categori_search/bloc/search_bloc.dart';
 import 'package:bazar_books_app/features/home/widgets/product/product_detail/product_detail.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
-import 'package:bazar_books_design/core/extensions/context_extension.dart';
-import 'package:bazar_books_design/core/extensions/responsive_extension.dart';
-import 'package:bazar_books_design/core/utils/size_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -161,7 +158,7 @@ class SearchScreen extends StatelessWidget {
                         onTap: () {
                           BazUiBottomSheet.showModal(
                             context,
-                            child: ProductDetail(productId: product.apiId),
+                            child: ProductDetail(productId: product.id),
                           );
                         },
                         title: product.title,

@@ -4,9 +4,7 @@ import 'package:bazar_books_app/features/profile/bloc/profile/profile_bloc.dart'
 import 'package:bazar_books_app/features/profile/bloc/profile/profile_event.dart';
 import 'package:bazar_books_app/features/profile/bloc/profile/profile_state.dart';
 import 'package:bazar_books_design/core/core.dart';
-import 'package:bazar_books_design/core/extensions/context_extension.dart';
 import 'package:bazar_books_design/core/responsive/size_extension.dart';
-import 'package:bazar_books_design/core/utils/size_type.dart';
 import 'package:bazar_books_design/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

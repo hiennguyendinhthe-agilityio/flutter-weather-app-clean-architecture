@@ -168,7 +168,10 @@ final GoRouter router = GoRouter(
             GoRoute(
               path: RoutePaths.myFavorites,
               builder: (BuildContext context, GoRouterState state) {
-                return const MyFavorite();
+                final userId = (context.read<AuthBloc>().state as Authenticated)
+                    .user
+                    .userId;
+                return MyFavorite(userId: userId ?? '');
               },
             ),
             GoRoute(

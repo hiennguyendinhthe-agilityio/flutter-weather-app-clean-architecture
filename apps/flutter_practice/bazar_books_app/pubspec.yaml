@@ -96,6 +96,7 @@ dependencies:
 
   mockito: ^5.4.4
 
+  responsive_grid_list: ^1.4.0
 
 dev_dependencies:
   flutter_test:

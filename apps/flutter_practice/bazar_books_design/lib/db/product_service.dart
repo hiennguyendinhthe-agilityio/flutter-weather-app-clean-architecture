@@ -1,4 +1,5 @@
 import 'package:bazar_books_design/core/core.dart';
+import 'package:bazar_books_design/core/models/auth_model/isar_user.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
@@ -29,6 +30,33 @@ class ProductService {
     } catch (e) {
       throw ErrorHandler.handle(e).failure;
     }
+  }
+
+  /// Add a product to the user's favorite list
+  Future<void> addProductToFavorites(
+      String userId, FavoriteProduct product) async {
+    final isar = await isarService.db;
+
+    await isar.writeTxn(() async {
+      final user =
+          await isar.isarUsers.filter().userIdEqualTo(userId).findFirst();
+
+      if (user != null) {
+        user.favoriteProducts ??= [];
+        final exists =
+            user.favoriteProducts!.any((p) => p.productId == product.productId);
+
+        if (!exists) {
+          user.favoriteProducts!.add(product);
+          await isar.isarUsers.put(user);
+          debugPrint('Product added to favorites: ${product.productId}');
+        } else {
+          debugPrint('Product already in favorites: ${product.productId}');
+        }
+      } else {
+        throw Exception('User not found for userId: $userId');
+      }
+    });
   }
 
   Future<void> saveFavoriteProductsToIsar(List<Product> products) async {

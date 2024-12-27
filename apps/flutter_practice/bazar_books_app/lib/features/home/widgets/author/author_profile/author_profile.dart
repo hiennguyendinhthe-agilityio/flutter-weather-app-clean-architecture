@@ -6,9 +6,6 @@ import 'package:bazar_books_app/features/home/data/author_repository/author_repo
 import 'package:bazar_books_app/features/home/data/product_repository/product_repository.dart';
 import 'package:bazar_books_app/features/home/widgets/product/product_detail/product_detail.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
-import 'package:bazar_books_design/core/extensions/context_extension.dart';
-import 'package:bazar_books_design/core/extensions/responsive_extension.dart';
-import 'package:bazar_books_design/core/utils/size_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -174,7 +171,7 @@ class AuthorProfile extends StatelessWidget {
                     BazUiBottomSheet.showModal(
                       context,
                       child: ProductDetail(
-                        productId: product.apiId,
+                        productId: product.id,
                       ),
                     );
                   },
