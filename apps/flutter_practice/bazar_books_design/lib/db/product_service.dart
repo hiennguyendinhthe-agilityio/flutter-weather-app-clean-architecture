@@ -9,22 +9,6 @@ class ProductService {
   final IsarService isarService;
   final Dio _dio;
   ProductService(this._dio, {required this.isarService});
-  Future<void> addProductToFavorites(Product product) async {
-    try {
-      await _dio.post('${Constants.apiUrlProduct}product',
-          data: product.toJson());
-    } catch (e) {
-      throw ErrorHandler.handle(e).failure;
-    }
-  }
-
-  Future<void> removeProductFromFavorites(Product product) async {
-    try {
-      await _dio.delete('${Constants.apiUrlProduct}product/${product.apiId}');
-    } catch (e) {
-      throw ErrorHandler.handle(e).failure;
-    }
-  }
 
   // Call API and return product list from server
   Future<List<Product>> fetchProductsFromApi() async {
@@ -45,6 +29,25 @@ class ProductService {
     } catch (e) {
       throw ErrorHandler.handle(e).failure;
     }
+  }
+
+  Future<void> saveFavoriteProductsToIsar(List<Product> products) async {
+    final isar = await isarService.db;
+
+    final favoriteProducts =
+        products.where((product) => product.favorite == true).toList();
+
+    await isar.writeTxn(() async {
+      await isar.products.putAll(favoriteProducts);
+    });
+
+    debugPrint('Saved ${favoriteProducts.length} favorite products to Isar.');
+  }
+
+  Future<List<Product>> fetchFavoriteProductsFromIsar() async {
+    final isar = await isarService.db;
+
+    return await isar.products.filter().favoriteEqualTo(true).findAll();
   }
 
   // Save product list to Isar
@@ -69,27 +72,5 @@ class ProductService {
     await isar.writeTxn(() async {
       await isar.products.clear();
     });
-  }
-
-  // Function combines API calls and stores data into Isar
-  Future<List<Product>> fetchProducts() async {
-    try {
-      final productsFromApi =
-          await fetchProductsFromApi(); // Call API to get product
-
-      // Delete old data in Isar and save new data
-      await clearProductsFromIsar();
-      await saveProductsToIsar(productsFromApi);
-
-      return productsFromApi;
-    } catch (e) {
-      // If an error occurs when calling the API, return data from Isar (if any)
-      final productsFromIsar = await fetchProductsFromIsar();
-      if (productsFromIsar.isNotEmpty) {
-        return productsFromIsar;
-      } else {
-        rethrow;
-      }
-    }
   }
 }

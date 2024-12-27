@@ -1,39 +1,17 @@
-import 'package:bazar_books_design/core/models/product_model/product_model.dart';
-import 'package:equatable/equatable.dart';
+part of 'favorite_bloc.dart';
 
 abstract class FavoriteEvent extends Equatable {
   const FavoriteEvent();
 
   @override
-  List<Object?> get props => [];
-
-  get product => null;
+  List<Object> get props => [];
 }
 
-class LoadFavoritesEvent extends FavoriteEvent {}
+class GetFavoriteProducts extends FavoriteEvent {
+  final String userId;
 
-class AddToFavoritesEvent extends FavoriteEvent {
-  @override
-  final Product product;
-
-  const AddToFavoritesEvent(this.product);
+  const GetFavoriteProducts(this.userId);
 
   @override
-  List<Object?> get props => [product];
-}
-
-class RemoveFromFavoritesEvent extends FavoriteEvent {
-  @override
-  final Product product;
-
-  const RemoveFromFavoritesEvent(this.product);
-
-  @override
-  List<Object?> get props => [product];
-}
-
-class LoadProductByIdEvent extends FavoriteEvent {
-  final int productId;
-
-  const LoadProductByIdEvent(this.productId);
+  List<Object> get props => [userId];
 }

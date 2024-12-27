@@ -1,37 +1,32 @@
 import 'package:bazar_books_design/core/core.dart';
+import 'package:bazar_books_design/db/db.dart';
 import 'package:cached_query_flutter/cached_query_flutter.dart';
 
-class FavoriteRepository {
-  Mutation<Product, Product> toggleFavorite() {
-    return Mutation<Product, Product>(
-      key: 'toggleFavorite',
-      invalidateQueries: ['favorites'],
-      queryFn: (product) async {
-        await Future.delayed(const Duration(milliseconds: 300));
+abstract class FavoriteRepository {
+  Query<List<ProductApi?>> getFavorites(String userId);
+}
 
-        return product;
-      },
-      onStartMutation: (product) {
-        final query = CachedQuery.instance.getQuery('favorites');
-        final fallback = query?.state.data;
+class FavoriteRepositoryImpl implements FavoriteRepository {
+  final ApiService apiService;
+  final ProductService productService;
 
-        query?.update((favorites) {
-          if (favorites?.contains(product) == true) {
-            return favorites
-                ?.where((item) => item.apiId != product.apiId)
-                .toList();
-          } else {
-            return [product, ...?favorites];
-          }
-        });
+  FavoriteRepositoryImpl(
+    this.apiService,
+    this.productService,
+  );
 
-        return fallback;
-      },
-      onError: (product, error, fallback) {
-        CachedQuery.instance.updateQuery(
-          key: 'favorites',
-          updateFn: (_) => fallback as List<Product>?,
-        );
+  @override
+  Query<List<ProductApi>> getFavorites(String userId) {
+    return Query<List<ProductApi>>(
+      key: 'getFavorites',
+      config: QueryConfig(
+        cacheDuration: const Duration(minutes: 10), // Cache duration
+        refetchDuration: const Duration(seconds: 2), // Refetch duration
+      ),
+      queryFn: () async {
+        final products = await apiService.getFavorites(userId);
+
+        return products;
       },
     );
   }

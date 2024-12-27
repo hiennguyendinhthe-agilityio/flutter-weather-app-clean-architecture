@@ -2,7 +2,7 @@
 
 import 'package:bazar_books_app/features/home/bloc/data_state.dart';
 import 'package:bazar_books_app/features/home/data/product_repository/product_repository.dart';
-import 'package:bazar_books_design/core/models/product_model/product_model.dart';
+import 'package:bazar_books_design/bazar_books_design.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
@@ -21,6 +21,7 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
     on<FetchProductDetailsEvent>(_onFetchProductDetails);
     on<ToggleFavoriteEvent>(_onToggleFavorite);
     on<UpdateAmountEvent>(_onUpdateAmount);
+    on<AddProductToFavoritesEvent>(_onAddFavoriteProduct);
   }
 
   void _onFetchProductDetails(
@@ -47,5 +48,13 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
       UpdateAmountEvent event, Emitter<ProductDetailState> emit) {
     final newAmount = event.newAmount < 1 ? 1 : event.newAmount;
     emit(state.copyWith(amount: newAmount));
+  }
+
+  Future<void> _onAddFavoriteProduct(
+    AddProductToFavoritesEvent event,
+    Emitter<ProductDetailState> emit,
+  ) async {
+    final mutation = productRepository.createFavorite(event.product);
+    mutation.mutate(event.product);
   }
 }

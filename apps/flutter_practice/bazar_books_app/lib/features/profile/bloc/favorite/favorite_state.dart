@@ -1,49 +1,30 @@
-import 'package:bazar_books_design/bazar_books_design.dart';
-import 'package:equatable/equatable.dart';
+part of 'favorite_bloc.dart';
 
-abstract class FavoriteState extends Equatable {
-  const FavoriteState();
-}
+enum FavoriteStatus { initial, loading, success, failure }
 
-class FavoriteInitial extends FavoriteState {
-  final List<Product> favorites;
-
-  const FavoriteInitial(this.favorites);
-
-  @override
-  List<Object> get props => [favorites];
-}
-
-class FavoriteLoading extends FavoriteState {
-  const FavoriteLoading();
-
-  @override
-  List<Object> get props => [];
-}
-
-class FavoriteError extends FavoriteState {
+class FavoriteState extends Equatable {
+  final FavoriteStatus status;
+  final List<ProductApi> favorites;
   final String errorMessage;
 
-  const FavoriteError(this.errorMessage);
+  const FavoriteState({
+    this.status = FavoriteStatus.initial,
+    this.favorites = const [],
+    this.errorMessage = '',
+  });
+
+  FavoriteState copyWith({
+    FavoriteStatus? status,
+    List<ProductApi>? favorites,
+    String? errorMessage,
+  }) {
+    return FavoriteState(
+      status: status ?? this.status,
+      favorites: favorites ?? this.favorites,
+      errorMessage: errorMessage ?? this.errorMessage,
+    );
+  }
 
   @override
-  List<Object> get props => [errorMessage];
-}
-
-class FavoriteSuccess extends FavoriteState {
-  final List<Product> favorites;
-
-  const FavoriteSuccess(this.favorites);
-
-  @override
-  List<Object> get props => [favorites];
-}
-
-class FavoriteSuccessId extends FavoriteState {
-  final List<Product> products;
-
-  const FavoriteSuccessId(this.products);
-
-  @override
-  List<Object> get props => [products];
+  List<Object?> get props => [status, favorites, errorMessage];
 }
