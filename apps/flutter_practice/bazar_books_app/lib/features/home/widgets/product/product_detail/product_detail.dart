@@ -2,14 +2,9 @@ import 'package:bazar_books_app/di.dart';
 import 'package:bazar_books_app/features/home/bloc/data_state.dart';
 import 'package:bazar_books_app/features/home/bloc/product_detail_bloc/bloc/product_detail_bloc.dart';
 import 'package:bazar_books_app/features/home/data/product_repository/product_repository.dart';
-import 'package:bazar_books_app/features/profile/bloc/favorite/favorite_bloc.dart';
-import 'package:bazar_books_app/features/profile/bloc/favorite/favorite_event.dart';
 import 'package:bazar_books_design/core/core.dart';
-import 'package:bazar_books_design/core/extensions/context_extension.dart';
-import 'package:bazar_books_design/core/extensions/responsive_extension.dart';
 import 'package:bazar_books_design/core/responsive/size_extension.dart';
 import 'package:bazar_books_design/core/utils/size_type.dart';
-import 'package:bazar_books_design/db/product_service.dart';
 import 'package:bazar_books_design/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,12 +26,6 @@ class ProductDetail extends StatelessWidget {
           create: (_) =>
               ProductDetailBloc(productRepository: getIt<ProductRepository>())
                 ..add(FetchProductDetailsEvent(productId)),
-        ),
-        BlocProvider(
-          create: (context) => FavoriteBloc(
-            getIt<ProductService>(),
-            getIt<ProductRepository>(),
-          )..add(LoadFavoritesEvent()),
         ),
       ],
       child: BlocBuilder<ProductDetailBloc, ProductDetailState>(
@@ -107,13 +96,22 @@ class ProductDetail extends StatelessWidget {
                     isFavorite: state.isFavorite,
                     onPressed: () {
                       bloc.add(ToggleFavoriteEvent());
-                      if (state.isFavorite) {
-                        context.read<FavoriteBloc>().add(
-                            RemoveFromFavoritesEvent(
-                                product ?? Product(apiId: '')));
-                      } else {
-                        context.read<FavoriteBloc>().add(
-                            AddToFavoritesEvent(product ?? Product(apiId: '')));
+                      if (product == null) {
+                        debugPrint('Product is null. Cannot add to favorites.');
+                        return;
+                      }
+
+                      final productApi = ProductApi(
+                        id: product.id,
+                        title: product.title ?? Constants.titleDefault,
+                        price: product.price ?? Constants.titleDefault,
+                        imageUrl: product.imageUrl ?? Constants.imgUrlDefault,
+                      );
+
+                      if (!state.isFavorite) {
+                        context
+                            .read<ProductDetailBloc>()
+                            .add(AddProductToFavoritesEvent(productApi));
                       }
                     },
                   ),

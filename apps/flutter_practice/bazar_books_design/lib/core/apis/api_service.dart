@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:cached_query_flutter/cached_query_flutter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
@@ -15,19 +14,48 @@ class ApiService {
   ///
   /// Throws an [Exception] if the response status code is not 200
 
-  Future<List<Product>> getYourFavorites() async {
+  Future<List<ProductApi>> getFavorites(String userId) async {
     try {
-      // Send a GET request to the API endpoint
-      final response = await _dio.get('${Constants.apiUrlProduct}product');
+      final response = await _dio.get(
+        '${Constants.apiUrlProduct}product',
+        queryParameters: {
+          'userId': userId,
+          'favorite': true,
+        },
+      );
+
       if (response.statusCode != 200) {
         throw ErrorHandler.handle(response).failure;
       }
 
-      // Decode the JSON response body into a list of dynamic objects
       final List<dynamic> result = response.data;
       debugPrint('$result');
-      // Convert each dynamic object to a ProductModel instance
-      return result.map((json) => Product.fromJson(json)).toList();
+
+      return result.map((json) => ProductApi.fromJson(json)).toList();
+    } catch (e) {
+      throw ErrorHandler.handle(e).failure;
+    }
+  }
+
+  Future<ProductApi> addProductToFavorites(ProductApi product) async {
+    try {
+      final response = await _dio.post(
+        '${Constants.apiUrlProduct}product',
+        data: {
+          'id': product.id,
+          'title': product.title,
+          'description': product.description,
+          'price': product.price,
+          'imageUrl': product.imageUrl,
+          'userId': product.userId,
+        },
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return ProductApi.fromJson(response.data);
+      } else {
+        throw Exception("Failed to add product to favorites");
+      }
     } catch (e) {
       throw ErrorHandler.handle(e).failure;
     }
@@ -159,7 +187,7 @@ class ApiService {
     }
   }
 
-  Future<bool> signUp(String name, String email, String password) async {
+  Future<ApiUser?> signUp(String name, String email, String password) async {
     try {
       final emailExists = await isEmailExist(email);
       if (emailExists) {
@@ -176,7 +204,8 @@ class ApiService {
       );
 
       if (response.statusCode == 201) {
-        return true;
+        debugPrint("API Response: ${response.data}");
+        return ApiUser.fromJson(response.data);
       } else {
         throw DioException(
           response: response,
@@ -188,14 +217,14 @@ class ApiService {
     }
   }
 
-  Future<User?> logIn(String email, String password) async {
+  Future<ApiUser?> logIn(String email, String password) async {
     try {
       final response = await _dio.get('${Constants.apiUrlUser}user');
       if (response.statusCode == 200) {
         final List users = response.data;
         for (var user in users) {
           if (user['email'] == email && user['password'] == password) {
-            return User.fromJson(user);
+            return ApiUser.fromJson(user);
           }
         }
       }
@@ -203,24 +232,5 @@ class ApiService {
     } catch (e) {
       throw ErrorHandler.handle(e).failure;
     }
-  }
-
-  Query<List<Product>> getProductsInCached() {
-    return Query<List<Product>>(
-      key: "products",
-      queryFn: () async {
-        try {
-          final response = await _dio.get('${Constants.apiUrlProduct}product');
-          if (response.statusCode != 200) {
-            throw Exception("Failed to fetch products");
-          }
-
-          final List<dynamic> result = response.data;
-          return result.map((json) => Product.fromJson(json)).toList();
-        } catch (e) {
-          throw ErrorHandler.handle(e).failure;
-        }
-      },
-    );
   }
 }

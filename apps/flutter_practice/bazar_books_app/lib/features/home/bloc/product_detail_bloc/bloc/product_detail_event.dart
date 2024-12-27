@@ -25,3 +25,12 @@ class UpdateAmountEvent extends ProductDetailEvent {
   @override
   List<Object?> get props => [newAmount];
 }
+
+class AddProductToFavoritesEvent extends ProductDetailEvent {
+  final ProductApi product;
+
+  AddProductToFavoritesEvent(this.product);
+
+  @override
+  List<Object?> get props => [product];
+}
