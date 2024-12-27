@@ -22,7 +22,7 @@ class FavoriteRepositoryImpl implements FavoriteRepository {
       key: 'getFavorites',
       config: QueryConfig(
         cacheDuration: const Duration(minutes: 10), // Cache duration
-        refetchDuration: const Duration(seconds: 2), // Refetch duration
+        refetchDuration: const Duration(minutes: 5), // Refetch duration
       ),
       queryFn: () async {
         final products = await apiService.getFavorites(userId);

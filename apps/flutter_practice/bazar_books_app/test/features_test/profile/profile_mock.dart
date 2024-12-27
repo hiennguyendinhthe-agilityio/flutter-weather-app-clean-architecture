@@ -28,7 +28,7 @@ class MockAuthRepositoryImpl extends Mock implements AuthRepositoryImpl {}
 // Data Mocks
 class ProfileMock {
   static final mockProduct = Product(
-      apiId: faker.guid.guid(),
+      id: faker.guid.guid(),
       title: faker.lorem.word(),
       description: faker.lorem.sentence(),
       imageUrl: faker.image.loremPicsum(),
@@ -37,7 +37,7 @@ class ProfileMock {
       imageUrlOffer: [faker.image.loremPicsum()]);
 
   static final mockProductDetail = Product(
-    apiId: faker.guid.guid(),
+    id: faker.guid.guid(),
     title: faker.lorem.word(),
     description: faker.lorem.sentence(),
     imageUrl: faker.image.loremPicsum(),
@@ -47,8 +47,8 @@ class ProfileMock {
   );
 
   static final mockproductsFromIsar = [
-    Product(apiId: '1', title: 'Product 1', category: 'Electronics'),
-    Product(apiId: '2', title: 'Product 2', category: 'Electronics'),
+    Product(id: '1', title: 'Product 1', category: 'Electronics'),
+    Product(id: '2', title: 'Product 2', category: 'Electronics'),
   ];
 
   static final mockProducId = faker.guid.guid();
@@ -113,7 +113,7 @@ class ProfileMock {
 
   static final mockProductList = [
     Product(
-        apiId: faker.guid.guid(),
+        id: faker.guid.guid(),
         title: faker.lorem.word(),
         description: faker.lorem.sentence(),
         imageUrl: faker.image.loremPicsum(),

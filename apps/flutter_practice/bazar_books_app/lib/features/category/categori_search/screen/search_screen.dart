@@ -158,7 +158,7 @@ class SearchScreen extends StatelessWidget {
                         onTap: () {
                           BazUiBottomSheet.showModal(
                             context,
-                            child: ProductDetail(productId: product.apiId),
+                            child: ProductDetail(productId: product.id),
                           );
                         },
                         title: product.title,

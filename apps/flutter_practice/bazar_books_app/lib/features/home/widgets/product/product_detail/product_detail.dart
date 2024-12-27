@@ -101,7 +101,7 @@ class ProductDetail extends StatelessWidget {
                       }
 
                       final productApi = Product(
-                        apiId: product.apiId,
+                        id: product.id,
                         title: product.title ?? Constants.titleDefault,
                         price: product.price ?? Constants.titleDefault,
                         imageUrl: product.imageUrl ?? Constants.imgUrlDefault,

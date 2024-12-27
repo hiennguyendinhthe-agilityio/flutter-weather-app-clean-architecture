@@ -26,7 +26,6 @@ class AuthMocks {
   static final getMockCurrentUser = ApiUser(
     userId: faker.guid.guid(),
     email: faker.internet.email(),
-    password: faker.internet.password(),
     isLoggedIn: true,
   );
 

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bazar_books_app/core/l10n_generated/l10n.dart';
 import 'package:bazar_books_app/di.dart';
 import 'package:bazar_books_app/features/auth/blocs/auth_bloc.dart';
@@ -16,7 +18,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   CachedQuery.instance.configFlutter(
-    observers: [BazQueryObserver()],
+    observers: [
+      BazQueryObserver(),
+      QueryLoggingObserver(colors: !Platform.isIOS),
+    ],
     config: QueryConfigFlutter(
       refetchOnConnection: true,
       refetchOnResume: true,

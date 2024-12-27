@@ -41,7 +41,7 @@ class ProductRepositoryImpl implements ProductRepository {
         query.update(
           (old) => [
             Product(
-              apiId: DateTime.now().millisecondsSinceEpoch.toString(),
+              id: DateTime.now().millisecondsSinceEpoch.toString(),
               title: newFavorite.title,
               price: newFavorite.price,
               imageUrl: newFavorite.imageUrl,

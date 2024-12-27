@@ -22,9 +22,9 @@ void main() {
   group('SearchBloc', () {
     const query = 'product';
     final products = [
-      Product(apiId: '1', title: 'Product 1'),
-      Product(apiId: '2', title: 'Product 2'),
-      Product(apiId: '3', title: 'Product 3'),
+      Product(id: '1', title: 'Product 1'),
+      Product(id: '2', title: 'Product 2'),
+      Product(id: '3', title: 'Product 3'),
     ];
 
     blocTest<SearchBloc, SearchState>(

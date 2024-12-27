@@ -110,7 +110,7 @@ class _GetListCategoryState extends State<GetListCategory> {
                       BazUiBottomSheet.showModal(
                         context,
                         child: ProductDetail(
-                          productId: product.apiId,
+                          productId: product.id,
                         ),
                       );
                     },

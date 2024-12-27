@@ -44,9 +44,9 @@ class Offer extends StatelessWidget {
                           final Product product =
                               state.status == FetchDataStatus.loading ||
                                       state.data == null
-                                  ? Product(apiId: index.toString())
+                                  ? Product(id: index.toString())
                                   : state.data?[index] ??
-                                      Product(apiId: index.toString());
+                                      Product(id: index.toString());
 
                           return BazUiOfferCard(
                             discount: product.discount,
@@ -55,7 +55,7 @@ class Offer extends StatelessWidget {
                               BazUiBottomSheet.showModal(
                                 context,
                                 child: ProductDetail(
-                                  productId: product.apiId,
+                                  productId: product.id,
                                 ),
                               );
                             },

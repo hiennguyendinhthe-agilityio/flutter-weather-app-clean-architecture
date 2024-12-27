@@ -27,23 +27,29 @@ const IsarUserSchema = CollectionSchema(
       name: r'email',
       type: IsarType.string,
     ),
-    r'isLoggedIn': PropertySchema(
+    r'favoriteProducts': PropertySchema(
       id: 2,
+      name: r'favoriteProducts',
+      type: IsarType.objectList,
+      target: r'FavoriteProduct',
+    ),
+    r'isLoggedIn': PropertySchema(
+      id: 3,
       name: r'isLoggedIn',
       type: IsarType.bool,
     ),
     r'name': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'name',
       type: IsarType.string,
     ),
     r'phoneNumber': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'phoneNumber',
       type: IsarType.string,
     ),
     r'userId': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'userId',
       type: IsarType.string,
     )
@@ -55,7 +61,7 @@ const IsarUserSchema = CollectionSchema(
   idName: r'id',
   indexes: {},
   links: {},
-  embeddedSchemas: {},
+  embeddedSchemas: {r'FavoriteProduct': FavoriteProductSchema},
   getId: _isarUserGetId,
   getLinks: _isarUserGetLinks,
   attach: _isarUserAttach,
@@ -78,6 +84,20 @@ int _isarUserEstimateSize(
     final value = object.email;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final list = object.favoriteProducts;
+    if (list != null) {
+      bytesCount += 3 + list.length * 3;
+      {
+        final offsets = allOffsets[FavoriteProduct]!;
+        for (var i = 0; i < list.length; i++) {
+          final value = list[i];
+          bytesCount +=
+              FavoriteProductSchema.estimateSize(value, offsets, allOffsets);
+        }
+      }
     }
   }
   {
@@ -109,10 +129,16 @@ void _isarUserSerialize(
 ) {
   writer.writeString(offsets[0], object.avatarUrl);
   writer.writeString(offsets[1], object.email);
-  writer.writeBool(offsets[2], object.isLoggedIn);
-  writer.writeString(offsets[3], object.name);
-  writer.writeString(offsets[4], object.phoneNumber);
-  writer.writeString(offsets[5], object.userId);
+  writer.writeObjectList<FavoriteProduct>(
+    offsets[2],
+    allOffsets,
+    FavoriteProductSchema.serialize,
+    object.favoriteProducts,
+  );
+  writer.writeBool(offsets[3], object.isLoggedIn);
+  writer.writeString(offsets[4], object.name);
+  writer.writeString(offsets[5], object.phoneNumber);
+  writer.writeString(offsets[6], object.userId);
 }
 
 IsarUser _isarUserDeserialize(
@@ -124,10 +150,16 @@ IsarUser _isarUserDeserialize(
   final object = IsarUser(
     avatarUrl: reader.readStringOrNull(offsets[0]),
     email: reader.readStringOrNull(offsets[1]),
-    isLoggedIn: reader.readBoolOrNull(offsets[2]) ?? false,
-    name: reader.readStringOrNull(offsets[3]),
-    phoneNumber: reader.readStringOrNull(offsets[4]),
-    userId: reader.readStringOrNull(offsets[5]),
+    favoriteProducts: reader.readObjectList<FavoriteProduct>(
+      offsets[2],
+      FavoriteProductSchema.deserialize,
+      allOffsets,
+      FavoriteProduct(),
+    ),
+    isLoggedIn: reader.readBoolOrNull(offsets[3]) ?? false,
+    name: reader.readStringOrNull(offsets[4]),
+    phoneNumber: reader.readStringOrNull(offsets[5]),
+    userId: reader.readStringOrNull(offsets[6]),
   );
   object.id = id;
   return object;
@@ -145,12 +177,19 @@ P _isarUserDeserializeProp<P>(
     case 1:
       return (reader.readStringOrNull(offset)) as P;
     case 2:
-      return (reader.readBoolOrNull(offset) ?? false) as P;
+      return (reader.readObjectList<FavoriteProduct>(
+        offset,
+        FavoriteProductSchema.deserialize,
+        allOffsets,
+        FavoriteProduct(),
+      )) as P;
     case 3:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readBoolOrNull(offset) ?? false) as P;
     case 4:
       return (reader.readStringOrNull(offset)) as P;
     case 5:
+      return (reader.readStringOrNull(offset)) as P;
+    case 6:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -536,6 +575,113 @@ extension IsarUserQueryFilter
         property: r'email',
         value: '',
       ));
+    });
+  }
+
+  QueryBuilder<IsarUser, IsarUser, QAfterFilterCondition>
+      favoriteProductsIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'favoriteProducts',
+      ));
+    });
+  }
+
+  QueryBuilder<IsarUser, IsarUser, QAfterFilterCondition>
+      favoriteProductsIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'favoriteProducts',
+      ));
+    });
+  }
+
+  QueryBuilder<IsarUser, IsarUser, QAfterFilterCondition>
+      favoriteProductsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'favoriteProducts',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<IsarUser, IsarUser, QAfterFilterCondition>
+      favoriteProductsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'favoriteProducts',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<IsarUser, IsarUser, QAfterFilterCondition>
+      favoriteProductsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'favoriteProducts',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<IsarUser, IsarUser, QAfterFilterCondition>
+      favoriteProductsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'favoriteProducts',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<IsarUser, IsarUser, QAfterFilterCondition>
+      favoriteProductsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'favoriteProducts',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<IsarUser, IsarUser, QAfterFilterCondition>
+      favoriteProductsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'favoriteProducts',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
     });
   }
 
@@ -1044,7 +1190,14 @@ extension IsarUserQueryFilter
 }
 
 extension IsarUserQueryObject
-    on QueryBuilder<IsarUser, IsarUser, QFilterCondition> {}
+    on QueryBuilder<IsarUser, IsarUser, QFilterCondition> {
+  QueryBuilder<IsarUser, IsarUser, QAfterFilterCondition>
+      favoriteProductsElement(FilterQuery<FavoriteProduct> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.object(q, r'favoriteProducts');
+    });
+  }
+}
 
 extension IsarUserQueryLinks
     on QueryBuilder<IsarUser, IsarUser, QFilterCondition> {}
@@ -1274,6 +1427,13 @@ extension IsarUserQueryProperty
     });
   }
 
+  QueryBuilder<IsarUser, List<FavoriteProduct>?, QQueryOperations>
+      favoriteProductsProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'favoriteProducts');
+    });
+  }
+
   QueryBuilder<IsarUser, bool, QQueryOperations> isLoggedInProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'isLoggedIn');
@@ -1298,3 +1458,377 @@ extension IsarUserQueryProperty
     });
   }
 }
+
+// **************************************************************************
+// IsarEmbeddedGenerator
+// **************************************************************************
+
+// coverage:ignore-file
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
+
+const FavoriteProductSchema = Schema(
+  name: r'FavoriteProduct',
+  id: -4366350581820522674,
+  properties: {
+    r'isFavorite': PropertySchema(
+      id: 0,
+      name: r'isFavorite',
+      type: IsarType.bool,
+    ),
+    r'productId': PropertySchema(
+      id: 1,
+      name: r'productId',
+      type: IsarType.string,
+    ),
+    r'userId': PropertySchema(
+      id: 2,
+      name: r'userId',
+      type: IsarType.string,
+    )
+  },
+  estimateSize: _favoriteProductEstimateSize,
+  serialize: _favoriteProductSerialize,
+  deserialize: _favoriteProductDeserialize,
+  deserializeProp: _favoriteProductDeserializeProp,
+);
+
+int _favoriteProductEstimateSize(
+  FavoriteProduct object,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  var bytesCount = offsets.last;
+  bytesCount += 3 + object.productId.length * 3;
+  bytesCount += 3 + object.userId.length * 3;
+  return bytesCount;
+}
+
+void _favoriteProductSerialize(
+  FavoriteProduct object,
+  IsarWriter writer,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  writer.writeBool(offsets[0], object.isFavorite);
+  writer.writeString(offsets[1], object.productId);
+  writer.writeString(offsets[2], object.userId);
+}
+
+FavoriteProduct _favoriteProductDeserialize(
+  Id id,
+  IsarReader reader,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  final object = FavoriteProduct();
+  object.isFavorite = reader.readBool(offsets[0]);
+  object.productId = reader.readString(offsets[1]);
+  object.userId = reader.readString(offsets[2]);
+  return object;
+}
+
+P _favoriteProductDeserializeProp<P>(
+  IsarReader reader,
+  int propertyId,
+  int offset,
+  Map<Type, List<int>> allOffsets,
+) {
+  switch (propertyId) {
+    case 0:
+      return (reader.readBool(offset)) as P;
+    case 1:
+      return (reader.readString(offset)) as P;
+    case 2:
+      return (reader.readString(offset)) as P;
+    default:
+      throw IsarError('Unknown property with id $propertyId');
+  }
+}
+
+extension FavoriteProductQueryFilter
+    on QueryBuilder<FavoriteProduct, FavoriteProduct, QFilterCondition> {
+  QueryBuilder<FavoriteProduct, FavoriteProduct, QAfterFilterCondition>
+      isFavoriteEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isFavorite',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteProduct, FavoriteProduct, QAfterFilterCondition>
+      productIdEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'productId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteProduct, FavoriteProduct, QAfterFilterCondition>
+      productIdGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'productId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteProduct, FavoriteProduct, QAfterFilterCondition>
+      productIdLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'productId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteProduct, FavoriteProduct, QAfterFilterCondition>
+      productIdBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'productId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteProduct, FavoriteProduct, QAfterFilterCondition>
+      productIdStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'productId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteProduct, FavoriteProduct, QAfterFilterCondition>
+      productIdEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'productId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteProduct, FavoriteProduct, QAfterFilterCondition>
+      productIdContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'productId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteProduct, FavoriteProduct, QAfterFilterCondition>
+      productIdMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'productId',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteProduct, FavoriteProduct, QAfterFilterCondition>
+      productIdIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'productId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteProduct, FavoriteProduct, QAfterFilterCondition>
+      productIdIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'productId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteProduct, FavoriteProduct, QAfterFilterCondition>
+      userIdEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'userId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteProduct, FavoriteProduct, QAfterFilterCondition>
+      userIdGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'userId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteProduct, FavoriteProduct, QAfterFilterCondition>
+      userIdLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'userId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteProduct, FavoriteProduct, QAfterFilterCondition>
+      userIdBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'userId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteProduct, FavoriteProduct, QAfterFilterCondition>
+      userIdStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'userId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteProduct, FavoriteProduct, QAfterFilterCondition>
+      userIdEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'userId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteProduct, FavoriteProduct, QAfterFilterCondition>
+      userIdContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'userId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteProduct, FavoriteProduct, QAfterFilterCondition>
+      userIdMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'userId',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteProduct, FavoriteProduct, QAfterFilterCondition>
+      userIdIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'userId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<FavoriteProduct, FavoriteProduct, QAfterFilterCondition>
+      userIdIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'userId',
+        value: '',
+      ));
+    });
+  }
+}
+
+extension FavoriteProductQueryObject
+    on QueryBuilder<FavoriteProduct, FavoriteProduct, QFilterCondition> {}

@@ -54,18 +54,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final user =
           await authenticationRepository.logIn(event.email, event.password);
       if (user != null) {
-        emit(AuthenticationSuccess(user));
+        emit(Authenticated(user));
       } else {
-        emit(
-          AuthenticationFailure(
-            ErrorMessages.invalidEmailOrPassword,
-          ),
-        );
+        emit(AuthenticationFailure(ErrorMessages.invalidEmailOrPassword));
       }
     } catch (e) {
-      emit(
-        AuthenticationFailure(ErrorHandler.handle(e).failure.message),
-      );
+      emit(AuthenticationFailure(ErrorHandler.handle(e).failure.message));
     }
   }
 
@@ -96,7 +90,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           isLoggedIn: true,
         ));
 
-        emit(SignUpSuccess());
+        emit(Authenticated(ApiUser()));
       }
     } catch (e) {
       debugPrint(e.toString());

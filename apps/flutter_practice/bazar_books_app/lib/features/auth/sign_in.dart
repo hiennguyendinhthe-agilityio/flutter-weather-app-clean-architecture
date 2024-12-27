@@ -39,7 +39,7 @@ class _SignInScreenState extends State<SignInScreen> {
       body: SingleChildScrollView(
         child: BlocConsumer<AuthBloc, AuthState>(
           listener: (context, state) {
-            if (state is AuthenticationSuccess) {
+            if (state is Authenticated) {
               context.go('/home');
             } else if (state is AuthenticationFailure) {
               ScaffoldMessenger.of(context).showSnackBar(

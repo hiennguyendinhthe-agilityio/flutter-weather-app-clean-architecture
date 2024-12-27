@@ -50,7 +50,7 @@ class Products extends StatelessWidget {
                                   state.data == null;
 
                           Product createDefaultProduct(int index) {
-                            return Product(apiId: index.toString());
+                            return Product(id: index.toString());
                           }
 
                           final Product product = isLoadingOrDataNull
@@ -63,7 +63,7 @@ class Products extends StatelessWidget {
                               BazUiBottomSheet.showModal(
                                 context,
                                 child: ProductDetail(
-                                  productId: product.apiId,
+                                  productId: product.id,
                                 ),
                               );
                             },
@@ -84,7 +84,7 @@ class Products extends StatelessWidget {
                                   state.data == null;
 
                           Product createDefaultProduct(int index) {
-                            return Product(apiId: index.toString());
+                            return Product(id: index.toString());
                           }
 
                           final Product product = isLoadingOrDataNull
@@ -97,7 +97,7 @@ class Products extends StatelessWidget {
                               BazUiBottomSheet.showModal(
                                 context,
                                 child: ProductDetail(
-                                  productId: product.apiId,
+                                  productId: product.id,
                                 ),
                               );
                             },

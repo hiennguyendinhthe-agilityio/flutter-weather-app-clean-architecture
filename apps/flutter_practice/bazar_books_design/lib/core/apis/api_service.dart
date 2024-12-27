@@ -43,7 +43,7 @@ class ApiService {
       final response = await _dio.post(
         '${Constants.apiUrlProduct}product',
         data: {
-          'id': product.apiId,
+          'id': product.id,
           'title': product.title,
           'description': product.description,
           'price': product.price,

@@ -4,7 +4,9 @@ import 'package:bazar_books_design/core/core.dart';
 import 'package:bazar_books_design/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:responsive_grid_list/responsive_grid_list.dart';
 
 class Vendors extends StatelessWidget {
   const Vendors({super.key});
@@ -84,13 +86,16 @@ class GetListVendor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: RefreshIndicator(
-        color: Theme.of(context).colorScheme.onPrimary,
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        onRefresh: () async {
-          context.read<VendorBloc>().add(VendorRefresh());
-        },
-        child: const _List(),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        child: RefreshIndicator(
+          color: Theme.of(context).colorScheme.onPrimary,
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          onRefresh: () async {
+            context.read<VendorBloc>().add(VendorRefresh());
+          },
+          child: const _List(),
+        ),
       ),
     );
   }
@@ -119,38 +124,44 @@ class _ListState extends State<_List> {
       builder: (context, state) {
         final data = state.vendors;
         if (data != null) {
-          return GridView.builder(
-            controller: _scrollController,
-            itemCount:
-                !state.hasReachedMax && state.status == VendorStatus.loading
-                    ? data.length + 1
-                    : data.length,
-            itemBuilder: (context, i) {
-              if (i < data.length) {
-                return BazUiVendorCard(
-                  headlines: data[i].headlines ?? Constants.titleDefault,
-                  imageUrl: data[i].imageUrl,
-                  subheads: StarRating(
-                    rating: data[i].numberStar ?? 0,
-                    numberStar: const SizedBox(width: 10, height: 10),
+          return ResponsiveGridListBuilder(
+            minItemWidth: 1,
+            maxItemsPerRow: 3,
+            horizontalGridSpacing: 12,
+            verticalGridSpacing: 12.h,
+            gridItems: List.generate(
+              !state.hasReachedMax && state.status == VendorStatus.loading
+                  ? data.length + 1
+                  : data.length,
+              (index) {
+                if (index < data.length) {
+                  return BazUiVendorCard(
+                    headlines: data[index].headlines ?? Constants.titleDefault,
+                    imageUrl: data[index].imageUrl,
+                    subheads: StarRating(
+                      rating: data[index].numberStar ?? 0,
+                      numberStar: const SizedBox(width: 10, height: 10),
+                    ),
+                  );
+                }
+                return const Center(
+                  child: SizedBox(
+                    height: 40,
+                    width: 40,
+                    child: BazUiCircularProgressIndicator(),
                   ),
                 );
-              }
-              return const Center(
-                child: SizedBox(
-                  height: 40,
-                  width: 40,
-                  child: BazUiCircularProgressIndicator(),
-                ),
+              },
+            ),
+            builder: (BuildContext context, List<Widget> items) {
+              return ListView.builder(
+                controller: _scrollController,
+                itemCount: items.length,
+                itemBuilder: (context, index) {
+                  return items[index];
+                },
               );
             },
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
-              childAspectRatio:
-                  context.getAspectRatio(mobile: 0.8, tablet: 0.9),
-            ),
           );
         }
         if (state.status == VendorStatus.loading) {
