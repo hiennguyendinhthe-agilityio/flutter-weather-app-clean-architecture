@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:bazar_books_app/features/auth/data/auth_repository_impl.dart';
 import 'package:bazar_books_design/core/apis/api_service.dart';
 import 'package:bazar_books_design/core/models/auth_model/api_user.dart';
+import 'package:bazar_books_design/core/models/auth_model/isar_user.dart';
 import 'package:bazar_books_design/core/network/error_handler.dart';
 import 'package:bazar_books_design/core/network/failure.dart';
 import 'package:bazar_books_design/db/isar_service.dart';
@@ -23,9 +24,16 @@ class FakeUser extends Fake implements ApiUser {}
 // Data Mocks
 class AuthMocks {
 // Function to generate a mock user with random data
-  static final getMockCurrentUser = ApiUser(
+  static final getMockCurrentUser = IsarUser(
     userId: faker.guid.guid(),
     email: faker.internet.email(),
+    isLoggedIn: true,
+  );
+
+  static final getMockApiUser = ApiUser(
+    userId: faker.guid.guid(),
+    email: faker.internet.email(),
+    password: faker.internet.password(),
     isLoggedIn: true,
   );
 
@@ -52,10 +60,9 @@ class AuthMocks {
 
   static final getMockUserId = faker.guid.guid();
 
-  static final getMockUser = ApiUser(
+  static final getMockUser = IsarUser(
     userId: faker.guid.guid(),
     email: faker.internet.email(),
-    password: faker.internet.password(),
   );
 
   static final failureMock = Exception(faker.lorem.sentence());

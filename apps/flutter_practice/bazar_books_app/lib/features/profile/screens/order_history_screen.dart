@@ -1,37 +1,17 @@
-import 'package:bazar_books_design/core/extensions/context_extension.dart';
-import 'package:bazar_books_design/core/utils/size_type.dart';
 import 'package:flutter/material.dart';
 
 class OrderHistoryScreen extends StatelessWidget {
-  const OrderHistoryScreen({super.key});
+  final String? orderId;
+
+  const OrderHistoryScreen({super.key, this.orderId});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: Text(
-          context.bazS.orderHistoryTtile,
-          style: context.textTheme.titleLarge?.copyWith(
-            fontSize: context.fontSize(SizeType.m),
-          ),
-        ),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text("Orders")),
       body: Center(
         child: Text(
-          'Coming soon',
-          style: context.textTheme.titleLarge?.copyWith(
-            fontSize: context.fontSize(SizeType.m),
-          ),
-        ),
+            orderId != null ? "Order ID: $orderId" : "No order history found"),
       ),
     );
   }

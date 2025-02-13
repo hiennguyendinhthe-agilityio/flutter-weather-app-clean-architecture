@@ -3,7 +3,7 @@ import 'package:bazar_books_design/db/db.dart';
 import 'package:cached_query_flutter/cached_query_flutter.dart';
 
 abstract class FavoriteRepository {
-  Query<List<Product?>> getFavorites(String userId);
+  Query<List<Product>> getFavorites(String userId);
 }
 
 class FavoriteRepositoryImpl implements FavoriteRepository {
@@ -15,7 +15,6 @@ class FavoriteRepositoryImpl implements FavoriteRepository {
     this.productService,
   );
 
-  @override
   @override
   Query<List<Product>> getFavorites(String userId) {
     return Query<List<Product>>(

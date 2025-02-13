@@ -32,10 +32,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "authorsTtile": MessageLookupByLibrary.simpleMessage("Authors"),
         "booksTabBar": MessageLookupByLibrary.simpleMessage("Books"),
         "cancelTitle": MessageLookupByLibrary.simpleMessage("Cancel"),
+        "captureNewPhoto":
+            MessageLookupByLibrary.simpleMessage("Capture New Photo"),
         "changePictureTtile":
             MessageLookupByLibrary.simpleMessage("Change Picture"),
         "continueButton":
             MessageLookupByLibrary.simpleMessage("Continue shopping"),
+        "deniedCameraPermission": MessageLookupByLibrary.simpleMessage(
+            "Camera permission permanently denied. Please enable it from settings."),
+        "deniedPermission":
+            MessageLookupByLibrary.simpleMessage("Permission denied!"),
         "detailMenuDescription": MessageLookupByLibrary.simpleMessage(
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Viverra dignissim ac ac ac."),
         "detailMenuGoodDayTitle":
@@ -105,10 +111,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "noEmailTitle": MessageLookupByLibrary.simpleMessage("No Email"),
         "noName": MessageLookupByLibrary.simpleMessage("No name"),
         "noPhone": MessageLookupByLibrary.simpleMessage("No Phone Number"),
+        "noPhotoCaptured":
+            MessageLookupByLibrary.simpleMessage("No photo captured."),
+        "noProfilePictureAvailable": MessageLookupByLibrary.simpleMessage(
+            "No Profile Picture Available"),
         "novelistsTabBar": MessageLookupByLibrary.simpleMessage("Novelists"),
         "novelsTabBar": MessageLookupByLibrary.simpleMessage("Novels"),
         "offersAndPromosTtile":
             MessageLookupByLibrary.simpleMessage("Offers & Promos"),
+        "openAppSettings":
+            MessageLookupByLibrary.simpleMessage("Open App Settings"),
         "orderHistoryTtile":
             MessageLookupByLibrary.simpleMessage("Order History"),
         "orderNow": MessageLookupByLibrary.simpleMessage("Order Now"),
@@ -123,6 +135,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "saveChangesTtile":
             MessageLookupByLibrary.simpleMessage("Save Changes"),
         "scienceTabBar": MessageLookupByLibrary.simpleMessage("Science"),
+        "selectFromGallery":
+            MessageLookupByLibrary.simpleMessage("Select From Gallery"),
         "selfLoveTabBar": MessageLookupByLibrary.simpleMessage("Self Love"),
         "signInPageDontHaveAnAccount":
             MessageLookupByLibrary.simpleMessage("Don’t have an account?"),
@@ -153,9 +167,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "stationeryTabBar": MessageLookupByLibrary.simpleMessage("Stationery"),
         "titleRecentSearches":
             MessageLookupByLibrary.simpleMessage("Recent Searches"),
+        "updatePhotoAndAvatar": MessageLookupByLibrary.simpleMessage(
+            "Photo captured and avatar updated."),
+        "updatedAvatarSuccessfully": MessageLookupByLibrary.simpleMessage(
+            "Avatar updated successfully!"),
         "vendorSubtitle": MessageLookupByLibrary.simpleMessage("Our Vendors"),
         "vendorTitle": MessageLookupByLibrary.simpleMessage("Vendors"),
         "viewButton": MessageLookupByLibrary.simpleMessage("View cart"),
+        "viewProfilePicture":
+            MessageLookupByLibrary.simpleMessage("View Profile Picture"),
         "yourFavoritesTtile":
             MessageLookupByLibrary.simpleMessage("Your Favorites")
       };

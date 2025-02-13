@@ -1,10 +1,6 @@
-import 'package:bazar_books_app/di.dart';
-import 'package:bazar_books_app/features/auth/data/auth_repository_impl.dart';
 import 'package:bazar_books_app/features/profile/bloc/profile/profile_bloc.dart';
-import 'package:bazar_books_app/features/profile/bloc/profile/profile_event.dart';
 import 'package:bazar_books_app/features/profile/bloc/profile/profile_state.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
-import 'package:bazar_books_design/core/responsive/size_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -14,184 +10,176 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authRepository = getIt<AuthRepositoryImpl>();
-
-    return BlocProvider(
-      create: (context) => ProfileBloc(authRepository)
-        ..add(
-          FetchUserInfoEvent(),
-        ),
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            context.bazS.generalTitleProfile,
-            style: context.textTheme.titleLarge?.copyWith(
-              fontSize: context.fontSize(SizeType.m),
-            ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          context.bazS.generalTitleProfile,
+          style: context.textTheme.titleLarge?.copyWith(
+            fontSize: context.fontSize(SizeType.m),
           ),
-          centerTitle: true,
-          backgroundColor: Colors.white,
-          elevation: 0,
-          automaticallyImplyLeading: false,
         ),
-        body: BlocBuilder<ProfileBloc, ProfileState>(
-          builder: (context, state) {
-            if (state is MyAccountLoadingState) {
-              return const Center(child: CircularProgressIndicator());
-            }
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        automaticallyImplyLeading: false,
+      ),
+      body: BlocBuilder<ProfileBloc, ProfileState>(
+        builder: (context, state) {
+          if (state is MyAccountLoadingState) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-            if (state is ProfileErrorState) {
-              return Center(child: Text(state.message));
-            }
-            if (state is ProfileLoadedState) {
-              final user = state.user;
-              return Column(
-                children: [
-                  const Divider(height: 1),
-                  // Profile Header
-                  Container(
-                    color: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 20, horizontal: 16),
-                    child: Row(
-                      children: [
-                        // Profile Image
-                        CircleAvatar(
-                          radius: 30.0.r,
-                          backgroundImage: NetworkImage(
-                            scale: 200,
-                            user.avatarUrl ?? Constants.apiUrlAvatar,
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        // User Info
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                user.name ?? context.bazS.noName,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
+          if (state is ProfileErrorState) {
+            return Center(child: Text(state.message));
+          }
+          if (state is ProfileLoadedState) {
+            final user = state.user;
+            final avatar = state.avatar;
+            return Column(
+              children: [
+                const Divider(height: 1),
+                // Profile Header
+                Container(
+                  color: Colors.white,
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+                  child: Row(
+                    children: [
+                      // Profile Image
+                      CircleAvatar(
+                        radius: 30,
+                        backgroundImage:
+                            avatar != null ? FileImage(avatar) : null,
+                        child: avatar == null ? const Icon(Icons.person) : null,
+                      ),
+                      const SizedBox(width: 16),
+                      // User Info
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              user.name ?? context.bazS.noName,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
                               ),
-                              const SizedBox(height: 4),
-                              Text(
-                                user.phoneNumber ?? context.bazS.noPhone,
-                                style: const TextStyle(color: Colors.grey),
-                              ),
-                            ],
-                          ),
-                        ),
-                        // Logout Button
-                        GestureDetector(
-                          onTap: () {
-                            BazUiBottomSheet.showLogoutModal(context, () {
-                              context.pop();
-                            });
-                          },
-                          child: Text(
-                            context.bazS.logoutTitle,
-                            style: const TextStyle(
-                              color: Colors.red,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
                             ),
+                            const SizedBox(height: 4),
+                            Text(
+                              user.phoneNumber ?? context.bazS.noPhone,
+                              style: const TextStyle(color: Colors.grey),
+                            ),
+                          ],
+                        ),
+                      ),
+                      // Logout Button
+                      GestureDetector(
+                        onTap: () {
+                          BazUiBottomSheet.showLogoutModal(context, () {
+                            context.pop();
+                          });
+                        },
+                        child: Text(
+                          context.bazS.logoutTitle,
+                          style: const TextStyle(
+                            color: Colors.red,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
                           ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const Divider(height: 1),
+
+                // Menu Options
+                Expanded(
+                  child: Container(
+                    color: Colors.white,
+                    child: ListView(
+                      children: [
+                        MenuItem(
+                          icon: BazUiBuiltInImage.icProfileFill(
+                            color: context.colorScheme.primary,
+                            width: 20.0,
+                          ),
+                          title: context.bazS.generalTitleMyAccount,
+                          onTap: () {
+                            // Navigate to My Account screen
+                            context.go(
+                              '${RoutePaths.profile}/${RoutePaths.account}',
+                            );
+                          },
+                        ),
+                        MenuItem(
+                          icon: BazUiBuiltInImage.icLocation(
+                            color: context.colorScheme.primary,
+                          ),
+                          title: context.bazS.addressTtile,
+                          onTap: () {
+                            context.go(
+                              '${RoutePaths.profile}/${RoutePaths.address}',
+                            );
+                          },
+                        ),
+                        MenuItem(
+                          icon: BazUiBuiltInImage.icFire(
+                            color: context.colorScheme.primary,
+                          ),
+                          title: context.bazS.offersAndPromosTtile,
+                          onTap: () {
+                            context.go(
+                              '${RoutePaths.profile}/${RoutePaths.offersAndPromos}',
+                            );
+                          },
+                        ),
+                        MenuItem(
+                          icon: BazUiBuiltInImage.icLoveFill(
+                            color: context.colorScheme.primary,
+                          ),
+                          title: context.bazS.yourFavoritesTtile,
+                          onTap: () {
+                            context.go(
+                              '${RoutePaths.profile}/${RoutePaths.myFavorites}',
+                            );
+                          },
+                        ),
+                        MenuItem(
+                          icon: BazUiBuiltInImage.icMenuFill(
+                            color: context.colorScheme.primary,
+                          ),
+                          title: context.bazS.orderHistoryTtile,
+                          onTap: () {
+                            context.go(
+                              '${RoutePaths.profile}/${RoutePaths.orderHistory}',
+                            );
+                          },
+                        ),
+                        MenuItem(
+                          icon: BazUiBuiltInImage.icChat(
+                            color: context.colorScheme.primary,
+                          ),
+                          title: context.bazS.helpCenterTtile,
+                          onTap: () {
+                            context.go(
+                              '${RoutePaths.profile}/${RoutePaths.helpCenter}',
+                            );
+                          },
                         ),
                       ],
                     ),
                   ),
-                  const Divider(height: 1),
-
-                  // Menu Options
-                  Expanded(
-                    child: Container(
-                      color: Colors.white,
-                      child: ListView(
-                        children: [
-                          MenuItem(
-                            icon: BazUiBuiltInImage.icProfileFill(
-                              color: context.colorScheme.primary,
-                              width: 20.0,
-                            ),
-                            title: context.bazS.generalTitleMyAccount,
-                            onTap: () {
-                              // Navigate to My Account screen
-                              context.go(
-                                '${RoutePaths.profile}/${RoutePaths.account}',
-                              );
-                            },
-                          ),
-                          MenuItem(
-                            icon: BazUiBuiltInImage.icLocation(
-                              color: context.colorScheme.primary,
-                            ),
-                            title: context.bazS.addressTtile,
-                            onTap: () {
-                              context.go(
-                                '${RoutePaths.profile}/${RoutePaths.address}',
-                              );
-                            },
-                          ),
-                          MenuItem(
-                            icon: BazUiBuiltInImage.icFire(
-                              color: context.colorScheme.primary,
-                            ),
-                            title: context.bazS.offersAndPromosTtile,
-                            onTap: () {
-                              context.go(
-                                '${RoutePaths.profile}/${RoutePaths.offersAndPromos}',
-                              );
-                            },
-                          ),
-                          MenuItem(
-                            icon: BazUiBuiltInImage.icLoveFill(
-                              color: context.colorScheme.primary,
-                            ),
-                            title: context.bazS.yourFavoritesTtile,
-                            onTap: () {
-                              context.go(
-                                '${RoutePaths.profile}/${RoutePaths.myFavorites}',
-                              );
-                            },
-                          ),
-                          MenuItem(
-                            icon: BazUiBuiltInImage.icMenuFill(
-                              color: context.colorScheme.primary,
-                            ),
-                            title: context.bazS.orderHistoryTtile,
-                            onTap: () {
-                              context.go(
-                                '${RoutePaths.profile}/${RoutePaths.orderHistory}',
-                              );
-                            },
-                          ),
-                          MenuItem(
-                            icon: BazUiBuiltInImage.icChat(
-                              color: context.colorScheme.primary,
-                            ),
-                            title: context.bazS.helpCenterTtile,
-                            onTap: () {
-                              context.go(
-                                '${RoutePaths.profile}/${RoutePaths.helpCenter}',
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            }
-            return Center(
-                child: Text(
-              context.bazS.errorUnknown,
-            ));
-          },
-        ),
+                ),
+              ],
+            );
+          }
+          return Center(
+              child: Text(
+            context.bazS.errorUnknown,
+          ));
+        },
       ),
     );
   }

@@ -188,7 +188,7 @@ class _LoginScreenState extends State<SignUpScreen> {
                       );
                     },
                     listener: (context, state) {
-                      if (state is Authenticated) {
+                      if (state is SignUpSuccess) {
                         context.go(RoutePaths.congratulations);
                       } else if (state is SignUpFailure) {
                         ScaffoldMessenger.of(context).showSnackBar(

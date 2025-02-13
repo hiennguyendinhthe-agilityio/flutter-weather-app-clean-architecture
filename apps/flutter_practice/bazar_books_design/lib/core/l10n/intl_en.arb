@@ -92,5 +92,15 @@
     "romanticTabBar": "Romantic",
     "hasMinLength": "Minimum 8 characters",
     "hasNumber": "At least 1 number (1-9)",
-    "hasLetter": "At least lowercase or uppercase letter"
+    "hasLetter": "At least lowercase or uppercase letter",
+    "viewProfilePicture": "View Profile Picture",    
+    "captureNewPhoto": "Capture New Photo",
+    "selectFromGallery": "Select From Gallery",
+    "noProfilePictureAvailable": "No Profile Picture Available",
+    "noPhotoCaptured": "No photo captured.",
+    "updatePhotoAndAvatar": "Photo captured and avatar updated.",
+    "deniedCameraPermission": "Camera permission permanently denied. Please enable it from settings.",
+    "openAppSettings": "Open App Settings",
+    "deniedPermission": "Permission denied!",
+    "updatedAvatarSuccessfully": "Avatar updated successfully!"
 }

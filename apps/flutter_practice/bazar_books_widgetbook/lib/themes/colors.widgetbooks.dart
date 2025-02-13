@@ -1,4 +1,4 @@
-// ignore_for_file: depend_on_referenced_packages
+// ignore_for_file: depend_on_referenced_packages, deprecated_member_use
 
 import 'package:bazar_books_design/themes/app_theme.dart';
 import 'package:bazar_books_design/widgets/texts/texts.dart';

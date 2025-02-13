@@ -1,11 +1,15 @@
 import 'package:bazar_books_app/features/auth/data/auth_repository_impl.dart';
 import 'package:bazar_books_app/features/category/data/category_repository.dart';
 import 'package:bazar_books_app/features/home/data/product_repository/product_repository.dart';
+import 'package:bazar_books_app/features/profile/data/favorite_repository.dart';
+import 'package:bazar_books_app/features/profile/data/profile_repository.dart';
 import 'package:bazar_books_design/core/core.dart';
 import 'package:bazar_books_design/db/isar_service.dart';
 import 'package:bazar_books_design/db/product_service.dart';
+import 'package:cached_query_flutter/cached_query_flutter.dart';
 import 'package:dio/dio.dart';
 import 'package:faker/faker.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mocktail/mocktail.dart';
 
 // Service Mocks
@@ -23,7 +27,13 @@ class MockCategoryRepository extends Mock implements CategoryRepositoryImpl {}
 
 class MockAuthRepositoryImpl extends Mock implements AuthRepositoryImpl {}
 
-// class MockAuthRepository extends Mock implements AuthRepository {}
+class MockFavoriteRepository extends Mock implements FavoriteRepository {}
+
+class MockQueryState extends Mock implements Query<List<Product>> {}
+
+class MockImagePicker extends Mock implements ImagePicker {}
+
+class MockProfileRepositoryImpl extends Mock implements ProfileRepository {}
 
 // Data Mocks
 class ProfileMock {
@@ -123,6 +133,8 @@ class ProfileMock {
   ];
   static final failureMock = Exception(faker.lorem.sentence());
 
+  static const errorMock = 'Default error';
+
   static final mockDioError = DioException(
     requestOptions: RequestOptions(),
     response: Response(
@@ -131,4 +143,6 @@ class ProfileMock {
       requestOptions: RequestOptions(),
     ),
   );
+
+  static final userId = faker.guid.guid();
 }

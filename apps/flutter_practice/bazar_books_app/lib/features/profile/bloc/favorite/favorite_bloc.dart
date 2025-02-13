@@ -6,18 +6,17 @@ import 'package:bazar_books_app/features/profile/data/favorite_repository.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cached_query_flutter/cached_query_flutter.dart';
-import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 
 part 'favorite_event.dart';
 part 'favorite_state.dart';
 
 class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
-  FavoriteBloc() : super(const FavoriteState()) {
+  final FavoriteRepository _repo;
+
+  FavoriteBloc(this._repo) : super(const FavoriteState()) {
     on<GetFavoriteProducts>(_onGetFavoriteProducts);
   }
-  final _repo = FavoriteRepositoryImpl(
-      ApiService(Dio()), ProductService(Dio(), isarService: IsarService()));
 
   Future<void> _onGetFavoriteProducts(
     GetFavoriteProducts event,
@@ -28,6 +27,12 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
     return emit.forEach<QueryState<List<Product>>>(
       query.stream,
       onData: (queryState) {
+        if (queryState.status == QueryStatus.error) {
+          return state.copyWith(
+            status: FavoriteStatus.failure,
+            errorMessage: ErrorHandler.handle(queryState.error).failure.message,
+          );
+        }
         return state.copyWith(
           favorites: queryState.data ?? [],
           status: queryState.status == QueryStatus.loading

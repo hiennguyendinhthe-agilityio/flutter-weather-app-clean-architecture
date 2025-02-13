@@ -27,14 +27,12 @@ dependencies:
 
   cupertino_icons: ^1.0.6
 
-  flutter_rating_bar: ^4.0.1
-
   device_preview: ^1.2.0
 
   flutter_native_splash: ^2.4.1
 
     # Responsive utilities
-  responsive_framework: 0.2.0
+  responsive_framework: ^1.5.1
 
     # Navigation and routing
   go_router: 14.1.4
@@ -43,18 +41,19 @@ dependencies:
 
   shared_preferences: ^2.3.2
 
+  image_picker: ^1.1.2
+
   http: ^1.2.2
 
+  permission_handler: ^11.3.1
+ 
+  collection: ^1.18.0
   # Customize Flutter's default white native splash screen with background color and splash image. Supports dark mode, full screen, and more.
   flutter_bloc: ^8.1.6
-
-  shimmer: ^3.0.0
 
   skeletonizer: ^1.4.2
 
   dio: ^5.7.0
-
-  dartz: ^0.10.1
 
   get_it: ^7.7.0
 
@@ -76,11 +75,9 @@ dependencies:
    
   path: ^1.8.0
 
-  cached_storage: ^2.0.4
-
   bloc_concurrency: ^0.2.5
 
-  flutter_form_builder: ^9.5.0
+  flutter_form_builder: ^9.7.0
 
   equatable: ^2.0.5
 
@@ -90,13 +87,23 @@ dependencies:
 
   bloc_test: ^9.1.7
 
-  fpdart: ^1.1.0
-
   mocktail: ^1.0.4
 
-  mockito: ^5.4.4
-
   responsive_grid_list: ^1.4.0
+
+  firebase_messaging: ^15.2.0
+
+  flutter_app_badger: ^1.5.0
+
+  firebase_core: ^3.10.0
+
+  flutter_local_notifications: ^18.0.1
+
+  flutter_app_badge_control: ^0.0.2
+
+  badges: ^3.1.2
+
+  local_auth: ^2.3.0
 
 dev_dependencies:
   flutter_test:
@@ -107,9 +114,11 @@ dev_dependencies:
 
   flutter_lints: ^3.0.0
 
-  _fe_analyzer_shared: ^72.0.0
     # intl_utils is a dart library that generates Dart localization code from ARB file. Generated code relies on Intl library.
   intl_utils: 2.8.7
+
+dependency_overrides:
+  flutter_keyboard_visibility: ^6.0.0
 
 flutter:
 

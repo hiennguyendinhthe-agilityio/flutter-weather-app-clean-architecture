@@ -31,7 +31,7 @@ scripts:
         - bazar_books_app
   # Run unit test, generate html coverage and open report (MacOS support for now)
   coverage:open-report:
-    run: melos exec -- flutter test --coverage && melos exec -- genhtml coverage/lcov.info -o coverage/html --exclude "lib/features/home/bloc/vendor_bloc" --exclude "lib/features/home/data/vendor_repository" --exclude "lib/features/profile" --exclude "lib/features/category" && melos exec -- open coverage/html/index.html
+    run: melos exec -- flutter test --coverage && melos exec -- genhtml coverage/lcov.info -o coverage/html && melos exec -- open coverage/html/index.html
     description: Run unit testing, generate and open html coverage report.
     packageFilters:
       scope:

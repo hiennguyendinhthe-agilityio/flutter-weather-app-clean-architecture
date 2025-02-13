@@ -25,17 +25,17 @@ void main() {
 
   group('SignUpSubmitted successful', () {
     blocTest<AuthBloc, AuthState>(
-      'emits SignUpSuccess when signUp is successful',
+      'emits [AuthenticationLoading, Authenticated] when sign-up is fails',
       build: () {
         when(() => mockAuthRepository.isEmailDuplicateFromAPI(
-              AuthMocks.getMockEmail,
-            )).thenAnswer((_) async => false);
+            AuthMocks.getMockEmail)).thenAnswer((_) async => false);
         when(() => mockAuthRepository.signUp(
               AuthMocks.getMockName,
               AuthMocks.getMockEmail,
               AuthMocks.getMockPassword,
             )).thenAnswer((_) async => true);
-
+        when(() => mockAuthRepository.saveUser(AuthMocks.getMockApiUser))
+            .thenAnswer((_) async {});
         return authBloc;
       },
       act: (bloc) => bloc.add(SignUpSubmitted(
@@ -45,19 +45,36 @@ void main() {
       )),
       expect: () => [
         AuthenticationLoading(),
-        SignUpSuccess(),
+        SignUpFailure('Email already exists, please check again!'),
       ],
-      verify: (_) {
-        verify(() => mockAuthRepository.signUp(
-              AuthMocks.getMockName,
-              AuthMocks.getMockEmail,
-              AuthMocks.getMockPassword,
-            )).called(1);
-      },
     );
   });
 
   group('SignUpSubmitted failed', () {
+    blocTest<AuthBloc, AuthState>(
+      'emits [AuthenticationLoading, SignUpFailure] when sign-up is duplicate',
+      build: () {
+        when(() => mockAuthRepository.isEmailDuplicateFromAPI(
+            AuthMocks.getMockEmail)).thenAnswer((_) async => true);
+        when(() => mockAuthRepository.signUp(
+              AuthMocks.getMockName,
+              AuthMocks.getMockEmail,
+              AuthMocks.getMockPassword,
+            )).thenAnswer((_) async => true);
+        when(() => mockAuthRepository.saveUser(AuthMocks.getMockApiUser))
+            .thenAnswer((_) async {});
+        return authBloc;
+      },
+      act: (bloc) => bloc.add(SignUpSubmitted(
+        AuthMocks.getMockName,
+        AuthMocks.getMockEmail,
+        AuthMocks.getMockPassword,
+      )),
+      expect: () => [
+        AuthenticationLoading(),
+        SignUpFailure('Email already exists, please check again!'),
+      ],
+    );
     blocTest<AuthBloc, AuthState>(
       'emits SignUpFailure when sign-up fails',
       setUp: () {

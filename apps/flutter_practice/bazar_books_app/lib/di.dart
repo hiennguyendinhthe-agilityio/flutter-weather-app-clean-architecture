@@ -1,6 +1,8 @@
 import 'package:bazar_books_app/features/auth/data/auth_repository_impl.dart';
 import 'package:bazar_books_app/features/category/data/category_repository.dart';
 import 'package:bazar_books_app/features/home/data/product_repository/product_repository.dart';
+import 'package:bazar_books_app/features/profile/data/favorite_repository.dart';
+import 'package:bazar_books_app/features/profile/data/profile_repository.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
@@ -53,4 +55,11 @@ Future<void> initGetIt() async {
         getIt<ApiService>(),
         getIt<ProductService>(),
       ));
+
+  getIt.registerLazySingleton<FavoriteRepository>(() =>
+      FavoriteRepositoryImpl(getIt<ApiService>(), getIt<ProductService>()));
+
+  getIt.registerLazySingleton<ProfileRepository>(
+    () => ProfileRepository(),
+  );
 }
