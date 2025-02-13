@@ -1,48 +1,39 @@
-// import 'package:bazar_books_app/features/auth/data/auth_repository_impl.dart';
-// import 'package:flutter_test/flutter_test.dart';
-// import 'package:mocktail/mocktail.dart';
+import 'package:bazar_books_app/features/auth/data/auth_repository_impl.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 
-// import '../../auth_mocks.dart';
+import '../../auth_mocks.dart';
 
-// void main() {
-//   late AuthRepositoryImpl authRepository;
-//   late MockApiService mockApiService;
-//   late MockIsarService mockIsarService;
+void main() {
+  late AuthRepositoryImpl authRepository;
+  late MockApiService mockApiService;
+  late MockIsarService mockIsarService;
 
-//   setUp(() {
-//     mockApiService = MockApiService();
-//     mockIsarService = MockIsarService();
-//     authRepository =
-//         AuthRepositoryImpl(mockApiService, isarService: mockIsarService);
-//   });
+  setUp(() {
+    mockApiService = MockApiService();
+    mockIsarService = MockIsarService();
+    authRepository =
+        AuthRepositoryImpl(mockApiService, isarService: mockIsarService);
+  });
 
-//   group('getCurrentUser', () {
-//     test('Return User when user is in database', () async {
-//       when(() => mockIsarService.getLoggedInUser())
-//           .thenAnswer((_) async => AuthMocks.getMockCurrentUser);
+  group('getCurrentUser', () {
+    test('Return null when there is no user in the database', () async {
+      when(() => mockIsarService.getLoggedInUser())
+          .thenAnswer((_) async => null);
 
-//       final result = await authRepository.getCurrentUser();
+      final result = await authRepository.getCurrentUser();
 
-//       expect(result, equals(AuthMocks.getMockCurrentUser));
-//     });
+      expect(result, isNull);
+    });
 
-//     test('Return null when there is no user in the database', () async {
-//       when(() => mockIsarService.getLoggedInUser())
-//           .thenAnswer((_) async => null);
+    test('Throw Exception when isarService.getUser fails', () async {
+      when(() => mockIsarService.getLoggedInUser())
+          .thenThrow(Exception('Database error'));
 
-//       final result = await authRepository.getCurrentUser();
-
-//       expect(result, isNull);
-//     });
-
-//     test('Throw Exception when isarService.getUser fails', () async {
-//       when(() => mockIsarService.getLoggedInUser())
-//           .thenThrow(Exception('Database error'));
-
-//       expect(
-//         () => authRepository.getCurrentUser(),
-//         throwsA(isA<Exception>()),
-//       );
-//     });
-//   });
-// }
+      expect(
+        () => authRepository.getCurrentUser(),
+        throwsA(isA<Exception>()),
+      );
+    });
+  });
+}

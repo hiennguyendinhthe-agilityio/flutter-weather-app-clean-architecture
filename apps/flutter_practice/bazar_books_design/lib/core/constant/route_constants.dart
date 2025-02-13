@@ -16,4 +16,6 @@ class RoutePaths {
   static const String offersAndPromos = 'offersAndPromos';
   static const String orderHistory = 'orderHistory';
   static const String helpCenter = 'helpCenter';
+  static const String notifications = 'notifications';
+  static const String chatScreen = 'chatScreen';
 }

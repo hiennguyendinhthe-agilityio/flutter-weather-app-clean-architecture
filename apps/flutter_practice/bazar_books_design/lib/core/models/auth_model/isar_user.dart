@@ -25,6 +25,20 @@ class IsarUser {
     this.phoneNumber,
     this.favoriteProducts,
   });
+
+  IsarUser copyWith({
+    String? userId,
+    String? name,
+    String? email,
+    String? avatarUrl,
+  }) {
+    return IsarUser(
+      userId: userId ?? this.userId,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      avatarUrl: avatarUrl ?? this.avatarUrl,
+    );
+  }
 }
 
 @embedded

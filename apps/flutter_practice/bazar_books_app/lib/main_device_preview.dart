@@ -73,16 +73,16 @@ class MyApp extends StatelessWidget {
             ],
 
             // Responsive Wrapper
-            builder: (context, widget) => ResponsiveWrapper.builder(
-              ClampingScrollWrapper.builder(context, widget!),
+            builder: (context, widget) => ResponsiveBreakpoints.builder(
+              child: widget!,
               breakpoints: [
-                const ResponsiveBreakpoint.resize(375, name: MOBILE),
-                const ResponsiveBreakpoint.resize(600, name: TABLET),
-                const ResponsiveBreakpoint.resize(800, name: DESKTOP),
-                const ResponsiveBreakpoint.resize(1200, name: '4K'),
+                const Breakpoint(start: 0, end: 450, name: MOBILE),
+                const Breakpoint(start: 451, end: 800, name: TABLET),
+                const Breakpoint(start: 801, end: 1920, name: DESKTOP),
+                const Breakpoint(start: 1921, end: double.infinity, name: '4K'),
               ],
-              defaultScale: true,
-              background: Container(color: Colors.white),
+              // defaultScale: true,
+              // background: Container(color: Colors.white),
             ),
           ),
         );

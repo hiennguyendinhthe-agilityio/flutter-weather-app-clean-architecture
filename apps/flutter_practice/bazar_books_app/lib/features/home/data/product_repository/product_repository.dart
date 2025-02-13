@@ -5,8 +5,6 @@ import 'package:cached_query_flutter/cached_query_flutter.dart';
 import 'package:flutter/material.dart';
 
 abstract class ProductRepository {
-  // Query<List<Product?>> getYourFavorites();
-
   Future<List<Product>> fetchProducts();
 
   Future<Product> fetchProductDetails(String? productId);
@@ -30,25 +28,27 @@ class ProductRepositoryImpl implements ProductRepository {
       invalidateQueries: ['favorites'],
       queryFn: (favorite) async {
         final products = await apiService.addProductToFavorites(product);
-
         return products;
       },
       onStartMutation: (newFavorite) {
         final query = CachedQuery.instance.getQuery("getFavorites")
-            as Query<List<Product>>;
+            as Query<List<Product>>?;
 
-        final fallback = query.state.data;
-        query.update(
-          (old) => [
-            Product(
-              id: DateTime.now().millisecondsSinceEpoch.toString(),
-              title: newFavorite.title,
-              price: newFavorite.price,
-              imageUrl: newFavorite.imageUrl,
-            ),
-            ...?old,
-          ],
-        );
+        final fallback = query?.state.data ?? [];
+
+        if (query != null) {
+          query.update(
+            (old) => [
+              Product(
+                id: DateTime.now().millisecondsSinceEpoch.toString(),
+                title: newFavorite.title,
+                price: newFavorite.price,
+                imageUrl: newFavorite.imageUrl,
+              ),
+              ...?old,
+            ],
+          );
+        }
 
         return fallback;
       },
@@ -56,8 +56,7 @@ class ProductRepositoryImpl implements ProductRepository {
       onError: (arg, error, fallback) {
         CachedQuery.instance.updateQuery(
           key: "getFavorites",
-          updateFn: (dynamic old) =>
-              old as List<Product>?, // Ensure type consistency
+          updateFn: (dynamic old) => old as List<Product>?,
         );
       },
     );
@@ -65,17 +64,13 @@ class ProductRepositoryImpl implements ProductRepository {
 
   @override
   Future<List<Product>> fetchProducts() async {
-    // Get data from Isar first and return immediately
     final productsFromIsar = await productService.fetchProductsFromIsar();
 
-    // If there is data from Isar, return it for quick display
     if (productsFromIsar.isNotEmpty) {
-      // Display data from Isar immediately
       debugPrint('Loaded from Isar: ${productsFromIsar.length} products');
       return productsFromIsar;
     }
 
-    // If there is no data in Isar, continue calling API to get data
     try {
       final productsFromApi = await productService.fetchProductsFromApi();
 
@@ -100,7 +95,6 @@ class ProductRepositoryImpl implements ProductRepository {
   @override
   Future<Product> fetchProductDetails(String? productId) async {
     try {
-      // Call the appropriate method from ApiService to fetch products
       final products = await apiService.fetchProductDetails(productId);
       return products;
     } catch (e) {

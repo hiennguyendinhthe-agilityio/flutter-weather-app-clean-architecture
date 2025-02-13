@@ -7,7 +7,6 @@ import 'package:dio/dio.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:flutter_test/flutter_test.dart' as flutter_test;
-import 'package:fpdart/fpdart.dart';
 import 'package:mocktail/mocktail.dart';
 
 final exceptionMock = Exception('oops');
@@ -234,23 +233,5 @@ extension ThenAnswerResponseFutureValue<T> on When<Future<Response<T>>> {
             data: value,
           ),
         ),
-      );
-}
-
-extension ThenAnswerFutureValue<T> on When<Future<T>> {
-  void thenAnswerValue(T value) => thenAnswer(
-        (_) => Future.value(
-          value,
-        ),
-      );
-}
-
-extension ThenTaskEitherAnswerValue<T, F> on When<TaskEither<T, F>> {
-  void thenAnswerValue(F value) => thenAnswer(
-        (_) => TaskEither.right(value),
-      );
-
-  void thenAnswerFailureValue(T value) => thenAnswer(
-        (_) => TaskEither.left(value),
       );
 }

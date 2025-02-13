@@ -9,7 +9,7 @@ class Constants {
       "https://66e29593494df9a478e23cab.mockapi.io/api/v1/";
 
   static const String apiUrlAvatar =
-      "https://w7.pngwing.com/pngs/205/731/png-transparent-default-avatar-thumbnail.png";
+      "https://i.pinimg.com/474x/fb/94/90/fb94901fd6080910a8eb531fda1baf6e.webp";
 
   static const String imgUrlDefault =
       'https://www.hubspot.com/hs-fs/hubfs/parts-url_1.webp?width=1190&height=800&name=parts-url_1.webp';

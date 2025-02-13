@@ -4,6 +4,7 @@ import 'package:bazar_books_app/features/home/data/vendor_repository/vendor_repo
 import 'package:bazar_books_design/core/core.dart';
 import 'package:bazar_books_design/db/isar_service.dart';
 import 'package:bazar_books_design/db/product_service.dart';
+import 'package:cached_query_flutter/cached_query_flutter.dart';
 import 'package:faker/faker.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -26,8 +27,16 @@ class MockErrorHandler extends Mock implements ErrorHandler {}
 
 class MockVendorRepository extends Mock implements VendorRepository {}
 
+class MockQuery extends Mock implements Query {}
+
 // Data Mocks
 class HomeMocks {
+  static final testProduct = Product(
+    id: faker.guid.guid(),
+    title: 'Test Product',
+    imageUrl: faker.image.loremPicsum(),
+    price: faker.randomGenerator.decimal().toString(),
+  );
   static final mockProduct = Product(
       id: faker.guid.guid(),
       title: faker.lorem.word(),
@@ -118,4 +127,16 @@ class HomeMocks {
         imageUrlOffer: [faker.image.loremPicsum()])
   ];
   static final failureMock = Exception(faker.lorem.sentence());
+
+  static const mockKeyVendors = 'Vendors';
+
+  static final mockVendorPage = List.generate(
+    10,
+    (index) => Vendor(id: '$index', headlines: 'Vendor $index'),
+  );
+
+  static final mockVendorPagination = List.generate(
+    10,
+    (index) => Vendor(id: '${index + 10}', headlines: 'Vendor ${index + 10}'),
+  );
 }

@@ -969,6 +969,106 @@ class BazUiS {
       args: [],
     );
   }
+
+  /// `View Profile Picture`
+  String get viewProfilePicture {
+    return Intl.message(
+      'View Profile Picture',
+      name: 'viewProfilePicture',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Capture New Photo`
+  String get captureNewPhoto {
+    return Intl.message(
+      'Capture New Photo',
+      name: 'captureNewPhoto',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select From Gallery`
+  String get selectFromGallery {
+    return Intl.message(
+      'Select From Gallery',
+      name: 'selectFromGallery',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No Profile Picture Available`
+  String get noProfilePictureAvailable {
+    return Intl.message(
+      'No Profile Picture Available',
+      name: 'noProfilePictureAvailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No photo captured.`
+  String get noPhotoCaptured {
+    return Intl.message(
+      'No photo captured.',
+      name: 'noPhotoCaptured',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Photo captured and avatar updated.`
+  String get updatePhotoAndAvatar {
+    return Intl.message(
+      'Photo captured and avatar updated.',
+      name: 'updatePhotoAndAvatar',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Camera permission permanently denied. Please enable it from settings.`
+  String get deniedCameraPermission {
+    return Intl.message(
+      'Camera permission permanently denied. Please enable it from settings.',
+      name: 'deniedCameraPermission',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open App Settings`
+  String get openAppSettings {
+    return Intl.message(
+      'Open App Settings',
+      name: 'openAppSettings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Permission denied!`
+  String get deniedPermission {
+    return Intl.message(
+      'Permission denied!',
+      name: 'deniedPermission',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Avatar updated successfully!`
+  String get updatedAvatarSuccessfully {
+    return Intl.message(
+      'Avatar updated successfully!',
+      name: 'updatedAvatarSuccessfully',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<BazUiS> {

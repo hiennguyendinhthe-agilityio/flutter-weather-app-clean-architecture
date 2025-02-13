@@ -5,18 +5,34 @@ import 'package:bazar_books_app/di.dart';
 import 'package:bazar_books_app/features/auth/blocs/auth_bloc.dart';
 import 'package:bazar_books_app/features/auth/data/auth_repository_impl.dart';
 import 'package:bazar_books_app/features/home/home_page.dart';
+import 'package:bazar_books_app/features/profile/bloc/profile/profile_bloc.dart';
+import 'package:bazar_books_app/features/profile/bloc/profile/profile_event.dart';
+import 'package:bazar_books_app/features/profile/data/profile_repository.dart';
 import 'package:bazar_books_app/routes.dart';
+import 'package:bazar_books_app/services/firebase_messaging_service.dart';
+import 'package:bazar_books_app/services/firebase_options.dart';
+import 'package:bazar_books_app/services/notification_service.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
 import 'package:cached_query_flutter/cached_query_flutter.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
-void main() async {
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  final permissionsUtil = PermissionsUtil();
+  await permissionsUtil.requestPermissions();
   CachedQuery.instance.configFlutter(
     observers: [
       BazQueryObserver(),
@@ -32,6 +48,9 @@ void main() async {
 
   await initGetIt();
 
+  await NotificationService.instance.initialize();
+
+  await FirebaseMessagingService.initialize();
   runApp(const MainApp());
 }
 
@@ -61,8 +80,19 @@ class _MainAppState extends State<MainApp> {
                   IsLoggedIn(),
                 ),
             ),
+            BlocProvider(
+                create: (context) =>
+                    AuthBloc(authRepository)..add(CheckBiometricStatus())),
+            BlocProvider(
+              create: (context) => ProfileBloc(
+                authRepository: getIt<AuthRepositoryImpl>(),
+                imagePicker: ImagePicker(),
+                profileRepository: getIt<ProfileRepository>(),
+              )..add(FetchUserInfoEvent()),
+            ),
           ],
           child: MaterialApp.router(
+            key: navigatorKey,
             routerConfig: router,
             themeMode: ThemeMode.light,
             theme: bazUiAppTheme,
@@ -81,16 +111,14 @@ class _MainAppState extends State<MainApp> {
               ...S.delegate.supportedLocales,
               const Locale('en', ''),
             ],
-            builder: (context, widget) => ResponsiveWrapper.builder(
-              ClampingScrollWrapper.builder(context, widget!),
+            builder: (context, widget) => ResponsiveBreakpoints.builder(
+              child: widget!,
               breakpoints: [
-                const ResponsiveBreakpoint.resize(350, name: MOBILE),
-                const ResponsiveBreakpoint.resize(600, name: TABLET),
-                const ResponsiveBreakpoint.resize(800, name: DESKTOP),
-                const ResponsiveBreakpoint.resize(1200, name: '4K'),
+                const Breakpoint(start: 0, end: 450, name: MOBILE),
+                const Breakpoint(start: 451, end: 800, name: TABLET),
+                const Breakpoint(start: 801, end: 1920, name: DESKTOP),
+                const Breakpoint(start: 1921, end: double.infinity, name: '4K'),
               ],
-              defaultScale: true,
-              background: Container(color: Colors.white),
             ),
           ),
         );

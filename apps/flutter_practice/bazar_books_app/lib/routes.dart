@@ -10,6 +10,7 @@ import 'package:bazar_books_app/features/category/screen/category_screen.dart';
 import 'package:bazar_books_app/features/home/home_page.dart';
 import 'package:bazar_books_app/features/home/widgets/author/authors.dart';
 import 'package:bazar_books_app/features/home/widgets/vendors/vendors.dart';
+import 'package:bazar_books_app/features/notification/notification_page.dart';
 import 'package:bazar_books_app/features/profile/profile_screen.dart';
 import 'package:bazar_books_app/features/profile/screens/address_screen.dart';
 import 'package:bazar_books_app/features/profile/screens/help_center_screen.dart';
@@ -93,6 +94,12 @@ final GoRouter router = GoRouter(
               path: RoutePaths.authors,
               builder: (BuildContext context, GoRouterState state) {
                 return const Authors();
+              },
+            ),
+            GoRoute(
+              path: RoutePaths.notifications,
+              builder: (BuildContext context, GoRouterState state) {
+                return const NotificationsPage();
               },
             ),
           ],
@@ -189,7 +196,8 @@ final GoRouter router = GoRouter(
             GoRoute(
               path: RoutePaths.orderHistory,
               builder: (BuildContext context, GoRouterState state) {
-                return const OrderHistoryScreen();
+                final orderId = state.uri.queryParameters['orderId'];
+                return OrderHistoryScreen(orderId: orderId);
               },
             ),
             GoRoute(

@@ -32,6 +32,14 @@ class Vendor extends Equatable {
           ))
       .toList();
 
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'headlines': headlines,
+        'numberStar': numberStar,
+        'imageUrl': imageUrl,
+        'starRating': starRating,
+        'publications': publications,
+      };
   @override
   List<Object?> get props => [
         id,

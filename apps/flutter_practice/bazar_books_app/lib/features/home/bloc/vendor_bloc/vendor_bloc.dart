@@ -2,6 +2,7 @@
 
 import 'dart:async';
 
+import 'package:bazar_books_app/di.dart';
 import 'package:bazar_books_app/features/home/bloc/vendor_bloc/vendor_state.dart';
 import 'package:bazar_books_app/features/home/data/vendor_repository/vendor_repository.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
@@ -19,8 +20,8 @@ class VendorBloc extends Bloc<VendorEvent, VendorState> {
     on<GetBestVendors>(_onGetVendors);
   }
 
-  final _repo = VendorRepositoryImpl();
-  final vendorRepository = VendorRepositoryImpl();
+  final _repo = VendorRepositoryImpl(getIt<ApiService>());
+  final vendorRepository = VendorRepositoryImpl(getIt<ApiService>());
 
   Future<void> _onGetVendors(
     GetBestVendors event,
@@ -49,7 +50,7 @@ class VendorBloc extends Bloc<VendorEvent, VendorState> {
     VendorFetched event,
     Emitter<VendorState> emit,
   ) async {
-    final query = _repo.getVendors();
+    final query = _repo.fetchInfiniteVendors();
 
     return emit.forEach<InfiniteQueryState<List<Vendor>>>(
       query.stream,
@@ -88,6 +89,6 @@ class VendorBloc extends Bloc<VendorEvent, VendorState> {
   }
 
   void _onVendorNextPage(VendorEvent _, Emitter<VendorState> __) {
-    _repo.getVendors().getNextPage();
+    _repo.fetchInfiniteVendors().getNextPage();
   }
 }

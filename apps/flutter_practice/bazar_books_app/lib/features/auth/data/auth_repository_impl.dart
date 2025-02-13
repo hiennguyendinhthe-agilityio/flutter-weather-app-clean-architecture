@@ -3,7 +3,7 @@ import 'package:bazar_books_design/core/models/auth_model/api_user.dart';
 import 'package:dio/dio.dart';
 
 abstract class AuthRepository {
-  Future<ApiUser?> logIn(String email, String password);
+  Future<ApiUser?> signIn(String email, String password);
 
   Future<bool> signUp(String name, String email, String password);
 
@@ -19,7 +19,7 @@ class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl(this.apiService, {required this.isarService});
 
   @override
-  Future<ApiUser?> logIn(String email, String password) async {
+  Future<ApiUser?> signIn(String email, String password) async {
     try {
       final existingIsarUser = await isarService.getLoggedInUser();
       if (existingIsarUser != null) {

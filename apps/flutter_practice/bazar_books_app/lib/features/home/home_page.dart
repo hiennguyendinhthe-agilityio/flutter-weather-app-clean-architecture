@@ -49,7 +49,11 @@ class HomePage extends StatelessWidget {
             actions: [
               IconButton(
                 icon: BazUiBuiltInImage.icBellOutline(),
-                onPressed: () {},
+                onPressed: () {
+                  context.go(
+                    '${RoutePaths.home}/${RoutePaths.notifications}',
+                  );
+                },
               ),
             ],
           ),

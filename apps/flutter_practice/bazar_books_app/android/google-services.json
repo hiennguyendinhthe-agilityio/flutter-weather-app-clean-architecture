@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "12354716094",
+    "project_id": "bazar-app-315a2",
+    "storage_bucket": "bazar-app-315a2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:12354716094:android:0a152d9e4b61590fd079ef",
+        "android_client_info": {
+          "package_name": "com.example.bazar_books_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVxYmZkNeGV4ymOeVQ-tGmBoyVoJR30TM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

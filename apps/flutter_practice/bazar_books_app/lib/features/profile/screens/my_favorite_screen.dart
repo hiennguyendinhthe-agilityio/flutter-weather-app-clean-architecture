@@ -1,4 +1,6 @@
+import 'package:bazar_books_app/di.dart';
 import 'package:bazar_books_app/features/profile/bloc/favorite/favorite_bloc.dart';
+import 'package:bazar_books_app/features/profile/data/favorite_repository.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,7 +12,7 @@ class MyFavorite extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => FavoriteBloc()
+      create: (_) => FavoriteBloc(getIt<FavoriteRepository>())
         ..add(
           GetFavoriteProducts(userId),
         ),
