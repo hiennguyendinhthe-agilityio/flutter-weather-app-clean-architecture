@@ -52,7 +52,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthenticationLoading());
     try {
       final user =
-          await authenticationRepository.logIn(event.email, event.password);
+          await authenticationRepository.signIn(event.email, event.password);
       if (user != null) {
         emit(Authenticated(user));
       } else {

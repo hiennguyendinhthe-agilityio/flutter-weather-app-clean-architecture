@@ -1,13 +1,14 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:bazar_books_app/detail_page_example.dart';
+import 'package:bazar_books_app/example/detail_page_example.dart';
+import 'package:bazar_books_app/example/oder_detail_page_example.dart';
 import 'package:bazar_books_app/features/chat/chatscreen.dart';
-import 'package:bazar_books_app/main.dart';
-import 'package:bazar_books_app/oder_detail_page.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+import '../main_app/main_app.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {

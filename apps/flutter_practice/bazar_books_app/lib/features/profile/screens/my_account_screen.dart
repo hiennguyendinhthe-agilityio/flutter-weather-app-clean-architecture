@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:bazar_books_app/features/profile/bloc/profile/profile_bloc.dart';
