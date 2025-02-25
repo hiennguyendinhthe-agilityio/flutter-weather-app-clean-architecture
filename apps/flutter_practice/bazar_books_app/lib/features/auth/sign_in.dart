@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:bazar_books_app/features/auth/blocs/auth_bloc.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
 import 'package:bazar_books_design/core/responsive/size_extension.dart';
@@ -6,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -18,6 +21,16 @@ class _SignInScreenState extends State<SignInScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool isBiometricEnabled = false;
+  String? savedEmail;
+  String? savedPassword;
+
+  @override
+  void initState() {
+    super.initState();
+
+    context.read<AuthBloc>().add(CheckBiometricStatus());
+  }
 
   @override
   void dispose() {
@@ -38,16 +51,41 @@ class _SignInScreenState extends State<SignInScreen> {
       ),
       body: SingleChildScrollView(
         child: BlocConsumer<AuthBloc, AuthState>(
-          listener: (context, state) {
+          listener: (context, state) async {
             if (state is Authenticated) {
-              context.go('/home');
+              final prefs = await SharedPreferences.getInstance();
+              final bool hasBiometric =
+                  prefs.getBool('biometricEnabled') ?? false;
+
+              if (!hasBiometric) {
+                final bool? enableBiometric =
+                    await _showBiometricSetupPrompt(context);
+                if (enableBiometric == true) {
+                  context.read<AuthBloc>().add(EnableBiometricAuth());
+                }
+              }
+
+              context.go(RoutePaths.home);
             } else if (state is AuthenticationFailure) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(state.error)),
               );
+            } else if (state is BiometricAuthFailed) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    context.bazS.biometricAuthFailed,
+                  ),
+                  backgroundColor: context.colorScheme.error,
+                ),
+              );
             }
           },
           builder: (context, state) {
+            bool isBiometricEnabled = false;
+            if (state is BiometricStatusChecked) {
+              isBiometricEnabled = state.isBiometricEnabled;
+            }
             return Column(
               children: [
                 Padding(
@@ -142,6 +180,22 @@ class _SignInScreenState extends State<SignInScreen> {
                           );
                         },
                       ),
+                      if (isBiometricEnabled) ...[
+                        SizedBox(height: 20.0.h),
+                        Center(
+                          child: ElevatedButton.icon(
+                            onPressed: () {
+                              context
+                                  .read<AuthBloc>()
+                                  .add(BiometricAuthRequested());
+                            },
+                            label: Text(
+                              context.bazS.loginwithTouchID,
+                            ),
+                            icon: const Icon(Icons.fingerprint),
+                          ),
+                        ),
+                      ],
                       SizedBox(height: 20.0.h),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -178,4 +232,28 @@ class _SignInScreenState extends State<SignInScreen> {
       ),
     );
   }
+}
+
+_showBiometricSetupPrompt(BuildContext context) async {
+  return showDialog<bool>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text(
+        context.bazS.enableBiometric,
+      ),
+      content: Text(
+        context.bazS.biometricAuthRequested,
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context, false),
+          child: const Text('No'),
+        ),
+        TextButton(
+          onPressed: () => Navigator.pop(context, true),
+          child: const Text('Yes'),
+        ),
+      ],
+    ),
+  );
 }

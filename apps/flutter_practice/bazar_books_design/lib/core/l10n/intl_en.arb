@@ -102,5 +102,9 @@
     "deniedCameraPermission": "Camera permission permanently denied. Please enable it from settings.",
     "openAppSettings": "Open App Settings",
     "deniedPermission": "Permission denied!",
-    "updatedAvatarSuccessfully": "Avatar updated successfully!"
+    "updatedAvatarSuccessfully": "Avatar updated successfully!",
+    "loginwithTouchID": "Login with Touch ID",
+    "enableBiometric": "Enable Biometric?",
+    "biometricAuthRequested": "Do you want to enable biometric authentication?",
+    "biometricAuthFailed": "Could not authenticate with biometric"
 }

@@ -1,4 +1,4 @@
-import 'package:bazar_books_app/di.dart';
+import 'package:bazar_books_app/di/di.dart';
 import 'package:bazar_books_app/features/auth/blocs/auth_bloc.dart';
 import 'package:bazar_books_app/features/home/bloc/author_bloc/author_bloc.dart';
 import 'package:bazar_books_app/features/home/bloc/vendor_bloc/vendor_bloc.dart';

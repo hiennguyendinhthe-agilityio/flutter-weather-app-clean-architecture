@@ -51,3 +51,9 @@ class PasswordValidationChanged extends AuthEvent {
   @override
   List<Object> get props => [password];
 }
+
+class EnableBiometricAuth extends AuthEvent {}
+
+class BiometricAuthRequested extends AuthEvent {}
+
+class CheckBiometricStatus extends AuthEvent {}

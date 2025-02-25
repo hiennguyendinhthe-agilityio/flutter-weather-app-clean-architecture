@@ -9,6 +9,7 @@ import 'package:bazar_books_design/core/network/failure.dart';
 import 'package:bazar_books_design/db/isar_service.dart';
 import 'package:dio/dio.dart';
 import 'package:faker/faker.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:mocktail/mocktail.dart';
 
 // Service Mocks
@@ -18,6 +19,8 @@ class MockIsarService extends Mock implements IsarService {}
 
 // Mocking AuthRepository
 class MockAuthRepositoryImpl extends Mock implements AuthRepositoryImpl {}
+
+class MockLocalAuth extends Mock implements LocalAuthentication {}
 
 class FakeUser extends Fake implements ApiUser {}
 

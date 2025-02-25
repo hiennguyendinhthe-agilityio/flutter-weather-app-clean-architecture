@@ -4,20 +4,40 @@ import 'package:bazar_books_design/core/models/auth_model/api_user.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:local_auth/local_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepositoryImpl authenticationRepository;
+  final LocalAuthentication auth;
 
-  AuthBloc(this.authenticationRepository) : super(AuthenticationInitial()) {
+  late SharedPreferences _prefs;
+  AuthBloc(this.authenticationRepository, this.auth)
+      : super(AuthenticationInitial()) {
+    _initPreferences();
     on<IsLoggedIn>(_isLoggedIn);
     on<TogglePasswordVisibilityEvent>(_handleOnTogglePasswordVisibilityEvent);
     on<LogInRequested>(_onLogInRequested);
     on<SignUpSubmitted>(_onSignUpSubmitted);
     on<LogoutRequested>(_onLogOutRequested);
     on<PasswordValidationChanged>(_onPasswordValidationChanged);
+    on<EnableBiometricAuth>(_onEnableBiometricAuth);
+    on<BiometricAuthRequested>(_onBiometricAuthRequested);
+    on<CheckBiometricStatus>(_onCheckBiometricStatus);
+  }
+
+  Future<void> _initPreferences() async {
+    _prefs = await SharedPreferences.getInstance();
+  }
+
+  Future<void> _onCheckBiometricStatus(
+      CheckBiometricStatus event, Emitter<AuthState> emit) async {
+    final isBiometricEnabled = _prefs.getBool('biometricEnabled') ?? false;
+
+    emit(BiometricStatusChecked(isBiometricEnabled));
   }
 
   Future<void> _isLoggedIn(IsLoggedIn event, Emitter<AuthState> emit) async {
@@ -54,6 +74,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final user =
           await authenticationRepository.signIn(event.email, event.password);
       if (user != null) {
+        await _prefs.setString('saved_email', event.email);
+        await _prefs.setString('saved_password', event.password);
         emit(Authenticated(user));
       } else {
         emit(AuthenticationFailure(ErrorMessages.invalidEmailOrPassword));
@@ -120,5 +142,57 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       hasNumber: hasNumber,
       hasLetter: hasLetter,
     ));
+  }
+
+  Future<void> _onEnableBiometricAuth(
+      EnableBiometricAuth event, Emitter<AuthState> emit) async {
+    await _prefs.setBool('biometricEnabled', true);
+    emit(BiometricAuthEnabled());
+    add(CheckBiometricStatus());
+  }
+
+  Future<void> _onBiometricAuthRequested(
+      BiometricAuthRequested event, Emitter<AuthState> emit) async {
+    final bool isBiometricEnabled = _prefs.getBool('biometricEnabled') ?? false;
+
+    if (!isBiometricEnabled) {
+      emit(BiometricAuthFailed());
+      return;
+    }
+
+    try {
+      final bool isAuthenticated = await auth.authenticate(
+        localizedReason: 'Biometric authentication for login',
+        options: const AuthenticationOptions(
+          stickyAuth: true,
+        ),
+      );
+
+      if (!isAuthenticated) {
+        emit(BiometricAuthFailed());
+        return;
+      }
+
+      final String? savedEmail = _prefs.getString('saved_email');
+      final String? savedPassword = _prefs.getString('saved_password');
+
+      if (savedEmail == null || savedPassword == null) {
+        emit(AuthenticationFailure(
+            "No saved email or password found. Please log in again."));
+        return;
+      }
+
+      final user =
+          await authenticationRepository.signIn(savedEmail, savedPassword);
+
+      if (user != null) {
+        emit(Authenticated(user));
+      } else {
+        emit(AuthenticationFailure('Invalid email or password'));
+      }
+    } catch (e) {
+      emit(AuthenticationFailure(
+          "Biometric authentication failed: ${e.toString()}"));
+    }
   }
 }

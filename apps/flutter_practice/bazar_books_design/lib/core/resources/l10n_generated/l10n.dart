@@ -1069,6 +1069,46 @@ class BazUiS {
       args: [],
     );
   }
+
+  /// `Login with Touch ID`
+  String get loginwithTouchID {
+    return Intl.message(
+      'Login with Touch ID',
+      name: 'loginwithTouchID',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enable Biometric?`
+  String get enableBiometric {
+    return Intl.message(
+      'Enable Biometric?',
+      name: 'enableBiometric',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Do you want to enable biometric authentication?`
+  String get biometricAuthRequested {
+    return Intl.message(
+      'Do you want to enable biometric authentication?',
+      name: 'biometricAuthRequested',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not authenticate with biometric`
+  String get biometricAuthFailed {
+    return Intl.message(
+      'Could not authenticate with biometric',
+      name: 'biometricAuthFailed',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<BazUiS> {

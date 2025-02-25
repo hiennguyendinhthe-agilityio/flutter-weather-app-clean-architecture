@@ -2,7 +2,7 @@
 
 import 'dart:async';
 
-import 'package:bazar_books_app/di.dart';
+import 'package:bazar_books_app/di/di.dart';
 import 'package:bazar_books_app/features/home/bloc/vendor_bloc/vendor_state.dart';
 import 'package:bazar_books_app/features/home/data/vendor_repository/vendor_repository.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';

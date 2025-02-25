@@ -1,4 +1,4 @@
-import 'package:bazar_books_app/di.dart';
+import 'package:bazar_books_app/di/di.dart';
 import 'package:bazar_books_app/main_app/main_app.dart';
 import 'package:bazar_books_design/core/core.dart';
 import 'package:cached_query_flutter/cached_query_flutter.dart';

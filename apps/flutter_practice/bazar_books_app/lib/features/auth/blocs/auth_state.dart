@@ -67,3 +67,16 @@ class PasswordValidationState extends AuthState {
   @override
   List<Object?> get props => [hasMinLength, hasNumber, hasLetter];
 }
+
+class BiometricAuthEnabled extends AuthState {}
+
+class BiometricAuthFailed extends AuthState {}
+
+class BiometricStatusChecked extends AuthState {
+  final bool isBiometricEnabled;
+
+  BiometricStatusChecked(this.isBiometricEnabled);
+
+  @override
+  List<Object?> get props => [isBiometricEnabled];
+}

@@ -1,0 +1,15 @@
+{
+  "" : {
+    "const-values" : "/Users/hiennguyen/flutter-training/apps/flutter_practice/bazar_books_app/ios/build/Pods.build/Release-iphoneos/flutter_app_badge_control.build/Objects-normal/arm64/flutter_app_badge_control-master.swiftconstvalues",
+    "dependencies" : "/Users/hiennguyen/flutter-training/apps/flutter_practice/bazar_books_app/ios/build/Pods.build/Release-iphoneos/flutter_app_badge_control.build/Objects-normal/arm64/flutter_app_badge_control-master.d",
+    "diagnostics" : "/Users/hiennguyen/flutter-training/apps/flutter_practice/bazar_books_app/ios/build/Pods.build/Release-iphoneos/flutter_app_badge_control.build/Objects-normal/arm64/flutter_app_badge_control-master.dia",
+    "emit-module-dependencies" : "/Users/hiennguyen/flutter-training/apps/flutter_practice/bazar_books_app/ios/build/Pods.build/Release-iphoneos/flutter_app_badge_control.build/Objects-normal/arm64/flutter_app_badge_control-master-emit-module.d",
+    "emit-module-diagnostics" : "/Users/hiennguyen/flutter-training/apps/flutter_practice/bazar_books_app/ios/build/Pods.build/Release-iphoneos/flutter_app_badge_control.build/Objects-normal/arm64/flutter_app_badge_control-master-emit-module.dia",
+    "swift-dependencies" : "/Users/hiennguyen/flutter-training/apps/flutter_practice/bazar_books_app/ios/build/Pods.build/Release-iphoneos/flutter_app_badge_control.build/Objects-normal/arm64/flutter_app_badge_control-master.swiftdeps"
+  },
+  "/Users/hiennguyen/.puro/shared/pub_cache/hosted/pub.dev/flutter_app_badge_control-0.0.2/ios/Classes/FlutterAppBadgeControlPlugin.swift" : {
+    "index-unit-output-path" : "/Pods.build/Release-iphoneos/flutter_app_badge_control.build/Objects-normal/arm64/FlutterAppBadgeControlPlugin.o",
+    "llvm-bc" : "/Users/hiennguyen/flutter-training/apps/flutter_practice/bazar_books_app/ios/build/Pods.build/Release-iphoneos/flutter_app_badge_control.build/Objects-normal/arm64/FlutterAppBadgeControlPlugin.bc",
+    "object" : "/Users/hiennguyen/flutter-training/apps/flutter_practice/bazar_books_app/ios/build/Pods.build/Release-iphoneos/flutter_app_badge_control.build/Objects-normal/arm64/FlutterAppBadgeControlPlugin.o"
+  }
+}

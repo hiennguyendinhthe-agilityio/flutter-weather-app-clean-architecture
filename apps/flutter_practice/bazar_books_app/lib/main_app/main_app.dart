@@ -1,18 +1,19 @@
 import 'package:bazar_books_app/core/l10n_generated/l10n.dart';
-import 'package:bazar_books_app/di.dart';
+import 'package:bazar_books_app/di/di.dart';
 import 'package:bazar_books_app/features/auth/blocs/auth_bloc.dart';
 import 'package:bazar_books_app/features/auth/data/auth_repository_impl.dart';
 import 'package:bazar_books_app/features/home/home_page.dart';
 import 'package:bazar_books_app/features/profile/bloc/profile/profile_bloc.dart';
 import 'package:bazar_books_app/features/profile/bloc/profile/profile_event.dart';
 import 'package:bazar_books_app/features/profile/data/profile_repository.dart';
-import 'package:bazar_books_app/routes.dart';
+import 'package:bazar_books_app/routes/routes.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -35,11 +36,15 @@ class _MainAppState extends State<MainApp> {
       builder: (_, child) {
         final authRepository = getIt<AuthRepositoryImpl>();
 
+        final authBiometric = getIt<LocalAuthentication>();
+
         return MultiBlocProvider(
           providers: [
             BlocProvider(
-              create: (context) => AuthBloc(authRepository)
-                ..add(
+              create: (context) => AuthBloc(
+                authRepository,
+                authBiometric,
+              )..add(
                   IsLoggedIn(),
                 ),
             ),

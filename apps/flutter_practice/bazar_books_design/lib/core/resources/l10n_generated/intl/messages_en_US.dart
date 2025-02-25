@@ -30,6 +30,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "authorSubtitle":
             MessageLookupByLibrary.simpleMessage("Check the authors"),
         "authorsTtile": MessageLookupByLibrary.simpleMessage("Authors"),
+        "biometricAuthFailed": MessageLookupByLibrary.simpleMessage(
+            "Could not authenticate with biometric"),
+        "biometricAuthRequested": MessageLookupByLibrary.simpleMessage(
+            "Do you want to enable biometric authentication?"),
         "booksTabBar": MessageLookupByLibrary.simpleMessage("Books"),
         "cancelTitle": MessageLookupByLibrary.simpleMessage("Cancel"),
         "captureNewPhoto":
@@ -46,6 +50,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Viverra dignissim ac ac ac."),
         "detailMenuGoodDayTitle":
             MessageLookupByLibrary.simpleMessage("GoodDay"),
+        "enableBiometric":
+            MessageLookupByLibrary.simpleMessage("Enable Biometric?"),
         "errorBadRequest": MessageLookupByLibrary.simpleMessage(
             "Failure, API rejected request"),
         "errorCache": MessageLookupByLibrary.simpleMessage("Cache error"),
@@ -105,6 +111,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Top of Week"),
         "journalistsTabBar":
             MessageLookupByLibrary.simpleMessage("Journalists"),
+        "loginwithTouchID":
+            MessageLookupByLibrary.simpleMessage("Login with Touch ID"),
         "logoutMeassage": MessageLookupByLibrary.simpleMessage(
             "Are you sure you want to logout?"),
         "logoutTitle": MessageLookupByLibrary.simpleMessage("Logout"),
