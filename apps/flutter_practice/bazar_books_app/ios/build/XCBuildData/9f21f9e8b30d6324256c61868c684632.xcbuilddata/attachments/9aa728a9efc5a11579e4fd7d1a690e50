@@ -1,0 +1,23 @@
+{
+  'version': 0,
+  'use-external-names': 'false',
+  'case-sensitive': 'false',
+  'roots': [{
+    'type': 'directory',
+    'name': "/Users/hiennguyen/flutter-training/apps/flutter_practice/bazar_books_app/ios/build/Release-iphoneos/flutter_app_badge_control/flutter_app_badge_control.framework/Modules"
+    'contents': [{
+      'type': 'file',
+      'name': "module.modulemap",
+      'external-contents': "/Users/hiennguyen/flutter-training/apps/flutter_practice/bazar_books_app/ios/build/Pods.build/Release-iphoneos/flutter_app_badge_control.build/unextended-module.modulemap",
+    }]
+    },
+    {
+    'type': 'directory',
+    'name': "/Users/hiennguyen/flutter-training/apps/flutter_practice/bazar_books_app/ios/build/Release-iphoneos/flutter_app_badge_control/flutter_app_badge_control.framework/Headers"
+    'contents': [{
+      'type': 'file',
+      'name': "flutter_app_badge_control-Swift.h",
+      'external-contents': "/Users/hiennguyen/flutter-training/apps/flutter_practice/bazar_books_app/ios/build/Pods.build/Release-iphoneos/flutter_app_badge_control.build/unextended-interface-header.h",
+    }]
+    }]
+}

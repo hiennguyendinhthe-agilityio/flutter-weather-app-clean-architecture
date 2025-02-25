@@ -1,0 +1,13 @@
+[
+    {
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.example.bazar_books_app",
+        "sha256_cert_fingerprints": [
+          "EC:2B:96:2A:E2:53:98:6F:18:9C:EB:E0:AA:31:0B:A4:18:52:FE:F4:58:4A:71:16:D1:D9:68:93:E1:2D:B4:14"
+        ]
+      }
+    }
+  ]
+  

@@ -1,0 +1,15 @@
+{
+  "" : {
+    "const-values" : "/Users/hiennguyen/flutter-training/apps/flutter_practice/bazar_books_app/ios/build/Pods.build/Release-iphoneos/isar_flutter_libs.build/Objects-normal/arm64/isar_flutter_libs-master.swiftconstvalues",
+    "dependencies" : "/Users/hiennguyen/flutter-training/apps/flutter_practice/bazar_books_app/ios/build/Pods.build/Release-iphoneos/isar_flutter_libs.build/Objects-normal/arm64/isar_flutter_libs-master.d",
+    "diagnostics" : "/Users/hiennguyen/flutter-training/apps/flutter_practice/bazar_books_app/ios/build/Pods.build/Release-iphoneos/isar_flutter_libs.build/Objects-normal/arm64/isar_flutter_libs-master.dia",
+    "emit-module-dependencies" : "/Users/hiennguyen/flutter-training/apps/flutter_practice/bazar_books_app/ios/build/Pods.build/Release-iphoneos/isar_flutter_libs.build/Objects-normal/arm64/isar_flutter_libs-master-emit-module.d",
+    "emit-module-diagnostics" : "/Users/hiennguyen/flutter-training/apps/flutter_practice/bazar_books_app/ios/build/Pods.build/Release-iphoneos/isar_flutter_libs.build/Objects-normal/arm64/isar_flutter_libs-master-emit-module.dia",
+    "swift-dependencies" : "/Users/hiennguyen/flutter-training/apps/flutter_practice/bazar_books_app/ios/build/Pods.build/Release-iphoneos/isar_flutter_libs.build/Objects-normal/arm64/isar_flutter_libs-master.swiftdeps"
+  },
+  "/Users/hiennguyen/.puro/shared/pub_cache/hosted/pub.dev/isar_flutter_libs-3.1.0+1/ios/Classes/SwiftIsarFlutterLibsPlugin.swift" : {
+    "index-unit-output-path" : "/Pods.build/Release-iphoneos/isar_flutter_libs.build/Objects-normal/arm64/SwiftIsarFlutterLibsPlugin.o",
+    "llvm-bc" : "/Users/hiennguyen/flutter-training/apps/flutter_practice/bazar_books_app/ios/build/Pods.build/Release-iphoneos/isar_flutter_libs.build/Objects-normal/arm64/SwiftIsarFlutterLibsPlugin.bc",
+    "object" : "/Users/hiennguyen/flutter-training/apps/flutter_practice/bazar_books_app/ios/build/Pods.build/Release-iphoneos/isar_flutter_libs.build/Objects-normal/arm64/SwiftIsarFlutterLibsPlugin.o"
+  }
+}

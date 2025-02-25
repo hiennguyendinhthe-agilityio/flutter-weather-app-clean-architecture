@@ -1,0 +1,25 @@
+{
+  "" : {
+    "const-values" : "/Users/hiennguyen/flutter-training/apps/flutter_practice/bazar_books_app/ios/build/Pods.build/Release-iphoneos/connectivity_plus.build/Objects-normal/arm64/connectivity_plus-master.swiftconstvalues",
+    "dependencies" : "/Users/hiennguyen/flutter-training/apps/flutter_practice/bazar_books_app/ios/build/Pods.build/Release-iphoneos/connectivity_plus.build/Objects-normal/arm64/connectivity_plus-master.d",
+    "diagnostics" : "/Users/hiennguyen/flutter-training/apps/flutter_practice/bazar_books_app/ios/build/Pods.build/Release-iphoneos/connectivity_plus.build/Objects-normal/arm64/connectivity_plus-master.dia",
+    "emit-module-dependencies" : "/Users/hiennguyen/flutter-training/apps/flutter_practice/bazar_books_app/ios/build/Pods.build/Release-iphoneos/connectivity_plus.build/Objects-normal/arm64/connectivity_plus-master-emit-module.d",
+    "emit-module-diagnostics" : "/Users/hiennguyen/flutter-training/apps/flutter_practice/bazar_books_app/ios/build/Pods.build/Release-iphoneos/connectivity_plus.build/Objects-normal/arm64/connectivity_plus-master-emit-module.dia",
+    "swift-dependencies" : "/Users/hiennguyen/flutter-training/apps/flutter_practice/bazar_books_app/ios/build/Pods.build/Release-iphoneos/connectivity_plus.build/Objects-normal/arm64/connectivity_plus-master.swiftdeps"
+  },
+  "/Users/hiennguyen/.puro/shared/pub_cache/hosted/pub.dev/connectivity_plus-6.1.2/darwin/connectivity_plus/Sources/connectivity_plus/ConnectivityPlusPlugin.swift" : {
+    "index-unit-output-path" : "/Pods.build/Release-iphoneos/connectivity_plus.build/Objects-normal/arm64/ConnectivityPlusPlugin.o",
+    "llvm-bc" : "/Users/hiennguyen/flutter-training/apps/flutter_practice/bazar_books_app/ios/build/Pods.build/Release-iphoneos/connectivity_plus.build/Objects-normal/arm64/ConnectivityPlusPlugin.bc",
+    "object" : "/Users/hiennguyen/flutter-training/apps/flutter_practice/bazar_books_app/ios/build/Pods.build/Release-iphoneos/connectivity_plus.build/Objects-normal/arm64/ConnectivityPlusPlugin.o"
+  },
+  "/Users/hiennguyen/.puro/shared/pub_cache/hosted/pub.dev/connectivity_plus-6.1.2/darwin/connectivity_plus/Sources/connectivity_plus/ConnectivityProvider.swift" : {
+    "index-unit-output-path" : "/Pods.build/Release-iphoneos/connectivity_plus.build/Objects-normal/arm64/ConnectivityProvider.o",
+    "llvm-bc" : "/Users/hiennguyen/flutter-training/apps/flutter_practice/bazar_books_app/ios/build/Pods.build/Release-iphoneos/connectivity_plus.build/Objects-normal/arm64/ConnectivityProvider.bc",
+    "object" : "/Users/hiennguyen/flutter-training/apps/flutter_practice/bazar_books_app/ios/build/Pods.build/Release-iphoneos/connectivity_plus.build/Objects-normal/arm64/ConnectivityProvider.o"
+  },
+  "/Users/hiennguyen/.puro/shared/pub_cache/hosted/pub.dev/connectivity_plus-6.1.2/darwin/connectivity_plus/Sources/connectivity_plus/PathMonitorConnectivityProvider.swift" : {
+    "index-unit-output-path" : "/Pods.build/Release-iphoneos/connectivity_plus.build/Objects-normal/arm64/PathMonitorConnectivityProvider.o",
+    "llvm-bc" : "/Users/hiennguyen/flutter-training/apps/flutter_practice/bazar_books_app/ios/build/Pods.build/Release-iphoneos/connectivity_plus.build/Objects-normal/arm64/PathMonitorConnectivityProvider.bc",
+    "object" : "/Users/hiennguyen/flutter-training/apps/flutter_practice/bazar_books_app/ios/build/Pods.build/Release-iphoneos/connectivity_plus.build/Objects-normal/arm64/PathMonitorConnectivityProvider.o"
+  }
+}

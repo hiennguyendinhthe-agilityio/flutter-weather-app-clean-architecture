@@ -8,10 +8,12 @@ import '../../auth_mocks.dart';
 void main() {
   late AuthBloc authBloc;
   late MockAuthRepositoryImpl mockAuthRepository;
+  late MockLocalAuth mockLocalAuth;
 
   setUp(() {
     mockAuthRepository = MockAuthRepositoryImpl();
-    authBloc = AuthBloc(mockAuthRepository);
+    mockLocalAuth = MockLocalAuth();
+    authBloc = AuthBloc(mockAuthRepository, mockLocalAuth);
   });
 
   tearDown(() {

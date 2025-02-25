@@ -1,13 +1,16 @@
-import 'package:bazar_books_app/di.dart';
+import 'package:bazar_books_app/di/di.dart';
 import 'package:bazar_books_app/features/home/bloc/author_bloc/author_bloc.dart';
 import 'package:bazar_books_app/features/home/bloc/data_state.dart';
 import 'package:bazar_books_app/features/home/bloc/product_bloc/product_bloc.dart';
 import 'package:bazar_books_app/features/home/data/author_repository/author_repository.dart';
 import 'package:bazar_books_app/features/home/data/product_repository/product_repository.dart';
 import 'package:bazar_books_app/features/home/widgets/product/product_detail/product_detail.dart';
+import 'package:bazar_books_app/services/dynamic_link_service.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class AuthorProfile extends StatelessWidget {
@@ -16,6 +19,12 @@ class AuthorProfile extends StatelessWidget {
     super.key,
   });
   final String authorId;
+  void _shareAuthor(BuildContext context) async {
+    final String link =
+        await DynamicLinkService().createAuthorShareLink(authorId: authorId);
+    print("Author Share Link: $link");
+    Share.share("Check out this author: $link");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +32,13 @@ class AuthorProfile extends StatelessWidget {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () {
+            if (GoRouter.of(context).canPop()) {
+              GoRouter.of(context).pop();
+            } else {
+              GoRouter.of(context).go(RoutePaths.home);
+            }
+          },
         ),
         title: Text(
           context.bazS.authorsTtile,
@@ -31,6 +46,12 @@ class AuthorProfile extends StatelessWidget {
             fontSize: context.fontSize(SizeType.s),
           ),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.share),
+            onPressed: () => _shareAuthor(context),
+          ),
+        ],
         centerTitle: true,
       ),
       body: MultiBlocProvider(

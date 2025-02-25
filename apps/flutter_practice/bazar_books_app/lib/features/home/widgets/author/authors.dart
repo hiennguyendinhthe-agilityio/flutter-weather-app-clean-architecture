@@ -1,4 +1,4 @@
-import 'package:bazar_books_app/di.dart';
+import 'package:bazar_books_app/di/di.dart';
 import 'package:bazar_books_app/features/home/widgets/author/author_profile/author_profile.dart';
 import 'package:bazar_books_design/core/core.dart';
 import 'package:bazar_books_design/widgets/list_title/listtile.dart';

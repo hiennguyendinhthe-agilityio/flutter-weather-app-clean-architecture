@@ -18,4 +18,5 @@ class RoutePaths {
   static const String helpCenter = 'helpCenter';
   static const String notifications = 'notifications';
   static const String chatScreen = 'chatScreen';
+  static const String authorProfile = '/authorProfile';
 }

@@ -1,7 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages,
 // ignore_for_file: implementation_imports
 
-import 'package:bazar_books_app/di.dart';
+import 'package:bazar_books_app/di/di.dart';
 import 'package:bazar_books_design/core/resources/l10n_generated/l10n.dart';
 import 'package:bazar_books_design/themes/app_theme.dart';
 import 'package:bazar_books_widgetbook/screens/author_profile.dart';

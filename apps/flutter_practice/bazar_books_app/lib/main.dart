@@ -1,14 +1,15 @@
 import 'dart:io';
 
-import 'package:bazar_books_app/di.dart';
+import 'package:bazar_books_app/di/di.dart';
 import 'package:bazar_books_app/main_app/main_app.dart';
 import 'package:bazar_books_app/services/firebase_messaging_service.dart';
-import 'package:bazar_books_app/services/firebase_options.dart';
 import 'package:bazar_books_app/services/notification_service.dart';
 import 'package:bazar_books_design/bazar_books_design.dart';
 import 'package:cached_query_flutter/cached_query_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+
+import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

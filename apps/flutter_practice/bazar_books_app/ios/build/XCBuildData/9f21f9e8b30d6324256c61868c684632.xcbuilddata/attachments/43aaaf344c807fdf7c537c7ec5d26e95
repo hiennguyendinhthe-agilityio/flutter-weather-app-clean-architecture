@@ -1,0 +1,5 @@
+ extern const unsigned char flutter_app_badge_controlVersionString[];
+ extern const double flutter_app_badge_controlVersionNumber;
+
+ const unsigned char flutter_app_badge_controlVersionString[] __attribute__ ((used)) = "@(#)PROGRAM:flutter_app_badge_control  PROJECT:Pods-1" "\n";
+ const double flutter_app_badge_controlVersionNumber __attribute__ ((used)) = (double)1.;

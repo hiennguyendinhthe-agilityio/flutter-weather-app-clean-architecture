@@ -1,0 +1,191 @@
+{
+  "buildCommand" : {
+    "command" : "prepareForIndexing",
+    "enableIndexBuildArena" : false,
+    "targets" : null
+  },
+  "configuredTargets" : [
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98d57b8bce60a0f11113f4cff532db68d3"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98a408a4c1f668e62161cdeba76f57d50c"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98678fb6500ea02c78520816441717cc14"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98020791fd2e7b7ddc8fb2658339c42e16"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98e5b592b076e092ab7ac9d9b5c85edc6f"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98b623f22c0d3d037d0450c736133d3c3e"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98e58827b88c0abca8fc7e8667fef9326e"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98566ec9a1d71c4629f4f85ecb735ce614"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e984535f130e81fa6507008242e4e8916fc"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e983da17a3564c774dfaa331fa07754d2bc"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98974c3b2447afb83a5c25c38d101a48ab"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e989da425bb6d6d5d8dbb95e4afffb82217"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98d3c8dfff2c580c352f83d3850ad17775"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98bb3e3ebadbb0b9a8a4f20f605e3cb3cb"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98718890dfdac589615663a02d43d9af3e"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e981a9fac6eb9c80f8eed49fda0531af6a4"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98312b4bc59bbbe2c06c205bf4da6737f5"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98483832d3c820398e9d40e1a6904b03fe"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98f10882e1684b8a3dfdec597bc0a47af3"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98ad53226b339581a6725de188f2c8f823"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98b7a881c3b0dd7865fc7e59ca8d94706c"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e9854f2b496f3d836ac3fd0e138cbba7daf"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98144902882b713248a71c322fd5b2f4ee"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e9831ced05e49f553f4d1bb4a7cc8ab09f7"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e987f74324bfc5c78140e34d510e26e00c1"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98a763e90526044d2c9ec7cc604e6f5ff7"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98e2ca95742fe9145d6e85576b86908ca0"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98e88c7878d35d9aa66dba13a495cef3a4"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98df451efe8f7ec69b9d409acfce3b7a26"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e9832b714f5c382be1583209a283ab57523"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98397d1949c19933d656e15d632cccabfd"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98f49b18868e69e442795477541dae1d9f"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e987434bc9491ab71790f372f1bf966d056"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e9822a19f6c224a402387a233be75a6e268"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e9861233620df33996cccf430ed75b4a999"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e981f000f066404b97b12e9c4ca84d38d0f"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98082dc85da1fc941e5234c7cc1f11b27d"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e983a10cf67c03ee1c6a1d2e6a9f2b58613"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e988cbaddc02f6ec7fadc6b543cd6534960"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98afb8e8e2ed6a0ef9cb1d99282c22f170"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e980062393f91a1d2d94e3e5ed3a5aa5da9"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98c9e4d77647dbd2f60d4df5fb297112b6"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e9830037b09fee48cfce1f8562d753688c8"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e987ea64ee8d53085bf9edd1a57aaf8cbb5"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98ef10255b706f98e1e88fae00855b0968"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e9802f35ab680609a626ebd2ddd692a3822"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e9828cab1f188854e0a973e6ff6905c5ffe"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98e0be3b0d5ad56f1985578b1f97431765"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e981304d3d2169071b3ca365b19f5340b7c"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e9883134bb5f399cb37a1eb075d4fea30d8"
+    }
+  ],
+  "containerPath" : "/Users/hiennguyen/flutter-training/apps/flutter_practice/bazar_books_app/ios/Pods/Pods.xcodeproj",
+  "continueBuildingAfterErrors" : true,
+  "enableIndexBuildArena" : false,
+  "hideShellScriptEnvironment" : false,
+  "parameters" : {
+    "action" : "build",
+    "arenaInfo" : {
+      "buildIntermediatesPath" : "",
+      "buildProductsPath" : "",
+      "derivedDataPath" : "/Users/hiennguyen/Library/Developer/Xcode/DerivedData",
+      "indexDataStoreFolderPath" : "/Users/hiennguyen/Library/Developer/Xcode/DerivedData/Pods-enzwobidlgtylnfwktrbseacczea/Index.noindex/DataStore",
+      "indexEnableDataStore" : true,
+      "indexPCHPath" : "/Users/hiennguyen/Library/Developer/Xcode/DerivedData/Pods-enzwobidlgtylnfwktrbseacczea/Index.noindex/PrecompiledHeaders",
+      "pchPath" : ""
+    },
+    "configurationName" : "Release",
+    "overrides" : {
+      "synthesized" : {
+        "table" : {
+          "ENABLE_PREVIEWS" : "NO",
+          "ENABLE_XOJIT_PREVIEWS" : "NO"
+        }
+      }
+    }
+  },
+  "qos" : "default",
+  "schemeCommand" : "launch",
+  "showNonLoggedProgress" : true,
+  "useDryRun" : true,
+  "useImplicitDependencies" : false,
+  "useLegacyBuildLocations" : false,
+  "useParallelTargets" : false
+}
