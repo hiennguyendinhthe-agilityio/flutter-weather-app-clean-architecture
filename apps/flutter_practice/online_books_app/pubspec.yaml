@@ -1,0 +1,156 @@
+name: online_books_app
+description: "The skeleton application for Flutter with Clean Arch"
+
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.6.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+
+  form_builder_validators: ^11.1.2
+
+  flutter_form_builder:
+    ^9.7.0
+
+    # Responsive utilities
+  responsive_framework: ^1.5.1
+
+  flutter_screenutil: ^5.9.3
+
+  get: ^4.7.2
+
+  get_storage: ^2.1.1
+
+  path_provider: ^2.1.1
+
+  flutter_localizations:
+    sdk: flutter
+
+  flutter_svg: ^2.0.16
+
+  shared_preferences: ^2.5.2
+
+  connectivity_plus: ^6.1.1
+
+  smooth_page_indicator: ^1.2.0+3
+
+  cached_network_image: ^3.4.1
+
+  sizer: ^3.0.5
+
+  intl: ^0.19.0
+
+  flutter_svg_provider: ^1.0.7
+
+  dio: ^5.7.0
+
+  device_preview: ^1.2.0
+
+  curved_navigation_bar: ^1.0.6
+
+  isar: ^3.1.0+1
+
+  google_fonts: ^5.1.0
+
+  rxdart: ^0.27.7
+
+  just_audio: ^0.9.34
+
+  syncfusion_flutter_pdfviewer: ^28.2.12
+
+  shimmer: ^3.0.0
+
+  permission_handler: ^11.4.0
+
+  local_auth: ^2.3.0
+
+  app_links: ^6.3.3
+
+  firebase_dynamic_links: ^6.1.2
+
+  share_plus: ^10.1.4
+
+  firebase_core: ^3.12.1
+
+  mocktail: ^1.0.4
+
+  get_test: ^4.0.1
+
+  firebase_messaging: ^15.2.4
+
+  flutter_local_notifications: ^19.0.0
+
+  cloud_firestore: ^5.6.5
+
+  cloud_functions: ^5.3.4
+
+  flutter_secure_storage: ^9.2.4
+
+  image_picker: ^1.1.2
+
+  url_launcher: ^6.3.1
+
+  flutter_native_splash: ^2.4.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  isar_generator: ^3.1.0+1
+
+  flutter_lints: ^5.0.0
+
+  # Generate Dart codes library
+  build_runner: ^2.4.11
+
+  flutter_gen_runner: 5.3.2
+
+# Config i18n generation
+flutter_intl:
+  enabled: true
+  template-arb-file: app_en.arb
+  arb_dir: lib/localization/l10n
+  output-localization-file: app_localizations.dart
+
+flutter:
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - assets/
+    - assets/images/
+
+  fonts:
+    - family: Concert One
+      fonts:
+        - asset: assets/fonts/ConcertOne-Regular.ttf
+          weight: 400
+
+    - family: Dosis
+      fonts:
+        - asset: assets/fonts/Dosis-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Dosis-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Dosis-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Dosis-Bold.ttf
+          weight: 700
+
+  uses-material-design: true
+
+# Config gen splash screen
+flutter_native_splash:
+  image: assets/images/splash_logo_screen.png
+  color: "#ffffff"
+  image_dark: assets/images/splash_logo_screen.png
+  ios: true
+  web: false
+  android_12:
+    image: assets/images/splash_logo_screen.png
+    image_dark: assets/images/splash_logo_screen.png

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "40673580949",
+    "project_id": "online-books-app",
+    "storage_bucket": "online-books-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:40673580949:android:7c9bfd8b35f2242d18889c",
+        "android_client_info": {
+          "package_name": "com.example.online_books_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCT9YYl-4tSJ-cAb1TNrlQG_DhCNERPJqk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
