@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script>
+        const path = window.location.pathname.split('/share/')[1];
+        window.location.href = `yourapp://book?id=${path}`;
+        
+        setTimeout(() => {
+            window.location.href = 'https://online-books-app.web.app/fallback?book=' + path;
+        }, 1000);
+    </script>
+</head>
+<body>
+    Redirecting to app...
+</body>
+</html>
