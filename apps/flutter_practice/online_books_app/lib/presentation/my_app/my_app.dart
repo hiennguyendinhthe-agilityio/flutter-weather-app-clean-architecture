@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:online_books_app/core/theme/theme_helper.dart';
 import 'package:online_books_app/core/utils/size_utils.dart';
 import 'package:online_books_app/localization/app_localization.dart';
 import 'package:online_books_app/localization/l10n/app_localizations.dart';
-import 'package:online_books_app/presentation/home/home_screen.dart';
+import 'package:online_books_app/presentation/e_books/list_ebooks_screen.dart';
 import 'package:online_books_app/presentation/notification/controller/notification_controller.dart';
 import 'package:online_books_app/routes/app_routes.dart';
-import 'package:online_books_app/theme/theme_helper.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 class MyApp extends StatelessWidget {
@@ -28,8 +28,8 @@ class MyApp extends StatelessWidget {
               Get.put(NotificationController());
             }),
             unknownRoute: GetPage(
-              name: '/home_initial_page',
-              page: () => HomeScreen(),
+              name: '/item_list_ebook',
+              page: () => ListEbooksScreen(),
             ),
             debugShowCheckedModeBanner: false,
             translations: AppLocalization(),

@@ -2,15 +2,15 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:online_books_app/core/theme/app_decoration.dart';
+import 'package:online_books_app/core/theme/custom_button_style.dart';
+import 'package:online_books_app/core/theme/custom_text_style.dart';
 import 'package:online_books_app/core/utils/image_constant.dart';
 import 'package:online_books_app/core/utils/size_utils.dart';
 import 'package:online_books_app/presentation/e_books/ebook_detail_screen.dart';
 import 'package:online_books_app/presentation/e_books/models/books_model.dart';
 import 'package:online_books_app/presentation/e_books/widgets/item_list_ebooks_widget.dart';
 import 'package:online_books_app/presentation/home/controller/home_controller.dart';
-import 'package:online_books_app/theme/app_decoration.dart';
-import 'package:online_books_app/theme/custom_button_style.dart';
-import 'package:online_books_app/theme/custom_text_style.dart';
 import 'package:online_books_app/widgets/custom_elevated_button.dart';
 import 'package:online_books_app/widgets/custom_image_view.dart';
 import 'package:shimmer/shimmer.dart';

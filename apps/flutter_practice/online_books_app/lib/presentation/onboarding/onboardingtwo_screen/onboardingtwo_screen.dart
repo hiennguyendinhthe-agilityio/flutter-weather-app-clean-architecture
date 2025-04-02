@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:online_books_app/core/theme/app_decoration.dart';
+import 'package:online_books_app/core/theme/custom_button_style.dart';
+import 'package:online_books_app/core/theme/custom_text_style.dart';
+import 'package:online_books_app/core/theme/theme_helper.dart';
 import 'package:online_books_app/core/utils/image_constant.dart';
 import 'package:online_books_app/core/utils/size_utils.dart';
 import 'package:online_books_app/presentation/onboarding/onboardingtwo_screen/controller/onboardingtwo_controller.dart';
-import 'package:online_books_app/theme/app_decoration.dart';
-import 'package:online_books_app/theme/custom_button_style.dart';
-import 'package:online_books_app/theme/custom_text_style.dart';
-import 'package:online_books_app/theme/theme_helper.dart';
 import 'package:online_books_app/widgets/app_bar/appbar_leading_image.dart';
 import 'package:online_books_app/widgets/app_bar/appbar_title.dart';
 import 'package:online_books_app/widgets/app_bar/custom_app_bar.dart';

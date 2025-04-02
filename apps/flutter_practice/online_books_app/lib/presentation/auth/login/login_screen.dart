@@ -1,13 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
+import 'package:online_books_app/core/theme/app_decoration.dart';
+import 'package:online_books_app/core/theme/custom_button_style.dart';
+import 'package:online_books_app/core/theme/custom_text_style.dart';
+import 'package:online_books_app/core/theme/theme_helper.dart';
 import 'package:online_books_app/core/utils/image_constant.dart';
 import 'package:online_books_app/core/utils/size_utils.dart';
 import 'package:online_books_app/presentation/auth/login/controller/login_controller.dart';
-import 'package:online_books_app/theme/app_decoration.dart';
-import 'package:online_books_app/theme/custom_button_style.dart';
-import 'package:online_books_app/theme/custom_text_style.dart';
-import 'package:online_books_app/theme/theme_helper.dart';
 import 'package:online_books_app/widgets/custom_checkbox_button.dart';
 import 'package:online_books_app/widgets/custom_elevated_button.dart';
 import 'package:online_books_app/widgets/custom_image_view.dart';
@@ -190,8 +192,8 @@ class LoginScreen extends GetWidget<LoginController> {
                     Get.back();
                   }
                 },
-                icon: const Icon(
-                  Icons.fingerprint,
+                icon: Icon(
+                  Platform.isIOS ? Icons.tag_faces_outlined : Icons.fingerprint,
                   size: 40,
                 ),
               );

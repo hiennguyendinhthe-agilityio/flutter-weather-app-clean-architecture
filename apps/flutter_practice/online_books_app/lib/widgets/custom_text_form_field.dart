@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:get/get.dart';
-import 'package:online_books_app/core/utils/size_utils.dart';
-import 'package:online_books_app/theme/theme_helper.dart';
 
 import '../core/app_export.dart';
 

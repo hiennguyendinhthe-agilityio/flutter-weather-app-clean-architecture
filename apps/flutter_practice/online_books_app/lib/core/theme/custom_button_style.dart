@@ -1,7 +1,7 @@
 // A class that offers pre-defined button styles for customizing button appearance
 import 'package:flutter/material.dart';
+import 'package:online_books_app/core/theme/theme_helper.dart';
 import 'package:online_books_app/core/utils/size_utils.dart';
-import 'package:online_books_app/theme/theme_helper.dart';
 
 class CustomButtonStyles {
   // Outline button style

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:online_books_app/core/theme/app_decoration.dart';
 import 'package:online_books_app/core/utils/size_utils.dart';
 import 'package:online_books_app/presentation/home/controller/home_controller.dart';
 import 'package:online_books_app/presentation/home/models/homelistsection_item_model.dart';
-import 'package:online_books_app/theme/app_decoration.dart';
 import 'package:online_books_app/widgets/custom_image_view.dart';
 
 class HomelistsectionItemWidget extends StatelessWidget {

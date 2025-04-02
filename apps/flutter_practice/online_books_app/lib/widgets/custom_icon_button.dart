@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:online_books_app/theme/theme_helper.dart';
+import 'package:online_books_app/core/theme/theme_helper.dart';
 import 'package:sizer/sizer.dart';
 
 extension IconButtonStyleHelper on CustomIconButton {

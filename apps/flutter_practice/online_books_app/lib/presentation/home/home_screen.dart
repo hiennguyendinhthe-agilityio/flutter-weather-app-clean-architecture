@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:online_books_app/core/theme/app_decoration.dart';
+import 'package:online_books_app/core/theme/theme_helper.dart';
 import 'package:online_books_app/core/utils/size_utils.dart';
 import 'package:online_books_app/presentation/home/controller/home_controller.dart';
 import 'package:online_books_app/presentation/home/home_initial_page.dart';
@@ -7,8 +9,6 @@ import 'package:online_books_app/presentation/profile/profile_screen.dart';
 import 'package:online_books_app/presentation/saved/controller/saved_controller.dart';
 import 'package:online_books_app/presentation/saved/saved_screen.dart';
 import 'package:online_books_app/presentation/settings/setting_screen.dart';
-import 'package:online_books_app/theme/app_decoration.dart';
-import 'package:online_books_app/theme/theme_helper.dart';
 import 'package:online_books_app/widgets/custom_bottom_bar.dart';
 
 class HomeScreen extends GetWidget<HomeController> {

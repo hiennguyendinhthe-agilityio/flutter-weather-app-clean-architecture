@@ -146,11 +146,11 @@ flutter:
 
 # Config gen splash screen
 flutter_native_splash:
-  image: assets/images/splash_logo_screen.png
-  color: "#ffffff"
-  image_dark: assets/images/splash_logo_screen.png
+  image: assets/images/img_rectangle_122.png
+  color: "#F9C53D"
+  image_dark: assets/images/img_rectangle_122.png
   ios: true
   web: false
   android_12:
-    image: assets/images/splash_logo_screen.png
-    image_dark: assets/images/splash_logo_screen.png
+    image: assets/images/img_rectangle_122.png
+    image_dark: assets/images/img_rectangle_122.png

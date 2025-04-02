@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:online_books_app/core/theme/theme_helper.dart';
 import 'package:online_books_app/core/utils/size_utils.dart';
 import 'package:online_books_app/presentation/profile/controller/profile_controller.dart';
 import 'package:online_books_app/presentation/profile/model/imformationlist_item_model.dart';
-import 'package:online_books_app/theme/theme_helper.dart';
 
 class InformationlistItemWidget extends StatelessWidget {
   InformationlistItemWidget(this.informationlistItemModelObj, {super.key});

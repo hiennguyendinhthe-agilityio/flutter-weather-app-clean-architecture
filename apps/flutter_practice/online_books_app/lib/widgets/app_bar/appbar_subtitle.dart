@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:online_books_app/theme/custom_text_style.dart';
-import 'package:online_books_app/theme/theme_helper.dart';
+import 'package:online_books_app/core/theme/custom_text_style.dart';
+import 'package:online_books_app/core/theme/theme_helper.dart';
 
 class AppbarSubtitle extends StatelessWidget {
   const AppbarSubtitle({

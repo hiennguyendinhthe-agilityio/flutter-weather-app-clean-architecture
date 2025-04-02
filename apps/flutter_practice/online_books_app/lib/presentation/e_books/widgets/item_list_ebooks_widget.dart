@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:online_books_app/core/theme/app_decoration.dart';
+import 'package:online_books_app/core/theme/custom_text_style.dart';
+import 'package:online_books_app/core/theme/theme_helper.dart';
 import 'package:online_books_app/core/utils/image_constant.dart';
 import 'package:online_books_app/core/utils/size_utils.dart';
-import 'package:online_books_app/theme/app_decoration.dart';
-import 'package:online_books_app/theme/custom_text_style.dart';
-import 'package:online_books_app/theme/theme_helper.dart';
 import 'package:online_books_app/widgets/custom_elevated_button.dart';
 import 'package:online_books_app/widgets/custom_image_view.dart';
 

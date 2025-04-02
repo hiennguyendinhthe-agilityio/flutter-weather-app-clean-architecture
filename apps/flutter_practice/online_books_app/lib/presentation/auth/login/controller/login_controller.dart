@@ -19,10 +19,8 @@ class LoginController extends GetxController {
 
   LoginController();
 
-  final RxBool _isAuthenticated = false.obs;
   final RxBool _biometricEnabled = false.obs;
 
-  bool get isAuthenticated => _isAuthenticated.value;
   bool get biometricEnabled => _biometricEnabled.value;
 
   final RxBool _isBiometricSupported = false.obs;
@@ -43,13 +41,6 @@ class LoginController extends GetxController {
       _isBiometricSupported.value = false;
       debugPrint('Error checking biometric support: $e');
     }
-  }
-
-  Future<void> clearSavedCredentials() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('saved_email');
-    await prefs.remove('saved_password');
-    await prefs.setBool('biometric_enabled', false);
   }
 
   Future<void> _loadSavedCredentials() async {
@@ -91,22 +82,6 @@ class LoginController extends GetxController {
     } catch (e) {
       debugPrint('Biometric error: $e');
       return false;
-    }
-  }
-
-  Future<void> loginWithCredentials(String email, String password) async {
-    isLoading.value = true;
-    try {
-      ApiUser? user = await AuthService().logIn(email, password);
-      if (user != null) {
-        Get.offAllNamed('/home_initial_page');
-      } else {
-        Get.snackbar("Error", "Auto-login failed");
-      }
-    } catch (e) {
-      Get.snackbar("Error", "Failed to auto-login: ${e.toString()}");
-    } finally {
-      isLoading.value = false;
     }
   }
 
