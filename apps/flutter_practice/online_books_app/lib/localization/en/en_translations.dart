@@ -93,6 +93,7 @@ final Map<String, String> en = {
   "lbl_fingerprint": "Fingerprint",
   "lbl_face_id": "Face ID",
   "lbl_or_sign_in_with": "Or sign in with",
+  "lbl_or_log_in_with": "or log in with",
 };
 final Map<String, String> vi = {
   "lbl_audio_books": "sách âm thanh",
@@ -187,4 +188,5 @@ final Map<String, String> vi = {
   "lbl_biometric": "sinh trắc học",
   "lbl_biometric_auth": "Xác thực sinh trắc học",
   "lbl_biometric_auth_desc": "Bật xác thực sinh trắc học",
+  "lbl_or_log_in_with": "hoặc đăng nhập với",
 };

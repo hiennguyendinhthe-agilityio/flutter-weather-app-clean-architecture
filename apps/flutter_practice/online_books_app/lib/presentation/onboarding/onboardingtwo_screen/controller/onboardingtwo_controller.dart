@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:online_books_app/presentation/onboarding/onboardingtwo_screen/model/onboardingtwo_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OnboardingtwoController extends GetxController {
   Rx<OnboardingtwoModel> onboardingtwoModelObj = OnboardingtwoModel().obs;
@@ -16,7 +17,9 @@ class OnboardingtwoController extends GetxController {
     }
   }
 
-  void skip() {
+  void skip() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('onboarding_completed', true);
     Get.offAllNamed('/login_screen');
   }
 }

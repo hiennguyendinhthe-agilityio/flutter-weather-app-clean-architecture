@@ -78,5 +78,10 @@ class ImageConstant {
   static String imgThumbsUpAmber300 = '$imagePath/imgThumbsUpAmber300.svg';
 
   static String sort = '$imagePath/sort.svg';
+
   static String star = '$imagePath/Star 1.svg';
+
+  static String imgFacebook = '$imagePath/imgFacebook.png';
+
+  static String imgGoogle = '$imagePath/imgGoogle.png';
 }

@@ -159,6 +159,7 @@ class TextThemes {
 /// Class containing the supported color schemes.
 class ColorsSchemes {
   static final lightCodeColorScheme = ColorScheme.light(
+      errorContainer: Color(0xFFA3470A),
       primary: Color(0xFFD55D0D),
       secondaryContainer: Color(0xFFA34709),
       onPrimary: Color(0xFFFFFFFF),

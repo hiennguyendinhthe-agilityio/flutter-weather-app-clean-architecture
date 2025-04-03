@@ -4,31 +4,36 @@ import 'package:online_books_app/core/utils/size_utils.dart';
 
 // ignore_for_file: must_be_immutable
 class CustomCheckboxButton extends StatelessWidget {
-  CustomCheckboxButton(
-      {super.key,
-      required this.onChange,
-      this.decoration,
-      this.alignment,
-      this.isRightCheck,
-      this.iconSize,
-      this.value,
-      this.text,
-      this.width,
-      this.padding,
-      this.textStyle,
-      this.overflow,
-      this.textAlignment,
-      this.isExpandedText = false});
+  CustomCheckboxButton({
+    super.key,
+    required this.onChange,
+    this.decoration,
+    this.alignment,
+    this.isRightCheck = false,
+    this.iconSize,
+    this.value = false,
+    this.text,
+    this.richText,
+    this.width,
+    this.padding,
+    this.textStyle,
+    this.overflow,
+    this.textAlignment,
+    this.isExpandedText = false,
+    this.checkboxMargin,
+  });
 
   final BoxDecoration? decoration;
   final Alignment? alignment;
-  final bool? isRightCheck;
+  final bool isRightCheck;
   final double? iconSize;
-  bool? value;
+  bool value;
   final Function(bool) onChange;
   final String? text;
+  final InlineSpan? richText; // New parameter for rich text
   final double? width;
   final EdgeInsetsGeometry? padding;
+  final EdgeInsetsGeometry? checkboxMargin;
   final TextStyle? textStyle;
   final TextOverflow? overflow;
   final TextAlign? textAlignment;
@@ -46,51 +51,64 @@ class CustomCheckboxButton extends StatelessWidget {
 
   Widget get buildCheckBoxWidget => GestureDetector(
         onTap: () {
-          value = !(value!);
-          onChange(value!);
+          onChange(!value);
         },
         child: Container(
           decoration: decoration,
           width: width,
           padding: padding,
-          child: isRightCheck ?? false ? rightSideCheckBox : leftSideCheckBox,
+          child: isRightCheck ? rightSideCheckBox : leftSideCheckBox,
         ),
       );
 
   Widget get leftSideCheckBox => Row(
-        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          checkboxWidget,
-          SizedBox(
-            width: text != null && text!.isNotEmpty ? 8.0 : 0,
+          Container(
+            margin: checkboxMargin ?? EdgeInsets.only(top: 2),
+            child: checkboxWidget,
           ),
-          isExpandedText ? Expanded(child: textWidget) : textWidget,
+          if (text != null || richText != null) ...[
+            SizedBox(width: 8.h),
+            isExpandedText ? Expanded(child: textContent) : textContent,
+          ],
         ],
       );
 
   Widget get rightSideCheckBox => Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          isExpandedText ? Expanded(child: textWidget) : textWidget,
-          SizedBox(
-            width: text != null && text!.isNotEmpty ? 8.0 : 0,
+          isExpandedText ? Expanded(child: textContent) : textContent,
+          SizedBox(width: 8.h),
+          Container(
+            margin: checkboxMargin ?? EdgeInsets.only(top: 2),
+            child: checkboxWidget,
           ),
-          checkboxWidget,
         ],
       );
 
-  Widget get textWidget => Text(
-        text ?? "Text",
+  Widget get textContent {
+    if (richText != null) {
+      return RichText(
+        text: richText!,
         textAlign: textAlignment ?? TextAlign.start,
-        overflow: overflow,
-        style: textStyle ?? theme.textTheme.bodyLarge,
+        overflow: overflow ?? TextOverflow.visible,
       );
+    }
+    return Text(
+      text ?? "",
+      textAlign: textAlignment ?? TextAlign.start,
+      overflow: overflow,
+      style: textStyle ?? theme.textTheme.bodyLarge,
+    );
+  }
 
   Widget get checkboxWidget => SizedBox(
-        height: iconSize ?? 10.h,
-        width: iconSize ?? 10.h,
+        height: iconSize ?? 20.h,
+        width: iconSize ?? 20.w,
         child: Checkbox(
-          value: value ?? false,
+          value: value,
           checkColor: theme.colorScheme.onPrimary,
           activeColor: theme.colorScheme.secondaryContainer,
           side: WidgetStateBorderSide.resolveWith(
@@ -98,8 +116,9 @@ class CustomCheckboxButton extends StatelessWidget {
               color: theme.colorScheme.secondaryContainer,
             ),
           ),
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           onChanged: (value) {
-            onChange(value!);
+            onChange(value ?? false);
           },
         ),
       );

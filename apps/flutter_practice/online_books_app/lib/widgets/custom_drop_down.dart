@@ -18,7 +18,7 @@ class CustomDropDown extends StatelessWidget {
       this.hintStyle,
       this.items,
       this.prefix,
-      this.prefixConstraints,
+      this.prefixIconConstraints,
       this.contentPadding,
       this.borderDecoration,
       this.fillColor,
@@ -50,7 +50,7 @@ class CustomDropDown extends StatelessWidget {
 
   final Widget? prefix;
 
-  final BoxConstraints? prefixConstraints;
+  final BoxConstraints? prefixIconConstraints;
 
   final EdgeInsets? contentPadding;
 
@@ -74,41 +74,37 @@ class CustomDropDown extends StatelessWidget {
         : dropDownWidget;
   }
 
-  Widget get dropDownWidget => Container(
-        width: width ?? double.maxFinite,
-        decoration: boxDecoration,
-        child: DropdownButtonFormField<SelectionPopupModel>(
-          focusNode: focusNode,
-          icon: icon,
-          iconSize: iconSize ?? 24,
-          autofocus: autofocus!,
-          style: textStyle ?? theme.textTheme.bodyLarge,
-          hint: Text(
-            hintText ?? "",
-            style: hintStyle ?? theme.textTheme.bodyLarge,
-            overflow: TextOverflow.ellipsis,
-          ),
-          items: items?.map((SelectionPopupModel item) {
-            return DropdownMenuItem<SelectionPopupModel>(
-              value: item,
-              child: Text(
-                item.title,
-                style: hintStyle ?? theme.textTheme.bodyLarge,
-                overflow: TextOverflow.ellipsis,
-              ),
-            );
-          }).toList(),
-          decoration: decoration,
-          validator: validator,
-          onChanged: (value) {
-            onChanged?.call(value!);
-          },
+  Widget get dropDownWidget => DropdownButtonFormField<SelectionPopupModel>(
+        focusNode: focusNode,
+        icon: icon,
+        iconSize: iconSize ?? 24,
+        autofocus: autofocus!,
+        style: textStyle ?? theme.textTheme.bodyLarge,
+        hint: Text(
+          hintText ?? "",
+          style: hintStyle ?? theme.textTheme.bodyLarge,
+          overflow: TextOverflow.ellipsis,
         ),
+        items: items?.map((SelectionPopupModel item) {
+          return DropdownMenuItem<SelectionPopupModel>(
+            value: item,
+            child: Text(
+              item.title,
+              style: hintStyle ?? theme.textTheme.bodyLarge,
+              overflow: TextOverflow.ellipsis,
+            ),
+          );
+        }).toList(),
+        decoration: decoration,
+        validator: validator,
+        onChanged: (value) {
+          onChanged?.call(value!);
+        },
       );
 
   InputDecoration get decoration => InputDecoration(
         prefixIcon: prefix,
-        prefixIconConstraints: prefixConstraints,
+        prefixIconConstraints: prefixIconConstraints,
         isDense: true,
         contentPadding:
             contentPadding ?? EdgeInsets.fromLTRB(8.h, 12.h, 12.h, 12.h),

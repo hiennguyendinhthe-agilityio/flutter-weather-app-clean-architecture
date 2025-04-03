@@ -36,7 +36,7 @@ class LoginScreen extends GetWidget<LoginController> {
         decoration: AppDecoration.fillOnPrimaryTwo,
         child: FormBuilder(
           key: controller.formKey,
-          child: Container(
+          child: SingleChildScrollView(
             padding: EdgeInsets.only(
               left: 26.h,
               top: 144.h,
@@ -144,6 +144,17 @@ class LoginScreen extends GetWidget<LoginController> {
                 Obx(
                   () => CustomCheckboxButton(
                     text: "lbl_remember_me".tr,
+                    richText: TextSpan(
+                        style: TextStyle(
+                          color: Colors.grey[700],
+                          fontSize: 14,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: "lbl_remember_me".tr,
+                            style: theme.textTheme.bodyLarge,
+                          ),
+                        ]),
                     value: controller.isRememberMe.value,
                     textStyle: CustomTextStyles.bodySmallErrorContainer,
                     onChange: (value) {
@@ -153,7 +164,7 @@ class LoginScreen extends GetWidget<LoginController> {
                 ),
                 Text(
                   "msg_forgot_password?".tr,
-                  style: CustomTextStyles.bodySmallErrorContainer,
+                  style: theme.textTheme.bodyLarge,
                 )
               ],
             ),
