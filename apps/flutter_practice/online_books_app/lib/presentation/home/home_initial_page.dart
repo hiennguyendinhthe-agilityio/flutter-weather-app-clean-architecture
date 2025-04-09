@@ -26,9 +26,9 @@ class HomeInitialPage extends StatelessWidget {
       child: Container(
         width: double.maxFinite,
         padding: EdgeInsets.only(
-          left: 14.h,
+          left: 16.h,
           top: 16.h,
-          right: 14.h,
+          right: 16.h,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,14 +48,9 @@ class HomeInitialPage extends StatelessWidget {
             SizedBox(
               height: 16.h,
             ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: 4.h,
-              ),
-              child: Text(
-                "lbl_remaining".tr,
-                style: CustomTextStyles.titleLargeConcertOneBlack900Regular_1,
-              ),
+            Text(
+              "lbl_remaining".tr,
+              style: CustomTextStyles.titleLargeConcertOneBlack900Regular_1,
             ),
             SizedBox(
               height: 6.h,
@@ -92,7 +87,7 @@ class HomeInitialPage extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Padding(
-                            padding: EdgeInsets.only(left: 40.h),
+                            padding: EdgeInsets.only(left: 40.h, bottom: 16.h),
                             child: Text(
                               "lbl_log_in".tr,
                               style: CustomTextStyles.titleMediumBlueGray900,
@@ -118,7 +113,7 @@ class HomeInitialPage extends StatelessWidget {
             width: 302.h,
           ),
           Padding(
-            padding: EdgeInsets.all(8.h),
+            padding: EdgeInsets.only(left: 6.h, bottom: 16.h),
             child: CustomElevatedButton(
               height: 32.h,
               width: 96.w,
@@ -136,15 +131,16 @@ class HomeInitialPage extends StatelessWidget {
             alignment: Alignment.bottomLeft,
             child: Padding(
               padding: EdgeInsets.only(
-                left: 10.h,
+                left: 12.h,
                 bottom: 64.h,
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     "lbl_ready_for_a".tr,
-                    style: CustomTextStyles.titleLarge_1,
+                    style: CustomTextStyles.headlineSmallBlack900,
                   ),
                   Text(
                     "lbl_journey".tr,

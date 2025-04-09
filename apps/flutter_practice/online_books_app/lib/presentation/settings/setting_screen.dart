@@ -80,19 +80,19 @@ class SettingsScreen extends StatelessWidget {
               children: [
                 SizedBox(
                   width: double.maxFinite,
-                  child: _buildChangePasswordRow(
+                  child: _buildChangeSettingsRow(
                     changePassword: "lbl_edit_profile".tr,
                   ),
                 ),
                 SizedBox(
                   width: double.maxFinite,
-                  child: _buildChangePasswordRow(
+                  child: _buildChangeSettingsRow(
                     changePassword: "lbl_change_password".tr,
                   ),
                 ),
                 SizedBox(
                   width: double.maxFinite,
-                  child: _buildChangePasswordRow(
+                  child: _buildChangeSettingsRow(
                     changePassword: "lbl_change_email".tr,
                   ),
                 ),
@@ -250,19 +250,19 @@ class SettingsScreen extends StatelessWidget {
               children: [
                 SizedBox(
                   width: double.maxFinite,
-                  child: _buildChangePasswordRow(
+                  child: _buildChangeSettingsRow(
                     changePassword: "lbl_language".tr,
                   ),
                 ),
                 SizedBox(
                   width: double.maxFinite,
-                  child: _buildChangePasswordRow(
+                  child: _buildChangeSettingsRow(
                     changePassword: "lbl_delete_account".tr,
                   ),
                 ),
                 SizedBox(
                   width: double.maxFinite,
-                  child: _buildChangePasswordRow(
+                  child: _buildChangeSettingsRow(
                     changePassword: "lbl_log_out".tr,
                   ),
                 ),
@@ -298,7 +298,7 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildChangePasswordRow(
+  Widget _buildChangeSettingsRow(
       {required String changePassword, VoidCallback? onTap}) {
     return GestureDetector(
       onTap: () {

@@ -26,6 +26,16 @@ class SignupScreen extends GetView<SignupController> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
+        leading: IconButton(
+          icon: CustomImageView(
+            imagePath: ImageConstant.imgArrowLeft,
+            height: 24.h,
+            width: 24.w,
+          ),
+          onPressed: () {
+            Get.back();
+          },
+        ),
         backgroundColor: appTheme.yellow700,
         elevation: 0,
       ),
@@ -33,57 +43,59 @@ class SignupScreen extends GetView<SignupController> {
       body: SafeArea(
         child: FormBuilder(
           key: controller.formKey,
-          child: LayoutBuilder(
-            builder: (context, constraints) => SingleChildScrollView(
-              padding: EdgeInsets.symmetric(
-                horizontal: 32.h,
-              ),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "lbl_create_account".tr,
-                      style: theme.textTheme.headlineLarge,
-                    ),
-                    SizedBox(
-                      height: 68.h,
-                    ),
-                    _buildFirstNameInput(),
-                    SizedBox(
-                      height: 30.h,
-                    ),
-                    _buildLastNameInput(),
-                    SizedBox(
-                      height: 30.h,
-                    ),
-                    _buildEmailInput(),
-                    SizedBox(
-                      height: 30.h,
-                    ),
-                    _buildDateOfBirthInput(),
-                    SizedBox(
-                      height: 28.h,
-                    ),
-                    _buildCustomDropDown(),
-                    SizedBox(
-                      height: 30.h,
-                    ),
-                    _buildPasswordInput(),
-                    SizedBox(
-                      height: 10.h,
-                    ),
-                    _buildTermsAgreementCheckbox(),
-                    SizedBox(
-                      height: 96.h,
-                    ),
-                    _buildSignUpButton(),
-                    SizedBox(height: 56.h),
-                    _buildLoginOption(context),
-                    SizedBox(height: 28.h),
-                  ],
+          child: SingleChildScrollView(
+            padding: EdgeInsets.symmetric(
+              horizontal: 32.h,
+            ),
+            child: LayoutBuilder(
+              builder: (context, constraints) => IntrinsicHeight(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "lbl_create_account".tr,
+                        style: theme.textTheme.headlineLarge,
+                      ),
+                      SizedBox(
+                        height: 68.h,
+                      ),
+                      _buildFirstNameInput(),
+                      SizedBox(
+                        height: 30.h,
+                      ),
+                      _buildLastNameInput(),
+                      SizedBox(
+                        height: 30.h,
+                      ),
+                      _buildEmailInput(),
+                      SizedBox(
+                        height: 30.h,
+                      ),
+                      _buildDateOfBirthInput(),
+                      SizedBox(
+                        height: 28.h,
+                      ),
+                      _buildCustomDropDown(),
+                      SizedBox(
+                        height: 30.h,
+                      ),
+                      _buildPasswordInput(),
+                      SizedBox(
+                        height: 10.h,
+                      ),
+                      _buildTermsAgreementCheckbox(),
+                      SizedBox(
+                        height: 96.h,
+                      ),
+                      _buildSignUpButton(),
+                      SizedBox(height: 56.h),
+                      _buildLoginOption(context),
+                      SizedBox(height: 28.h),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -128,6 +140,7 @@ class SignupScreen extends GetView<SignupController> {
   /// First Name Input
   Widget _buildFirstNameInput() {
     return CustomTextFormField(
+      autofocus: true,
       controller: controller.firstNameInputController,
       hintText: "msg_legal_first_name".tr,
       prefix: Container(

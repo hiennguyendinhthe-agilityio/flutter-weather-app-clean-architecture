@@ -30,8 +30,8 @@ class ItemListEbooksWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: 10.h,
-        vertical: 6.h,
+        horizontal: 16.h,
+        vertical: 8.h,
       ),
       decoration: AppDecoration.outlineGray.copyWith(
         borderRadius: BorderRadiusStyle.roundedBorder12,
