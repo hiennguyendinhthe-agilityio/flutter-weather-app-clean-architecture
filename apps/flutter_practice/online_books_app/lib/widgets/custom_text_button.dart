@@ -18,7 +18,7 @@ class CustomTextButton extends StatelessWidget {
     return TextButton(
       style: const ButtonStyle(
           padding: WidgetStatePropertyAll(EdgeInsets.zero),
-          alignment: Alignment.centerRight),
+          alignment: Alignment.center),
       onPressed: onPressed,
       child: Text(
         text,
