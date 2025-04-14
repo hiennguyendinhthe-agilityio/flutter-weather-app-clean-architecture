@@ -24,11 +24,14 @@ class MyApp extends StatelessWidget {
             const Breakpoint(start: 1921, end: double.infinity, name: '4K'),
           ],
           child: GetMaterialApp(
+            defaultTransition: Transition.cupertino,
+            transitionDuration: const Duration(milliseconds: 300),
+            enableLog: true,
             initialBinding: BindingsBuilder(() {
               Get.put(NotificationController());
             }),
             unknownRoute: GetPage(
-              name: '/item_list_ebook',
+              name: AppRoutes.itemListEbook,
               page: () => ListEbooksScreen(),
             ),
             debugShowCheckedModeBanner: false,

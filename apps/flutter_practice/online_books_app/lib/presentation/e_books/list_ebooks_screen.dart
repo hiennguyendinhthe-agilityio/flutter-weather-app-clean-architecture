@@ -56,7 +56,8 @@ class ListEbooksScreen extends StatelessWidget {
                       pdfUrl: book.pdfUrl ?? '',
                     );
 
-                    Get.to(() => EBookDetailScreen(), arguments: book);
+                    Get.to(() => EBookDetailScreen(),
+                        arguments: {'book': book});
                   },
                   child: ItemListEbooksWidget(
                     onTap: () {

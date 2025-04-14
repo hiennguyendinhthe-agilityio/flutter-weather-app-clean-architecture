@@ -9,12 +9,17 @@ import 'package:online_books_app/presentation/auth/signup/model/signup_model.dar
 import 'package:online_books_app/routes/app_routes.dart';
 
 class SignupController extends GetxController {
+  // TextEditingControllers
   TextEditingController firstNameInputController = TextEditingController();
   TextEditingController lastNameInputController = TextEditingController();
   TextEditingController emailInputController = TextEditingController();
-  TextEditingController dateOfBirthInputController = TextEditingController();
   TextEditingController passwordInputController = TextEditingController();
-
+  late final TextEditingController dayController;
+  late final TextEditingController monthController;
+  late final TextEditingController yearController;
+  final ageController = TextEditingController();
+  final schoolNameController = TextEditingController();
+  final schoolIdController = TextEditingController();
   final formKey = GlobalKey<FormBuilderState>();
 
   final Dio _dio = Dio();
@@ -22,8 +27,247 @@ class SignupController extends GetxController {
   Rx<SignupModel> signupModelObj = SignupModel().obs;
   Rx<bool> isShowPassword = true.obs;
   Rx<bool> termAgreementCheckBox = false.obs;
-
+  RxBool isStudent = false.obs;
   Rx<bool> isLoading = false.obs;
+
+  // Observable variables
+  final Rx<DateTime?> selectedDate = Rx<DateTime?>(null);
+  final RxString day = ''.obs;
+  final RxString month = ''.obs;
+  final RxString year = ''.obs;
+  final Rx<DateTime?> selectedDateOfBirth = Rx<DateTime?>(null);
+  final RxInt age = 0.obs;
+
+  // Error states
+  final RxString dayError = RxString('');
+  final RxString monthError = RxString('');
+  final RxString yearError = RxString('');
+  final RxString schoolNameError = RxString('');
+  final RxString schoolIdError = RxString('');
+
+  bool _isUpdatingFromDatePicker = false;
+  bool _isUpdatingFromTextFields = false;
+
+  final ScrollController scrollController = ScrollController();
+  final GlobalKey occupationDropdownKey = GlobalKey();
+  void ensureDropdownVisible(GlobalKey key) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final context = key.currentContext;
+      if (context != null) {
+        Scrollable.ensureVisible(
+          context,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          alignment: 0.4,
+        );
+      }
+    });
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    dayController = TextEditingController();
+    monthController = TextEditingController();
+    yearController = TextEditingController();
+
+    day.value = '';
+    month.value = '';
+    year.value = '';
+    age.value = 0;
+    isStudent.value = false;
+    schoolNameError.value = '';
+    schoolIdError.value = '';
+
+    selectedDate.value = null;
+    selectedDateOfBirth.value = null;
+  }
+
+  @override
+  void onClose() {
+    // Dispose controllers when the widget is removed
+    scrollController.dispose();
+    dayController.dispose();
+    monthController.dispose();
+    yearController.dispose();
+    firstNameInputController.dispose();
+    lastNameInputController.dispose();
+    emailInputController.dispose();
+    passwordInputController.dispose();
+    ageController.dispose();
+    schoolNameController.dispose();
+    schoolIdController.dispose();
+    super.onClose();
+  }
+
+  // Update text fields from date without triggering circular updates
+  void updateTextFieldsFromDate(DateTime date) {
+    if (_isUpdatingFromTextFields) return;
+
+    _isUpdatingFromDatePicker = true;
+
+    day.value = date.day.toString().padLeft(2, '0');
+    month.value = date.month.toString().padLeft(2, '0');
+    year.value = date.year.toString();
+
+    dayController.text = day.value;
+    monthController.text = month.value;
+    yearController.text = year.value;
+
+    calculateAge(date);
+
+    // Clear any errors
+    dayError.value = '';
+    monthError.value = '';
+    yearError.value = '';
+
+    _isUpdatingFromDatePicker = false;
+  }
+
+  // Validate day input
+  bool validateDay(String value) {
+    // Clear previous error
+    dayError.value = '';
+
+    if (value.isEmpty) {
+      dayError.value = 'Required';
+      return false;
+    }
+
+    int? dayValue = int.tryParse(value);
+    if (dayValue == null) {
+      dayError.value = 'Invalid';
+      return false;
+    }
+
+    if (dayValue < 1 || dayValue > 31) {
+      dayError.value = 'Range: 1-31';
+      return false;
+    }
+
+    // Check if day is valid for the current month and year
+    int yearValue = int.tryParse(year.value) ?? DateTime.now().year;
+    int monthValue = int.tryParse(month.value) ?? DateTime.now().month;
+
+    try {
+      DateTime(yearValue, monthValue, dayValue);
+    } catch (e) {
+      dayError.value = 'Invalid for month';
+      return false;
+    }
+
+    return true;
+  }
+
+  // Validate month input
+  bool validateMonth(String value) {
+    // Clear previous error
+    monthError.value = '';
+
+    if (value.isEmpty) {
+      monthError.value = 'Required';
+      return false;
+    }
+
+    int? monthValue = int.tryParse(value);
+    if (monthValue == null) {
+      monthError.value = 'Invalid';
+      return false;
+    }
+
+    if (monthValue < 1 || monthValue > 12) {
+      monthError.value = 'Range: 1-12';
+      return false;
+    }
+
+    return true;
+  }
+
+  // Validate year input
+  bool validateYear(String value) {
+    // Clear previous error
+    yearError.value = '';
+
+    if (value.isEmpty) {
+      yearError.value = 'Required';
+      return false;
+    }
+
+    int? yearValue = int.tryParse(value);
+    if (yearValue == null) {
+      yearError.value = 'Invalid';
+      return false;
+    }
+
+    if (yearValue < 1900 || yearValue > DateTime.now().year) {
+      yearError.value = 'Range: 1900-Now';
+      return false;
+    }
+
+    return true;
+  }
+
+  // Update date from text fields without triggering circular updates
+  void updateDateFromTextFields() {
+    if (_isUpdatingFromDatePicker) return;
+
+    // Skip if any field is empty
+    if (day.value.isEmpty || month.value.isEmpty || year.value.isEmpty) {
+      selectedDate.value = null;
+      selectedDateOfBirth.value = null;
+      age.value = 0;
+      return;
+    }
+
+    _isUpdatingFromTextFields = true;
+
+    // Get values from fields
+    final dayValue = int.parse(day.value);
+    final monthValue = int.parse(month.value);
+    final yearValue = int.parse(year.value);
+
+    // Create a new date, handling invalid dates
+    try {
+      final newDate = DateTime(yearValue, monthValue, dayValue);
+      selectedDate.value = newDate;
+      selectedDateOfBirth.value = newDate;
+      calculateAge(newDate);
+    } catch (e) {
+      selectedDate.value = null;
+      selectedDateOfBirth.value = null;
+      age.value = 0;
+    }
+
+    _isUpdatingFromTextFields = false;
+  }
+
+  String? validateSchoolName(String? value) {
+    if (isStudent.value && (value == null || value.isEmpty)) {
+      return 'Please enter school name';
+    }
+    return null;
+  }
+
+  String? validateSchoolId(String? value) {
+    if (isStudent.value && (value == null || value.isEmpty)) {
+      return 'Please enter school ID';
+    }
+    return null;
+  }
+
+  void calculateAge(DateTime? birthDate) {
+    if (birthDate == null) {
+      age.value = 0;
+      return;
+    }
+    DateTime now = DateTime.now();
+    int calculatedAge = now.year - birthDate.year;
+    if (now.month < birthDate.month ||
+        (now.month == birthDate.month && now.day < birthDate.day)) {
+      calculatedAge--;
+    }
+    age.value = calculatedAge;
+  }
 
   Future<void> signUp() async {
     if (formKey.currentState == null || !formKey.currentState!.validate()) {

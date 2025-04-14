@@ -54,7 +54,8 @@ class SavedScreen extends StatelessWidget {
                       Books book = savedBooksController.savedBooks[index];
                       return GestureDetector(
                         onTap: () {
-                          Get.to(() => EBookDetailScreen(), arguments: book);
+                          Get.to(() => EBookDetailScreen(),
+                              arguments: {'book': book});
                         },
                         child: ItemListEbooksWidget(
                           onTap: () {
