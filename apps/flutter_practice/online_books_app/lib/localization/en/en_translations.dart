@@ -94,6 +94,9 @@ final Map<String, String> en = {
   "lbl_face_id": "Face ID",
   "lbl_or_sign_in_with": "Or sign in with",
   "lbl_or_log_in_with": "or log in with",
+  "lbl_are_you_a_student": "Are you a student?",
+  "lbl_school_name": "School name",
+  "lbl_student_id": "Student ID",
 };
 final Map<String, String> vi = {
   "lbl_audio_books": "sách âm thanh",
@@ -189,4 +192,10 @@ final Map<String, String> vi = {
   "lbl_biometric_auth": "Xác thực sinh trắc học",
   "lbl_biometric_auth_desc": "Bật xác thực sinh trắc học",
   "lbl_or_log_in_with": "hoặc đăng nhập với",
+  "lbl_fingerprint": "vân tay",
+  "lbl_face_id": "nhận diện khuôn mặt",
+  "lbl_or_sign_in_with": "hoặc đăng nhập bằng",
+  "lbl_are_you_a_student": "Bạn có phải là sinh viên không?",
+  "lbl_school_name": "Tên trường",
+  "lbl_student_id": "Mã sinh viên",
 };

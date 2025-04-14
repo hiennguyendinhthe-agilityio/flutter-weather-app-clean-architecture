@@ -1,6 +1,8 @@
 import 'package:online_books_app/presentation/audio_books/list_audio_books_screen.dart';
 import 'package:online_books_app/presentation/auth/login/login_screen.dart';
 import 'package:online_books_app/presentation/auth/signup/signup_screen.dart';
+import 'package:online_books_app/presentation/e_books/bindings/ebook_detail_bindings.dart';
+import 'package:online_books_app/presentation/e_books/ebook_detail_screen.dart';
 import 'package:online_books_app/presentation/e_books/list_ebooks_screen.dart';
 import 'package:online_books_app/presentation/home/binding/home_binding.dart';
 import 'package:online_books_app/presentation/home/home_screen.dart';
@@ -37,7 +39,15 @@ class AppRoutes {
 
   static const String notificationScreen = '/notification_screen';
 
+  static const String eBookDetail = '/ebook_detail_screen';
+
   static List<GetPage> pages = [
+    GetPage(
+      name: AppRoutes.eBookDetail,
+      page: () => EBookDetailScreen(),
+      transition: Transition.fadeIn,
+      binding: EBookDetailBinding(),
+    ),
     GetPage(name: notificationScreen, page: () => NotificationScreen()),
     GetPage(
       name: listAudioBook,

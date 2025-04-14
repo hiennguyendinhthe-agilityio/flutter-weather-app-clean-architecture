@@ -258,7 +258,9 @@ class HomeInitialPage extends StatelessWidget {
             category: book.occupation ?? 'Unknown',
             description: book.biography ?? 'No biography available',
             onTap: () {
-              Get.to(() => EBookDetailScreen(), arguments: book);
+              Get.to(() => EBookDetailScreen(), arguments: {
+                'book': book,
+              });
             },
           );
         }),

@@ -2,39 +2,30 @@ import 'package:flutter/material.dart';
 
 // Define constants for the Figma design dimensions
 const num FIGMA_DESIGN_WIDTH = 430;
-const num FIGMA_DESIGN_WIDTH_AND_HEIGHT =
-    830; // New value that combines both width and height
+
 const num FIGMA_DESIGN_HEIGHT = 932;
 
 extension ResponsiveExtension on num {
   double get w {
-    // Use the FIGMA_DESIGN_WIDTH_AND_HEIGHT when both width and height are considered
-    if (SizeUtils.width >= FIGMA_DESIGN_WIDTH_AND_HEIGHT) {
-      return (this * SizeUtils.width) / FIGMA_DESIGN_WIDTH_AND_HEIGHT;
-    }
     return (this * SizeUtils.width) / FIGMA_DESIGN_WIDTH;
   }
 
   double get h {
-    // Use the FIGMA_DESIGN_WIDTH_AND_HEIGHT when both width and height are considered
-    if (SizeUtils.height >= FIGMA_DESIGN_WIDTH_AND_HEIGHT) {
-      return (this * SizeUtils.height) / FIGMA_DESIGN_WIDTH_AND_HEIGHT;
-    }
+    return (this * SizeUtils.height) / FIGMA_DESIGN_HEIGHT;
+  }
+
+  double get v {
     return (this * SizeUtils.height) / FIGMA_DESIGN_HEIGHT;
   }
 
   double get fSize {
-    // Base font size scaling based on width
     double baseFontSize = (this * (SizeUtils.width / FIGMA_DESIGN_WIDTH));
-
-    // Apply different multipliers based on device type
     if (SizeUtils.deviceType == DeviceType.tablet) {
       return baseFontSize * 1.15;
     } else if (SizeUtils.deviceType == DeviceType.desktop) {
       return baseFontSize * 1.4;
     }
-
-    return baseFontSize; // Default for mobile
+    return baseFontSize;
   }
 }
 
@@ -85,6 +76,7 @@ class SizeUtils {
     width = mediaQuery.size.width;
     height = mediaQuery.size.height;
     orientation = mediaQuery.orientation;
+    textScaleFactor = mediaQuery.textScaler;
 
     // Dynamically determine device type based on screen width
     if (width >= 1024) {
@@ -98,4 +90,5 @@ class SizeUtils {
 
   // Utility to determine if screen is smaller than maxWidth
   static bool isSmallScreen(double maxWidth) => width < maxWidth;
+  static TextScaler textScaleFactor = const TextScaler.linear(1.0);
 }

@@ -20,11 +20,22 @@ class EBookDetailScreen extends StatelessWidget {
 
   final BookController controller = Get.find<BookController>();
   final SavedBooksController savedBooksController =
-      Get.put(SavedBooksController());
-  final DeepLinkController deepLinkController = Get.put(DeepLinkController());
+      Get.find<SavedBooksController>();
+  final DeepLinkController deepLinkController = Get.find<DeepLinkController>();
+
   @override
   Widget build(BuildContext context) {
-    final Books book = Get.arguments;
+    final Map<String, dynamic>? arguments =
+        Get.arguments as Map<String, dynamic>?;
+    final Books? book = arguments?['book'] as Books?;
+
+    if (book == null) {
+      return Scaffold(
+        body: Center(
+          child: Text('Error: Book data is missing.'),
+        ),
+      );
+    }
     controller.setBookData(
       title: book.fullName ?? 'Unknown',
       description: book.biography ?? 'No biography available',
@@ -33,9 +44,7 @@ class EBookDetailScreen extends StatelessWidget {
       starRating: book.starRating ?? 0,
       pdfUrl: book.pdfUrl ?? '',
     );
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      deepLinkController.initDeepLinks();
-    });
+
     return Scaffold(
       appBar: AppBar(
         actions: [

@@ -1,6 +1,6 @@
 import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:online_books_app/core/app_export.dart';
 import 'package:online_books_app/presentation/e_books/ebook_detail_screen.dart';
 import 'package:online_books_app/presentation/e_books/models/books_model.dart';
 import 'package:share_plus/share_plus.dart';
@@ -54,22 +54,61 @@ class DeepLinkController extends GetxController {
 
   void _handleDeepLink(Uri uri) {
     try {
-      debugPrint('Received deep link: ${uri.toString()}');
-      debugPrint('Query parameters: ${uri.queryParameters}');
+      debugPrint('[DeepLinkController] Received deep link: ${uri.toString()}');
+      String? bookId;
+      Map<String, String> parameters = uri.queryParameters;
 
-      if (uri.scheme == 'yourapp' && uri.host == 'book') {
-        final bookId = uri.queryParameters['id'];
-
-        if (bookId == null || bookId.isEmpty) {
-          throw 'Invalid book ID';
+      if (uri.scheme == 'https' &&
+          uri.host == 'online-books-app.web.app' &&
+          uri.pathSegments.isNotEmpty &&
+          uri.pathSegments.first == 'share') {
+        debugPrint(
+            '[DeepLinkController] Detected App Link. Path segments: ${uri.pathSegments}');
+        if (uri.pathSegments.length > 1 && uri.pathSegments[1].isNotEmpty) {
+          bookId = uri.pathSegments[1];
+          debugPrint(
+              '[DeepLinkController] Extracted bookId from path: "$bookId"');
+        } else {
+          debugPrint(
+              '[DeepLinkController] App Link path missing or invalid bookId segment.');
         }
-
-        debugPrint('Navigating to /bookDetail with bookId: $bookId');
-        Get.to(() => EBookDetailScreen(), arguments: {'id': bookId});
+      } else if (uri.scheme == 'yourapp' && uri.host == 'book') {
+        debugPrint(
+            '[DeepLinkController] Detected Custom Scheme. Query params: $parameters');
+        bookId = parameters['id'];
+        if (bookId != null && bookId.isNotEmpty) {
+          debugPrint(
+              '[DeepLinkController] Extracted bookId from query: "$bookId"');
+        } else {
+          debugPrint(
+              '[DeepLinkController] Custom Scheme query missing, empty, or invalid "id" parameter.');
+          bookId = null;
+        }
+      } else {
+        debugPrint(
+            '[DeepLinkController] Unknown or unhandled link type: ${uri.toString()}');
+        return;
       }
+
+      if (bookId == null || bookId.isEmpty) {
+        debugPrint(
+            '[DeepLinkController] Error: Invalid or missing book ID after parsing URI. Cannot navigate.');
+
+        Get.snackbar(
+            'Invalid Link', 'Could not extract book information from the link.',
+            snackPosition: SnackPosition.BOTTOM);
+        return;
+      }
+
+      final argumentsToPass = {'id': bookId};
+      debugPrint(
+          '[DeepLinkController] Attempting to navigate to EBookDetailScreen with arguments: $argumentsToPass');
+
+      Get.to(() => EBookDetailScreen(), arguments: argumentsToPass);
     } catch (e) {
-      debugPrint('Deep link handling error: $e');
-      Get.snackbar('Invalid Link', 'Could not open the content');
+      debugPrint('[DeepLinkController] Deep link handling error: $e');
+      Get.snackbar('Error', 'Could not open the link due to an error.',
+          snackPosition: SnackPosition.BOTTOM);
     }
   }
 

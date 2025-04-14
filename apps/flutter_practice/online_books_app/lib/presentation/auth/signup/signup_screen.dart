@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:online_books_app/core/theme/custom_button_style.dart';
 import 'package:online_books_app/core/theme/custom_text_style.dart';
 import 'package:online_books_app/core/theme/theme_helper.dart';
-import 'package:online_books_app/core/utils/date_time_utils.dart';
 import 'package:online_books_app/core/utils/image_constant.dart';
 import 'package:online_books_app/core/utils/size_utils.dart';
 import 'package:online_books_app/presentation/auth/signup/controller/signup_controller.dart';
@@ -16,11 +15,9 @@ import 'package:online_books_app/widgets/custom_image_view.dart';
 import 'package:online_books_app/widgets/custom_text_form_field.dart';
 
 class SignupScreen extends GetView<SignupController> {
-  SignupScreen({super.key});
+  const SignupScreen({super.key});
 
   @override
-  final SignupController controller = Get.find<SignupController>();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,6 +41,7 @@ class SignupScreen extends GetView<SignupController> {
         child: FormBuilder(
           key: controller.formKey,
           child: SingleChildScrollView(
+            controller: controller.scrollController,
             padding: EdgeInsets.symmetric(
               horizontal: 32.h,
             ),
@@ -74,9 +72,30 @@ class SignupScreen extends GetView<SignupController> {
                       SizedBox(
                         height: 30.h,
                       ),
-                      _buildDateOfBirthInput(),
+                      _buildDateOfBirthInput(context),
                       SizedBox(
-                        height: 28.h,
+                        height: 30.h,
+                      ),
+                      _buildAgeInput(),
+                      SizedBox(
+                        height: 30.h,
+                      ),
+                      _buildIsStudentCheckbox(),
+                      Obx(
+                        () => controller.isStudent.value
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(height: 30.h),
+                                  _buildSchoolNameInput(),
+                                  SizedBox(height: 30.h),
+                                  _buildSchoolIdInput(),
+                                ],
+                              )
+                            : SizedBox.shrink(),
+                      ),
+                      SizedBox(
+                        height: 30.h,
                       ),
                       _buildCustomDropDown(),
                       SizedBox(
@@ -105,8 +124,53 @@ class SignupScreen extends GetView<SignupController> {
     );
   }
 
+  Widget _buildIsStudentCheckbox() {
+    return Obx(
+      () => CustomCheckboxButton(
+        text: "lbl_are_you_a_student".tr,
+        value: controller.isStudent.value,
+        onChange: (bool? value) {
+          controller.isStudent.value = value ?? false;
+        },
+      ),
+    );
+  }
+
+  Widget _buildSchoolNameInput() {
+    return CustomTextFormField(
+      name: "schoolName",
+      autofocus: true,
+      controller: controller.schoolNameController,
+      hintText: "lbl_school_name".tr,
+      prefix: Container(
+        margin: EdgeInsets.fromLTRB(8.h, 12.h, 6.h, 12.h),
+        child: Icon(Icons.school, color: theme.colorScheme.primary),
+      ),
+      prefixConstraints: BoxConstraints(maxHeight: 48.h),
+      contentPadding: EdgeInsets.fromLTRB(8.h, 12.h, 14.h, 12.h),
+      validator: (value) => controller.validateSchoolName(value),
+    );
+  }
+
+  Widget _buildSchoolIdInput() {
+    return CustomTextFormField(
+      name: "schoolId",
+      autofocus: true,
+      controller: controller.schoolIdController,
+      hintText: "lbl_student_id".tr,
+      prefix: Container(
+        margin: EdgeInsets.fromLTRB(8.h, 12.h, 6.h, 12.h),
+        child: Icon(Icons.badge, color: theme.colorScheme.primary),
+      ),
+      prefixConstraints: BoxConstraints(maxHeight: 48.h),
+      contentPadding: EdgeInsets.fromLTRB(8.h, 12.h, 14.h, 12.h),
+      validator: (value) => controller.validateSchoolId(value),
+    );
+  }
+
   CustomDropDown _buildCustomDropDown() {
     return CustomDropDown(
+      key: controller.occupationDropdownKey,
       icon: Container(
         margin: EdgeInsets.only(
           left: 16.h,
@@ -120,6 +184,12 @@ class SignupScreen extends GetView<SignupController> {
       ),
       hintText: "lbl_occupation".tr,
       items: controller.signupModelObj.value.dropdownItemList.value,
+      onMenuWillOpen: () {
+        controller.ensureDropdownVisible(controller.occupationDropdownKey);
+      },
+      onChanged: (selectedValue) {
+        debugPrint("Selected: ${selectedValue.title}");
+      },
       prefix: Container(
         margin: EdgeInsets.fromLTRB(8.h, 12.h, 6.h, 12.h),
         child: CustomImageView(
@@ -140,6 +210,7 @@ class SignupScreen extends GetView<SignupController> {
   /// First Name Input
   Widget _buildFirstNameInput() {
     return CustomTextFormField(
+      name: "firstName",
       autofocus: true,
       controller: controller.firstNameInputController,
       hintText: "msg_legal_first_name".tr,
@@ -162,6 +233,8 @@ class SignupScreen extends GetView<SignupController> {
 
   Widget _buildLastNameInput() {
     return CustomTextFormField(
+      name: "lastName",
+      autofocus: true,
       controller: controller.lastNameInputController,
       hintText: "lbl_legal_last_name".tr,
       prefix: Container(
@@ -209,35 +282,6 @@ class SignupScreen extends GetView<SignupController> {
         [
           FormBuilderValidators.required(),
           FormBuilderValidators.email(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDateOfBirthInput() {
-    return CustomTextFormField(
-      readOnly: true,
-      controller: controller.dateOfBirthInputController,
-      hintText: "lbl_data_of_birth".tr,
-      prefix: Container(
-        margin: EdgeInsets.fromLTRB(8.h, 12.h, 6.h, 12.h),
-        child: CustomImageView(
-          imagePath: ImageConstant.imgCalendar,
-          height: 22.h,
-          width: 20.w,
-          fit: BoxFit.contain,
-        ),
-      ),
-      prefixConstraints: BoxConstraints(
-        maxHeight: 48.h,
-      ),
-      contentPadding: EdgeInsets.fromLTRB(8.h, 12.h, 14.h, 12.h),
-      onTap: () {
-        onTapDateOfBirthInput();
-      },
-      validator: FormBuilderValidators.compose(
-        [
-          FormBuilderValidators.required(),
         ],
       ),
     );
@@ -330,6 +374,159 @@ class SignupScreen extends GetView<SignupController> {
     );
   }
 
+  Widget _buildDateOfBirthInput(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Obx(
+                () => TextField(
+                  controller: controller.dayController,
+                  keyboardType: TextInputType.number,
+                  maxLength: 2,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.h),
+                      borderSide: BorderSide(color: appTheme.gray500),
+                    ),
+                    focusColor: appTheme.gray50,
+                    filled: true,
+                    fillColor: appTheme.gray50,
+                    labelText: "Day",
+                    labelStyle: TextStyle(
+                      color: theme.colorScheme.primary,
+                    ),
+                    border: TextFormFieldStyleHelper.outlineGrayTL12,
+                    errorText: controller.dayError.value.isEmpty
+                        ? null
+                        : controller.dayError.value,
+                    counterText: "",
+                  ),
+                  onChanged: (value) {
+                    controller.day.value = value;
+                    if (value.isNotEmpty) {
+                      controller.validateDay(value);
+                      controller.updateDateFromTextFields();
+                    }
+                  },
+                ),
+              ),
+            ),
+            SizedBox(width: 16.w),
+            Expanded(
+              child: Obx(
+                () => TextField(
+                  controller: controller.monthController,
+                  keyboardType: TextInputType.number,
+                  maxLength: 2,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.h),
+                      borderSide: BorderSide(color: appTheme.gray500),
+                    ),
+                    focusColor: appTheme.gray50,
+                    filled: true,
+                    labelText: "Month",
+                    labelStyle: TextStyle(
+                      color: theme.colorScheme.primary,
+                    ),
+                    errorText: controller.monthError.value.isEmpty
+                        ? null
+                        : controller.monthError.value,
+                    counterText: "",
+                  ),
+                  onChanged: (value) {
+                    controller.month.value = value;
+                    if (value.isNotEmpty) {
+                      controller.validateMonth(value);
+                      controller.updateDateFromTextFields();
+                    }
+                  },
+                ),
+              ),
+            ),
+            SizedBox(width: 16.w),
+            Expanded(
+              child: Obx(
+                () => TextField(
+                  controller: controller.yearController,
+                  keyboardType: TextInputType.number,
+                  maxLength: 4,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.h),
+                      borderSide: BorderSide(color: appTheme.gray500),
+                    ),
+                    focusColor: appTheme.gray50,
+                    filled: true,
+                    labelStyle: TextStyle(
+                      color: theme.colorScheme.primary,
+                    ),
+                    fillColor: appTheme.gray50,
+                    labelText: "Year",
+                    border: TextFormFieldStyleHelper.outlineGrayTL12,
+                    errorText: controller.yearError.value.isEmpty
+                        ? null
+                        : controller.yearError.value,
+                    counterText: "",
+                  ),
+                  onChanged: (value) {
+                    controller.year.value = value;
+                    if (value.isNotEmpty) {
+                      controller.validateYear(value);
+                      controller.updateDateFromTextFields();
+                    }
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 30.h),
+        Obx(
+          () => CustomTextFormField(
+            readOnly: true,
+            hintText: "lbl_date_of_birth".tr,
+            controller: TextEditingController(
+              text: controller.selectedDate.value != null
+                  ? '${controller.selectedDate.value!.day}/${controller.selectedDate.value!.month}/${controller.selectedDate.value!.year}'
+                  : '',
+            ),
+            prefix: Container(
+              margin: EdgeInsets.fromLTRB(8.h, 12.h, 6.h, 12.h),
+              child: CustomImageView(
+                imagePath: ImageConstant.imgCalendar,
+                height: 22.h,
+                width: 20.w,
+                fit: BoxFit.contain,
+              ),
+            ),
+            prefixConstraints: BoxConstraints(
+              maxHeight: 48.h,
+            ),
+            contentPadding: EdgeInsets.fromLTRB(8.h, 12.h, 14.h, 12.h),
+            onTap: () async {
+              final DateTime? pickedDate = await showDatePicker(
+                context: context,
+                initialDate: controller.selectedDate.value,
+                firstDate: DateTime(1900),
+                lastDate: DateTime.now(),
+              );
+
+              if (pickedDate != null &&
+                  pickedDate != controller.selectedDate.value) {
+                controller.selectedDate.value = pickedDate;
+                controller.updateTextFieldsFromDate(pickedDate);
+              }
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
   /// Section Widget
   Widget _buildSignUpButton() {
     return Obx(
@@ -347,22 +544,21 @@ class SignupScreen extends GetView<SignupController> {
     );
   }
 
-  Future<void> onTapDateOfBirthInput() async {
-    DateTime? dateTime = await showDatePicker(
-      context: Get.context!,
-      firstDate: DateTime(1970),
-      lastDate: DateTime(
-        DateTime.now().year,
-        DateTime.now().month,
-        DateTime.now().day,
+  Widget _buildAgeInput() {
+    return Obx(
+      () => CustomTextFormField(
+        controller:
+            TextEditingController(text: controller.age.value.toString()),
+        hintText: "lbl_age".tr,
+        readOnly: true,
+        prefix: Container(
+          margin: EdgeInsets.fromLTRB(8.h, 12.h, 6.h, 12.h),
+          child: Icon(Icons.cake, color: theme.colorScheme.primary),
+        ),
+        prefixConstraints: BoxConstraints(maxHeight: 48.h),
+        contentPadding: EdgeInsets.fromLTRB(8.h, 12.h, 14.h, 12.h),
       ),
-      initialDate: controller.signupModelObj.value.selecDateOfBirthInput!.value,
     );
-    if (dateTime != null) {
-      controller.signupModelObj.value.selecDateOfBirthInput!.value = dateTime;
-      controller.dateOfBirthInputController.text =
-          dateTime.format(pattern: dateTimeFormatPattern);
-    }
   }
 
   Widget _buildLoginOption(BuildContext context) {

@@ -29,6 +29,21 @@ class EbookService extends GetxService {
     }
   }
 
+  Future<Books?> getBookById(String authors) async {
+    try {
+      final response = await _dio.get('${Constants.apiUrlAuthor}$authors');
+      if (response.statusCode != 200) {
+        throw ErrorHandler.handle(response).failure;
+      }
+      final dynamic result = response.data;
+      debugPrint('Book details for ID $authors: $result');
+      return Books.fromJson(result);
+    } catch (e) {
+      debugPrint('Error fetching book details for ID $authors: $e');
+      return null;
+    }
+  }
+
   Future<EbookService> init() async {
     // Initialize any authentication services here
     return this;
