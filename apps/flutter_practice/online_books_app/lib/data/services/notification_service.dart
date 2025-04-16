@@ -31,6 +31,7 @@ class NotificationService {
       requestBadgePermission: true,
       requestSoundPermission: true,
     );
+
     final InitializationSettings initializationSettings =
         InitializationSettings(
       android: initializationSettingsAndroid,
