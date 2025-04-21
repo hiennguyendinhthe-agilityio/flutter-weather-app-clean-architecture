@@ -4,6 +4,9 @@ import 'package:online_books_app/presentation/e_books/models/books_model.dart';
 import 'package:online_books_app/presentation/e_books/service/ebook_service.dart';
 
 class EBookDetailController extends GetxController {
+  final EbookService ebookService;
+  EBookDetailController({EbookService? ebookService})
+      : ebookService = ebookService ?? Get.find<EbookService>();
   var isLoading = true.obs;
   var currentBook = Rxn<Books>();
   var errorMessage = Rxn<String>();

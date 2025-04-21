@@ -30,6 +30,8 @@ dependencies:
 
   path_provider: ^2.1.1
 
+  faker: ^2.2.0
+
   flutter_localizations:
     sdk: flutter
 

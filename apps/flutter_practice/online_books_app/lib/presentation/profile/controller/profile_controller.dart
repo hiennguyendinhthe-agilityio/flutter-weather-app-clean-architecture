@@ -3,13 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:online_books_app/core/app_export.dart';
-import 'package:online_books_app/presentation/profile/model/profile_model.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class ProfileController extends GetxController {
-  Rx<ProfileModel> profileModelObj = ProfileModel().obs;
-
-  ProfileController(this.profileModelObj);
+  ProfileController();
 
   final ImagePicker _picker = ImagePicker();
   Rx<File?> profileImage = Rx<File?>(null);

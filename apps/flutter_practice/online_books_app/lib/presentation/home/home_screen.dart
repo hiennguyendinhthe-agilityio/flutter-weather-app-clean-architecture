@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:online_books_app/core/theme/app_decoration.dart';
 import 'package:online_books_app/core/theme/theme_helper.dart';
 import 'package:online_books_app/core/utils/size_utils.dart';
+import 'package:online_books_app/presentation/e_books/controller/author_controller.dart';
 import 'package:online_books_app/presentation/home/controller/home_controller.dart';
 import 'package:online_books_app/presentation/home/home_initial_page.dart';
 import 'package:online_books_app/presentation/profile/profile_screen.dart';
@@ -14,7 +15,10 @@ import 'package:online_books_app/widgets/custom_bottom_bar.dart';
 class HomeScreen extends GetWidget<HomeController> {
   HomeScreen({super.key});
 
-  final HomeController homeController = Get.put(HomeController());
+  final HomeController homeController = Get.put(HomeController(
+    searchController: TextEditingController(),
+    authorController: Get.find<AuthorBooksController>(),
+  ));
 
   @override
   Widget build(BuildContext context) {
