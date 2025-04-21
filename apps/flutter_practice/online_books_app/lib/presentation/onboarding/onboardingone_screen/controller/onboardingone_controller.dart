@@ -19,8 +19,8 @@ class OnboardingoneController extends GetxController {
   }
 
   void skip() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool('onboarding_completed', true);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('onboarding_completed', true);
     Get.offAllNamed('/login_screen');
   }
 }

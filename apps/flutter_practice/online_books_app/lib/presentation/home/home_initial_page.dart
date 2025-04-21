@@ -42,21 +42,18 @@ class HomeInitialPage extends StatelessWidget {
             ),
             _buildAudioBooksSection(),
             SizedBox(
-              height: 12.h,
+              height: 10.h,
             ),
             _buildRecommendationsSection(),
             SizedBox(
-              height: 16.h,
+              height: 10.h,
             ),
             Text(
               "lbl_remaining".tr,
               style: CustomTextStyles.titleLargeConcertOneBlack900Regular_1,
             ),
             SizedBox(
-              height: 6.h,
-            ),
-            SizedBox(
-              height: 36.h,
+              height: 30.h,
             ),
           ],
         ),

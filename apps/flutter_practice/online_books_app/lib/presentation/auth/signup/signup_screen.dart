@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
 import 'package:online_books_app/core/theme/custom_button_style.dart';
 import 'package:online_books_app/core/theme/custom_text_style.dart';
@@ -139,7 +138,6 @@ class SignupScreen extends GetView<SignupController> {
   Widget _buildSchoolNameInput() {
     return CustomTextFormField(
       name: "schoolName",
-      autofocus: true,
       controller: controller.schoolNameController,
       hintText: "lbl_school_name".tr,
       prefix: Container(
@@ -155,7 +153,6 @@ class SignupScreen extends GetView<SignupController> {
   Widget _buildSchoolIdInput() {
     return CustomTextFormField(
       name: "schoolId",
-      autofocus: true,
       controller: controller.schoolIdController,
       hintText: "lbl_student_id".tr,
       prefix: Container(
@@ -178,7 +175,7 @@ class SignupScreen extends GetView<SignupController> {
         child: CustomImageView(
           imagePath: ImageConstant.imgArrowCaretdown,
           height: 22.h,
-          width: 24.w,
+          width: 20.w,
           fit: BoxFit.contain,
         ),
       ),
@@ -191,7 +188,7 @@ class SignupScreen extends GetView<SignupController> {
         debugPrint("Selected: ${selectedValue.title}");
       },
       prefix: Container(
-        margin: EdgeInsets.fromLTRB(8.h, 12.h, 6.h, 12.h),
+        margin: EdgeInsets.fromLTRB(8.h, 12.h, 1.h, 12.h),
         child: CustomImageView(
           imagePath: ImageConstant.imgUser,
           height: 22.h,
@@ -202,87 +199,95 @@ class SignupScreen extends GetView<SignupController> {
       prefixIconConstraints: BoxConstraints(
         maxHeight: 48.h,
       ),
-      contentPadding: EdgeInsets.fromLTRB(8.h, 12.h, 14.h, 12.h),
+      contentPadding: EdgeInsets.fromLTRB(4.h, 12.h, 14.h, 12.h),
     );
   }
 
   /// Section Widget
   /// First Name Input
   Widget _buildFirstNameInput() {
-    return CustomTextFormField(
-      name: "firstName",
-      autofocus: true,
-      controller: controller.firstNameInputController,
-      hintText: "msg_legal_first_name".tr,
-      prefix: Container(
-        margin: EdgeInsets.fromLTRB(8.h, 12.h, 6.h, 12.h),
-        child: CustomImageView(
-          imagePath: ImageConstant.imgUser,
-          height: 22.h,
-          width: 22.w,
-          fit: BoxFit.contain,
+    return Obx(
+      () => CustomTextFormField(
+        name: "firstName",
+        controller: controller.firstNameInputController,
+        hintText: "msg_legal_first_name".tr,
+        prefix: Container(
+          margin: EdgeInsets.fromLTRB(8.h, 12.h, 6.h, 12.h),
+          child: CustomImageView(
+            imagePath: ImageConstant.imgUser,
+            height: 22.h,
+            width: 22.w,
+            fit: BoxFit.contain,
+          ),
         ),
+        prefixConstraints: BoxConstraints(maxHeight: 48.h),
+        contentPadding: EdgeInsets.fromLTRB(8.h, 12.h, 14.h, 12.h),
+        errorText: controller.firstNameError.value.isEmpty
+            ? null
+            : controller.firstNameError.value,
+        onChanged: (value) {
+          controller.validateFirstName(value);
+        },
       ),
-      prefixConstraints: BoxConstraints(maxHeight: 48.h),
-      contentPadding: EdgeInsets.fromLTRB(8.h, 12.h, 14.h, 12.h),
-      validator: FormBuilderValidators.compose([
-        FormBuilderValidators.required(),
-      ]),
     );
   }
 
   Widget _buildLastNameInput() {
-    return CustomTextFormField(
-      name: "lastName",
-      autofocus: true,
-      controller: controller.lastNameInputController,
-      hintText: "lbl_legal_last_name".tr,
-      prefix: Container(
-        margin: EdgeInsets.fromLTRB(8.h, 12.h, 6.h, 12.h),
-        child: CustomImageView(
-          imagePath: ImageConstant.imgUser,
-          height: 22.h,
-          width: 22.w,
-          fit: BoxFit.contain,
+    return Obx(
+      () => CustomTextFormField(
+        name: "lastName",
+        controller: controller.lastNameInputController,
+        hintText: "lbl_legal_last_name".tr,
+        prefix: Container(
+          margin: EdgeInsets.fromLTRB(8.h, 12.h, 6.h, 12.h),
+          child: CustomImageView(
+            imagePath: ImageConstant.imgUser,
+            height: 22.h,
+            width: 22.w,
+            fit: BoxFit.contain,
+          ),
         ),
+        prefixConstraints: BoxConstraints(
+          maxHeight: 48.h,
+        ),
+        contentPadding: EdgeInsets.fromLTRB(8.h, 12.h, 14.h, 12.h),
+        errorText: controller.lastNameError.value.isEmpty
+            ? null
+            : controller.lastNameError.value,
+        onChanged: (value) {
+          controller.validateLastName(value);
+        },
       ),
-      prefixConstraints: BoxConstraints(
-        maxHeight: 48.h,
-      ),
-      contentPadding: EdgeInsets.fromLTRB(8.h, 12.h, 14.h, 12.h),
-      validator: (value) {
-        if (value == null || value.trim().isEmpty) {
-          return "Please enter your last name";
-        }
-        return null;
-      },
     );
   }
 
   Widget _buildEmailInput() {
-    return CustomTextFormField(
-      controller: controller.emailInputController,
-      hintText: "lbl_email_adress".tr,
-      textInputType: TextInputType.emailAddress,
-      prefix: Container(
-        margin: EdgeInsets.fromLTRB(8.h, 12.h, 6.h, 12.h),
-        child: CustomImageView(
-          imagePath: ImageConstant.imgCheckmark,
-          height: 22.h,
-          width: 24.w,
-          fit: BoxFit.contain,
+    return Obx(
+      () => CustomTextFormField(
+        name: "email",
+        controller: controller.emailInputController,
+        hintText: "lbl_email_adress".tr,
+        textInputType: TextInputType.emailAddress,
+        prefix: Container(
+          margin: EdgeInsets.fromLTRB(8.h, 12.h, 6.h, 12.h),
+          child: CustomImageView(
+            imagePath: ImageConstant.imgCheckmark,
+            height: 22.h,
+            width: 24.w,
+            fit: BoxFit.contain,
+          ),
         ),
-      ),
-      prefixConstraints: BoxConstraints(
-        maxHeight: 48.h,
-      ),
-      contentPadding: EdgeInsets.fromLTRB(8.h, 12.h, 14.h, 12.h),
-      borderDecoration: TextFormFieldStyleHelper.outlineGrayTL12,
-      validator: FormBuilderValidators.compose(
-        [
-          FormBuilderValidators.required(),
-          FormBuilderValidators.email(),
-        ],
+        prefixConstraints: BoxConstraints(
+          maxHeight: 48.h,
+        ),
+        contentPadding: EdgeInsets.fromLTRB(8.h, 12.h, 14.h, 12.h),
+        borderDecoration: TextFormFieldStyleHelper.outlineGrayTL12,
+        errorText: controller.emailError.value.isEmpty
+            ? null
+            : controller.emailError.value,
+        onChanged: (value) {
+          controller.validateEmail(value);
+        },
       ),
     );
   }
@@ -324,15 +329,21 @@ class SignupScreen extends GetView<SignupController> {
         suffixConstraints: BoxConstraints(
           maxHeight: 48.h,
         ),
+        errorText: controller.passwordError.value.isEmpty
+            ? null
+            : controller.passwordError.value,
+        onChanged: (value) {
+          controller.validatePassword(value);
+        },
         obscureText: controller.isShowPassword.value,
         contentPadding: EdgeInsets.fromLTRB(8.h, 12.h, 14.h, 12.h),
         borderDecoration: TextFormFieldStyleHelper.outlineGrayTL12,
-        validator: FormBuilderValidators.compose(
-          [
-            FormBuilderValidators.required(),
-            FormBuilderValidators.minLength(6),
-          ],
-        ),
+        validator: (value) {
+          controller.validatePassword(value ?? '');
+          return controller.passwordError.value.isEmpty
+              ? null
+              : controller.passwordError.value;
+        },
       ),
     );
   }
@@ -384,8 +395,14 @@ class SignupScreen extends GetView<SignupController> {
               child: Obx(
                 () => TextField(
                   controller: controller.dayController,
+                  focusNode: controller.dayFocusNode,
                   keyboardType: TextInputType.number,
                   maxLength: 2,
+                  textInputAction: TextInputAction.next,
+                  onSubmitted: (_) {
+                    FocusScope.of(context)
+                        .requestFocus(controller.monthFocusNode);
+                  },
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12.h),
@@ -419,8 +436,14 @@ class SignupScreen extends GetView<SignupController> {
               child: Obx(
                 () => TextField(
                   controller: controller.monthController,
+                  focusNode: controller.monthFocusNode,
                   keyboardType: TextInputType.number,
                   maxLength: 2,
+                  textInputAction: TextInputAction.next,
+                  onSubmitted: (_) {
+                    FocusScope.of(context)
+                        .requestFocus(controller.yearFocusNode);
+                  },
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12.h),
@@ -428,10 +451,12 @@ class SignupScreen extends GetView<SignupController> {
                     ),
                     focusColor: appTheme.gray50,
                     filled: true,
+                    fillColor: appTheme.gray50,
                     labelText: "Month",
                     labelStyle: TextStyle(
                       color: theme.colorScheme.primary,
                     ),
+                    border: TextFormFieldStyleHelper.outlineGrayTL12,
                     errorText: controller.monthError.value.isEmpty
                         ? null
                         : controller.monthError.value,
@@ -452,8 +477,10 @@ class SignupScreen extends GetView<SignupController> {
               child: Obx(
                 () => TextField(
                   controller: controller.yearController,
+                  focusNode: controller.yearFocusNode,
                   keyboardType: TextInputType.number,
                   maxLength: 4,
+                  textInputAction: TextInputAction.done,
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12.h),
@@ -495,7 +522,7 @@ class SignupScreen extends GetView<SignupController> {
                   : '',
             ),
             prefix: Container(
-              margin: EdgeInsets.fromLTRB(8.h, 12.h, 6.h, 12.h),
+              margin: EdgeInsets.fromLTRB(10.h, 12.h, 6.h, 12.h),
               child: CustomImageView(
                 imagePath: ImageConstant.imgCalendar,
                 height: 22.h,
@@ -533,9 +560,14 @@ class SignupScreen extends GetView<SignupController> {
       () => CustomElevatedButton(
         height: 40.h,
         text: controller.isLoading.value ? "Signing Up..." : "lbl_sign_up".tr,
-        buttonStyle: CustomButtonStyles.outlinePrimaryTL12,
+        buttonStyle: controller.isFormValid && !controller.isLoading.value
+            ? CustomButtonStyles.outlinePrimaryTL12
+            : CustomButtonStyles.outlinePrimaryTL12.copyWith(
+                backgroundColor: WidgetStateProperty.all(appTheme.gray500),
+                foregroundColor: WidgetStateProperty.all(appTheme.gray50),
+              ),
         buttonTextStyle: CustomTextStyles.titleLargeDosisGray50,
-        onPressed: controller.isLoading.value
+        onPressed: controller.isLoading.value || !controller.isFormValid
             ? null
             : () {
                 controller.signUp();

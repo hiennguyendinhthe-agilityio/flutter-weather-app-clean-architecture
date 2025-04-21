@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:online_books_app/core/controller_bindngs.dart';
 import 'package:online_books_app/core/utils/logger.dart';
-import 'package:online_books_app/data/services/notification_service.dart';
 import 'package:online_books_app/presentation/my_app/my_app.dart';
 
 void main() async {
@@ -16,7 +15,5 @@ void main() async {
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   Logger.init(kReleaseMode ? LogMode.live : LogMode.debug);
 
-  final notificationService = NotificationService();
-  await notificationService.initialize();
   runApp(const MyApp());
 }

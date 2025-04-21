@@ -64,24 +64,40 @@ class ProfileController extends GetxController {
     } else if (status.isPermanentlyDenied || status.isRestricted) {
       // Permission permanently denied or restricted (e.g., by parental controls)
       // -> Inform the user and guide them to settings
-      Get.snackbar(
-        "Permission Denied",
-        "You have permanently denied access to the $permissionName. Please go to App Settings to enable it.",
-        duration: const Duration(seconds: 5),
-        snackPosition: SnackPosition.BOTTOM,
-        mainButton: TextButton(
-          child: const Text("Open Settings"),
-          onPressed: () {
-            openAppSettings(); // Opens the app's settings page
-          },
+      Get.dialog(
+        AlertDialog(
+          title: const Text("Permission Denied"),
+          content: Text(
+              "You have permanently denied access to the $permissionName. Please go to App Settings to enable it."),
+          actions: [
+            TextButton(
+              child: const Text("Cancel"),
+              onPressed: () => Get.back(),
+            ),
+            TextButton(
+              child: const Text("Open Settings"),
+              onPressed: () {
+                Get.back();
+                openAppSettings();
+              },
+            ),
+          ],
         ),
       );
     } else {
       // Handle other denied cases (isDenied after request)
-      Get.snackbar(
-        "Permission Denied",
-        "You need to grant access to the $permissionName to use this feature.",
-        snackPosition: SnackPosition.BOTTOM,
+      Get.dialog(
+        AlertDialog(
+          title: const Text("Permission Denied"),
+          content: Text(
+              "You need to grant access to the $permissionName to use this feature."),
+          actions: [
+            TextButton(
+              child: const Text("OK"),
+              onPressed: () => Get.back(),
+            ),
+          ],
+        ),
       );
     }
   }
