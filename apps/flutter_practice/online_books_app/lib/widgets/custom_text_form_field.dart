@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 import '../core/app_export.dart';
 
@@ -40,7 +39,9 @@ class CustomTextFormField extends StatelessWidget {
       this.fillColor,
       this.filled = true,
       this.validator,
-      this.name});
+      this.name,
+      this.onChanged,
+      this.errorText});
 
   final Alignment? alignment;
   final double? width;
@@ -68,6 +69,8 @@ class CustomTextFormField extends StatelessWidget {
   final bool? filled;
   final FormFieldValidator<String>? validator;
   final String? name;
+  final Function(String)? onChanged;
+  final String? errorText;
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +85,7 @@ class CustomTextFormField extends StatelessWidget {
   Widget get textFormFieldWidget => Container(
         width: width ?? double.maxFinite,
         decoration: boxDecoration,
-        child: FormBuilderTextField(
+        child: TextFormField(
           key: key,
           scrollPadding: EdgeInsets.only(
               bottom: MediaQuery.of(Get.context!).viewInsets.bottom),
@@ -106,8 +109,10 @@ class CustomTextFormField extends StatelessWidget {
           keyboardType: textInputType,
           maxLines: maxLines ?? 1,
           decoration: decoration,
+          onChanged: (value) {
+            onChanged?.call(value);
+          },
           validator: validator,
-          name: name ?? "",
         ),
       );
 
@@ -119,10 +124,11 @@ class CustomTextFormField extends StatelessWidget {
         suffixIcon: suffix,
         suffixIconConstraints: suffixConstraints,
         isDense: true,
-        contentPadding:
-            contentPadding ?? EdgeInsets.fromLTRB(8.h, 12.h, 12.h, 12.h),
+        contentPadding: contentPadding ??
+            EdgeInsets.symmetric(horizontal: 8.h, vertical: 12.h),
         fillColor: fillColor ?? appTheme.gray50,
         filled: filled,
+        errorText: errorText,
         border: borderDecoration ??
             OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.h),

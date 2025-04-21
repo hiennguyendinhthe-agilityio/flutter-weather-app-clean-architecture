@@ -172,29 +172,6 @@ class SettingsScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "msg_weekly_newsletter".tr,
-                        style: theme.textTheme.bodyMedium,
-                      ),
-                      Obx(
-                        () => CustomSwitch(
-                          value: controller.isSelectedSwitch1.value,
-                          onChanged: (value) async {
-                            controller.isSelectedSwitch1.value = value;
-                            if (value) {
-                              await controller.requestNotificationPermission();
-                            }
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  width: double.maxFinite,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
                         "msg_app_notification".tr,
                         style: theme.textTheme.bodyMedium,
                       ),

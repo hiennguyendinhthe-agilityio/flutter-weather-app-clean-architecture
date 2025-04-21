@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:online_books_app/core/app_export.dart';
 import 'package:online_books_app/core/theme/custom_button_style.dart';
-import 'package:online_books_app/core/theme/custom_text_style.dart';
-import 'package:online_books_app/core/theme/theme_helper.dart';
-import 'package:online_books_app/core/utils/image_constant.dart';
-import 'package:online_books_app/core/utils/size_utils.dart';
+import 'package:online_books_app/presentation/e_books/controller/author_controller.dart';
 import 'package:online_books_app/presentation/e_books/controller/book_controller.dart';
-import 'package:online_books_app/presentation/e_books/controller/deep_link_controller.dart';
 import 'package:online_books_app/presentation/e_books/models/books_model.dart';
 import 'package:online_books_app/presentation/e_books/read_books_screen.dart';
+import 'package:online_books_app/presentation/my_app/my_app.dart';
 import 'package:online_books_app/presentation/saved/controller/saved_controller.dart';
 import 'package:online_books_app/widgets/app_bar/appbar_subtitle.dart';
 import 'package:online_books_app/widgets/custom_elevated_button.dart';
-import 'package:online_books_app/widgets/custom_image_view.dart';
-import 'package:online_books_app/widgets/custom_outlined_button.dart';
+import 'package:share_plus/share_plus.dart';
 
 class EBookDetailScreen extends StatelessWidget {
   EBookDetailScreen({super.key});
@@ -21,21 +17,98 @@ class EBookDetailScreen extends StatelessWidget {
   final BookController controller = Get.find<BookController>();
   final SavedBooksController savedBooksController =
       Get.find<SavedBooksController>();
-  final DeepLinkController deepLinkController = Get.find<DeepLinkController>();
+  final AuthorBooksController bookController =
+      Get.find<AuthorBooksController>();
 
   @override
   Widget build(BuildContext context) {
-    final Map<String, dynamic>? arguments =
-        Get.arguments as Map<String, dynamic>?;
-    final Books? book = arguments?['book'] as Books?;
+    final dynamic arguments = Get.arguments;
+    Books? book;
+    String? bookId;
 
-    if (book == null) {
+    try {
+      if (arguments is String) {
+        bookId = arguments;
+      } else if (arguments != null) {
+        final Map map = arguments as Map;
+        book = map['book'] as Books?;
+        bookId = map['id'] as String?;
+      }
+    } catch (e) {
+      debugPrint('Error parsing arguments: $e');
+    }
+
+    return Obx(() {
+      if (bookController.isLoading.value) {
+        return Scaffold(
+          appBar: AppBar(title: Text('Loading...')),
+          body: Center(child: CircularProgressIndicator()),
+        );
+      }
+
+      // If we have a book object directly, use it
+      if (book != null) {
+        _setBookData(book);
+        return _buildBookDetail(book);
+      }
+
+      // Otherwise, try to get the book by ID
+      if (bookId != null) {
+        final Books? fetchedBook = bookController.getBookById(bookId);
+        if (fetchedBook != null) {
+          _setBookData(fetchedBook);
+          return _buildBookDetail(fetchedBook);
+        }
+      }
+
+      // If we get here, the book was not found
       return Scaffold(
+        appBar: AppBar(
+          title: Text('Book Not Found'),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () => Get.offAllNamed(AppRoutes.homeInitialPage),
+          ),
+        ),
         body: Center(
-          child: Text('Error: Book data is missing.'),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.error_outline,
+                size: 64,
+                color: Colors.red.shade300,
+              ),
+              SizedBox(height: 16),
+              Text(
+                'Book Not Found',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 8),
+              Text(
+                'The book could not be found.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey.shade700,
+                ),
+              ),
+              SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: () => Get.offAllNamed(AppRoutes.homeInitialPage),
+                child: Text('Go to Home'),
+              ),
+            ],
+          ),
         ),
       );
-    }
+    });
+  }
+
+  void _setBookData(Books book) {
     controller.setBookData(
       title: book.fullName ?? 'Unknown',
       description: book.biography ?? 'No biography available',
@@ -44,13 +117,53 @@ class EBookDetailScreen extends StatelessWidget {
       starRating: book.starRating ?? 0,
       pdfUrl: book.pdfUrl ?? '',
     );
+  }
 
+  Widget _buildBookDetail(Books book) {
     return Scaffold(
       appBar: AppBar(
         actions: [
           IconButton(
-              icon: const Icon(Icons.share),
-              onPressed: () => deepLinkController.shareBook(book)),
+            icon: Icon(Icons.share),
+            onPressed: () {
+              final shareLinks = DeepLinkParser.createShareLinks(book.id);
+              showModalBottomSheet(
+                context: Get.context!,
+                builder: (context) => Container(
+                  padding: EdgeInsets.all(16),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ListTile(
+                        leading: Icon(Icons.language),
+                        title: Text('Share Web Link'),
+                        subtitle: Text('Share as web link'),
+                        onTap: () {
+                          Share.share(
+                            shareLinks['web']!,
+                            subject: 'Check out this book: ${book.fullName}',
+                          );
+                          Get.back();
+                        },
+                      ),
+                      ListTile(
+                        leading: Icon(Icons.phone_android),
+                        title: Text('Share App Direct Link'),
+                        subtitle: Text('Share as app direct link'),
+                        onTap: () {
+                          Share.share(
+                            shareLinks['app_direct']!,
+                            subject: 'Check out this book: ${book.fullName}',
+                          );
+                          Get.back();
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
         ],
         centerTitle: true,
         backgroundColor: appTheme.yellow700,

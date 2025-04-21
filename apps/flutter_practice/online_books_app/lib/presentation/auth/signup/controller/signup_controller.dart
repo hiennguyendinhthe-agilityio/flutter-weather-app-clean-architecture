@@ -22,6 +22,11 @@ class SignupController extends GetxController {
   final schoolIdController = TextEditingController();
   final formKey = GlobalKey<FormBuilderState>();
 
+  // FocusNodes
+  final FocusNode dayFocusNode = FocusNode();
+  final FocusNode monthFocusNode = FocusNode();
+  final FocusNode yearFocusNode = FocusNode();
+
   final Dio _dio = Dio();
 
   Rx<SignupModel> signupModelObj = SignupModel().obs;
@@ -44,12 +49,32 @@ class SignupController extends GetxController {
   final RxString yearError = RxString('');
   final RxString schoolNameError = RxString('');
   final RxString schoolIdError = RxString('');
+  final RxString firstNameError = RxString('');
+  final RxString lastNameError = RxString('');
+  final RxString emailError = RxString('');
+  final RxString passwordError = RxString('');
 
   bool _isUpdatingFromDatePicker = false;
   bool _isUpdatingFromTextFields = false;
 
   final ScrollController scrollController = ScrollController();
   final GlobalKey occupationDropdownKey = GlobalKey();
+
+  // Computed property to check if all fields are valid
+  bool get isFormValid {
+    return firstNameError.value.isEmpty &&
+        lastNameError.value.isEmpty &&
+        emailError.value.isEmpty &&
+        dayError.value.isEmpty &&
+        monthError.value.isEmpty &&
+        yearError.value.isEmpty &&
+        (isStudent.value
+            ? (schoolNameError.value.isEmpty && schoolIdError.value.isEmpty)
+            : true) &&
+        termAgreementCheckBox.value &&
+        passwordInputController.text.length >= 6;
+  }
+
   void ensureDropdownVisible(GlobalKey key) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final context = key.currentContext;
@@ -97,6 +122,12 @@ class SignupController extends GetxController {
     ageController.dispose();
     schoolNameController.dispose();
     schoolIdController.dispose();
+
+    // Dispose FocusNodes
+    dayFocusNode.dispose();
+    monthFocusNode.dispose();
+    yearFocusNode.dispose();
+
     super.onClose();
   }
 
@@ -221,10 +252,19 @@ class SignupController extends GetxController {
 
     _isUpdatingFromTextFields = true;
 
-    // Get values from fields
-    final dayValue = int.parse(day.value);
-    final monthValue = int.parse(month.value);
-    final yearValue = int.parse(year.value);
+    // Get values from fields with validation
+    final dayValue = int.tryParse(day.value);
+    final monthValue = int.tryParse(month.value);
+    final yearValue = int.tryParse(year.value);
+
+    // Check if all values are valid numbers
+    if (dayValue == null || monthValue == null || yearValue == null) {
+      selectedDate.value = null;
+      selectedDateOfBirth.value = null;
+      age.value = 0;
+      _isUpdatingFromTextFields = false;
+      return;
+    }
 
     // Create a new date, handling invalid dates
     try {
@@ -347,5 +387,100 @@ class SignupController extends GetxController {
       }
       throw ErrorHandler.handle(e).failure;
     }
+  }
+
+  // Validate first name input
+  bool validateFirstName(String value) {
+    firstNameError.value = '';
+
+    if (value.isEmpty) {
+      firstNameError.value = 'Required';
+      return false;
+    }
+
+    if (value.length < 2) {
+      firstNameError.value = 'Too short';
+      return false;
+    }
+
+    if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
+      firstNameError.value = 'Only letters allowed';
+      return false;
+    }
+
+    return true;
+  }
+
+  // Validate last name input
+  bool validateLastName(String value) {
+    lastNameError.value = '';
+
+    if (value.isEmpty) {
+      lastNameError.value = 'Required';
+      return false;
+    }
+
+    if (value.length < 2) {
+      lastNameError.value = 'Too short';
+      return false;
+    }
+
+    if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
+      lastNameError.value = 'Only letters allowed';
+      return false;
+    }
+
+    return true;
+  }
+
+  // Validate email input
+  bool validateEmail(String value) {
+    emailError.value = '';
+
+    if (value.isEmpty) {
+      emailError.value = 'Required';
+      return false;
+    }
+
+    if (!GetUtils.isEmail(value)) {
+      emailError.value = 'Invalid email format';
+      return false;
+    }
+
+    return true;
+  }
+
+  // Validate password input
+  bool validatePassword(String value) {
+    passwordError.value = '';
+
+    if (value.isEmpty) {
+      passwordError.value = 'Required';
+      return false;
+    }
+
+    if (value.length < 8) {
+      passwordError.value = 'Password must be at least 8 characters';
+      return false;
+    }
+
+    if (!RegExp(r'[a-z]').hasMatch(value)) {
+      passwordError.value =
+          'Password must contain at least one lowercase letter';
+      return false;
+    }
+
+    if (!RegExp(r'[0-9]').hasMatch(value)) {
+      passwordError.value = 'Password must contain at least one number';
+      return false;
+    }
+
+    if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
+      passwordError.value =
+          'Password must contain at least one special character';
+      return false;
+    }
+
+    return true;
   }
 }

@@ -80,6 +80,9 @@ class CustomDropDown extends StatelessWidget {
   }
 
   Widget get dropDownWidget => DropdownButtonFormField2<SelectionPopupModel>(
+        menuItemStyleData: MenuItemStyleData(
+          padding: EdgeInsets.only(left: 4.h),
+        ),
         onMenuStateChange: (isOpen) {
           if (isOpen) {
             onMenuWillOpen?.call();
@@ -104,6 +107,7 @@ class CustomDropDown extends StatelessWidget {
         focusNode: focusNode,
         buttonStyleData: ButtonStyleData(
           height: iconSize ?? 24.h,
+          padding: EdgeInsets.zero,
         ),
         iconStyleData: IconStyleData(
           icon: icon ?? Icon(Icons.arrow_drop_down, size: iconSize ?? 24),
@@ -112,6 +116,7 @@ class CustomDropDown extends StatelessWidget {
         autofocus: autofocus!,
         style: textStyle ?? theme.textTheme.bodyLarge,
         hint: Text(
+          textAlign: TextAlign.left,
           hintText ?? "",
           style: hintStyle ?? theme.textTheme.bodyLarge,
           overflow: TextOverflow.ellipsis,
@@ -138,7 +143,7 @@ class CustomDropDown extends StatelessWidget {
         prefixIconConstraints: prefixIconConstraints,
         isDense: true,
         contentPadding:
-            contentPadding ?? EdgeInsets.fromLTRB(8.h, 12.h, 12.h, 12.h),
+            contentPadding ?? EdgeInsets.fromLTRB(4.h, 12.h, 8.h, 12.h),
         filled: filled,
         fillColor: fillColor ?? theme.colorScheme.onPrimary,
         border: borderDecoration ??

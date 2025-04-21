@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:online_books_app/data/models/auth_model/api_user.dart';
 import 'package:online_books_app/presentation/auth/service/auth_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:online_books_app/presentation/auth/service/auth_storage_service.dart';
 
 class LoginController extends GetxController {
   TextEditingController emailController = TextEditingController();
@@ -12,19 +11,81 @@ class LoginController extends GetxController {
 
   LocalAuthentication get localAuth => _localAuth;
   final LocalAuthentication _localAuth = LocalAuthentication();
-  final formKey = GlobalKey<FormBuilderState>();
+  final formKey = GlobalKey<FormState>();
   Rx<bool> isShowPassword = true.obs;
   Rx<bool> isRememberMe = false.obs;
   Rx<bool> isLoading = false.obs;
 
-  LoginController();
+  // Error states
+  final RxString emailError = RxString('');
+  final RxString passwordError = RxString('');
 
+  final AuthStorageService _authStorage = AuthStorageService();
   final RxBool _biometricEnabled = false.obs;
-
   bool get biometricEnabled => _biometricEnabled.value;
 
   final RxBool _isBiometricSupported = false.obs;
   bool get isBiometricSupported => _isBiometricSupported.value;
+
+  LoginController();
+
+  // Validate email input
+  bool validateEmail(String value) {
+    emailError.value = '';
+
+    if (value.isEmpty) {
+      emailError.value = 'Required';
+      return false;
+    }
+
+    if (!GetUtils.isEmail(value)) {
+      emailError.value = 'Invalid email format';
+      return false;
+    }
+
+    return true;
+  }
+
+  // Validate password input
+  bool validatePassword(String value) {
+    passwordError.value = '';
+
+    if (value.isEmpty) {
+      passwordError.value = 'Required';
+      return false;
+    }
+
+    if (value.length < 8) {
+      passwordError.value = 'Password must be at least 8 characters';
+      return false;
+    }
+
+    if (!RegExp(r'[a-z]').hasMatch(value)) {
+      passwordError.value =
+          'Password must contain at least one lowercase letter';
+      return false;
+    }
+
+    if (!RegExp(r'[0-9]').hasMatch(value)) {
+      passwordError.value = 'Password must contain at least one number';
+      return false;
+    }
+
+    if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
+      passwordError.value =
+          'Password must contain at least one special character';
+      return false;
+    }
+
+    return true;
+  }
+
+  // Computed property to check if all fields are valid
+  bool get isFormValid {
+    return emailController.text.isNotEmpty &&
+        GetUtils.isEmail(emailController.text) &&
+        passwordController.text.isNotEmpty;
+  }
 
   @override
   void onInit() {
@@ -44,28 +105,30 @@ class LoginController extends GetxController {
   }
 
   Future<void> _loadSavedCredentials() async {
-    final prefs = await SharedPreferences.getInstance();
-    final email = prefs.getString('saved_email');
-    final password = prefs.getString('saved_password');
-    final biometricEnabled = prefs.getBool('biometric_enabled') ?? false;
-
-    if (email != null && password != null) {
-      emailController.text = email;
-      passwordController.text = password;
-      isRememberMe.value = true;
-      _biometricEnabled.value = biometricEnabled;
+    final credentials = await _authStorage.getSavedCredentials();
+    if (credentials['email'] != null && credentials['password'] != null) {
+      emailController.text = credentials['email']!;
+      passwordController.text = credentials['password']!;
+      isRememberMe.value = credentials['isRememberMe']!;
+      _biometricEnabled.value = credentials['biometricEnabled']!;
     }
   }
 
   Future<void> toggleBiometric(bool value) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('biometric_enabled', value);
     _biometricEnabled.value = value;
+    if (isRememberMe.value) {
+      await _authStorage.saveLoginCredentials(
+        email: emailController.text,
+        password: passwordController.text,
+        isRememberMe: isRememberMe.value,
+        biometricEnabled: value,
+      );
+    }
   }
 
   Future<void> checkBiometricStatus() async {
-    final prefs = await SharedPreferences.getInstance();
-    _biometricEnabled.value = prefs.getBool('biometric_enabled') ?? false;
+    final credentials = await _authStorage.getSavedCredentials();
+    _biometricEnabled.value = credentials['biometricEnabled']!;
   }
 
   Future<bool> authenticateWithBiometrics() async {
@@ -94,16 +157,12 @@ class LoginController extends GetxController {
           .logIn(emailController.text, passwordController.text);
 
       if (user != null) {
-        final prefs = await SharedPreferences.getInstance();
-
-        if (isRememberMe.value) {
-          await prefs.setString('saved_email', emailController.text);
-          await prefs.setString('saved_password', passwordController.text);
-        } else {
-          await prefs.remove('saved_email');
-          await prefs.remove('saved_password');
-          await prefs.setBool('biometric_enabled', false);
-        }
+        await _authStorage.saveLoginCredentials(
+          email: emailController.text,
+          password: passwordController.text,
+          isRememberMe: isRememberMe.value,
+          biometricEnabled: _biometricEnabled.value,
+        );
 
         Get.offAllNamed('/home_initial_page');
       } else {
@@ -119,5 +178,13 @@ class LoginController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+  Future<void> logout() async {
+    await _authStorage.clearSavedCredentials();
+    isRememberMe.value = false;
+    _biometricEnabled.value = false;
+    emailController.clear();
+    passwordController.clear();
   }
 }

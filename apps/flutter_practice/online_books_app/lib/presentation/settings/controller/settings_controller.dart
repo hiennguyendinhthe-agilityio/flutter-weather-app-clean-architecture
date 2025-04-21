@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:online_books_app/presentation/auth/login/login_screen.dart';
+import 'package:online_books_app/presentation/auth/service/auth_storage_service.dart';
 import 'package:online_books_app/presentation/settings/models/settings_model.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -8,6 +9,7 @@ class SettingsController extends GetxController {
   SettingsController(this.settingsModelObj);
 
   Rx<SettingsModel> settingsModelObj;
+  final AuthStorageService _authStorage = AuthStorageService();
 
   Rx<bool> isSelectedSwitch = false.obs;
   Rx<bool> isSelectedSwitch1 = false.obs;
@@ -32,6 +34,9 @@ class SettingsController extends GetxController {
   }
 
   void logOut() async {
+    // Clear saved credentials
+    await _authStorage.clearSavedCredentials();
+
     Get.offAll(() => LoginScreen());
 
     Get.snackbar(

@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:online_books_app/presentation/audio_books/list_audio_books_screen.dart';
 import 'package:online_books_app/presentation/auth/login/login_screen.dart';
 import 'package:online_books_app/presentation/auth/signup/signup_screen.dart';
@@ -18,15 +19,17 @@ import '../core/app_export.dart';
 
 // ignore_for_file: must_be_immutable
 class AppRoutes {
+  static const String initialRoute = '/';
+  static const String listEbooks = '/list-ebooks';
+  static const String home = '/home';
+  static const String onboarding = '/onboarding';
   static const String onboardingoneScreen = '/onboardingone_screen';
   static const String onboardingtwoScreen = '/onboardingtwo_screen';
   static const String onboardingthreeScreen = '/onboardingthree_screen';
   static const String signupScreen = '/signup_screen';
   static const String loginScreen = '/login_screen';
   static const String appNavigationScreen = '/app_navigation_screen';
-  static const String initialRoute = '/initialRoute';
   static const String homeInitialPage = '/home_initial_page';
-  static const String homeScreen = '/home_screen';
   static const String savedScreen = '/saved_page';
   static const String profilePage = '/profile_page';
   static const String settingsPage = '/settings_page';
@@ -41,9 +44,28 @@ class AppRoutes {
 
   static const String eBookDetail = '/ebook_detail_screen';
 
-  static List<GetPage> pages = [
+  static final List<GetPage> pages = [
     GetPage(
-      name: AppRoutes.eBookDetail,
+      name: initialRoute,
+      page: () => const OnboardingoneScreen(),
+    ),
+    GetPage(
+      name: listEbooks,
+      page: () => ListEbooksScreen(),
+      transition: Transition.fadeIn,
+    ),
+    GetPage(
+      name: home,
+      page: () => HomeScreen(),
+      transition: Transition.fadeIn,
+    ),
+    GetPage(
+      name: onboarding,
+      page: () => const OnboardingoneScreen(),
+      transition: Transition.fadeIn,
+    ),
+    GetPage(
+      name: eBookDetail,
       page: () => EBookDetailScreen(),
       transition: Transition.fadeIn,
       binding: EBookDetailBinding(),
@@ -81,13 +103,9 @@ class AppRoutes {
       page: () => LoginScreen(),
     ),
     GetPage(
-      name: initialRoute,
-      page: () => OnboardingoneScreen(),
-      bindings: [OnboardingoneBinding()],
+      name: homeInitialPage,
+      page: () => HomeScreen(),
+      bindings: [HomeBinding()],
     ),
-    GetPage(
-        name: homeInitialPage,
-        page: () => HomeScreen(),
-        bindings: [HomeBinding()]),
   ];
 }
