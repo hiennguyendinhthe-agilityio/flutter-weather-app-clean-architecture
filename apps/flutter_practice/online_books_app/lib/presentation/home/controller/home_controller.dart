@@ -6,6 +6,7 @@ import 'package:online_books_app/presentation/home/models/home_model.dart';
 
 class HomeController extends GetxController {
   TextEditingController searchController = TextEditingController();
+  AuthorBooksController authorController = Get.find<AuthorBooksController>();
 
   Rx<HomeModel> homeModelObj = HomeModel().obs;
 
@@ -13,8 +14,8 @@ class HomeController extends GetxController {
 
   RxInt selectedIndex = 0.obs;
 
-  final AuthorBooksController authorController =
-      Get.put(AuthorBooksController());
+  HomeController(
+      {required this.searchController, required this.authorController});
 
   @override
   void onInit() {

@@ -7,6 +7,7 @@ import 'package:online_books_app/core/theme/custom_button_style.dart';
 import 'package:online_books_app/core/theme/custom_text_style.dart';
 import 'package:online_books_app/core/utils/image_constant.dart';
 import 'package:online_books_app/core/utils/size_utils.dart';
+import 'package:online_books_app/presentation/e_books/controller/author_controller.dart';
 import 'package:online_books_app/presentation/e_books/ebook_detail_screen.dart';
 import 'package:online_books_app/presentation/e_books/models/books_model.dart';
 import 'package:online_books_app/presentation/e_books/widgets/item_list_ebooks_widget.dart';
@@ -18,7 +19,10 @@ import 'package:shimmer/shimmer.dart';
 class HomeInitialPage extends StatelessWidget {
   const HomeInitialPage({super.key});
 
-  HomeController get controller => Get.put(HomeController());
+  HomeController get controller => Get.put(HomeController(
+        searchController: TextEditingController(),
+        authorController: Get.find<AuthorBooksController>(),
+      ));
 
   @override
   Widget build(BuildContext context) {

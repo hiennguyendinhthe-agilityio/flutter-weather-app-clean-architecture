@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:online_books_app/presentation/audio_books/controller/audio_book_controller.dart';
 import 'package:online_books_app/presentation/audio_books/controller/author_audio_controller.dart';
@@ -18,7 +19,11 @@ class ControllerBinder {
     Get.lazyPut(() => AudioBookController(), fenix: true);
     Get.lazyPut(() => SavedBooksController(), fenix: true);
     Get.lazyPut(() => SavedAudioBooksController(), fenix: true);
-    Get.lazyPut(() => HomeController(), fenix: true);
+    Get.lazyPut(
+        () => HomeController(
+            searchController: Get.find(), authorController: Get.find()),
+        fenix: true);
+    Get.lazyPut(() => TextEditingController(), fenix: true);
     Get.lazyPut(() => LoginController(), fenix: true);
     Get.lazyPut(() => SignupController(), fenix: true);
     Get.lazyPut(() => NotificationController(), fenix: true);
