@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:pratice_improve_flutter_form_builder/ui/widgets/application_form.dart';
+import 'package:pratice_improve_flutter_form_builder/controllers/application_controller.dart';
+import 'package:pratice_improve_flutter_form_builder/controllers/login_controller.dart';
+import 'package:pratice_improve_flutter_form_builder/ui/themes/app_theme.dart';
 
-import 'controllers/application_controller.dart';
-import 'ui/themes/app_theme.dart';
+import 'config/routes/app_pages.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([
+
+  await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+
   Get.put(ApplicationController());
+  Get.put(LoginController());
+
   runApp(const MyApp());
 }
 
@@ -27,7 +32,8 @@ class MyApp extends StatelessWidget {
       title: 'Job Application',
       theme: appTheme.themeData,
       debugShowCheckedModeBanner: false,
-      home: const ApplicationForm(),
+      initialRoute: AppPages.initial,
+      getPages: AppPages.routes,
     );
   }
 }

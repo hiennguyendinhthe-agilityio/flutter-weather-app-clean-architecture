@@ -41,7 +41,7 @@ class ApplicationModel {
         'coverLetter': coverLetter.value,
         'resumes': resumeFiles
             .map((file) =>
-                {'name': file.name, 'size': file.size, 'path': file.path})
+                {'name': file.name, 'size': file.size, 'path': file.id})
             .toList(),
       }
     };

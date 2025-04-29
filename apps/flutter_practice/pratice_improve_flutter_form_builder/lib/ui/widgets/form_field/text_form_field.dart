@@ -1,29 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 
-import '../../../core/abstractions/form_field.dart';
-
-class CustomTextFormField extends AbstractTextFormField {
-  final IconData? prefixIcon;
-  final IconData? suffixIcon;
-  final VoidCallback? onSuffixIconPressed;
+class CustomTextFormField extends StatelessWidget {
+  final String name;
+  final String? labelText;
+  final bool isRequired;
+  final String? helperText;
+  final String? errorText;
+  final String? initialValue;
+  final TextInputType? keyboardType;
+  final String? Function(dynamic)? customValidator;
+  final bool obscureText;
+  final Widget? suffixIcon;
+  final int? maxLines;
+  final ValueChanged<String?>? onChanged;
 
   const CustomTextFormField({
-    required super.name,
-    required super.labelText,
-    super.isRequired = false,
-    super.helperText,
-    super.errorText,
-    super.initialValue,
-    super.keyboardType = TextInputType.text,
-    super.obscureText = false,
-    super.maxLines = 1,
-    super.maxLength,
-    super.textCapitalization = TextCapitalization.none,
-    super.inputFormatters,
-    this.prefixIcon,
+    super.key,
+    required this.name,
+    this.labelText,
+    this.isRequired = false,
+    this.helperText,
+    this.errorText,
+    this.initialValue,
+    this.keyboardType,
+    this.customValidator,
+    this.obscureText = false,
     this.suffixIcon,
-    this.onSuffixIconPressed,
+    this.maxLines,
+    this.onChanged,
   });
 
   @override
@@ -52,42 +58,26 @@ class CustomTextFormField extends AbstractTextFormField {
         ),
         const SizedBox(height: 8),
         FormBuilderTextField(
-          autovalidateMode: autovalidateMode,
+          maxLines: maxLines,
+          key: key,
           name: name,
           initialValue: initialValue,
-          obscureText: obscureText,
-          maxLines: maxLines,
-          maxLength: maxLength,
-          keyboardType: keyboardType,
-          textCapitalization: textCapitalization,
-          inputFormatters: inputFormatters,
           decoration: InputDecoration(
-            border: const OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.grey),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Theme.of(context).colorScheme.outline.withOpacity(0.5),
-              ),
-            ),
-            hintText: 'Enter your ${labelText.toLowerCase()}',
-            prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
-            suffixIcon: suffixIcon != null
-                ? IconButton(
-                    icon: Icon(suffixIcon),
-                    onPressed: onSuffixIconPressed,
-                  )
-                : null,
+            labelText: labelText,
+            helperText: helperText,
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+            suffixIcon: suffixIcon,
           ),
-          validator: validator,
+          keyboardType: keyboardType,
+          obscureText: obscureText,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          validator: FormBuilderValidators.compose([
+            if (isRequired)
+              FormBuilderValidators.required(
+                  errorText: '$labelText is required'),
+            if (customValidator != null) (value) => customValidator!(value),
+          ]),
         ),
-        if (helperText != null) ...[
-          const SizedBox(height: 4),
-          Text(
-            helperText!,
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-        ],
       ],
     );
   }

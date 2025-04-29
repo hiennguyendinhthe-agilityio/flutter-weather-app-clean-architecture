@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:get/get.dart';
 
-import '../../controllers/application_controller.dart';
-import '../widgets/file_upload_widget.dart';
+import '../../../../controllers/application_controller.dart';
+import '../../../widgets/file_upload_widget.dart';
 
 class AdditionalInfoScreen extends StatelessWidget {
   final ApplicationController controller;
@@ -95,7 +96,12 @@ class AdditionalInfoScreen extends StatelessWidget {
                         .withValues(alpha: 0.1),
                   ),
                   const SizedBox(height: 16),
-                  FileUploadWidget(controller: controller),
+                  Obx(() => FileUploadWidget(
+                        resumeFiles:
+                            controller.application.resumeFiles.toList(),
+                        onAddFilePressed: controller.pickResume,
+                        onRemoveFilePressed: controller.removeResume,
+                      )),
                   const SizedBox(height: 32),
                 ],
               ),
