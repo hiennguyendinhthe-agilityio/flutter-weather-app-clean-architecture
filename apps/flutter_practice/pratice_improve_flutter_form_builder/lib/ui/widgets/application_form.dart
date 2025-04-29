@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pratice_improve_flutter_form_builder/controllers/application_controller.dart';
-import 'package:pratice_improve_flutter_form_builder/ui/screens/additional_info_screen.dart';
-import 'package:pratice_improve_flutter_form_builder/ui/screens/personal_info_screen.dart';
-import 'package:pratice_improve_flutter_form_builder/ui/screens/review_screen.dart';
+import 'package:pratice_improve_flutter_form_builder/ui/screens/auth/sign_up/additional_info_screen.dart';
+import 'package:pratice_improve_flutter_form_builder/ui/screens/auth/sign_up/personal_info_screen.dart';
+import 'package:pratice_improve_flutter_form_builder/ui/screens/auth/sign_up/review_screen.dart';
 import 'package:pratice_improve_flutter_form_builder/ui/widgets/step_indicator.dart';
 
 class ApplicationForm extends StatelessWidget {

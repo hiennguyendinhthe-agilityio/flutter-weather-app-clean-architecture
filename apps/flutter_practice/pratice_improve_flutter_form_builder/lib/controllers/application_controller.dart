@@ -66,7 +66,7 @@ class ApplicationController extends GetxController {
         return;
       }
       final newResume = ResumeFile(
-        path: file.path!,
+        id: file.path!,
         name: file.name,
         size: file.size,
       );
@@ -163,7 +163,7 @@ class ApplicationController extends GetxController {
       debugPrint('Resumes:');
       for (var file in application.resumeFiles) {
         debugPrint(
-            '  - Name: ${file.name}, Size: ${file.size}, Path: ${file.path}');
+            '  - Name: ${file.name}, Size: ${file.size}, Path: ${file.id}');
       }
     }
     try {

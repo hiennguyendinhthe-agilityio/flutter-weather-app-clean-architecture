@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pratice_improve_flutter_form_builder/models/resume_file.dart';
 
-import '../../controllers/application_controller.dart';
+import '../../../../controllers/application_controller.dart';
 
 class ReviewScreen extends StatelessWidget {
   final ApplicationController controller;
@@ -89,7 +89,7 @@ class ReviewScreen extends StatelessWidget {
       children: [
         Container(
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.scrim.withOpacity(0.1),
+            color: Theme.of(context).colorScheme.scrim.withValues(alpha: 0.1),
           ),
           width: double.infinity,
           child: Padding(
@@ -150,8 +150,10 @@ class ReviewScreen extends StatelessWidget {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color:
-                        Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primary
+                        .withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Icon(
@@ -238,7 +240,8 @@ class ReviewScreen extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+              color:
+                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(
