@@ -1,18 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pratice_improve_flutter_form_builder/config/routes/app_pages.dart';
-import 'package:pratice_improve_flutter_form_builder/controllers/login_controller.dart';
+import 'package:pratice_improve_flutter_form_builder/data/models/auth_model/api_user.dart';
+import 'package:pratice_improve_flutter_form_builder/service/user_service.dart';
+import 'package:pratice_improve_flutter_form_builder/ui/widgets/form_field/text_form_field.dart';
 
-class HomeScreen extends StatelessWidget {
+import '../../../controllers/application_controller.dart';
+
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
-  LoginController get loginController {
-    if (Get.isRegistered<LoginController>()) {
-      return Get.find<LoginController>();
-    } else {
-      print("Warning: LoginController not found. Creating temporary one.");
-      return Get.put(LoginController());
-    }
+  @override
+  HomeScreenState createState() => HomeScreenState();
+}
+
+class HomeScreenState extends State<HomeScreen> {
+  late Future<ApiUser> futureApiUser;
+  bool isEditMode = false;
+
+  @override
+  void initState() {
+    super.initState();
+    futureApiUser = UserService().fetchUserData();
   }
 
   @override
@@ -23,47 +32,105 @@ class HomeScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            tooltip: 'Logout',
-            onPressed: () async {
-              Get.defaultDialog(
-                title: "Confirm Logout",
-                middleText: "Are you sure you want to log out?",
-                textConfirm: "Logout",
-                textCancel: "Cancel",
-                confirmTextColor: Colors.white,
-                onConfirm: () async {
-                  await loginController.logout();
-
-                  Get.offAllNamed(Routes.login);
-                },
-              );
+            onPressed: () {
+              Get.offAllNamed(Routes.login);
             },
           ),
         ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'Welcome to the Home Screen!',
-              style: TextStyle(fontSize: 20),
-            ),
-            const SizedBox(height: 20),
-            Obx(() => Text(
-                  loginController.isRememberMe.value
-                      ? 'Remember me was checked.'
-                      : 'Remember me was not checked.',
-                )),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Get.snackbar('Info', 'Navigate to other feature!');
-              },
-              child: const Text('Go to Feature X'),
-            )
-          ],
-        ),
+      body: FutureBuilder<ApiUser>(
+        future: futureApiUser,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (snapshot.hasData) {
+            final user = snapshot.data!;
+            return SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CustomTextFormField(
+                      name: 'name',
+                      labelText: 'Name',
+                      initialValue: user.name,
+                      isRequired: true,
+                      isEnabled: isEditMode,
+                      onChanged: (value) {
+                        user.name = value;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    CustomTextFormField(
+                      name: 'email',
+                      labelText: 'Email',
+                      initialValue: user.email,
+                      isRequired: true,
+                      isEnabled: isEditMode,
+                      onChanged: (value) {
+                        user.email = value;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    CustomTextFormField(
+                      name: 'phoneNumber',
+                      labelText: 'Phone Number',
+                      initialValue: user.phoneNumber,
+                      isRequired: true,
+                      isEnabled: isEditMode,
+                      onChanged: (value) {
+                        user.phoneNumber = value;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    CustomTextFormField(
+                      name: 'personalWebsite',
+                      labelText: 'Personal Website',
+                      initialValue: user.personalWebsite,
+                      isEnabled: isEditMode,
+                      onChanged: (value) {
+                        user.personalWebsite = value;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    CustomTextFormField(
+                      name: 'portfolioUrl',
+                      labelText: 'Portfolio URL',
+                      initialValue: user.portfolioUrl,
+                      isEnabled: isEditMode,
+                      onChanged: (value) {
+                        user.portfolioUrl = value;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    CustomTextFormField(
+                      name: 'coverLetter',
+                      labelText: 'Cover Letter',
+                      initialValue: user.coverLetter,
+                      isEnabled: isEditMode,
+                      onChanged: (value) {
+                        user.coverLetter = value;
+                      },
+                      maxLines: 5,
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () {
+                        final controller = Get.put(ApplicationController());
+                        controller.editProfile(user);
+                      },
+                      child: const Text("Edit Profile"),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+          return const SizedBox.shrink();
+        },
       ),
     );
   }

@@ -15,7 +15,9 @@ class AuthService extends GetxService {
   final Dio _dio = Dio();
   Future<ApiUser?> logIn(String email, String password) async {
     try {
-      final response = await _dio.get('${Constants.apiUrlUser}user');
+      final response =
+          await _dio.get('${Constants.apiUrlUser}user?email=$email');
+
       if (response.statusCode == 200) {
         final List users = response.data;
         for (var user in users) {

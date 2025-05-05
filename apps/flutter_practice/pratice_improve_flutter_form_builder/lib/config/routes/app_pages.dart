@@ -3,7 +3,8 @@
 import 'package:get/get.dart';
 import 'package:pratice_improve_flutter_form_builder/ui/screens/auth/log_in/login_screen.dart';
 import 'package:pratice_improve_flutter_form_builder/ui/screens/home/home_screen.dart';
-import 'package:pratice_improve_flutter_form_builder/ui/widgets/application_form.dart';
+
+import '../../ui/application_form/application_form.dart';
 
 part 'app_routes.dart';
 

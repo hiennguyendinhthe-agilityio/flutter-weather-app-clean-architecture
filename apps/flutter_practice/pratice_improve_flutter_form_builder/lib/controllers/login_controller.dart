@@ -89,8 +89,11 @@ class LoginController extends GetxController {
 
   Future<void> login() async {
     if (formKey.currentState == null) {
-      print("Lỗi: Form state đang null.");
-      Get.snackbar("Lỗi", "Có lỗi xảy ra, vui lòng thử lại.");
+      Get.snackbar(
+        "Error",
+        "Form key is null. Please check your form setup.",
+        snackPosition: SnackPosition.BOTTOM,
+      );
       return;
     }
 
@@ -102,7 +105,11 @@ class LoginController extends GetxController {
         final password = formData['password'] as String?;
 
         if (email == null || password == null) {
-          Get.snackbar("Lỗi", "Email hoặc Mật khẩu bị thiếu.");
+          Get.snackbar(
+            "Error",
+            "Email or password is null.",
+            snackPosition: SnackPosition.BOTTOM,
+          );
           isLoading.value = false;
           return;
         }
@@ -118,21 +125,20 @@ class LoginController extends GetxController {
           );
           Get.offAllNamed(Routes.home);
         } else {
-          Get.snackbar("Lỗi", "Email hoặc mật khẩu không đúng.",
+          Get.snackbar("Error", "Login failed.",
               snackPosition: SnackPosition.BOTTOM);
         }
       } catch (e) {
         Get.snackbar(
-          "Lỗi",
-          "Đăng nhập thất bại: ${e.toString()}",
+          "Error",
+          "Login failed: ${e.toString()}",
           snackPosition: SnackPosition.BOTTOM,
         );
       } finally {
         isLoading.value = false;
       }
     } else {
-      print("Form is invalid");
-      Get.snackbar("Thông tin", "Vui lòng kiểm tra lại thông tin đã nhập.",
+      Get.snackbar("Error", "Form is invalid",
           snackPosition: SnackPosition.BOTTOM);
     }
   }

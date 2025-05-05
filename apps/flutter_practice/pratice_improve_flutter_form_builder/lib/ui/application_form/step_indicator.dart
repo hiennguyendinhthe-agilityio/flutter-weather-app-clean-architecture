@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../../controllers/application_controller.dart';
+import 'package:pratice_improve_flutter_form_builder/controllers/application_controller.dart';
 
 class StepIndicator extends StatelessWidget {
   final ApplicationController controller;
@@ -59,7 +58,6 @@ class StepIndicator extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        // Only allow navigation to completed steps or the current step
         if (step <= currentStep) {
           controller.goToStep(step);
         }

@@ -20,23 +20,7 @@ class ReviewScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Review your application',
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Is the information you have submitted correct?',
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                ],
-              ),
-            ),
+            _buildHeader(context),
             const SizedBox(height: 24),
             _buildSection(
               context,
@@ -49,17 +33,19 @@ class ReviewScreen extends StatelessWidget {
                 _buildInfoItem(context, 'Email address',
                     controller.application.emailAddress.value),
                 _buildInfoItem(
-                    context,
-                    'Personal website',
-                    controller.application.personalWebsite.value.isEmpty
-                        ? 'No answer'
-                        : controller.application.personalWebsite.value),
+                  context,
+                  'Personal website',
+                  controller.application.personalWebsite.value.isEmpty
+                      ? 'No answer'
+                      : controller.application.personalWebsite.value,
+                ),
                 _buildInfoItem(
-                    context,
-                    'Portfolio URL',
-                    controller.application.portfolioUrl.value.isEmpty
-                        ? 'No answer'
-                        : controller.application.portfolioUrl.value),
+                  context,
+                  'Portfolio URL',
+                  controller.application.portfolioUrl.value.isEmpty
+                      ? 'No answer'
+                      : controller.application.portfolioUrl.value,
+                ),
               ],
               onEdit: () => controller.goToStep(0),
             ),
@@ -82,6 +68,24 @@ class ReviewScreen extends StatelessWidget {
     );
   }
 
+  // Header section
+  Widget _buildHeader(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Review your application',
+              style: Theme.of(context).textTheme.headlineMedium),
+          const SizedBox(height: 8),
+          Text('Is the information you have submitted correct?',
+              style: Theme.of(context).textTheme.bodyMedium),
+        ],
+      ),
+    );
+  }
+
+  // Build individual section with title and content
   Widget _buildSection(BuildContext context, String title, List<Widget> items,
       {required VoidCallback onEdit}) {
     return Column(
@@ -97,10 +101,7 @@ class ReviewScreen extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
+                Text(title, style: Theme.of(context).textTheme.titleLarge),
                 TextButton.icon(
                   onPressed: onEdit,
                   icon: const Icon(Icons.edit, size: 18),
@@ -132,80 +133,72 @@ class ReviewScreen extends StatelessWidget {
     );
   }
 
+  // Build individual info items
   Widget _buildInfoItem(BuildContext context, String label, String value,
       {String? subtitle, bool isFile = false}) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.only(bottom: 6.0, top: 12.0),
-      decoration: BoxDecoration(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(label, style: Theme.of(context).textTheme.bodyMedium),
           const SizedBox(height: 4),
           if (isFile && value != 'No file selected')
-            Row(
-              children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .primary
-                        .withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(
-                    Icons.description,
-                    color: Theme.of(context).colorScheme.primary,
-                    size: 24,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        value,
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                      ),
-                      if (subtitle != null)
-                        Text(
-                          subtitle,
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                    ],
-                  ),
-                ),
-              ],
-            )
+            _buildFileInfo(context, value, subtitle)
           else if (label == 'Cover letter')
-            Text(
-              value,
-              style: Theme.of(context).textTheme.bodyLarge,
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
-            )
+            Text(value,
+                style: Theme.of(context).textTheme.bodyLarge,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis)
           else
-            Text(
-              value,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
+            Text(value,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge
+                    ?.copyWith(fontWeight: FontWeight.bold)),
         ],
       ),
     );
   }
 
+  // Build the file info (resume)
+  Widget _buildFileInfo(BuildContext context, String value, String? subtitle) {
+    return Row(
+      children: [
+        Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(Icons.description,
+              color: Theme.of(context).colorScheme.primary, size: 24),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(value,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge
+                      ?.copyWith(fontWeight: FontWeight.bold)),
+              if (subtitle != null)
+                Text(subtitle, style: Theme.of(context).textTheme.bodySmall),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  // Display resume list section
   Widget _buildResumeListSection(BuildContext context) {
     return Obx(() {
       final List<ResumeFile> files = controller.application.resumeFiles;
-
       if (files.isEmpty) {
         return _buildInfoItem(context, 'Resume', 'No resume uploaded');
       }
@@ -213,10 +206,7 @@ class ReviewScreen extends StatelessWidget {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Resume',
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
+          Text('Resume', style: Theme.of(context).textTheme.bodyMedium),
           const SizedBox(height: 8),
           Column(
             children: files
@@ -228,6 +218,7 @@ class ReviewScreen extends StatelessWidget {
     });
   }
 
+  // Display individual resume file
   Widget _buildSingleResumeDisplay(BuildContext context, ResumeFile file) {
     final fileSizeInMB = (file.size / (1024 * 1024)).toStringAsFixed(2);
     return Container(
@@ -244,29 +235,21 @@ class ReviewScreen extends StatelessWidget {
                   Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Icon(
-              Icons.description_outlined,
-              color: Theme.of(context).colorScheme.primary,
-              size: 24,
-            ),
+            child: Icon(Icons.description_outlined,
+                color: Theme.of(context).colorScheme.primary, size: 24),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  file.name,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Text(
-                  '${fileSizeInMB}MB',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
+                Text(file.name,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge
+                        ?.copyWith(fontWeight: FontWeight.bold)),
+                Text('${fileSizeInMB}MB',
+                    style: Theme.of(context).textTheme.bodySmall),
               ],
             ),
           ),

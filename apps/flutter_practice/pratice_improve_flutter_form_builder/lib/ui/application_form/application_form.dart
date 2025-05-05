@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pratice_improve_flutter_form_builder/controllers/application_controller.dart';
+import 'package:pratice_improve_flutter_form_builder/ui/application_form/step_indicator.dart';
 import 'package:pratice_improve_flutter_form_builder/ui/screens/auth/sign_up/additional_info_screen.dart';
 import 'package:pratice_improve_flutter_form_builder/ui/screens/auth/sign_up/personal_info_screen.dart';
 import 'package:pratice_improve_flutter_form_builder/ui/screens/auth/sign_up/review_screen.dart';
-import 'package:pratice_improve_flutter_form_builder/ui/widgets/step_indicator.dart';
 
 class ApplicationForm extends StatelessWidget {
   const ApplicationForm({super.key});
@@ -63,9 +63,13 @@ class ApplicationForm extends StatelessWidget {
                 break;
               case 2:
                 isButtonEnabled = true;
-                buttonText = 'Submit';
+                buttonText = controller.isEditMode.value ? 'Save' : 'Submit';
                 onPressedAction = () async {
-                  await controller.submitApplication();
+                  if (controller.isEditMode.value) {
+                    await controller.updateUserProfile();
+                  } else {
+                    await controller.submitApplication();
+                  }
                 };
                 break;
             }

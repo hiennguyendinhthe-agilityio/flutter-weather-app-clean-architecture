@@ -1,13 +1,14 @@
 class ApiUser {
-  late String? userId;
-  late String? name;
-  late String? email;
-
-  late String? password;
-
-  late bool isLoggedIn;
-  late String? avatarUrl;
-  late String? phoneNumber;
+  String? userId;
+  String? name;
+  String? email;
+  String? password;
+  bool isLoggedIn;
+  String? avatarUrl;
+  String? phoneNumber;
+  String? personalWebsite;
+  String? portfolioUrl;
+  String? coverLetter;
 
   ApiUser({
     this.userId,
@@ -17,17 +18,23 @@ class ApiUser {
     this.isLoggedIn = false,
     this.avatarUrl,
     this.phoneNumber,
+    this.personalWebsite,
+    this.portfolioUrl,
+    this.coverLetter,
   });
 
   factory ApiUser.fromJson(Map<String, dynamic> json) {
     return ApiUser(
-      userId: json['id'],
-      name: json['name'],
-      email: json['email'],
-      password: json['password'],
+      userId: json['id'] as String?,
+      name: json['name'] as String?,
+      email: json['email'] as String?,
+      password: json['password'] as String?,
       isLoggedIn: json['isLoggedIn'] ?? false,
-      avatarUrl: json['avatarUrl'],
-      phoneNumber: json['number'],
+      avatarUrl: json['avatarUrl'] as String?,
+      phoneNumber: json['phoneNumber'] as String?,
+      personalWebsite: json['personalWebsite'] as String?,
+      portfolioUrl: json['portfolioUrl'] as String?,
+      coverLetter: json['coverLetter'] as String?,
     );
   }
 
@@ -39,7 +46,10 @@ class ApiUser {
       'password': password,
       'isLoggedIn': isLoggedIn,
       'avatarUrl': avatarUrl,
-      'number': phoneNumber,
+      'phoneNumber': phoneNumber,
+      'personalWebsite': personalWebsite,
+      'portfolioUrl': portfolioUrl,
+      'coverLetter': coverLetter,
     };
   }
 }

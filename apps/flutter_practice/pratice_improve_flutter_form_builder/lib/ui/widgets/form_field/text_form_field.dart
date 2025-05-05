@@ -15,6 +15,7 @@ class CustomTextFormField extends StatelessWidget {
   final Widget? suffixIcon;
   final int? maxLines;
   final ValueChanged<String?>? onChanged;
+  final bool isEnabled;
 
   const CustomTextFormField({
     super.key,
@@ -30,6 +31,7 @@ class CustomTextFormField extends StatelessWidget {
     this.suffixIcon,
     this.maxLines,
     this.onChanged,
+    this.isEnabled = true,
   });
 
   @override
@@ -77,6 +79,8 @@ class CustomTextFormField extends StatelessWidget {
                   errorText: '$labelText is required'),
             if (customValidator != null) (value) => customValidator!(value),
           ]),
+          onChanged: onChanged,
+          enabled: isEnabled,
         ),
       ],
     );

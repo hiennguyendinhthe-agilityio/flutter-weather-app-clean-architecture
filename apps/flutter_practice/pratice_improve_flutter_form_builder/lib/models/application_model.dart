@@ -8,6 +8,7 @@ class ApplicationModel {
   final RxString emailAddress = ''.obs;
   final RxString personalWebsite = ''.obs;
   final RxString portfolioUrl = ''.obs;
+  RxString userId = ''.obs;
 
   // Additional information
   final RxString coverLetter = ''.obs;

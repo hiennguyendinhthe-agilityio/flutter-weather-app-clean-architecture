@@ -1,10 +1,18 @@
+import 'dart:convert';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'package:pratice_improve_flutter_form_builder/config/routes/app_pages.dart';
+import 'package:pratice_improve_flutter_form_builder/data/constants/constants.dart';
+import 'package:pratice_improve_flutter_form_builder/data/models/auth_model/api_user.dart';
 import 'package:pratice_improve_flutter_form_builder/models/resume_file.dart';
+import 'package:pratice_improve_flutter_form_builder/service/auth_storage_service.dart';
 
 import '../models/application_model.dart';
+import '../ui/application_form/application_form.dart';
 
 class ApplicationController extends GetxController {
   final ApplicationModel application = ApplicationModel();
@@ -16,6 +24,22 @@ class ApplicationController extends GetxController {
   final isPersonalInfoFormValid = false.obs;
   final isAdditionalInfoFormValid = false.obs;
   final isSubmitting = false.obs;
+  final isEditMode = false.obs;
+  Future<void> editProfile(ApiUser user) async {
+    isEditMode.value = true;
+
+    application.userId.value = user.userId ?? '';
+    application.fullName.value = user.name ?? '';
+    application.emailAddress.value = user.email ?? '';
+    application.phoneNumber.value = user.phoneNumber ?? '';
+    application.personalWebsite.value = user.personalWebsite ?? '';
+    application.portfolioUrl.value = user.portfolioUrl ?? '';
+    application.coverLetter.value = user.coverLetter ?? '';
+
+    goToStep(0);
+
+    Get.to(() => const ApplicationForm());
+  }
 
   void goToNextStep() {
     if (application.currentStep.value < 2) {
@@ -79,7 +103,6 @@ class ApplicationController extends GetxController {
 
   void removeResume(ResumeFile fileToRemove) {
     application.resumeFiles.remove(fileToRemove);
-    // Cập nhật lại trạng thái nút bấm
     updateAdditionalInfoFormButtonState();
   }
 
@@ -88,7 +111,6 @@ class ApplicationController extends GetxController {
         personalInfoFormKey.currentState?.saveAndValidate() ?? false;
     isPersonalInfoFormValid.value = isValid;
     if (isValid) {
-      // Update model with form values
       final formValues = personalInfoFormKey.currentState!.value;
       application.fullName.value = formValues['fullName'] ?? '';
       application.phoneNumber.value = formValues['phoneNumber'] ?? '';
@@ -135,6 +157,41 @@ class ApplicationController extends GetxController {
     return isOverallValid;
   }
 
+  Future<void> updateUserProfile() async {
+    isSubmitting.value = true;
+
+    final credentials = await AuthStorageService().getSavedCredentials();
+    final password = credentials['password'];
+
+    final user = ApiUser(
+      userId: application.userId.value,
+      name: application.fullName.value,
+      email: application.emailAddress.value,
+      password: password,
+      isLoggedIn: true,
+      phoneNumber: application.phoneNumber.value,
+      personalWebsite: application.personalWebsite.value,
+      portfolioUrl: application.portfolioUrl.value,
+      coverLetter: application.coverLetter.value,
+    );
+
+    final response = await http.put(
+      Uri.parse('${Constants.apiUrlUser}user/${user.userId}'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(user.toJson()),
+    );
+    debugPrint('Update response status: ${response.statusCode}');
+    debugPrint('Update response body: ${response.body}');
+    isSubmitting.value = false;
+
+    if (response.statusCode == 200) {
+      Get.snackbar('Success', 'Profile updated successfully');
+      Get.offAllNamed(Routes.home);
+    } else {
+      Get.snackbar('Error', 'Failed to update profile');
+    }
+  }
+
   Future<bool> submitApplication() async {
     if (!isPersonalInfoFormValid.value || !isAdditionalInfoFormValid.value) {
       debugPrint('Cannot submit: Not all steps are valid.');
@@ -148,7 +205,6 @@ class ApplicationController extends GetxController {
     }
 
     isSubmitting.value = true;
-
     debugPrint('--- Submitting Application Data ---');
     debugPrint('Full Name: ${application.fullName.value}');
     debugPrint('Phone Number: ${application.phoneNumber.value}');
@@ -157,57 +213,50 @@ class ApplicationController extends GetxController {
     debugPrint('Portfolio URL: ${application.portfolioUrl.value}');
     debugPrint('Cover Letter: ${application.coverLetter.value}');
     debugPrint('---------------------------------');
-    if (application.resumeFiles.isEmpty) {
-      debugPrint('Resumes: None');
-    } else {
-      debugPrint('Resumes:');
-      for (var file in application.resumeFiles) {
-        debugPrint(
-            '  - Name: ${file.name}, Size: ${file.size}, Path: ${file.id}');
-      }
-    }
-    try {
-      debugPrint('Simulating API call...');
-      await Future.delayed(const Duration(seconds: 2));
-      debugPrint('API call simulation finished.');
 
-      isSubmitting.value = false;
+    final user = ApiUser(
+      userId: application.emailAddress.value,
+      name: application.fullName.value,
+      email: application.emailAddress.value,
+      password: application.phoneNumber.value,
+      isLoggedIn: true,
+      phoneNumber: application.phoneNumber.value,
+      personalWebsite: application.personalWebsite.value,
+      portfolioUrl: application.portfolioUrl.value,
+      coverLetter: application.coverLetter.value,
+    );
 
-      Get.dialog(
-          AlertDialog(
-            title: const Text('Application Submitted'),
-            content:
-                const Text('Your application has been submitted successfully.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Get.back();
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          ),
-          barrierDismissible: false);
+    final response = await http.post(
+      Uri.parse('${Constants.apiUrlUser}user'),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: json.encode(user.toJson()),
+    );
 
-      return true;
-    } catch (e) {
-      debugPrint('Error submitting application: $e');
-      isSubmitting.value = false;
+    if (response.statusCode == 201) {
+      debugPrint('Application submitted successfully.');
 
-      Get.dialog(
-        AlertDialog(
-          title: const Text('Submission Failed'),
-          content: Text(
-              'There was an error submitting your application: $e. Please try again.'),
-          actions: [
-            TextButton(
-              onPressed: () => Get.back(),
-              child: const Text('OK'),
-            ),
-          ],
-        ),
+      await AuthStorageService().saveLoginCredentials(
+        email: user.email!,
+        password: user.password!,
+        isRememberMe: true,
+        biometricEnabled: false,
       );
 
+      Get.offAllNamed(Routes.home);
+
+      isSubmitting.value = false;
+      return true;
+    } else {
+      debugPrint('Failed to submit application: ${response.body}');
+      Get.snackbar(
+        'Error',
+        'Failed to submit the application. Please try again.',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+      );
+      isSubmitting.value = false;
       return false;
     }
   }
