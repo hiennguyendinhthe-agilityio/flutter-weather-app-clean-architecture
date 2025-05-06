@@ -11,81 +11,11 @@ class LoginController extends GetxController {
   LocalAuthentication get localAuth => _localAuth;
   final LocalAuthentication _localAuth = LocalAuthentication();
   final formKey = GlobalKey<FormBuilderState>();
-  Rx<bool> isShowPassword = true.obs;
-  Rx<bool> isRememberMe = false.obs;
   Rx<bool> isLoading = false.obs;
 
   final AuthStorageService _authStorage = AuthStorageService();
-  final RxBool _biometricEnabled = false.obs;
-  bool get biometricEnabled => _biometricEnabled.value;
-
-  final RxBool _isBiometricSupported = false.obs;
-  bool get isBiometricSupported => _isBiometricSupported.value;
 
   LoginController();
-
-  @override
-  void onInit() {
-    super.onInit();
-    checkBiometricStatus();
-    _loadSavedCredentials();
-    _checkBiometricSupport();
-  }
-
-  Future<void> _checkBiometricSupport() async {
-    try {
-      _isBiometricSupported.value = await _localAuth.isDeviceSupported();
-    } catch (e) {
-      _isBiometricSupported.value = false;
-      debugPrint('Error checking biometric support: $e');
-    }
-  }
-
-  Future<void> _loadSavedCredentials() async {
-    final credentials = await _authStorage.getSavedCredentials();
-    if (credentials['email'] != null && credentials['password'] != null) {
-      isRememberMe.value = credentials['isRememberMe'] ?? false;
-      _biometricEnabled.value = credentials['biometricEnabled'] ?? false;
-    }
-  }
-
-  Future<void> toggleBiometric(bool value) async {
-    _biometricEnabled.value = value;
-    if (isRememberMe.value && formKey.currentState != null) {
-      if (formKey.currentState!.saveAndValidate()) {
-        final currentEmail = formKey.currentState!.value['email'];
-        final currentPassword = formKey.currentState!.value['password'];
-        await _authStorage.saveLoginCredentials(
-          email: currentEmail,
-          password: currentPassword,
-          isRememberMe: isRememberMe.value,
-          biometricEnabled: value,
-        );
-      }
-    }
-  }
-
-  Future<void> checkBiometricStatus() async {
-    final credentials = await _authStorage.getSavedCredentials();
-    _biometricEnabled.value = credentials['biometricEnabled']!;
-  }
-
-  Future<bool> authenticateWithBiometrics() async {
-    try {
-      if (!_isBiometricSupported.value) return false;
-
-      return await _localAuth.authenticate(
-        localizedReason: 'Authenticate to login',
-        options: const AuthenticationOptions(
-          biometricOnly: true,
-          useErrorDialogs: true,
-        ),
-      );
-    } catch (e) {
-      debugPrint('Biometric error: $e');
-      return false;
-    }
-  }
 
   Future<void> login() async {
     if (formKey.currentState == null) {
@@ -120,10 +50,10 @@ class LoginController extends GetxController {
           await _authStorage.saveLoginCredentials(
             email: email,
             password: password,
-            isRememberMe: isRememberMe.value,
-            biometricEnabled: _biometricEnabled.value,
           );
-          Get.offAllNamed(Routes.home);
+          Get.offAllNamed(
+            Routes.home,
+          );
         } else {
           Get.snackbar("Error", "Login failed.",
               snackPosition: SnackPosition.BOTTOM);
@@ -141,13 +71,5 @@ class LoginController extends GetxController {
       Get.snackbar("Error", "Form is invalid",
           snackPosition: SnackPosition.BOTTOM);
     }
-  }
-
-  Future<void> logout() async {
-    await _authStorage.clearSavedCredentials();
-    isRememberMe.value = false;
-    _biometricEnabled.value = false;
-
-    Get.offAllNamed(Routes.login);
   }
 }

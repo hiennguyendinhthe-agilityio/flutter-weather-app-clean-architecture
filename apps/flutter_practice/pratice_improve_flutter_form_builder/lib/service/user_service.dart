@@ -9,15 +9,21 @@ class UserService {
   Future<ApiUser> fetchUserData() async {
     final credentials = await AuthStorageService().getSavedCredentials();
     final email = credentials['email'];
-
+    print('Searching for email: $email');
     final response = await _dio.get('${Constants.apiUrlUser}user');
 
     if (response.statusCode == 200) {
       final List users = response.data;
-
+      print('API Response Data (Users List): $users');
       final userJson = users.firstWhere(
-        (u) => u['email'] == email,
-        orElse: () => null,
+        (u) {
+          print('User: $u');
+          return u['email'] == email;
+        },
+        orElse: () {
+          print('No user found matching email: $email');
+          return null;
+        },
       );
 
       if (userJson != null) {
