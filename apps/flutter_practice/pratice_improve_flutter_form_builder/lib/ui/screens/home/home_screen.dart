@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pratice_improve_flutter_form_builder/config/routes/app_pages.dart';
 import 'package:pratice_improve_flutter_form_builder/data/models/auth_model/api_user.dart';
 import 'package:pratice_improve_flutter_form_builder/service/user_service.dart';
 import 'package:pratice_improve_flutter_form_builder/ui/widgets/form_field/text_form_field.dart';
@@ -33,7 +32,7 @@ class HomeScreenState extends State<HomeScreen> {
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
-              Get.offAllNamed(Routes.login);
+              Get.find<ApplicationController>().logout();
             },
           ),
         ],

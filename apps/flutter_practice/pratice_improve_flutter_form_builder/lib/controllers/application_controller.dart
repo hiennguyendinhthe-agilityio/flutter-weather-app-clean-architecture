@@ -25,6 +25,33 @@ class ApplicationController extends GetxController {
   final isAdditionalInfoFormValid = false.obs;
   final isSubmitting = false.obs;
   final isEditMode = false.obs;
+  final AuthStorageService _authStorageService = AuthStorageService();
+
+  void resetSignUpState() {
+    application.currentStep.value = 0;
+    application.fullName.value = '';
+    application.phoneNumber.value = '';
+    application.emailAddress.value = '';
+    application.personalWebsite.value = '';
+    application.portfolioUrl.value = '';
+    application.coverLetter.value = '';
+    application.resumeFiles.clear();
+    isPersonalInfoFormValid.value = false;
+    isAdditionalInfoFormValid.value = false;
+    update();
+    debugPrint('Sign-up state reset');
+  }
+
+  Future<void> logout() async {
+    if (Get.isRegistered<ApplicationController>()) {
+      Get.find<ApplicationController>().resetSignUpState();
+    }
+
+    await _authStorageService.clearSavedCredentials();
+
+    Get.offAllNamed(Routes.login);
+  }
+
   Future<void> editProfile(ApiUser user) async {
     isEditMode.value = true;
 
@@ -240,8 +267,6 @@ class ApplicationController extends GetxController {
       await AuthStorageService().saveLoginCredentials(
         email: user.email!,
         password: user.password!,
-        isRememberMe: true,
-        biometricEnabled: false,
       );
 
       Get.offAllNamed(Routes.home);
