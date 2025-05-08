@@ -15,7 +15,7 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
 
-  Get.put(ApplicationController());
+  Get.lazyPut(() => ApplicationController(), fenix: true);
   Get.put(LoginController());
 
   runApp(const MyApp());

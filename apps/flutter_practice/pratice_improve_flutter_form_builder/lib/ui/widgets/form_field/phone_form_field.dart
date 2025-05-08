@@ -1,41 +1,55 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-import '../../../core/abstractions/form_field.dart';
 import '../../../data/country_data.dart';
 import 'parts/custom_phone_input.dart';
 
-class PhoneFormField extends AbstractFormField {
+class PhoneFormFieldWidget extends StatelessWidget {
+  final String name;
+  final String labelText;
+  final bool isRequired;
+  final String? helperText;
+  final String? errorTextForIsRequired;
+  final String? initialValue;
+  final AutovalidateMode autovalidateMode;
+
   final String initialCountryCode;
   final List<CountryPhoneData> countries;
 
-  const PhoneFormField({
-    required super.name,
-    super.labelText = 'Phone number',
-    super.isRequired = true,
-    super.helperText,
-    super.errorText = 'Phone number is required',
-    super.initialValue,
+  const PhoneFormFieldWidget({
+    super.key,
+    required this.name,
+    this.labelText = 'Phone number',
+    this.isRequired = true,
+    this.helperText,
+    this.errorTextForIsRequired = 'Phone number is required',
+    this.initialValue,
+    this.autovalidateMode = AutovalidateMode.onUserInteraction,
     this.initialCountryCode = 'VN',
     this.countries = kCountryData,
   });
 
-  @override
-  String? customValidator(dynamic value) {
-    if (value == null || value.toString().isEmpty) {
+  String? _validator(String? value) {
+    if (isRequired && (value == null || value.isEmpty)) {
+      return errorTextForIsRequired;
+    }
+
+    return _customPhoneValidator(value);
+  }
+
+  String? _customPhoneValidator(String? value) {
+    if (value == null || value.isEmpty) {
       return null;
     }
 
     final String stringValue = value.toString();
-
     final phoneRegex = RegExp(r'^\+\d{1,3}\d+$');
     if (!phoneRegex.hasMatch(stringValue)) {
-      return errorText ?? 'Please enter a valid phone number (VD: +84xxxxxx)';
+      return 'Please enter a valid phone number (VD: +84xxxxxx)';
     }
 
     CountryPhoneData? matchedCountry;
     String numberPart = '';
-
     List<CountryPhoneData> sortedCountries = List.from(countries);
     sortedCountries
         .sort((a, b) => b.dialCode.length.compareTo(a.dialCode.length));
@@ -58,10 +72,8 @@ class PhoneFormField extends AbstractFormField {
         }
       }
     } else {
-      return errorText ??
-          'ID number is not supported. Please select another country.';
+      return 'ID number is not supported. Please select another country.';
     }
-
     return null;
   }
 
@@ -91,9 +103,12 @@ class PhoneFormField extends AbstractFormField {
         ),
         const SizedBox(height: 8),
         FormBuilderField<String>(
+          onChanged: (value) {
+            debugPrint('onChanged: $value');
+          },
           name: name,
-          validator: validator,
-          initialValue: initialValue as String?,
+          validator: _validator,
+          initialValue: initialValue,
           autovalidateMode: autovalidateMode,
           builder: (FormFieldState<String?> field) {
             final decoration = InputDecoration(

@@ -25,10 +25,6 @@ class ApplicationModel {
   final RxMap<String, bool> validationStatus = <String, bool>{}.obs;
   bool get isResumeUploaded => resumeFiles.isNotEmpty;
 
-  void updateValidationStatus(String field, bool isValid) {
-    validationStatus[field] = isValid;
-  }
-
   Map<String, dynamic> toJson() {
     return {
       'personalInfo': {

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:get/get.dart';
+import 'package:pratice_improve_flutter_form_builder/ui/widgets/form_field/custom_text_form_field.dart';
 import 'package:pratice_improve_flutter_form_builder/ui/widgets/form_field/phone_form_field.dart';
-import 'package:pratice_improve_flutter_form_builder/ui/widgets/form_field/text_form_field.dart';
 
 import '../../../../controllers/application_controller.dart';
 import '../../../widgets/form_field/email_form_field.dart';
@@ -21,6 +22,11 @@ class PersonalInfoScreen extends StatelessWidget {
       child: FormBuilder(
         onChanged: () {
           controller.updatePersonalInfoFormButtonState();
+
+          controller.updateUndoButtonState(
+              controller.personalInfoFormKey.currentState,
+              controller.personalInfoInitialState,
+              controller.canUndoPersonalInfo);
         },
         key: controller.personalInfoFormKey,
         autovalidateMode: AutovalidateMode.disabled,
@@ -62,11 +68,11 @@ class PersonalInfoScreen extends StatelessWidget {
                         "We're big on real names, so people know who's who.",
                   ),
                   const SizedBox(height: 24),
-                  PhoneFormField(
+                  PhoneFormFieldWidget(
                     name: 'phoneNumber',
                     isRequired: true,
                     initialValue: controller.application.phoneNumber.value,
-                  ).build(context),
+                  ),
                   const SizedBox(height: 24),
                   EmailFormField(
                     name: 'emailAddress',
@@ -101,6 +107,17 @@ class PersonalInfoScreen extends StatelessWidget {
                     keyboardType: TextInputType.url,
                   ).build(context),
                   const SizedBox(height: 32),
+                  Obx(() => SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          icon: const Icon(Icons.undo),
+                          label: const Text('Reset'),
+                          onPressed: controller.canUndoPersonalInfo.value
+                              ? controller.undoPersonalInfoChanges
+                              : null,
+                        ),
+                      )),
+                  const SizedBox(height: 16), //
                 ],
               ),
             ),

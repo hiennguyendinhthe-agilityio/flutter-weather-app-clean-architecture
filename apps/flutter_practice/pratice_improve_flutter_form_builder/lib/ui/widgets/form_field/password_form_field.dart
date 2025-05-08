@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
-import 'package:pratice_improve_flutter_form_builder/ui/widgets/form_field/text_form_field.dart';
+import 'package:pratice_improve_flutter_form_builder/ui/widgets/form_field/custom_text_form_field.dart';
 
 import '../../../core/abstractions/form_field.dart';
 

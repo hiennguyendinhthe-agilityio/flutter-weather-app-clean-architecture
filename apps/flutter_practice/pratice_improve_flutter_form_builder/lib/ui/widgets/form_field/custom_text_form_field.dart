@@ -60,6 +60,9 @@ class CustomTextFormField extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         FormBuilderTextField(
+          onChanged: (value) {
+            debugPrint('onChanged: $value');
+          },
           maxLines: maxLines,
           key: key,
           name: name,
@@ -79,7 +82,6 @@ class CustomTextFormField extends StatelessWidget {
                   errorText: '$labelText is required'),
             if (customValidator != null) (value) => customValidator!(value),
           ]),
-          onChanged: onChanged,
           enabled: isEnabled,
         ),
       ],

@@ -42,6 +42,11 @@ class AdditionalInfoScreen extends StatelessWidget {
             FormBuilder(
               onChanged: () {
                 controller.updateAdditionalInfoFormButtonState();
+                controller.updateUndoButtonState(
+                  controller.additionalInfoFormKey.currentState,
+                  controller.additionalInfoInitialState,
+                  controller.canUndoAdditionalInfo,
+                );
               },
               key: controller.additionalInfoFormKey,
               autovalidateMode: AutovalidateMode.disabled,
@@ -103,6 +108,17 @@ class AdditionalInfoScreen extends StatelessWidget {
                         onRemoveFilePressed: controller.removeResume,
                       )),
                   const SizedBox(height: 32),
+                  Obx(() => SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          icon: const Icon(Icons.undo),
+                          label: const Text('Reset'),
+                          onPressed: controller.canUndoAdditionalInfo.value
+                              ? controller.undoAdditionalInfoChanges
+                              : null,
+                        ),
+                      )),
+                  const SizedBox(height: 16),
                 ],
               ),
             ),

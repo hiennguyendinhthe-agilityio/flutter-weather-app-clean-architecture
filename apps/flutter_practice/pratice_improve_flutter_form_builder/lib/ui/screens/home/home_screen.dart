@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pratice_improve_flutter_form_builder/data/models/auth_model/api_user.dart';
 import 'package:pratice_improve_flutter_form_builder/service/user_service.dart';
-import 'package:pratice_improve_flutter_form_builder/ui/widgets/form_field/text_form_field.dart';
+import 'package:pratice_improve_flutter_form_builder/ui/widgets/form_field/custom_text_form_field.dart';
 
 import '../../../controllers/application_controller.dart';
 
@@ -118,7 +118,7 @@ class HomeScreenState extends State<HomeScreen> {
                     const SizedBox(height: 16),
                     ElevatedButton(
                       onPressed: () {
-                        final controller = Get.put(ApplicationController());
+                        final controller = Get.find<ApplicationController>();
                         controller.editProfile(user);
                       },
                       child: const Text("Edit Profile"),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pratice_improve_flutter_form_builder/ui/widgets/form_field/text_form_field.dart';
+import 'package:pratice_improve_flutter_form_builder/ui/widgets/form_field/custom_text_form_field.dart';
 
 class EmailFormField extends StatelessWidget {
   final String name;
