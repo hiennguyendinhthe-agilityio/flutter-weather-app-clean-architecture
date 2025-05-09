@@ -1,5 +1,4 @@
 // lib/main.dart
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -13,13 +12,11 @@ import 'package:task_management_app/presentation/pages/home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  sqfliteFfiInit(); // Khởi tạo FFI bindings
+  sqfliteFfiInit();
   databaseFactory = databaseFactoryFfi;
   // Initialize dependency injection
   await di.init();
-  if (kIsWeb) {
-    // Dành riêng cho nền tảng Web
-  }
+
   runApp(const MyApp());
 }
 
