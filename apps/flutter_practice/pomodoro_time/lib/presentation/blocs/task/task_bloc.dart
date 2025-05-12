@@ -1,4 +1,3 @@
-// lib/presentation/blocs/task/task_bloc.dart
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,6 +28,8 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     on<ToggleTaskCompletionEvent>(_onToggleTaskCompletion);
     on<StartTaskTimerEvent>(_onStartTaskTimer);
     on<StopTaskTimerEvent>(_onStopTaskTimer);
+    on<ArchiveTaskEvent>(_onArchiveTask);
+    on<UnarchiveTaskEvent>(_onUnarchiveTask);
   }
 
   Future<void> _onLoadTasks(
@@ -37,38 +38,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     try {
       final tasks = await getTasks();
 
-      final now = DateTime.now();
-      final today = DateTime(now.year, now.month, now.day);
-      final yesterday = today.subtract(const Duration(days: 1));
-
-      final activeTasks = tasks.where((task) => task.isActive).toList();
-      final archivedTasks = tasks.where((task) => !task.isActive).toList();
-
-      final todayTasks = tasks.where((task) {
-        final taskDate = DateTime(
-          task.createdAt.year,
-          task.createdAt.month,
-          task.createdAt.day,
-        );
-        return taskDate.isAtSameMomentAs(today);
-      }).toList();
-
-      final yesterdayTasks = tasks.where((task) {
-        final taskDate = DateTime(
-          task.createdAt.year,
-          task.createdAt.month,
-          task.createdAt.day,
-        );
-        return taskDate.isAtSameMomentAs(yesterday);
-      }).toList();
-
-      emit(TasksLoaded(
-        tasks: tasks,
-        activeTasks: activeTasks,
-        archivedTasks: archivedTasks,
-        todayTasks: todayTasks,
-        yesterdayTasks: yesterdayTasks,
-      ));
+      emit(TasksLoaded(allTasks: tasks));
     } catch (e) {
       emit(TaskError('Failed to load tasks: $e'));
     }
@@ -76,11 +46,15 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
 
   Future<void> _onAddTask(AddTaskEvent event, Emitter<TaskState> emit) async {
     try {
-      final task = event.task.copyWith(
-        id: const Uuid().v4(),
-      );
+      final taskWithId = event.task.copyWith(
+          id: const Uuid().v4(),
+          createdAt: DateTime.now(),
+          isActive: true,
+          isCompleted: false,
+          isArchived: false,
+          timeSpent: Duration.zero);
+      await addTask(taskWithId);
 
-      await addTask(task);
       add(LoadTasksEvent());
     } catch (e) {
       emit(TaskError('Failed to add task: $e'));
@@ -109,82 +83,138 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
 
   Future<void> _onToggleTaskCompletion(
       ToggleTaskCompletionEvent event, Emitter<TaskState> emit) async {
-    try {
-      if (state is TasksLoaded) {
-        final currentState = state as TasksLoaded;
-        final task =
-            currentState.tasks.firstWhere((task) => task.id == event.taskId);
+    if (state is TasksLoaded) {
+      final currentState = state as TasksLoaded;
 
-        final updatedTask = task.copyWith(
-          isCompleted: !task.isCompleted,
-        );
+      final taskToToggle = currentState.allTasks.firstWhere(
+          (task) => task.id == event.taskId,
+          orElse: () =>
+              throw Exception("Task not found for toggle completion"));
 
-        await updateTask(updatedTask);
-        add(LoadTasksEvent());
-      }
-    } catch (e) {
-      emit(TaskError('Failed to toggle task completion: $e'));
+      final updatedTask = taskToToggle.copyWith(
+        isCompleted: !taskToToggle.isCompleted,
+      );
+
+      add(UpdateTaskEvent(updatedTask));
+    } else {
+      emit(TaskError('Cannot toggle completion: Tasks not loaded.'));
     }
   }
 
+  Future<void> _onArchiveTask(
+      ArchiveTaskEvent event, Emitter<TaskState> emit) async {
+    if (state is TasksLoaded) {
+      final currentState = state as TasksLoaded;
+      final taskToArchive = currentState.allTasks.firstWhere(
+          (task) => task.id == event.taskId,
+          orElse: () => throw Exception("Task not found for archiving"));
+
+      final updatedTask =
+          taskToArchive.copyWith(isArchived: true, isActive: false);
+      add(UpdateTaskEvent(updatedTask));
+    } else {
+      emit(TaskError('Cannot archive task: Tasks not loaded.'));
+    }
+  }
+
+  Future<void> _onUnarchiveTask(
+      UnarchiveTaskEvent event, Emitter<TaskState> emit) async {
+    if (state is TasksLoaded) {
+      final currentState = state as TasksLoaded;
+      final taskToUnarchive = currentState.allTasks.firstWhere(
+          (task) => task.id == event.taskId,
+          orElse: () => throw Exception("Task not found for unarchiving"));
+
+      final updatedTask =
+          taskToUnarchive.copyWith(isArchived: false, isActive: true);
+      add(UpdateTaskEvent(updatedTask));
+    } else {
+      emit(TaskError('Cannot unarchive task: Tasks not loaded.'));
+    }
+  }
+
+  final Map<String, Timer> _activeTimers = {};
+
   Future<void> _onStartTaskTimer(
       StartTaskTimerEvent event, Emitter<TaskState> emit) async {
-    try {
-      if (state is TasksLoaded) {
-        final currentState = state as TasksLoaded;
-        final task =
-            currentState.tasks.firstWhere((task) => task.id == event.taskId);
+    if (state is TasksLoaded) {
+      final currentState = state as TasksLoaded;
+      final task = currentState.allTasks.firstWhere((t) => t.id == event.taskId,
+          orElse: () => throw Exception("Task not found for starting timer"));
 
-        final updatedTask = task.copyWith(
-          isActive: true,
-        );
-
-        await updateTask(updatedTask);
-
-        Timer.periodic(const Duration(seconds: 1), (timer) async {
-          final currentTasks = await getTasks();
-          final currentTask = currentTasks.firstWhere(
-            (t) => t.id == event.taskId,
-            orElse: () => task,
-          );
-
-          if (!currentTask.isActive) {
-            timer.cancel();
-            return;
-          }
-
-          final updatedTask = currentTask.copyWith(
-            timeSpent: currentTask.timeSpent + const Duration(seconds: 1),
-          );
-
-          await updateTask(updatedTask);
-          add(LoadTasksEvent());
-        });
-
-        add(LoadTasksEvent());
+      if (_activeTimers.containsKey(event.taskId)) {
+        return;
       }
-    } catch (e) {
-      emit(TaskError('Failed to start task timer: $e'));
+
+      final initialUpdate = task.copyWith(isActive: true);
+      await updateTask(initialUpdate);
+
+      add(LoadTasksEvent());
+
+      _activeTimers[event.taskId] =
+          Timer.periodic(const Duration(seconds: 1), (timer) async {
+        if (state is TasksLoaded) {
+          final latestState = state as TasksLoaded;
+          try {
+            final currentTask =
+                latestState.allTasks.firstWhere((t) => t.id == event.taskId);
+
+            if (!currentTask.isActive ||
+                currentTask.isArchived ||
+                currentTask.isCompleted) {
+              timer.cancel();
+              _activeTimers.remove(event.taskId);
+
+              if (currentTask.isActive) {
+                add(UpdateTaskEvent(currentTask.copyWith(isActive: false)));
+              }
+              return;
+            }
+
+            final updatedTask = currentTask.copyWith(
+              timeSpent: currentTask.timeSpent + const Duration(seconds: 1),
+            );
+
+            await updateTask(updatedTask);
+
+            if (state is TasksLoaded) {
+              final reloadedTasks = await getTasks();
+              emit(TasksLoaded(allTasks: reloadedTasks));
+            }
+          } catch (e) {
+            timer.cancel();
+            _activeTimers.remove(event.taskId);
+          }
+        } else {
+          timer.cancel();
+          _activeTimers.remove(event.taskId);
+        }
+      });
     }
   }
 
   Future<void> _onStopTaskTimer(
       StopTaskTimerEvent event, Emitter<TaskState> emit) async {
-    try {
-      if (state is TasksLoaded) {
-        final currentState = state as TasksLoaded;
+    _activeTimers[event.taskId]?.cancel();
+    _activeTimers.remove(event.taskId);
+
+    if (state is TasksLoaded) {
+      final currentState = state as TasksLoaded;
+      try {
         final task =
-            currentState.tasks.firstWhere((task) => task.id == event.taskId);
+            currentState.allTasks.firstWhere((t) => t.id == event.taskId);
+        final updatedTask = task.copyWith(isActive: false);
 
-        final updatedTask = task.copyWith(
-          isActive: false,
-        );
-
-        await updateTask(updatedTask);
-        add(LoadTasksEvent());
+        add(UpdateTaskEvent(updatedTask));
+      } catch (e) {
+        emit(TaskError('Failed to stop task timer: $e'));
       }
-    } catch (e) {
-      emit(TaskError('Failed to stop task timer: $e'));
     }
+  }
+
+  @override
+  Future<void> close() {
+    _activeTimers.forEach((key, timer) => timer.cancel());
+    return super.close();
   }
 }

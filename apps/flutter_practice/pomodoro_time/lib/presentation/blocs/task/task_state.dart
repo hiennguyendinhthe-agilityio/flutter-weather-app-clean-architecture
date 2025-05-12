@@ -8,19 +8,47 @@ class TaskInitial extends TaskState {}
 class TaskLoading extends TaskState {}
 
 class TasksLoaded extends TaskState {
-  final List<Task> tasks;
-  final List<Task> activeTasks;
-  final List<Task> archivedTasks;
-  final List<Task> todayTasks;
-  final List<Task> yesterdayTasks;
+  final List<Task> allTasks;
 
   TasksLoaded({
-    required this.tasks,
-    required this.activeTasks,
-    required this.archivedTasks,
-    required this.todayTasks,
-    required this.yesterdayTasks,
+    required this.allTasks,
   });
+
+  List<Task> get activeTasks =>
+      allTasks.where((task) => !task.isCompleted && !task.isArchived).toList();
+
+  List<Task> get archivedTasks =>
+      allTasks.where((task) => task.isArchived).toList();
+
+  List<Task> get tasksForActiveTab {
+    return allTasks.where((task) => !task.isArchived).toList();
+  }
+
+  List<Task> get todayTasksList {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    return tasksForActiveTab.where((task) {
+      final taskDate = DateTime(
+        task.createdAt.year,
+        task.createdAt.month,
+        task.createdAt.day,
+      );
+      return taskDate.isAtSameMomentAs(today);
+    }).toList();
+  }
+
+  List<Task> get yesterdayTasksList {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = today.subtract(const Duration(days: 1));
+    return tasksForActiveTab.where((task) {
+      final taskDate = DateTime(
+          task.createdAt.year, task.createdAt.month, task.createdAt.day);
+      return taskDate.isAtSameMomentAs(yesterday);
+    }).toList();
+  }
+
+  List<Object> get props => [allTasks];
 }
 
 class TaskError extends TaskState {
