@@ -10,7 +10,7 @@ class Task {
   final bool isActive;
   final bool isCompleted;
   final String projectColor;
-
+  final bool isArchived;
   Task({
     required this.id,
     required this.title,
@@ -22,6 +22,7 @@ class Task {
     required this.isActive,
     this.isCompleted = false,
     required this.projectColor,
+    this.isArchived = false,
   });
 
   Task copyWith({
@@ -35,6 +36,7 @@ class Task {
     bool? isActive,
     bool? isCompleted,
     String? projectColor,
+    bool? isArchived,
   }) {
     return Task(
       id: id ?? this.id,
@@ -47,6 +49,7 @@ class Task {
       isActive: isActive ?? this.isActive,
       isCompleted: isCompleted ?? this.isCompleted,
       projectColor: projectColor ?? this.projectColor,
+      isArchived: isArchived ?? this.isArchived,
     );
   }
 }

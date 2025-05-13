@@ -216,7 +216,11 @@ class PomodoroPage extends StatelessWidget {
         shape: const CircleBorder(),
         padding: const EdgeInsets.all(16),
       ),
-      child: Icon(icon, size: 32),
+      child: Icon(
+        icon,
+        size: 32,
+        color: Colors.white,
+      ),
     );
   }
 
@@ -239,7 +243,7 @@ class PomodoroPage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12.0),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
+                        color: Colors.black.withValues(alpha: 0.05),
                         blurRadius: 5,
                         offset: const Offset(0, 2),
                       ),

@@ -1,6 +1,7 @@
-// lib/presentation/pages/task_page.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:task_management_app/core/utils/duration_formatter.dart';
+import 'package:task_management_app/domain/entities/task.dart';
 import 'package:task_management_app/presentation/blocs/task/task_bloc.dart';
 import 'package:task_management_app/presentation/blocs/task/task_event.dart';
 import 'package:task_management_app/presentation/blocs/task/task_state.dart';
@@ -21,6 +22,8 @@ class _TaskPageState extends State<TaskPage>
   @override
   void initState() {
     super.initState();
+
+    context.read<TaskBloc>().add(LoadTasksEvent());
     _tabController = TabController(length: 2, vsync: this);
   }
 
@@ -33,10 +36,13 @@ class _TaskPageState extends State<TaskPage>
   void _showAddTaskDialog() {
     showDialog(
       context: context,
-      builder: (context) => AddTaskDialog(
-        onAddTask: (task) {
-          context.read<TaskBloc>().add(AddTaskEvent(task));
-        },
+      builder: (_) => BlocProvider.value(
+        value: BlocProvider.of<TaskBloc>(context),
+        child: AddTaskDialog(
+          onAddTask: (task) {
+            context.read<TaskBloc>().add(AddTaskEvent(task));
+          },
+        ),
       ),
     );
   }
@@ -44,199 +50,277 @@ class _TaskPageState extends State<TaskPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: SafeArea(
-        child: BlocBuilder<TaskBloc, TaskState>(
+        child: BlocConsumer<TaskBloc, TaskState>(
+          listener: (context, state) {
+            if (state is TaskError) {
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  SnackBar(
+                    content: Text(state.message),
+                    backgroundColor: Colors.red,
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+            }
+          },
           builder: (context, state) {
-            if (state is TaskLoading) {
+            if (state is TasksLoaded) {
+              return _buildLoadedUI(state);
+            } else if (state is TaskLoading) {
               return const Center(child: CircularProgressIndicator());
-            } else if (state is TasksLoaded) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '${state.tasks.length} Tasks',
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.calendar_today),
-                              onPressed: () {},
-                            ),
-                            TextButton.icon(
-                              icon: const Icon(Icons.add),
-                              label: const Text('New Task'),
-                              onPressed: _showAddTaskDialog,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 16.0),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: TabBar(
-                      indicatorSize: TabBarIndicatorSize.tab,
-                      indicatorPadding: const EdgeInsets.all(4),
-                      controller: _tabController,
-                      indicator: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      labelColor: Colors.black,
-                      unselectedLabelColor: Colors.grey,
-                      tabs: [
-                        Tab(text: '${state.activeTasks.length} Active'),
-                        Tab(text: '${state.archivedTasks.length} Archive'),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Expanded(
-                    child: TabBarView(
-                      controller: _tabController,
-                      children: [
-                        _buildTaskList(state),
-                        _buildArchivedTaskList(state),
-                      ],
-                    ),
-                  ),
-                ],
-              );
-            } else if (state is TaskError) {
-              return Center(child: Text(state.message));
             } else {
-              return const Center(child: Text('No tasks found'));
+              return const Center(child: CircularProgressIndicator());
             }
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _showAddTaskDialog,
-        child: const Icon(Icons.add),
-      ),
     );
   }
 
-  Widget _buildTaskList(TasksLoaded state) {
-    return ListView(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+  Widget _buildLoadedUI(TasksLoaded state) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (state.todayTasks.isNotEmpty) ...[
-          _buildSectionHeader(
-              'Today',
-              state.todayTasks.fold(
-                Duration.zero,
-                (prev, task) => prev + task.timeSpent,
-              )),
-          ...state.todayTasks.map((task) => TaskItem(
-                task: task,
-                onToggleCompletion: () {
-                  context
-                      .read<TaskBloc>()
-                      .add(ToggleTaskCompletionEvent(task.id));
-                },
-                onDelete: () {
-                  context.read<TaskBloc>().add(DeleteTaskEvent(task.id));
-                },
-                onStartTimer: () {
-                  context.read<TaskBloc>().add(StartTaskTimerEvent(task.id));
-                },
-                onStopTimer: () {
-                  context.read<TaskBloc>().add(StopTaskTimerEvent(task.id));
-                },
-              )),
-        ],
-        if (state.yesterdayTasks.isNotEmpty) ...[
-          _buildSectionHeader(
-              'Yesterday',
-              state.yesterdayTasks.fold(
-                Duration.zero,
-                (prev, task) => prev + task.timeSpent,
-              )),
-          ...state.yesterdayTasks.map((task) => TaskItem(
-                task: task,
-                onToggleCompletion: () {
-                  context
-                      .read<TaskBloc>()
-                      .add(ToggleTaskCompletionEvent(task.id));
-                },
-                onDelete: () {
-                  context.read<TaskBloc>().add(DeleteTaskEvent(task.id));
-                },
-                onStartTimer: () {
-                  context.read<TaskBloc>().add(StartTaskTimerEvent(task.id));
-                },
-                onStopTimer: () {
-                  context.read<TaskBloc>().add(StopTaskTimerEvent(task.id));
-                },
-              )),
-        ],
+        _buildHeader(state),
+        _buildTabBar(state),
+        const SizedBox(height: 16),
+        Expanded(
+          child: TabBarView(
+            controller: _tabController,
+            children: [
+              _buildActiveTasksView(state),
+              _buildArchivedTasksView(state),
+            ],
+          ),
+        ),
       ],
     );
   }
 
-  Widget _buildArchivedTaskList(TasksLoaded state) {
+  Widget _buildHeader(TasksLoaded state) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            '${state.allTasks.length} Task${state.tasksForActiveTab.length == 1 ? '' : 's'}',
+            style: Theme.of(context)
+                .textTheme
+                .headlineSmall
+                ?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          Row(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.calendar_today_outlined),
+                tooltip: 'Go to Calendar',
+                onPressed: () {},
+              ),
+              TextButton.icon(
+                icon: const Icon(Icons.add_circle_outline),
+                label: const Text('New Task'),
+                onPressed: _showAddTaskDialog,
+                style: TextButton.styleFrom(
+                    foregroundColor: Theme.of(context).colorScheme.primary,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20))),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTabBar(TasksLoaded state) {
+    return Container(
+      height: 45,
+      margin: const EdgeInsets.symmetric(horizontal: 16.0),
+      decoration: BoxDecoration(
+        color: Theme.of(context)
+            .colorScheme
+            .surfaceContainerHighest
+            .withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: TabBar(
+        controller: _tabController,
+        indicatorSize: TabBarIndicatorSize.tab,
+        indicatorPadding: const EdgeInsets.all(4),
+        indicator: BoxDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            borderRadius: BorderRadius.circular(8),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.1),
+                blurRadius: 3,
+                offset: const Offset(0, 1),
+              )
+            ]),
+        labelColor: Theme.of(context).colorScheme.primary,
+        unselectedLabelColor: Theme.of(context)
+            .textTheme
+            .bodyMedium
+            ?.color
+            ?.withValues(alpha: 0.7),
+        splashBorderRadius: BorderRadius.circular(8),
+        tabs: [
+          Tab(text: '${state.activeTasks.length} Active'),
+          Tab(text: '${state.archivedTasks.length} Archive'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActiveTasksView(TasksLoaded state) {
+    if (state.tasksForActiveTab.isEmpty) {
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.all(24.0),
+          child: Text(
+            'All tasks done or archived!\nAdd a new task to keep going.',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 16, color: Colors.grey),
+          ),
+        ),
+      );
+    }
+
+    final todayTasks = state.todayTasksList;
+    final yesterdayTasks = state.yesterdayTasksList;
+
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = today.subtract(const Duration(days: 1));
+    final otherTasks = state.tasksForActiveTab.where((task) {
+      final taskDay = DateTime(
+          task.createdAt.year, task.createdAt.month, task.createdAt.day);
+      return !taskDay.isAtSameMomentAs(today) &&
+          !taskDay.isAtSameMomentAs(yesterday);
+    }).toList();
+
+    otherTasks.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
     return ListView(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      children: state.archivedTasks
-          .map((task) => TaskItem(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      children: [
+        if (todayTasks.isNotEmpty) ...[
+          _buildSectionHeader(
+              'Today',
+              todayTasks.fold(
+                  Duration.zero, (prev, task) => prev + task.timeSpent)),
+          ...todayTasks.map((task) => TaskItem(
+                key: ValueKey('active-today-${task.id}'),
                 task: task,
-                onToggleCompletion: () {
-                  context
-                      .read<TaskBloc>()
-                      .add(ToggleTaskCompletionEvent(task.id));
-                },
-                onDelete: () {
-                  context.read<TaskBloc>().add(DeleteTaskEvent(task.id));
-                },
-                onStartTimer: () {
-                  context.read<TaskBloc>().add(StartTaskTimerEvent(task.id));
-                },
-                onStopTimer: () {
-                  context.read<TaskBloc>().add(StopTaskTimerEvent(task.id));
-                },
+                onToggleCompletion: () => context
+                    .read<TaskBloc>()
+                    .add(ToggleTaskCompletionEvent(task.id)),
+                onStartTimer: () =>
+                    context.read<TaskBloc>().add(StartTaskTimerEvent(task.id)),
+                onStopTimer: () =>
+                    context.read<TaskBloc>().add(StopTaskTimerEvent(task.id)),
+              )),
+        ],
+        if (yesterdayTasks.isNotEmpty) ...[
+          const SizedBox(height: 16),
+          _buildSectionHeader(
+              'Yesterday',
+              yesterdayTasks.fold(
+                  Duration.zero, (prev, task) => prev + task.timeSpent)),
+          ...yesterdayTasks.map((task) => TaskItem(
+                key: ValueKey('active-yesterday-${task.id}'),
+                task: task,
+                onToggleCompletion: () => context
+                    .read<TaskBloc>()
+                    .add(ToggleTaskCompletionEvent(task.id)),
+                onStartTimer: () =>
+                    context.read<TaskBloc>().add(StartTaskTimerEvent(task.id)),
+                onStopTimer: () =>
+                    context.read<TaskBloc>().add(StopTaskTimerEvent(task.id)),
+              )),
+        ],
+        if (otherTasks.isNotEmpty) ...[
+          const SizedBox(height: 16),
+          _buildSectionHeader(
+              'Older / Upcoming',
+              otherTasks.fold(
+                  Duration.zero, (prev, task) => prev + task.timeSpent)),
+          ...otherTasks.map((task) => TaskItem(
+                key: ValueKey('active-other-${task.id}'),
+                task: task,
+                onToggleCompletion: () => context
+                    .read<TaskBloc>()
+                    .add(ToggleTaskCompletionEvent(task.id)),
+                onStartTimer: () =>
+                    context.read<TaskBloc>().add(StartTaskTimerEvent(task.id)),
+                onStopTimer: () =>
+                    context.read<TaskBloc>().add(StopTaskTimerEvent(task.id)),
+              )),
+        ],
+        const SizedBox(height: 20),
+      ],
+    );
+  }
+
+  Widget _buildArchivedTasksView(TasksLoaded state) {
+    if (state.archivedTasks.isEmpty) {
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.all(24.0),
+          child: Text(
+            'No archived tasks.',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 16, color: Colors.grey),
+          ),
+        ),
+      );
+    }
+
+    final sortedArchivedTasks = List<Task>.from(state.archivedTasks)
+      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
+    return ListView(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      children: sortedArchivedTasks
+          .map((task) => TaskItem(
+                key: ValueKey('archive-${task.id}'),
+                task: task,
+                onToggleCompletion: () {/* No action */},
+                onStartTimer: () {/* No action */},
+                onStopTimer: () {/* No action */},
               ))
           .toList(),
     );
   }
 
   Widget _buildSectionHeader(String title, Duration totalTime) {
-    final hours = totalTime.inHours;
-    final minutes = totalTime.inMinutes.remainder(60);
-    final seconds = totalTime.inSeconds.remainder(60);
-
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.only(top: 16.0, bottom: 8.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: Theme.of(context)
+                .textTheme
+                .titleMedium
+                ?.copyWith(fontWeight: FontWeight.w600),
           ),
-          Text(
-            '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}',
-            style: const TextStyle(
-              fontSize: 16,
-              color: Colors.grey,
+          if (totalTime > Duration.zero)
+            Text(
+              DurationFormatter.formatHoursMinutesSeconds(totalTime),
+              style: TextStyle(
+                fontSize: 13,
+                color: Theme.of(context).colorScheme.secondary,
+                fontWeight: FontWeight.w500,
+              ),
             ),
-          ),
         ],
       ),
     );

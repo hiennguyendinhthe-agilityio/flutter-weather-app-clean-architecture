@@ -13,6 +13,7 @@ class TaskModel extends Task {
     required bool isActive,
     required bool isCompleted,
     required String projectColor,
+    bool? isArchived,
   }) : super(
           id: id,
           title: title,
@@ -24,6 +25,7 @@ class TaskModel extends Task {
           isActive: isActive,
           isCompleted: isCompleted,
           projectColor: projectColor,
+          isArchived: isArchived ?? false,
         );
 
   factory TaskModel.fromJson(Map<String, dynamic> json) {
@@ -38,6 +40,7 @@ class TaskModel extends Task {
       isActive: json['isActive'],
       isCompleted: json['isCompleted'],
       projectColor: json['projectColor'],
+      isArchived: json['isArchived'] ?? false,
     );
   }
 
@@ -53,6 +56,7 @@ class TaskModel extends Task {
       'isActive': isActive,
       'isCompleted': isCompleted,
       'projectColor': projectColor,
+      'isArchived': isArchived,
     };
   }
 
@@ -68,6 +72,7 @@ class TaskModel extends Task {
       isActive: task.isActive,
       isCompleted: task.isCompleted,
       projectColor: task.projectColor,
+      isArchived: task.isArchived,
     );
   }
 }

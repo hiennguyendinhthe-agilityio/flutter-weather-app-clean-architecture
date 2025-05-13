@@ -1,19 +1,24 @@
+// ignore_for_file: invalid_use_of_visible_for_testing_member
+
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:task_management_app/domain/entities/task.dart';
 import 'package:task_management_app/domain/usecases/task/add_task.dart';
 import 'package:task_management_app/domain/usecases/task/delete_task.dart';
 import 'package:task_management_app/domain/usecases/task/get_tasks.dart';
 import 'package:task_management_app/domain/usecases/task/update_task.dart';
 import 'package:task_management_app/presentation/blocs/task/task_event.dart';
 import 'package:task_management_app/presentation/blocs/task/task_state.dart';
-import 'package:uuid/uuid.dart';
 
 class TaskBloc extends Bloc<TaskEvent, TaskState> {
   final GetTasks getTasks;
   final AddTask addTask;
   final UpdateTask updateTask;
   final DeleteTask deleteTask;
+
+  Timer? _masterUpdateTimer;
+  final Set<String> _tasksWithActiveTimers = {};
 
   TaskBloc({
     required this.getTasks,
@@ -34,7 +39,9 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
 
   Future<void> _onLoadTasks(
       LoadTasksEvent event, Emitter<TaskState> emit) async {
-    emit(TaskLoading());
+    if (state is! TasksLoaded) {
+      emit(TaskLoading());
+    }
     try {
       final tasks = await getTasks();
 
@@ -46,16 +53,26 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
 
   Future<void> _onAddTask(AddTaskEvent event, Emitter<TaskState> emit) async {
     try {
-      final taskWithId = event.task.copyWith(
-          id: const Uuid().v4(),
-          createdAt: DateTime.now(),
-          isActive: true,
-          isCompleted: false,
-          isArchived: false,
-          timeSpent: Duration.zero);
-      await addTask(taskWithId);
+      final Task newTask = event.task;
 
-      add(LoadTasksEvent());
+      await addTask(newTask);
+
+      if (state is TasksLoaded) {
+        final currentState = state as TasksLoaded;
+
+        final updatedAllTasks = List<Task>.from(currentState.allTasks)
+          ..add(newTask);
+        emit(TasksLoaded(allTasks: updatedAllTasks));
+
+        if (newTask.isActive) {
+          if (!_tasksWithActiveTimers.contains(newTask.id)) {
+            _tasksWithActiveTimers.add(newTask.id);
+            _ensureMasterTimerIsRunning();
+          }
+        }
+      } else {
+        add(LoadTasksEvent());
+      }
     } catch (e) {
       emit(TaskError('Failed to add task: $e'));
     }
@@ -65,19 +82,44 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       UpdateTaskEvent event, Emitter<TaskState> emit) async {
     try {
       await updateTask(event.task);
-      add(LoadTasksEvent());
+      if (state is TasksLoaded) {
+        final currentTasks = List<Task>.from((state as TasksLoaded).allTasks);
+        final index = currentTasks.indexWhere((t) => t.id == event.task.id);
+        if (index != -1) {
+          currentTasks[index] = event.task;
+          emit(TasksLoaded(allTasks: currentTasks));
+        } else {
+          add(LoadTasksEvent());
+        }
+      }
     } catch (e) {
       emit(TaskError('Failed to update task: $e'));
+      add(LoadTasksEvent());
     }
   }
 
   Future<void> _onDeleteTask(
       DeleteTaskEvent event, Emitter<TaskState> emit) async {
     try {
-      await deleteTask(event.taskId);
-      add(LoadTasksEvent());
+      if (state is TasksLoaded) {
+        final currentState = state as TasksLoaded;
+        final tasksAfterDeletion = currentState.allTasks
+            .where((task) => task.id != event.taskId)
+            .toList();
+        emit(TasksLoaded(allTasks: tasksAfterDeletion));
+
+        _tasksWithActiveTimers.remove(event.taskId);
+        _stopMasterTimerIfNoActiveTasks();
+
+        await deleteTask(event.taskId);
+      } else {
+        await deleteTask(event.taskId);
+        add(LoadTasksEvent());
+      }
     } catch (e) {
       emit(TaskError('Failed to delete task: $e'));
+
+      add(LoadTasksEvent());
     }
   }
 
@@ -85,17 +127,28 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       ToggleTaskCompletionEvent event, Emitter<TaskState> emit) async {
     if (state is TasksLoaded) {
       final currentState = state as TasksLoaded;
+      try {
+        final taskToToggle = currentState.allTasks.firstWhere(
+            (task) => task.id == event.taskId,
+            orElse: () =>
+                throw Exception("Task not found for toggle completion"));
 
-      final taskToToggle = currentState.allTasks.firstWhere(
-          (task) => task.id == event.taskId,
-          orElse: () =>
-              throw Exception("Task not found for toggle completion"));
+        final updatedTask = taskToToggle.copyWith(
+          isCompleted: !taskToToggle.isCompleted,
+          isActive: taskToToggle.isCompleted ? taskToToggle.isActive : false,
+        );
 
-      final updatedTask = taskToToggle.copyWith(
-        isCompleted: !taskToToggle.isCompleted,
-      );
+        if (updatedTask.isCompleted &&
+            _tasksWithActiveTimers.contains(updatedTask.id)) {
+          _tasksWithActiveTimers.remove(updatedTask.id);
 
-      add(UpdateTaskEvent(updatedTask));
+          _stopMasterTimerIfNoActiveTasks();
+        }
+
+        add(UpdateTaskEvent(updatedTask));
+      } catch (e) {
+        emit(TaskError('Failed to toggle task completion: $e'));
+      }
     } else {
       emit(TaskError('Cannot toggle completion: Tasks not loaded.'));
     }
@@ -105,13 +158,20 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       ArchiveTaskEvent event, Emitter<TaskState> emit) async {
     if (state is TasksLoaded) {
       final currentState = state as TasksLoaded;
-      final taskToArchive = currentState.allTasks.firstWhere(
-          (task) => task.id == event.taskId,
-          orElse: () => throw Exception("Task not found for archiving"));
+      try {
+        final taskToArchive =
+            currentState.allTasks.firstWhere((task) => task.id == event.taskId);
+        final updatedTask =
+            taskToArchive.copyWith(isArchived: true, isActive: false);
 
-      final updatedTask =
-          taskToArchive.copyWith(isArchived: true, isActive: false);
-      add(UpdateTaskEvent(updatedTask));
+        if (_tasksWithActiveTimers.contains(updatedTask.id)) {
+          _tasksWithActiveTimers.remove(updatedTask.id);
+          _stopMasterTimerIfNoActiveTasks();
+        }
+        add(UpdateTaskEvent(updatedTask));
+      } catch (e) {
+        emit(TaskError('Task not found for archiving: $e'));
+      }
     } else {
       emit(TaskError('Cannot archive task: Tasks not loaded.'));
     }
@@ -121,100 +181,149 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       UnarchiveTaskEvent event, Emitter<TaskState> emit) async {
     if (state is TasksLoaded) {
       final currentState = state as TasksLoaded;
-      final taskToUnarchive = currentState.allTasks.firstWhere(
-          (task) => task.id == event.taskId,
-          orElse: () => throw Exception("Task not found for unarchiving"));
+      try {
+        final taskToUnarchive =
+            currentState.allTasks.firstWhere((task) => task.id == event.taskId);
 
-      final updatedTask =
-          taskToUnarchive.copyWith(isArchived: false, isActive: true);
-      add(UpdateTaskEvent(updatedTask));
+        final updatedTask = taskToUnarchive.copyWith(isArchived: false);
+        add(UpdateTaskEvent(updatedTask));
+      } catch (e) {
+        emit(TaskError('Task not found for unarchiving: $e'));
+      }
     } else {
       emit(TaskError('Cannot unarchive task: Tasks not loaded.'));
     }
   }
 
-  final Map<String, Timer> _activeTimers = {};
-
   Future<void> _onStartTaskTimer(
       StartTaskTimerEvent event, Emitter<TaskState> emit) async {
     if (state is TasksLoaded) {
       final currentState = state as TasksLoaded;
-      final task = currentState.allTasks.firstWhere((t) => t.id == event.taskId,
-          orElse: () => throw Exception("Task not found for starting timer"));
-
-      if (_activeTimers.containsKey(event.taskId)) {
-        return;
-      }
-
-      final initialUpdate = task.copyWith(isActive: true);
-      await updateTask(initialUpdate);
-
-      add(LoadTasksEvent());
-
-      _activeTimers[event.taskId] =
-          Timer.periodic(const Duration(seconds: 1), (timer) async {
-        if (state is TasksLoaded) {
-          final latestState = state as TasksLoaded;
-          try {
-            final currentTask =
-                latestState.allTasks.firstWhere((t) => t.id == event.taskId);
-
-            if (!currentTask.isActive ||
-                currentTask.isArchived ||
-                currentTask.isCompleted) {
-              timer.cancel();
-              _activeTimers.remove(event.taskId);
-
-              if (currentTask.isActive) {
-                add(UpdateTaskEvent(currentTask.copyWith(isActive: false)));
-              }
-              return;
-            }
-
-            final updatedTask = currentTask.copyWith(
-              timeSpent: currentTask.timeSpent + const Duration(seconds: 1),
-            );
-
-            await updateTask(updatedTask);
-
-            if (state is TasksLoaded) {
-              final reloadedTasks = await getTasks();
-              emit(TasksLoaded(allTasks: reloadedTasks));
-            }
-          } catch (e) {
-            timer.cancel();
-            _activeTimers.remove(event.taskId);
-          }
-        } else {
-          timer.cancel();
-          _activeTimers.remove(event.taskId);
+      try {
+        final taskIndex =
+            currentState.allTasks.indexWhere((t) => t.id == event.taskId);
+        if (taskIndex == -1) {
+          emit(TaskError(
+              'Task with id ${event.taskId} not found for starting timer'));
+          return;
         }
-      });
+        final task = currentState.allTasks[taskIndex];
+
+        if (task.isCompleted ||
+            task.isArchived ||
+            _tasksWithActiveTimers.contains(event.taskId)) {
+          return;
+        }
+
+        final optimisticTaskUpdate = task.copyWith(isActive: true);
+
+        final newAllTasksForUI = List<Task>.from(currentState.allTasks);
+        newAllTasksForUI[taskIndex] = optimisticTaskUpdate;
+
+        emit(TasksLoaded(allTasks: newAllTasksForUI));
+
+        _tasksWithActiveTimers.add(event.taskId);
+        _ensureMasterTimerIsRunning();
+
+        try {
+          await updateTask(optimisticTaskUpdate);
+        } catch (dbError) {
+          emit(TaskError('Failed to save timer start state to DB: $dbError'));
+
+          _tasksWithActiveTimers.remove(event.taskId);
+          _stopMasterTimerIfNoActiveTasks();
+
+          final revertedTask = task.copyWith(isActive: false);
+          final revertedListForUI = List<Task>.from(currentState.allTasks);
+          revertedListForUI[taskIndex] = revertedTask;
+          emit(TasksLoaded(allTasks: revertedListForUI));
+        }
+      } catch (e) {
+        emit(TaskError('Failed to start task timer (initial find): $e'));
+      }
     }
   }
 
   Future<void> _onStopTaskTimer(
       StopTaskTimerEvent event, Emitter<TaskState> emit) async {
-    _activeTimers[event.taskId]?.cancel();
-    _activeTimers.remove(event.taskId);
-
     if (state is TasksLoaded) {
       final currentState = state as TasksLoaded;
       try {
-        final task =
-            currentState.allTasks.firstWhere((t) => t.id == event.taskId);
-        final updatedTask = task.copyWith(isActive: false);
+        final taskIndex =
+            currentState.allTasks.indexWhere((t) => t.id == event.taskId);
+        if (taskIndex == -1) {
+          emit(TaskError(
+              'Task with id ${event.taskId} not found for stopping timer'));
+          return;
+        }
 
-        add(UpdateTaskEvent(updatedTask));
+        final task = currentState.allTasks[taskIndex];
+
+        final optimisticTaskUpdate = task.copyWith(isActive: false);
+
+        final newAllTasksForUI = List<Task>.from(currentState.allTasks);
+        newAllTasksForUI[taskIndex] = optimisticTaskUpdate;
+
+        emit(TasksLoaded(allTasks: newAllTasksForUI));
+
+        _tasksWithActiveTimers.remove(event.taskId);
+        _stopMasterTimerIfNoActiveTasks();
+
+        try {
+          await updateTask(optimisticTaskUpdate);
+        } catch (dbError) {
+          emit(TaskError('Failed to save timer stop state to DB: $dbError'));
+        }
       } catch (e) {
-        emit(TaskError('Failed to stop task timer: $e'));
+        emit(TaskError('Failed to stop task timer (initial find): $e'));
       }
+    }
+  }
+
+  void _ensureMasterTimerIsRunning() {
+    if (_masterUpdateTimer == null || !_masterUpdateTimer!.isActive) {
+      _masterUpdateTimer =
+          Timer.periodic(const Duration(seconds: 1), _onMasterTimerTick);
+    }
+  }
+
+  void _stopMasterTimerIfNoActiveTasks() {
+    if (_tasksWithActiveTimers.isEmpty && _masterUpdateTimer != null) {
+      _masterUpdateTimer?.cancel();
+      _masterUpdateTimer = null;
+    }
+  }
+
+  void _onMasterTimerTick(Timer timer) {
+    if (state is TasksLoaded && _tasksWithActiveTimers.isNotEmpty) {
+      final currentState = state as TasksLoaded;
+      List<Task> updatedTasks = List<Task>.from(currentState.allTasks);
+      bool hasChanges = false;
+
+      for (int i = 0; i < updatedTasks.length; i++) {
+        final task = updatedTasks[i];
+        if (_tasksWithActiveTimers.contains(task.id) &&
+            task.isActive &&
+            !task.isCompleted &&
+            !task.isArchived) {
+          updatedTasks[i] = task.copyWith(
+            timeSpent: task.timeSpent + const Duration(seconds: 1),
+          );
+          hasChanges = true;
+        }
+      }
+
+      if (hasChanges) {
+        emit(TasksLoaded(allTasks: updatedTasks));
+      }
+    } else if (_tasksWithActiveTimers.isEmpty) {
+      _stopMasterTimerIfNoActiveTasks();
     }
   }
 
   @override
   Future<void> close() {
-    _activeTimers.forEach((key, timer) => timer.cancel());
+    _masterUpdateTimer?.cancel();
     return super.close();
   }
 }
