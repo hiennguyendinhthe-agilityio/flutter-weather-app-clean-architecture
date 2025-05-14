@@ -34,8 +34,6 @@ dependencies:
   
   # Date & Time
   intl: ^0.18.1
-
-  sqflite_common_ffi: ^2.3.4+4
   
   sqflite_common_ffi_web: ^0.4.5+4
   # Utilities
@@ -51,13 +49,19 @@ dependencies:
   
   # Logging
   logger: ^2.0.2
-  
-  # Notifications
-  flutter_local_notifications: ^15.1.1
-  
+    
   # Charts (for statistics)
   fl_chart: ^0.63.0
 
+  hive: ^2.2.3
+
+  hive_flutter: ^1.1.0
+
+  flutter_slidable: ^4.0.0
+
+  sqflite_common_ffi: ^2.3.4+4
+
+  path: ^1.9.0
 # Dev dependencies
 dev_dependencies:
   flutter_test:

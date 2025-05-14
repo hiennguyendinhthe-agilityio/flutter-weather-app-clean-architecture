@@ -1,4 +1,3 @@
-// lib/presentation/pages/report_page.dart
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,16 +25,7 @@ class _ReportPageState extends State<ReportPage> {
             if (state is TaskLoading) {
               return const Center(child: CircularProgressIndicator());
             } else if (state is TasksLoaded) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildHeader(),
-                  _buildPeriodSelector(),
-                  _buildTimeChart(state.tasks),
-                  _buildProjectBreakdown(state.tasks),
-                  _buildRecentActivity(state.tasks),
-                ],
-              );
+              return _buildContent(context, state.allTasks);
             } else if (state is TaskError) {
               return Center(child: Text(state.message));
             } else {
@@ -44,6 +34,36 @@ class _ReportPageState extends State<ReportPage> {
           },
         ),
       ),
+    );
+  }
+
+  Widget _buildContent(BuildContext context, List<Task> tasks) {
+    return CustomScrollView(
+      slivers: [
+        SliverToBoxAdapter(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildHeader(),
+              _buildPeriodSelector(),
+              _buildTimeChart(tasks),
+              _buildProjectBreakdown(tasks),
+              const Padding(
+                padding: EdgeInsets.only(left: 16.0, top: 16.0, right: 16.0),
+                child: Text(
+                  'Recent Activity',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
+          ),
+        ),
+        _buildRecentActivityList(tasks),
+      ],
     );
   }
 
@@ -62,9 +82,7 @@ class _ReportPageState extends State<ReportPage> {
           const Spacer(),
           IconButton(
             icon: const Icon(Icons.calendar_today),
-            onPressed: () {
-              // Calendar action
-            },
+            onPressed: () {},
           ),
         ],
       ),
@@ -109,7 +127,6 @@ class _ReportPageState extends State<ReportPage> {
   }
 
   Widget _buildTimeChart(List<Task> tasks) {
-    // Calculate total time spent per day for the last 7 days
     final now = DateTime.now();
     final dayTotals = List.generate(7, (index) {
       final day = now.subtract(Duration(days: 6 - index));
@@ -191,7 +208,7 @@ class _ReportPageState extends State<ReportPage> {
                     dotData: const FlDotData(show: false),
                     belowBarData: BarAreaData(
                       show: true,
-                      color: Colors.blue.withOpacity(0.2),
+                      color: Colors.blue.withValues(alpha: 0.2),
                     ),
                   ),
                 ],
@@ -204,7 +221,6 @@ class _ReportPageState extends State<ReportPage> {
   }
 
   Widget _buildProjectBreakdown(List<Task> tasks) {
-    // Group tasks by project and calculate total time
     final projectTotals = <String, Duration>{};
 
     for (final task in tasks) {
@@ -213,7 +229,6 @@ class _ReportPageState extends State<ReportPage> {
       projectTotals[projectName] = currentTotal + task.timeSpent;
     }
 
-    // Sort projects by time spent
     final sortedProjects = projectTotals.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
 
@@ -274,8 +289,7 @@ class _ReportPageState extends State<ReportPage> {
                   ),
                   const SizedBox(height: 8),
                   LinearProgressIndicator(
-                    value: timeSpent.inMinutes /
-                        (timeSpent.inMinutes + 60), // Adjust scale as needed
+                    value: timeSpent.inMinutes / (timeSpent.inMinutes + 60),
                     backgroundColor: Colors.grey[200],
                     valueColor: AlwaysStoppedAnimation<Color>(
                         _getColorFromName(projectColor)),
@@ -289,68 +303,51 @@ class _ReportPageState extends State<ReportPage> {
     );
   }
 
-  Widget _buildRecentActivity(List<Task> tasks) {
-    // Sort tasks by creation date, most recent first
+  Widget _buildRecentActivityList(List<Task> tasks) {
     final recentTasks = List<Task>.from(tasks)
       ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Recent Activity',
-              style: TextStyle(
-                fontSize: 18,
+    final displayTasks = recentTasks.take(5).toList();
+
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (context, index) {
+          final task = displayTasks[index];
+          return ListTile(
+            leading: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color:
+                    _getColorFromName(task.projectColor).withValues(alpha: 0.2),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Center(
+                child: Text(
+                  task.assignee.isNotEmpty ? task.assignee[0] : '',
+                  style: TextStyle(
+                    color: _getColorFromName(task.projectColor),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+            title: Text(
+              task.title,
+              style: const TextStyle(
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: ListView.builder(
-                itemCount: recentTasks.take(5).length,
-                itemBuilder: (context, index) {
-                  final task = recentTasks[index];
-                  return ListTile(
-                    leading: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: _getColorFromName(task.projectColor)
-                            .withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Center(
-                        child: Text(
-                          task.assignee.isNotEmpty ? task.assignee[0] : '',
-                          style: TextStyle(
-                            color: _getColorFromName(task.projectColor),
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                    title: Text(
-                      task.title,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    subtitle: Text(task.projectName),
-                    trailing: Text(
-                      DurationFormatter.formatHoursMinutes(task.timeSpent),
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  );
-                },
+            subtitle: Text(task.projectName),
+            trailing: Text(
+              DurationFormatter.formatHoursMinutes(task.timeSpent),
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
               ),
             ),
-          ],
-        ),
+          );
+        },
+        childCount: displayTasks.length,
       ),
     );
   }

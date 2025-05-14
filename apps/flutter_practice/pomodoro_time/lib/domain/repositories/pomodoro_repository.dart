@@ -1,4 +1,3 @@
-// lib/domain/repositories/pomodoro_repository.dart
 import 'package:task_management_app/domain/entities/pomodoro.dart';
 
 abstract class PomodoroRepository {

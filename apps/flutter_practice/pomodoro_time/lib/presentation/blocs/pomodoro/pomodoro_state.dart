@@ -1,4 +1,3 @@
-// lib/presentation/blocs/pomodoro/pomodoro_state.dart
 import 'package:task_management_app/domain/entities/pomodoro.dart';
 
 abstract class PomodoroState {}

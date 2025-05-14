@@ -1,4 +1,3 @@
-// lib/presentation/pages/home_page.dart
 import 'package:flutter/material.dart';
 import 'package:task_management_app/presentation/pages/account_page.dart';
 import 'package:task_management_app/presentation/pages/calendar_page.dart';

@@ -1,14 +1,15 @@
-// lib/presentation/widgets/add_task_dialog.dart
 import 'package:flutter/material.dart';
 import 'package:task_management_app/domain/entities/task.dart';
 import 'package:uuid/uuid.dart';
 
 class AddTaskDialog extends StatefulWidget {
   final Function(Task) onAddTask;
+  final Task? taskToEdit;
 
   const AddTaskDialog({
     super.key,
     required this.onAddTask,
+    this.taskToEdit,
   });
 
   @override
@@ -17,12 +18,12 @@ class AddTaskDialog extends StatefulWidget {
 
 class _AddTaskDialogState extends State<AddTaskDialog> {
   final _formKey = GlobalKey<FormState>();
-  final _titleController = TextEditingController();
-  final _projectController = TextEditingController();
-  final _assigneeController = TextEditingController();
+  late TextEditingController _titleController = TextEditingController();
+  late TextEditingController _projectController = TextEditingController();
+  late TextEditingController _assigneeController = TextEditingController();
 
-  final List<String> _tags = [];
-  final _tagController = TextEditingController();
+  late List<String> _tags = [];
+  late TextEditingController _tagController = TextEditingController();
   String _selectedColor = 'blue';
 
   final List<Map<String, dynamic>> _colorOptions = [
@@ -35,6 +36,20 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _titleController =
+        TextEditingController(text: widget.taskToEdit?.title ?? '');
+    _projectController =
+        TextEditingController(text: widget.taskToEdit?.projectName ?? '');
+    _assigneeController =
+        TextEditingController(text: widget.taskToEdit?.assignee ?? '');
+    _tags = List<String>.from(widget.taskToEdit?.tags ?? []);
+    _tagController = TextEditingController();
+    _selectedColor = widget.taskToEdit?.projectColor ?? 'blue';
+  }
+
+  @override
   void dispose() {
     _titleController.dispose();
     _projectController.dispose();
@@ -44,7 +59,8 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
   }
 
   void _addTag() {
-    if (_tagController.text.isNotEmpty) {
+    if (_tagController.text.isNotEmpty &&
+        !_tags.contains(_tagController.text)) {
       setState(() {
         _tags.add(_tagController.text);
         _tagController.clear();
@@ -60,8 +76,9 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isEditing = widget.taskToEdit != null;
     return AlertDialog(
-      title: const Text('Add New Task'),
+      title: Text(isEditing ? 'Edit Task' : 'Add New Task'),
       content: SingleChildScrollView(
         child: Form(
           key: _formKey,
@@ -191,24 +208,39 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
         ElevatedButton(
           onPressed: () {
             if (_formKey.currentState!.validate()) {
-              final newTask = Task(
-                id: const Uuid().v4(),
+              final String taskId =
+                  isEditing ? widget.taskToEdit!.id : const Uuid().v4();
+              final DateTime createdAt =
+                  isEditing ? widget.taskToEdit!.createdAt : DateTime.now();
+
+              final bool initialIsActive =
+                  isEditing ? widget.taskToEdit!.isActive : false;
+              final bool initialIsCompleted =
+                  isEditing ? widget.taskToEdit!.isCompleted : false;
+              final bool initialIsArchived =
+                  isEditing ? widget.taskToEdit!.isArchived : false;
+              final Duration initialTimeSpent =
+                  isEditing ? widget.taskToEdit!.timeSpent : Duration.zero;
+
+              final taskData = Task(
+                id: taskId,
                 title: _titleController.text,
                 projectName: _projectController.text,
                 assignee: _assigneeController.text,
                 tags: _tags,
-                createdAt: DateTime.now(),
-                timeSpent: Duration.zero,
-                isActive: true,
-                isCompleted: false,
+                createdAt: createdAt,
+                timeSpent: initialTimeSpent,
+                isActive: initialIsActive,
+                isCompleted: initialIsCompleted,
                 projectColor: _selectedColor,
+                isArchived: initialIsArchived,
               );
 
-              widget.onAddTask(newTask);
+              widget.onAddTask(taskData);
               Navigator.of(context).pop();
             }
           },
-          child: const Text('Add Task'),
+          child: Text(isEditing ? 'Save Changes' : 'Add Task'),
         ),
       ],
     );

@@ -1,4 +1,3 @@
-// lib/presentation/blocs/task/task_event.dart
 import 'package:task_management_app/domain/entities/task.dart';
 
 abstract class TaskEvent {}

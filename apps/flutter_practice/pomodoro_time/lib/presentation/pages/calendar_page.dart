@@ -1,4 +1,3 @@
-// lib/presentation/pages/calendar_page.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -37,7 +36,7 @@ class _CalendarPageState extends State<CalendarPage> {
                   _buildHeader(),
                   _buildDateSelector(),
                   Expanded(
-                    child: _buildTimelineView(state.tasks),
+                    child: _buildTimelineView(state.allTasks),
                   ),
                 ],
               );
@@ -239,7 +238,7 @@ class _CalendarPageState extends State<CalendarPage> {
         borderRadius: BorderRadius.circular(8.0),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 3,
             offset: const Offset(0, 1),
           ),
@@ -252,7 +251,8 @@ class _CalendarPageState extends State<CalendarPage> {
             width: 30,
             height: 30,
             decoration: BoxDecoration(
-              color: _getColorFromName(task.projectColor).withOpacity(0.2),
+              color:
+                  _getColorFromName(task.projectColor).withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(6.0),
             ),
             child: Center(

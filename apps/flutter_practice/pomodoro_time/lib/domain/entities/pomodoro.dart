@@ -1,4 +1,3 @@
-// lib/domain/entities/pomodoro.dart
 import 'package:task_management_app/domain/entities/task.dart';
 
 class Pomodoro {

@@ -1,4 +1,3 @@
-// lib/domain/entities/task.dart
 class Task {
   final String id;
   final String title;

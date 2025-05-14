@@ -1,4 +1,3 @@
-// lib/presentation/pages/pomodoro_page.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_management_app/presentation/blocs/pomodoro/pomodoro_bloc.dart';
@@ -14,16 +13,31 @@ class PomodoroPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          children: [
-            _buildHeader(),
-            _buildTimerDurationSelector(),
-            Expanded(
-              child: _buildPomodoroTimer(),
-            ),
-            _buildCurrentTask(),
-            const SizedBox(height: 20),
-          ],
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            // Use LayoutBuilder to adapt to the available space
+            return SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: constraints.maxHeight,
+                ),
+                child: IntrinsicHeight(
+                  child: Column(
+                    children: [
+                      _buildHeader(),
+                      _buildTimerDurationSelector(),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.5,
+                        child: _buildPomodoroTimer(),
+                      ),
+                      _buildCurrentTask(),
+                      const SizedBox(height: 20),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
         ),
       ),
     );
@@ -50,15 +64,21 @@ class PomodoroPage extends StatelessWidget {
   Widget _buildTimerDurationSelector() {
     return BlocBuilder<PomodoroBloc, PomodoroState>(
       builder: (context, state) {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _buildDurationButton(context, 5, state),
-            _buildDurationButton(context, 10, state),
-            _buildDurationButton(context, 20, state),
-            _buildDurationButton(context, 25, state),
-            _buildDurationButton(context, 30, state),
-          ],
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildDurationButton(context, 5, state),
+                _buildDurationButton(context, 10, state),
+                _buildDurationButton(context, 20, state),
+                _buildDurationButton(context, 25, state),
+                _buildDurationButton(context, 30, state),
+              ],
+            ),
+          ),
         );
       },
     );

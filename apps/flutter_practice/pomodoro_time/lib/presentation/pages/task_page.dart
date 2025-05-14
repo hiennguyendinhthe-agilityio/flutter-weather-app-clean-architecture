@@ -107,7 +107,7 @@ class _TaskPageState extends State<TaskPage>
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            '${state.allTasks.length} Task${state.tasksForActiveTab.length == 1 ? '' : 's'}',
+            '${state.allTasks.length} Task ${state.tasksForActiveTab.length == 1 ? '' : 's'}',
             style: Theme.of(context)
                 .textTheme
                 .headlineSmall
@@ -115,11 +115,8 @@ class _TaskPageState extends State<TaskPage>
           ),
           Row(
             children: [
-              IconButton(
-                icon: const Icon(Icons.calendar_today_outlined),
-                tooltip: 'Go to Calendar',
-                onPressed: () {},
-              ),
+              Icon(Icons.calendar_today,
+                  color: Theme.of(context).colorScheme.primary),
               TextButton.icon(
                 icon: const Icon(Icons.add_circle_outline),
                 label: const Text('New Task'),
@@ -154,15 +151,16 @@ class _TaskPageState extends State<TaskPage>
         indicatorSize: TabBarIndicatorSize.tab,
         indicatorPadding: const EdgeInsets.all(4),
         indicator: BoxDecoration(
-            color: Theme.of(context).scaffoldBackgroundColor,
-            borderRadius: BorderRadius.circular(8),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.1),
-                blurRadius: 3,
-                offset: const Offset(0, 1),
-              )
-            ]),
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 3,
+              offset: const Offset(0, 1),
+            )
+          ],
+        ),
         labelColor: Theme.of(context).colorScheme.primary,
         unselectedLabelColor: Theme.of(context)
             .textTheme

@@ -1,4 +1,3 @@
-// lib/presentation/widgets/pomodoro_timer.dart
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
@@ -69,7 +68,7 @@ class PomodoroTimer extends StatelessWidget {
           ],
         ),
         progressColor: Colors.blue,
-        backgroundColor: Colors.blue.withOpacity(0.2),
+        backgroundColor: Colors.blue.withValues(alpha: 0.2),
         circularStrokeCap: CircularStrokeCap.round,
       ),
     );

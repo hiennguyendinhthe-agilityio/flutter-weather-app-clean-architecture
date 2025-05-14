@@ -1,4 +1,3 @@
-// lib/presentation/widgets/tag_chip.dart
 import 'package:flutter/material.dart';
 
 class TagChip extends StatelessWidget {

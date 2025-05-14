@@ -1,7 +1,8 @@
-// lib/main.dart
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 import 'package:task_management_app/core/di/injection_container.dart' as di;
 import 'package:task_management_app/core/themes/app_theme.dart';
 import 'package:task_management_app/presentation/blocs/pomodoro/pomodoro_bloc.dart';
@@ -12,8 +13,10 @@ import 'package:task_management_app/presentation/pages/home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  sqfliteFfiInit();
-  databaseFactory = databaseFactoryFfi;
+
+  if (kIsWeb) {
+    databaseFactory = databaseFactoryFfiWeb;
+  }
   // Initialize dependency injection
   await di.init();
 
@@ -36,9 +39,9 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Task Management App',
         theme: AppTheme.lightTheme,
-        darkTheme: AppTheme.darkTheme,
         themeMode: ThemeMode.system,
         home: const HomePage(),
       ),

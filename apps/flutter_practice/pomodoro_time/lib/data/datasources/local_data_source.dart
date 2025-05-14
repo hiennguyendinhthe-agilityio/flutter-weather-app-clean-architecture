@@ -1,4 +1,3 @@
-// lib/data/datasources/local_data_source.dart
 import 'dart:convert';
 
 import 'package:path/path.dart';
@@ -33,7 +32,7 @@ class LocalDataSourceImpl implements LocalDataSource {
 
     final database = await openDatabase(
       path,
-      version: 1,
+      version: 2,
       onCreate: (db, version) async {
         // Create tasks table
         await db.execute(
@@ -48,7 +47,8 @@ class LocalDataSourceImpl implements LocalDataSource {
             timeSpent INTEGER,
             isActive INTEGER,
             isCompleted INTEGER,
-            projectColor TEXT
+            projectColor TEXT,
+            isArchived INTEGER DEFAULT 0
           )
           ''',
         );
@@ -68,6 +68,15 @@ class LocalDataSourceImpl implements LocalDataSource {
           ''',
         );
       },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 2) {
+          await db.execute(
+            '''
+            ALTER TABLE tasks ADD COLUMN isArchived INTEGER DEFAULT 0
+            ''',
+          );
+        }
+      },
     );
 
     return LocalDataSourceImpl(
@@ -81,7 +90,7 @@ class LocalDataSourceImpl implements LocalDataSource {
     final taskMaps = await database.query('tasks');
 
     return taskMaps.map((map) {
-      final tagsJson = map['tags'] as String;
+      final tagsJson = map['tags'] as String? ?? '[]';
       final List<String> tags = List<String>.from(json.decode(tagsJson));
 
       return TaskModel(
@@ -92,9 +101,10 @@ class LocalDataSourceImpl implements LocalDataSource {
         tags: tags,
         createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
         timeSpent: Duration(milliseconds: map['timeSpent'] as int),
-        isActive: map['isActive'] == 1,
-        isCompleted: map['isCompleted'] == 1,
+        isActive: (map['isActive'] as int? ?? 0) == 1,
+        isCompleted: (map['isCompleted'] as int? ?? 0) == 1,
         projectColor: map['projectColor'] as String,
+        isArchived: (map['isArchived'] as int? ?? 0) == 1,
       );
     }).toList();
   }
@@ -114,6 +124,7 @@ class LocalDataSourceImpl implements LocalDataSource {
         'isActive': task.isActive ? 1 : 0,
         'isCompleted': task.isCompleted ? 1 : 0,
         'projectColor': task.projectColor,
+        'isArchived': task.isArchived ? 1 : 0,
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
@@ -133,6 +144,7 @@ class LocalDataSourceImpl implements LocalDataSource {
         'isActive': task.isActive ? 1 : 0,
         'isCompleted': task.isCompleted ? 1 : 0,
         'projectColor': task.projectColor,
+        'isArchived': task.isArchived ? 1 : 0,
       },
       where: 'id = ?',
       whereArgs: [task.id],
