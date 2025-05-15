@@ -1,4 +1,4 @@
-import 'package:task_management_app/domain/entities/pomodoro.dart';
+import 'package:task_management_app/data/models/pomodoro.dart';
 
 abstract class PomodoroState {}
 

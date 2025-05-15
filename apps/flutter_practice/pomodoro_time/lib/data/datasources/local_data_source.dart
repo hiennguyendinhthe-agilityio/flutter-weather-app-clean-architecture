@@ -3,19 +3,10 @@ import 'dart:convert';
 import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:task_management_app/data/models/pomodoro_model.dart';
-import 'package:task_management_app/data/models/task_model.dart';
+import 'package:task_management_app/data/models/pomodoro.dart';
+import 'package:task_management_app/data/models/task.dart';
 
-abstract class LocalDataSource {
-  Future<List<TaskModel>> getTasks();
-  Future<void> saveTask(TaskModel task);
-  Future<void> updateTask(TaskModel task);
-  Future<void> deleteTask(String id);
-  Future<PomodoroModel?> getLastPomodoro();
-  Future<void> savePomodoro(PomodoroModel pomodoro);
-}
-
-class LocalDataSourceImpl implements LocalDataSource {
+class LocalDataSourceImpl {
   final SharedPreferences sharedPreferences;
   final Database database;
 
@@ -85,15 +76,14 @@ class LocalDataSourceImpl implements LocalDataSource {
     );
   }
 
-  @override
-  Future<List<TaskModel>> getTasks() async {
+  Future<List<Task>> getTasks() async {
     final taskMaps = await database.query('tasks');
 
     return taskMaps.map((map) {
       final tagsJson = map['tags'] as String? ?? '[]';
       final List<String> tags = List<String>.from(json.decode(tagsJson));
 
-      return TaskModel(
+      return Task(
         id: map['id'] as String,
         title: map['title'] as String,
         projectName: map['projectName'] as String,
@@ -109,8 +99,7 @@ class LocalDataSourceImpl implements LocalDataSource {
     }).toList();
   }
 
-  @override
-  Future<void> saveTask(TaskModel task) async {
+  Future<void> saveTask(Task task) async {
     await database.insert(
       'tasks',
       {
@@ -130,8 +119,7 @@ class LocalDataSourceImpl implements LocalDataSource {
     );
   }
 
-  @override
-  Future<void> updateTask(TaskModel task) async {
+  Future<void> updateTask(Task task) async {
     await database.update(
       'tasks',
       {
@@ -151,7 +139,6 @@ class LocalDataSourceImpl implements LocalDataSource {
     );
   }
 
-  @override
   Future<void> deleteTask(String id) async {
     await database.delete(
       'tasks',
@@ -160,8 +147,7 @@ class LocalDataSourceImpl implements LocalDataSource {
     );
   }
 
-  @override
-  Future<PomodoroModel?> getLastPomodoro() async {
+  Future<Pomodoro?> getLastPomodoro() async {
     final pomodoroMaps = await database.query(
       'pomodoro',
       orderBy: 'timestamp DESC',
@@ -175,7 +161,7 @@ class LocalDataSourceImpl implements LocalDataSource {
     final map = pomodoroMaps.first;
     final currentTaskId = map['currentTaskId'] as String?;
 
-    TaskModel? currentTask;
+    Task? currentTask;
     if (currentTaskId != null) {
       final taskMaps = await database.query(
         'tasks',
@@ -188,7 +174,7 @@ class LocalDataSourceImpl implements LocalDataSource {
         final tagsJson = taskMap['tags'] as String;
         final List<String> tags = List<String>.from(json.decode(tagsJson));
 
-        currentTask = TaskModel(
+        currentTask = Task(
           id: taskMap['id'] as String,
           title: taskMap['title'] as String,
           projectName: taskMap['projectName'] as String,
@@ -204,7 +190,7 @@ class LocalDataSourceImpl implements LocalDataSource {
       }
     }
 
-    return PomodoroModel(
+    return Pomodoro(
       duration: map['duration'] as int,
       remainingTime: map['remainingTime'] as int,
       isRunning: map['isRunning'] == 1,
@@ -212,8 +198,7 @@ class LocalDataSourceImpl implements LocalDataSource {
     );
   }
 
-  @override
-  Future<void> savePomodoro(PomodoroModel pomodoro) async {
+  Future<void> savePomodoro(Pomodoro pomodoro) async {
     await database.insert(
       'pomodoro',
       {

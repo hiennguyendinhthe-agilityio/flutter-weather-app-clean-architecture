@@ -1,31 +1,17 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:task_management_app/domain/entities/pomodoro.dart';
-import 'package:task_management_app/domain/usecases/pomodoro/get_last_pomodoro.dart';
-import 'package:task_management_app/domain/usecases/pomodoro/pause_pomodoro.dart';
-import 'package:task_management_app/domain/usecases/pomodoro/save_pomodoro.dart';
-import 'package:task_management_app/domain/usecases/pomodoro/start_pomodoro.dart';
-import 'package:task_management_app/domain/usecases/pomodoro/stop_pomodoro.dart';
+import 'package:task_management_app/data/datasources/local_data_source.dart';
+import 'package:task_management_app/data/models/pomodoro.dart';
 import 'package:task_management_app/presentation/blocs/pomodoro/pomodoro_event.dart';
 import 'package:task_management_app/presentation/blocs/pomodoro/pomodoro_state.dart';
 
 class PomodoroBloc extends Bloc<PomodoroEvent, PomodoroState> {
-  final GetLastPomodoro getLastPomodoro;
-  final SavePomodoro savePomodoro;
-  final StartPomodoro startPomodoro;
-  final PausePomodoro pausePomodoro;
-  final StopPomodoro stopPomodoro;
+  final LocalDataSourceImpl localDataSource;
 
   Timer? _timer;
 
-  PomodoroBloc({
-    required this.getLastPomodoro,
-    required this.savePomodoro,
-    required this.startPomodoro,
-    required this.pausePomodoro,
-    required this.stopPomodoro,
-  }) : super(PomodoroInitial()) {
+  PomodoroBloc({required this.localDataSource}) : super(PomodoroInitial()) {
     on<StartPomodoroEvent>(_onStartPomodoro);
     on<PausePomodoroEvent>(_onPausePomodoro);
     on<ResumePomodoroEvent>(_onResumePomodoro);
@@ -45,7 +31,7 @@ class PomodoroBloc extends Bloc<PomodoroEvent, PomodoroState> {
   Future<void> _onLoadLastPomodoro(
       LoadLastPomodoroEvent event, Emitter<PomodoroState> emit) async {
     try {
-      final pomodoro = await getLastPomodoro();
+      final pomodoro = await localDataSource.getLastPomodoro();
 
       if (pomodoro != null) {
         if (pomodoro.isRunning) {
@@ -77,7 +63,7 @@ class PomodoroBloc extends Bloc<PomodoroEvent, PomodoroState> {
     emit(PomodoroRunning(pomodoro));
 
     try {
-      await startPomodoro(duration: pomodoro.duration, currentTask: event.task);
+      await localDataSource.savePomodoro(pomodoro);
     } catch (e) {
       // Handle error
     }
@@ -97,7 +83,7 @@ class PomodoroBloc extends Bloc<PomodoroEvent, PomodoroState> {
       emit(PomodoroPaused(pomodoro));
 
       try {
-        await pausePomodoro(pomodoro);
+        await localDataSource.savePomodoro(pomodoro);
       } catch (e) {
         // Handle error
       }
@@ -112,7 +98,7 @@ class PomodoroBloc extends Bloc<PomodoroEvent, PomodoroState> {
       emit(PomodoroRunning(pomodoro));
 
       try {
-        await savePomodoro(pomodoro);
+        await localDataSource.savePomodoro(pomodoro);
       } catch (e) {
         // Handle error
       }
@@ -138,7 +124,7 @@ class PomodoroBloc extends Bloc<PomodoroEvent, PomodoroState> {
       }
 
       try {
-        await stopPomodoro(pomodoro);
+        await localDataSource.savePomodoro(pomodoro);
       } catch (e) {
         // Handle error
       }
@@ -171,7 +157,7 @@ class PomodoroBloc extends Bloc<PomodoroEvent, PomodoroState> {
       emit(PomodoroRunning(resetPomodoro));
 
       try {
-        await savePomodoro(resetPomodoro);
+        await localDataSource.savePomodoro(resetPomodoro);
       } catch (e) {
         // Handle error
       }
@@ -196,7 +182,7 @@ class PomodoroBloc extends Bloc<PomodoroEvent, PomodoroState> {
     emit(PomodoroPaused(pomodoro));
 
     try {
-      await savePomodoro(pomodoro);
+      await localDataSource.savePomodoro(pomodoro);
     } catch (e) {
       // Handle error
     }
@@ -217,7 +203,7 @@ class PomodoroBloc extends Bloc<PomodoroEvent, PomodoroState> {
         // Save every minute to reduce database writes
         if (updatedPomodoro.remainingTime % 60 == 0) {
           try {
-            await savePomodoro(updatedPomodoro);
+            await localDataSource.savePomodoro(updatedPomodoro);
           } catch (e) {
             // Handle error
           }
@@ -227,7 +213,8 @@ class PomodoroBloc extends Bloc<PomodoroEvent, PomodoroState> {
         emit(PomodoroCompleted(pomodoro));
 
         try {
-          await savePomodoro(pomodoro.copyWith(isRunning: false));
+          await localDataSource
+              .savePomodoro(pomodoro.copyWith(isRunning: false));
         } catch (e) {
           // Handle error
         }

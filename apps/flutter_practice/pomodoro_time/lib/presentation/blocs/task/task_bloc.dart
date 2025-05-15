@@ -1,19 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:task_management_app/domain/entities/task.dart';
-import 'package:task_management_app/domain/usecases/task/add_task.dart';
-import 'package:task_management_app/domain/usecases/task/delete_task.dart';
-import 'package:task_management_app/domain/usecases/task/get_tasks.dart';
-import 'package:task_management_app/domain/usecases/task/update_task.dart';
+import 'package:task_management_app/data/datasources/local_data_source.dart';
+import 'package:task_management_app/data/models/task.dart';
 import 'package:task_management_app/presentation/blocs/task/task_event.dart';
 import 'package:task_management_app/presentation/blocs/task/task_state.dart';
 
 class TaskBloc extends Bloc<TaskEvent, TaskState> {
-  final GetTasks getTasks;
-  final AddTask addTask;
-  final UpdateTask updateTask;
-  final DeleteTask deleteTask;
+  final LocalDataSourceImpl localDataSource;
 
   Timer? _masterUpdateTimer;
   final Set<String> _tasksWithActiveTimers = {};
@@ -22,10 +16,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   bool _isLoadingFromDB = false;
 
   TaskBloc({
-    required this.getTasks,
-    required this.addTask,
-    required this.updateTask,
-    required this.deleteTask,
+    required this.localDataSource,
   }) : super(TaskInitial()) {
     on<LoadTasksEvent>(_onLoadTasks);
     on<AddTaskEvent>(_onAddTask);
@@ -46,7 +37,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
 
     _isLoadingFromDB = true;
     try {
-      final tasks = await getTasks();
+      final tasks = await localDataSource.getTasks();
 
       _tasksWithActiveTimers.clear();
       for (final task in tasks) {
@@ -73,7 +64,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     try {
       final Task newTask = event.task;
 
-      await addTask(newTask);
+      await localDataSource.saveTask(newTask);
 
       if (state is TasksLoaded) {
         final currentState = state as TasksLoaded;
@@ -100,7 +91,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   Future<void> _onUpdateTask(
       UpdateTaskEvent event, Emitter<TaskState> emit) async {
     try {
-      await updateTask(event.task);
+      await localDataSource.updateTask(event.task);
 
       if (state is TasksLoaded) {
         final currentTasks = List<Task>.from((state as TasksLoaded).allTasks);
@@ -146,9 +137,9 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
         _lastUpdateTimes.remove(event.taskId);
         _stopMasterTimerIfNoActiveTasks();
 
-        await deleteTask(event.taskId);
+        await localDataSource.deleteTask(event.taskId);
       } else {
-        await deleteTask(event.taskId);
+        await localDataSource.deleteTask(event.taskId);
         add(LoadTasksEvent());
       }
     } catch (e) {
@@ -263,7 +254,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
         _ensureMasterTimerIsRunning();
 
         try {
-          await updateTask(optimisticTaskUpdate);
+          await localDataSource.updateTask(optimisticTaskUpdate);
         } catch (dbError) {
           emit(TaskError('Failed to save timer start state to DB: $dbError'));
 
@@ -309,7 +300,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
         _stopMasterTimerIfNoActiveTasks();
 
         try {
-          await updateTask(optimisticTaskUpdate);
+          await localDataSource.updateTask(optimisticTaskUpdate);
         } catch (dbError) {
           emit(TaskError('Failed to save timer stop state to DB: $dbError'));
         }
@@ -369,7 +360,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
           for (final task in updatedTasks) {
             if (_tasksWithActiveTimers.contains(task.id)) {
               try {
-                await updateTask(task);
+                await localDataSource.updateTask(task);
               } catch (e) {
                 print('Failed to auto-save task time: $e');
               }
@@ -388,7 +379,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       final tasks = (state as TasksLoaded).allTasks;
       for (final task in tasks) {
         if (_tasksWithActiveTimers.contains(task.id)) {
-          updateTask(task).catchError((e) {
+          localDataSource.updateTask(task).catchError((e) {
             print('Failed to save task time during bloc close: $e');
           });
         }

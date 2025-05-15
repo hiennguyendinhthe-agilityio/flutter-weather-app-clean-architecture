@@ -10,6 +10,7 @@ class Task {
   final bool isCompleted;
   final String projectColor;
   final bool isArchived;
+
   Task({
     required this.id,
     required this.title,
@@ -23,6 +24,38 @@ class Task {
     required this.projectColor,
     this.isArchived = false,
   });
+
+  factory Task.fromJson(Map<String, dynamic> json) {
+    return Task(
+      id: json['id'],
+      title: json['title'],
+      projectName: json['projectName'],
+      assignee: json['assignee'],
+      tags: List<String>.from(json['tags']),
+      createdAt: DateTime.parse(json['createdAt']),
+      timeSpent: Duration(milliseconds: json['timeSpent']),
+      isActive: json['isActive'],
+      isCompleted: json['isCompleted'],
+      projectColor: json['projectColor'],
+      isArchived: json['isArchived'] ?? false,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'projectName': projectName,
+      'assignee': assignee,
+      'tags': tags,
+      'createdAt': createdAt.toIso8601String(),
+      'timeSpent': timeSpent.inMilliseconds,
+      'isActive': isActive,
+      'isCompleted': isCompleted,
+      'projectColor': projectColor,
+      'isArchived': isArchived,
+    };
+  }
 
   Task copyWith({
     String? id,
@@ -49,6 +82,22 @@ class Task {
       isCompleted: isCompleted ?? this.isCompleted,
       projectColor: projectColor ?? this.projectColor,
       isArchived: isArchived ?? this.isArchived,
+    );
+  }
+
+  static fromEntity(Task task) {
+    return Task(
+      id: task.id,
+      title: task.title,
+      projectName: task.projectName,
+      assignee: task.assignee,
+      tags: task.tags,
+      createdAt: task.createdAt,
+      timeSpent: task.timeSpent,
+      isActive: task.isActive,
+      isCompleted: task.isCompleted,
+      projectColor: task.projectColor,
+      isArchived: task.isArchived,
     );
   }
 }

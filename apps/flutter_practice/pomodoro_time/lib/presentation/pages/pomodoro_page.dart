@@ -4,6 +4,7 @@ import 'package:task_management_app/presentation/blocs/pomodoro/pomodoro_bloc.da
 import 'package:task_management_app/presentation/blocs/pomodoro/pomodoro_event.dart';
 import 'package:task_management_app/presentation/blocs/pomodoro/pomodoro_state.dart';
 import 'package:task_management_app/presentation/blocs/task/task_bloc.dart';
+import 'package:task_management_app/presentation/blocs/task/task_event.dart';
 import 'package:task_management_app/presentation/blocs/task/task_state.dart';
 
 class PomodoroPage extends StatelessWidget {
@@ -290,7 +291,14 @@ class PomodoroPage extends StatelessWidget {
                       const SizedBox(height: 16),
                       ElevatedButton(
                         onPressed: () {
-                          // End now logic
+                          context.read<TaskBloc>().add(
+                                UpdateTaskEvent(
+                                  currentTask.copyWith(
+                                    isCompleted: true,
+                                  ),
+                                ),
+                              );
+                          context.read<PomodoroBloc>().add(StopPomodoroEvent());
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.black,
@@ -307,7 +315,6 @@ class PomodoroPage extends StatelessWidget {
                 );
               }
             }
-
             return const SizedBox.shrink();
           },
         );

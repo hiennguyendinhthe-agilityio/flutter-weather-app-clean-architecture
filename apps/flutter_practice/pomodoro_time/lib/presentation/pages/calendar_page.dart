@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:task_management_app/domain/entities/task.dart';
+import 'package:task_management_app/data/models/task.dart';
 import 'package:task_management_app/presentation/blocs/task/task_bloc.dart';
 import 'package:task_management_app/presentation/blocs/task/task_state.dart';
 

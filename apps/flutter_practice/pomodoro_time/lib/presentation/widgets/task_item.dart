@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:task_management_app/core/utils/duration_formatter.dart';
-import 'package:task_management_app/domain/entities/task.dart';
+import 'package:task_management_app/data/models/task.dart';
 import 'package:task_management_app/presentation/blocs/task/task_bloc.dart';
 import 'package:task_management_app/presentation/blocs/task/task_event.dart';
 import 'package:task_management_app/presentation/widgets/add_task_dialog.dart';
