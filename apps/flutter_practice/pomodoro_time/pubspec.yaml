@@ -39,7 +39,6 @@ dependencies:
   # Utilities
   uuid: ^4.0.0
   collection: ^1.17.2
-  rxdart: ^0.27.7
   
   # Animation
   flutter_animate: ^4.2.0

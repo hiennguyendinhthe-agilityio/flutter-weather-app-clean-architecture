@@ -1,5 +1,8 @@
+// ignore_for_file: invalid_use_of_visible_for_testing_member
+
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_management_app/data/datasources/local_data_source.dart';
 import 'package:task_management_app/data/models/task.dart';
@@ -362,7 +365,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
               try {
                 await localDataSource.updateTask(task);
               } catch (e) {
-                print('Failed to auto-save task time: $e');
+                debugPrint('Failed to auto-save task time: $e');
               }
             }
           }
@@ -380,7 +383,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       for (final task in tasks) {
         if (_tasksWithActiveTimers.contains(task.id)) {
           localDataSource.updateTask(task).catchError((e) {
-            print('Failed to save task time during bloc close: $e');
+            debugPrint('Failed to save task time during bloc close: $e');
           });
         }
       }

@@ -9,7 +9,7 @@ import 'package:task_management_app/presentation/blocs/pomodoro/pomodoro_bloc.da
 import 'package:task_management_app/presentation/blocs/pomodoro/pomodoro_event.dart';
 import 'package:task_management_app/presentation/blocs/task/task_bloc.dart';
 import 'package:task_management_app/presentation/blocs/task/task_event.dart';
-import 'package:task_management_app/presentation/pages/home_page.dart';
+import 'package:task_management_app/presentation/widgets/navigation_bar.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
         title: 'Task Management App',
         theme: AppTheme.lightTheme,
         themeMode: ThemeMode.system,
-        home: const HomePage(),
+        home: const NavigationBarRoute(),
       ),
     );
   }

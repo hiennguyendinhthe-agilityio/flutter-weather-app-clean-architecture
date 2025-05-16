@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'dart:ui';
 
 import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:task_management_app/data/models/pomodoro.dart';
+import 'package:task_management_app/data/models/setting.dart';
 import 'package:task_management_app/data/models/task.dart';
 
 class LocalDataSourceImpl {
@@ -14,6 +16,55 @@ class LocalDataSourceImpl {
     required this.sharedPreferences,
     required this.database,
   });
+  Future<bool> saveSettings(PomodoroSettings settings) async {
+    final Map<String, dynamic> settingsMap = {
+      'pomodoroTime': settings.pomodoroTime,
+      'shortBreakTime': settings.shortBreakTime,
+      'longBreakTime': settings.longBreakTime,
+      'longBreakInterval': settings.longBreakInterval,
+      'autoStartBreaks': settings.autoStartBreaks,
+      'autoStartPomodoros': settings.autoStartPomodoros,
+      'autoCheckTasks': settings.autoCheckTasks,
+      'autoSwitchTasks': settings.autoSwitchTasks,
+      'alarmSound': settings.alarmSound,
+      'alarmVolume': settings.alarmVolume,
+      'alarmRepeat': settings.alarmRepeat,
+      'tickingSound': settings.tickingSound,
+      'tickingVolume': settings.tickingVolume,
+      'themeColor': settings.themeColor.value,
+    };
+
+    final String settingsJson = jsonEncode(settingsMap);
+    return await sharedPreferences.setString('pomodoro_settings', settingsJson);
+  }
+
+  Future<PomodoroSettings?> getSettings() async {
+    final String? settingsJson =
+        sharedPreferences.getString('pomodoro_settings');
+
+    if (settingsJson != null) {
+      final Map<String, dynamic> settingsMap = jsonDecode(settingsJson);
+
+      return PomodoroSettings(
+        pomodoroTime: settingsMap['pomodoroTime'] ?? 25,
+        shortBreakTime: settingsMap['shortBreakTime'] ?? 5,
+        longBreakTime: settingsMap['longBreakTime'] ?? 15,
+        longBreakInterval: settingsMap['longBreakInterval'] ?? 4,
+        autoStartBreaks: settingsMap['autoStartBreaks'] ?? false,
+        autoStartPomodoros: settingsMap['autoStartPomodoros'] ?? false,
+        autoCheckTasks: settingsMap['autoCheckTasks'] ?? false,
+        autoSwitchTasks: settingsMap['autoSwitchTasks'] ?? false,
+        alarmSound: settingsMap['alarmSound'] ?? 'Digital',
+        alarmVolume: settingsMap['alarmVolume'] ?? 50,
+        alarmRepeat: settingsMap['alarmRepeat'] ?? 1,
+        tickingSound: settingsMap['tickingSound'] ?? 'None',
+        tickingVolume: settingsMap['tickingVolume'] ?? 50,
+        themeColor: Color(settingsMap['themeColor'] ?? 0xFF2196F3),
+      );
+    }
+
+    return null;
+  }
 
   static Future<LocalDataSourceImpl> create() async {
     final sharedPreferences = await SharedPreferences.getInstance();

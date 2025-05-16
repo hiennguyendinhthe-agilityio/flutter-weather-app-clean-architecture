@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:task_management_app/core/themes/pomodoro_color_theme.dart';
 import 'package:task_management_app/presentation/blocs/pomodoro/pomodoro_bloc.dart';
 import 'package:task_management_app/presentation/blocs/pomodoro/pomodoro_event.dart';
 import 'package:task_management_app/presentation/blocs/pomodoro/pomodoro_state.dart';
@@ -12,41 +13,57 @@ class PomodoroPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            // Use LayoutBuilder to adapt to the available space
-            return SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight,
-                ),
-                child: IntrinsicHeight(
-                  child: Column(
-                    children: [
-                      _buildHeader(),
-                      _buildTimerDurationSelector(),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.5,
-                        child: _buildPomodoroTimer(),
+    return BlocBuilder<PomodoroBloc, PomodoroState>(
+      builder: (context, state) {
+        int currentDuration = 25;
+
+        if (state is PomodoroRunning) {
+          currentDuration = state.pomodoro.duration;
+        } else if (state is PomodoroPaused) {
+          currentDuration = state.pomodoro.duration;
+        } else if (state is PomodoroCompleted) {
+          currentDuration = state.pomodoro.duration;
+        }
+
+        final themeColors = PomodoroColorTheme.getThemeColors(currentDuration);
+
+        return Scaffold(
+          backgroundColor: themeColors.background,
+          body: SafeArea(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return SingleChildScrollView(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: constraints.maxHeight,
+                    ),
+                    child: IntrinsicHeight(
+                      child: Column(
+                        children: [
+                          _buildHeader(themeColors),
+                          _buildTimerDurationSelector(themeColors),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.5,
+                            child: _buildPomodoroTimer(themeColors),
+                          ),
+                          _buildCurrentTask(themeColors),
+                          const SizedBox(height: 20),
+                        ],
                       ),
-                      _buildCurrentTask(),
-                      const SizedBox(height: 20),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-            );
-          },
-        ),
-      ),
+                );
+              },
+            ),
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildHeader() {
-    return const Padding(
-      padding: EdgeInsets.all(16.0),
+  Widget _buildHeader(PomodoroThemeColors themeColors) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -55,6 +72,7 @@ class PomodoroPage extends StatelessWidget {
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
+              color: themeColors.primary,
             ),
           ),
         ],
@@ -62,7 +80,7 @@ class PomodoroPage extends StatelessWidget {
     );
   }
 
-  Widget _buildTimerDurationSelector() {
+  Widget _buildTimerDurationSelector(PomodoroThemeColors themeColors) {
     return BlocBuilder<PomodoroBloc, PomodoroState>(
       builder: (context, state) {
         return Padding(
@@ -72,11 +90,11 @@ class PomodoroPage extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _buildDurationButton(context, 5, state),
-                _buildDurationButton(context, 10, state),
-                _buildDurationButton(context, 20, state),
-                _buildDurationButton(context, 25, state),
-                _buildDurationButton(context, 30, state),
+                _buildDurationButton(context, 5, state, themeColors),
+                _buildDurationButton(context, 10, state, themeColors),
+                _buildDurationButton(context, 20, state, themeColors),
+                _buildDurationButton(context, 25, state, themeColors),
+                _buildDurationButton(context, 30, state, themeColors),
               ],
             ),
           ),
@@ -85,8 +103,8 @@ class PomodoroPage extends StatelessWidget {
     );
   }
 
-  Widget _buildDurationButton(
-      BuildContext context, int minutes, PomodoroState state) {
+  Widget _buildDurationButton(BuildContext context, int minutes,
+      PomodoroState state, PomodoroThemeColors themeColors) {
     bool isSelected = false;
 
     if (state is PomodoroRunning) {
@@ -97,6 +115,8 @@ class PomodoroPage extends StatelessWidget {
       isSelected = state.pomodoro.duration == minutes;
     }
 
+    final buttonThemeColors = PomodoroColorTheme.getThemeColors(minutes);
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 4),
       child: ElevatedButton(
@@ -104,7 +124,8 @@ class PomodoroPage extends StatelessWidget {
           context.read<PomodoroBloc>().add(SetPomodoroDurationEvent(minutes));
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: isSelected ? Colors.blue : Colors.grey[200],
+          backgroundColor:
+              isSelected ? buttonThemeColors.primary : Colors.grey[200],
           foregroundColor: isSelected ? Colors.white : Colors.black,
           shape: const CircleBorder(),
           padding: const EdgeInsets.all(16),
@@ -120,7 +141,7 @@ class PomodoroPage extends StatelessWidget {
     );
   }
 
-  Widget _buildPomodoroTimer() {
+  Widget _buildPomodoroTimer(PomodoroThemeColors themeColors) {
     return BlocBuilder<PomodoroBloc, PomodoroState>(
       builder: (context, state) {
         int remainingSeconds = 0;
@@ -146,7 +167,7 @@ class PomodoroPage extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: LinearGradient(
-                    colors: [Colors.blue[300]!, Colors.blue[700]!],
+                    colors: [themeColors.primary, themeColors.secondary],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -165,9 +186,10 @@ class PomodoroPage extends StatelessWidget {
                 children: [
                   Text(
                     '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 60,
                       fontWeight: FontWeight.bold,
+                      color: themeColors.primary,
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -182,6 +204,7 @@ class PomodoroPage extends StatelessWidget {
                           () => context
                               .read<PomodoroBloc>()
                               .add(StartPomodoroEvent()),
+                          themeColors,
                         ),
                       ] else if (state is PomodoroRunning) ...[
                         _buildControlButton(
@@ -190,6 +213,7 @@ class PomodoroPage extends StatelessWidget {
                           () => context
                               .read<PomodoroBloc>()
                               .add(PausePomodoroEvent()),
+                          themeColors,
                         ),
                         const SizedBox(width: 20),
                         _buildControlButton(
@@ -198,6 +222,7 @@ class PomodoroPage extends StatelessWidget {
                           () => context
                               .read<PomodoroBloc>()
                               .add(StopPomodoroEvent()),
+                          themeColors,
                         ),
                       ] else if (state is PomodoroPaused) ...[
                         _buildControlButton(
@@ -206,6 +231,7 @@ class PomodoroPage extends StatelessWidget {
                           () => context
                               .read<PomodoroBloc>()
                               .add(ResumePomodoroEvent()),
+                          themeColors,
                         ),
                         const SizedBox(width: 20),
                         _buildControlButton(
@@ -214,6 +240,7 @@ class PomodoroPage extends StatelessWidget {
                           () => context
                               .read<PomodoroBloc>()
                               .add(StopPomodoroEvent()),
+                          themeColors,
                         ),
                       ],
                     ],
@@ -227,12 +254,12 @@ class PomodoroPage extends StatelessWidget {
     );
   }
 
-  Widget _buildControlButton(
-      BuildContext context, IconData icon, VoidCallback onPressed) {
+  Widget _buildControlButton(BuildContext context, IconData icon,
+      VoidCallback onPressed, PomodoroThemeColors themeColors) {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.blue,
+        backgroundColor: themeColors.primary,
         foregroundColor: Colors.white,
         shape: const CircleBorder(),
         padding: const EdgeInsets.all(16),
@@ -245,7 +272,7 @@ class PomodoroPage extends StatelessWidget {
     );
   }
 
-  Widget _buildCurrentTask() {
+  Widget _buildCurrentTask(PomodoroThemeColors themeColors) {
     return BlocBuilder<PomodoroBloc, PomodoroState>(
       builder: (context, pomodoroState) {
         return BlocBuilder<TaskBloc, TaskState>(
@@ -262,9 +289,12 @@ class PomodoroPage extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12.0),
+                    border: Border.all(
+                        color: themeColors.primary.withOpacity(0.3),
+                        width: 1.5),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.05),
+                        color: themeColors.primary.withOpacity(0.1),
                         blurRadius: 5,
                         offset: const Offset(0, 2),
                       ),
@@ -273,19 +303,20 @@ class PomodoroPage extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                      Text(
                         "I'm Focusing on",
                         style: TextStyle(
                           fontSize: 12,
-                          color: Colors.grey,
+                          color: themeColors.primary.withOpacity(0.7),
                         ),
                       ),
                       const SizedBox(height: 8),
                       Text(
                         currentTask.title,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
+                          color: themeColors.primary,
                         ),
                       ),
                       const SizedBox(height: 16),
@@ -301,7 +332,7 @@ class PomodoroPage extends StatelessWidget {
                           context.read<PomodoroBloc>().add(StopPomodoroEvent());
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
+                          backgroundColor: themeColors.primary,
                           foregroundColor: Colors.white,
                           minimumSize: const Size(double.infinity, 50),
                           shape: RoundedRectangleBorder(
