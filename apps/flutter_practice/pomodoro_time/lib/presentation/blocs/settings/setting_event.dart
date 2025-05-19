@@ -1,76 +1,24 @@
-// Events
-import 'dart:ui';
+// lib/presentation/blocs/settings/settings_event.dart
+import 'package:task_management_app/data/models/settings.dart';
 
 abstract class SettingsEvent {}
 
 class LoadSettingsEvent extends SettingsEvent {}
 
-class UpdatePomodoroTimeEvent extends SettingsEvent {
-  final int minutes;
-  UpdatePomodoroTimeEvent(this.minutes);
+class UpdateSettingsEvent extends SettingsEvent {
+  final Settings settings;
+
+  UpdateSettingsEvent(this.settings);
 }
 
-class UpdateShortBreakTimeEvent extends SettingsEvent {
-  final int minutes;
-  UpdateShortBreakTimeEvent(this.minutes);
+class AddCustomDurationEvent extends SettingsEvent {
+  final int duration;
+
+  AddCustomDurationEvent(this.duration);
 }
 
-class UpdateLongBreakTimeEvent extends SettingsEvent {
-  final int minutes;
-  UpdateLongBreakTimeEvent(this.minutes);
-}
+class RemoveDurationEvent extends SettingsEvent {
+  final int duration;
 
-class UpdateLongBreakIntervalEvent extends SettingsEvent {
-  final int interval;
-  UpdateLongBreakIntervalEvent(this.interval);
-}
-
-class ToggleAutoStartBreaksEvent extends SettingsEvent {
-  final bool enabled;
-  ToggleAutoStartBreaksEvent(this.enabled);
-}
-
-class ToggleAutoStartPomodorosEvent extends SettingsEvent {
-  final bool enabled;
-  ToggleAutoStartPomodorosEvent(this.enabled);
-}
-
-class ToggleAutoCheckTasksEvent extends SettingsEvent {
-  final bool enabled;
-  ToggleAutoCheckTasksEvent(this.enabled);
-}
-
-class ToggleAutoSwitchTasksEvent extends SettingsEvent {
-  final bool enabled;
-  ToggleAutoSwitchTasksEvent(this.enabled);
-}
-
-class UpdateAlarmSoundEvent extends SettingsEvent {
-  final String sound;
-  UpdateAlarmSoundEvent(this.sound);
-}
-
-class UpdateAlarmVolumeEvent extends SettingsEvent {
-  final int volume;
-  UpdateAlarmVolumeEvent(this.volume);
-}
-
-class UpdateAlarmRepeatEvent extends SettingsEvent {
-  final int repeat;
-  UpdateAlarmRepeatEvent(this.repeat);
-}
-
-class UpdateTickingSoundEvent extends SettingsEvent {
-  final String sound;
-  UpdateTickingSoundEvent(this.sound);
-}
-
-class UpdateTickingVolumeEvent extends SettingsEvent {
-  final int volume;
-  UpdateTickingVolumeEvent(this.volume);
-}
-
-class UpdateThemeColorEvent extends SettingsEvent {
-  final Color color;
-  UpdateThemeColorEvent(this.color);
+  RemoveDurationEvent(this.duration);
 }

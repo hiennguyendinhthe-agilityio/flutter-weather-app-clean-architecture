@@ -7,6 +7,7 @@ import 'package:task_management_app/presentation/blocs/pomodoro/pomodoro_state.d
 import 'package:task_management_app/presentation/blocs/task/task_bloc.dart';
 import 'package:task_management_app/presentation/blocs/task/task_event.dart';
 import 'package:task_management_app/presentation/blocs/task/task_state.dart';
+import 'package:task_management_app/presentation/widgets/settings_dialog.dart';
 
 class PomodoroPage extends StatelessWidget {
   const PomodoroPage({super.key});
@@ -40,7 +41,7 @@ class PomodoroPage extends StatelessWidget {
                     child: IntrinsicHeight(
                       child: Column(
                         children: [
-                          _buildHeader(themeColors),
+                          _buildHeader(context, themeColors),
                           _buildTimerDurationSelector(themeColors),
                           SizedBox(
                             height: MediaQuery.of(context).size.height * 0.5,
@@ -61,12 +62,15 @@ class PomodoroPage extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(PomodoroThemeColors themeColors) {
+// Chỉnh sửa _buildHeader trong lib/presentation/pages/pomodoro_page.dart
+
+  Widget _buildHeader(BuildContext context, PomodoroThemeColors themeColors) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          const SizedBox(width: 48), // For balance
           Text(
             'Pomodoro',
             style: TextStyle(
@@ -74,6 +78,18 @@ class PomodoroPage extends StatelessWidget {
               fontWeight: FontWeight.bold,
               color: themeColors.primary,
             ),
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.settings,
+              color: themeColors.primary,
+            ),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => const SettingsDialog(),
+              );
+            },
           ),
         ],
       ),

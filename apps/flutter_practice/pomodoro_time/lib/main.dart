@@ -7,6 +7,8 @@ import 'package:task_management_app/core/di/injection_container.dart' as di;
 import 'package:task_management_app/core/themes/app_theme.dart';
 import 'package:task_management_app/presentation/blocs/pomodoro/pomodoro_bloc.dart';
 import 'package:task_management_app/presentation/blocs/pomodoro/pomodoro_event.dart';
+import 'package:task_management_app/presentation/blocs/settings/setting_bloc.dart';
+import 'package:task_management_app/presentation/blocs/settings/setting_event.dart';
 import 'package:task_management_app/presentation/blocs/task/task_bloc.dart';
 import 'package:task_management_app/presentation/blocs/task/task_event.dart';
 import 'package:task_management_app/presentation/widgets/navigation_bar.dart';
@@ -36,6 +38,9 @@ class MyApp extends StatelessWidget {
         BlocProvider<PomodoroBloc>(
           create: (context) =>
               di.sl<PomodoroBloc>()..add(LoadLastPomodoroEvent()),
+        ),
+        BlocProvider<SettingsBloc>(
+          create: (context) => di.sl<SettingsBloc>()..add(LoadSettingsEvent()),
         ),
       ],
       child: MaterialApp(

@@ -1,20 +1,12 @@
-// States
-import 'package:task_management_app/data/models/setting.dart';
+// lib/presentation/blocs/settings/settings_state.dart
+import 'package:task_management_app/data/models/settings.dart';
 
 abstract class SettingsState {}
 
 class SettingsInitial extends SettingsState {}
 
-class SettingsLoading extends SettingsState {}
-
 class SettingsLoaded extends SettingsState {
-  final PomodoroSettings settings;
+  final Settings settings;
 
   SettingsLoaded(this.settings);
-}
-
-class SettingsError extends SettingsState {
-  final String message;
-
-  SettingsError(this.message);
 }

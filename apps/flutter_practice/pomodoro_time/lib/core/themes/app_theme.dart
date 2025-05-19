@@ -45,3 +45,74 @@ class AppTheme {
     );
   }
 }
+
+class PomodoroThemeColors {
+  final Color primary;
+  final Color secondary;
+  final Color background;
+
+  PomodoroThemeColors({
+    required this.primary,
+    required this.secondary,
+    required this.background,
+  });
+}
+
+class PomodoroColorTheme {
+  static PomodoroThemeColors getThemeColors(int duration,
+      {bool isDarkMode = false}) {
+    switch (duration) {
+      case 5:
+        return PomodoroThemeColors(
+          primary: Colors.green,
+          secondary: Colors.lightGreen,
+          background: isDarkMode ? Colors.black : const Color(0xFFF0F8F0),
+        );
+      case 10:
+        return PomodoroThemeColors(
+          primary: Colors.blue,
+          secondary: Colors.lightBlue,
+          background: isDarkMode ? Colors.black : const Color(0xFFF0F4FF),
+        );
+      case 20:
+        return PomodoroThemeColors(
+          primary: Colors.orange,
+          secondary: Colors.amber,
+          background: isDarkMode ? Colors.black : const Color(0xFFFFF8F0),
+        );
+      case 25:
+        return PomodoroThemeColors(
+          primary: Colors.red,
+          secondary: Colors.redAccent,
+          background: isDarkMode ? Colors.black : const Color(0xFFFFF0F0),
+        );
+      case 30:
+        return PomodoroThemeColors(
+          primary: Colors.purple,
+          secondary: Colors.purpleAccent,
+          background: isDarkMode ? Colors.black : const Color(0xFFF8F0FF),
+        );
+      default:
+        // Nếu là giá trị tùy chỉnh, sử dụng màu dựa trên phạm vi
+        if (duration < 15) {
+          return PomodoroThemeColors(
+            primary: Colors.teal,
+            secondary: Colors.tealAccent,
+            background: isDarkMode ? Colors.black : const Color(0xFFF0FFFF),
+          );
+        } else if (duration < 25) {
+          return PomodoroThemeColors(
+            primary: Colors.deepOrange,
+            secondary: Colors.orangeAccent,
+            background: isDarkMode ? Colors.black : const Color(0xFFFFF4F0),
+          );
+        } else {
+          return PomodoroThemeColors(
+            primary: Colors.indigo,
+            secondary: Colors.indigoAccent,
+            background: isDarkMode ? Colors.black : const Color(0xFFF0F0FF),
+          );
+        }
+    }
+  }
+}
