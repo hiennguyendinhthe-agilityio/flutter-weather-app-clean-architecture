@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_management_app/core/themes/pomodoro_color_theme.dart';
+import 'package:task_management_app/data/models/settings.dart';
 import 'package:task_management_app/presentation/blocs/pomodoro/pomodoro_bloc.dart';
 import 'package:task_management_app/presentation/blocs/pomodoro/pomodoro_event.dart';
 import 'package:task_management_app/presentation/blocs/pomodoro/pomodoro_state.dart';
@@ -87,7 +88,16 @@ class PomodoroPage extends StatelessWidget {
             onPressed: () {
               showDialog(
                 context: context,
-                builder: (context) => const SettingsDialog(),
+                builder: (context) => SettingsDialog(
+                  settings: const Settings(
+                    darkMode: false,
+                    customColors: false,
+                    availableDurations: [5, 10, 20, 25, 30],
+                  ),
+                  onSettingsChanged: (Settings) {},
+                  onAddDuration: (int) {},
+                  onRemoveDuration: (int) {},
+                ),
               );
             },
           ),

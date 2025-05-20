@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:task_management_app/core/utils/duration_formatter.dart';
 import 'package:task_management_app/data/models/task.dart';
 import 'package:task_management_app/presentation/blocs/task/task_bloc.dart';
 import 'package:task_management_app/presentation/blocs/task/task_event.dart';
 import 'package:task_management_app/presentation/blocs/task/task_state.dart';
 import 'package:task_management_app/presentation/widgets/add_task_dialog.dart';
 import 'package:task_management_app/presentation/widgets/task_item.dart';
+import 'package:task_management_app/presentation/widgets/task_list_section.dart';
+import 'package:task_management_app/presentation/widgets/timer_page_header.dart';
 
 class TimerPage extends StatefulWidget {
   const TimerPage({super.key});
@@ -84,7 +85,10 @@ class _TimerPageState extends State<TimerPage>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildHeader(state),
+        TimerPageHeader(
+          taskCount: state.allTasks.length,
+          onAddTaskPressed: _showAddTaskDialog,
+        ),
         _buildTabBar(state),
         const SizedBox(height: 16),
         Expanded(
@@ -97,41 +101,6 @@ class _TimerPageState extends State<TimerPage>
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildHeader(TasksLoaded state) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            '${state.allTasks.length} Task',
-            style: Theme.of(context)
-                .textTheme
-                .headlineSmall
-                ?.copyWith(fontWeight: FontWeight.bold),
-          ),
-          Row(
-            children: [
-              Icon(Icons.calendar_today,
-                  color: Theme.of(context).colorScheme.primary),
-              TextButton.icon(
-                icon: const Icon(Icons.add_circle_outline),
-                label: const Text('New Task'),
-                onPressed: _showAddTaskDialog,
-                style: TextButton.styleFrom(
-                    foregroundColor: Theme.of(context).colorScheme.primary,
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20))),
-              ),
-            ],
-          ),
-        ],
-      ),
     );
   }
 
@@ -204,63 +173,51 @@ class _TimerPageState extends State<TimerPage>
     }).toList();
 
     otherTasks.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    void toggleTask(String taskId) {
+      context.read<TaskBloc>().add(ToggleTaskCompletionEvent(taskId));
+    }
+
+    void startTimer(String taskId) {
+      context.read<TaskBloc>().add(StartTaskTimerEvent(taskId));
+    }
+
+    void stopTimer(String taskId) {
+      context.read<TaskBloc>().add(StopTaskTimerEvent(taskId));
+    }
 
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       children: [
-        if (todayTasks.isNotEmpty) ...[
-          _buildSectionHeader(
-              'Today',
-              todayTasks.fold(
-                  Duration.zero, (prev, task) => prev + task.timeSpent)),
-          ...todayTasks.map((task) => TaskItem(
-                key: ValueKey('active-today-${task.id}'),
-                task: task,
-                onToggleCompletion: () => context
-                    .read<TaskBloc>()
-                    .add(ToggleTaskCompletionEvent(task.id)),
-                onStartTimer: () =>
-                    context.read<TaskBloc>().add(StartTaskTimerEvent(task.id)),
-                onStopTimer: () =>
-                    context.read<TaskBloc>().add(StopTaskTimerEvent(task.id)),
-              )),
-        ],
-        if (yesterdayTasks.isNotEmpty) ...[
-          const SizedBox(height: 16),
-          _buildSectionHeader(
-              'Yesterday',
-              yesterdayTasks.fold(
-                  Duration.zero, (prev, task) => prev + task.timeSpent)),
-          ...yesterdayTasks.map((task) => TaskItem(
-                key: ValueKey('active-yesterday-${task.id}'),
-                task: task,
-                onToggleCompletion: () => context
-                    .read<TaskBloc>()
-                    .add(ToggleTaskCompletionEvent(task.id)),
-                onStartTimer: () =>
-                    context.read<TaskBloc>().add(StartTaskTimerEvent(task.id)),
-                onStopTimer: () =>
-                    context.read<TaskBloc>().add(StopTaskTimerEvent(task.id)),
-              )),
-        ],
-        if (otherTasks.isNotEmpty) ...[
-          const SizedBox(height: 16),
-          _buildSectionHeader(
-              'Older / Upcoming',
-              otherTasks.fold(
-                  Duration.zero, (prev, task) => prev + task.timeSpent)),
-          ...otherTasks.map((task) => TaskItem(
-                key: ValueKey('active-other-${task.id}'),
-                task: task,
-                onToggleCompletion: () => context
-                    .read<TaskBloc>()
-                    .add(ToggleTaskCompletionEvent(task.id)),
-                onStartTimer: () =>
-                    context.read<TaskBloc>().add(StartTaskTimerEvent(task.id)),
-                onStopTimer: () =>
-                    context.read<TaskBloc>().add(StopTaskTimerEvent(task.id)),
-              )),
-        ],
+        TaskListSection(
+          title: 'Today',
+          tasks: todayTasks,
+          totalTime: todayTasks.fold(
+              Duration.zero, (prev, task) => prev + task.timeSpent),
+          sectionKeyPrefix: 'active-today',
+          onToggleTaskCompletion: toggleTask,
+          onStartTaskTimer: startTimer,
+          onStopTaskTimer: stopTimer,
+        ),
+        TaskListSection(
+          title: 'Yesterday',
+          tasks: yesterdayTasks,
+          totalTime: yesterdayTasks.fold(
+              Duration.zero, (prev, task) => prev + task.timeSpent),
+          sectionKeyPrefix: 'active-yesterday',
+          onToggleTaskCompletion: toggleTask,
+          onStartTaskTimer: startTimer,
+          onStopTaskTimer: stopTimer,
+        ),
+        TaskListSection(
+          title: 'Older / Upcoming',
+          tasks: otherTasks,
+          totalTime: otherTasks.fold(
+              Duration.zero, (prev, task) => prev + task.timeSpent),
+          sectionKeyPrefix: 'active-other',
+          onToggleTaskCompletion: toggleTask,
+          onStartTaskTimer: startTimer,
+          onStopTaskTimer: stopTimer,
+        ),
         const SizedBox(height: 20),
       ],
     );
@@ -294,33 +251,6 @@ class _TimerPageState extends State<TimerPage>
                 onStopTimer: () {/* No action */},
               ))
           .toList(),
-    );
-  }
-
-  Widget _buildSectionHeader(String title, Duration totalTime) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 16.0, bottom: 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            title,
-            style: Theme.of(context)
-                .textTheme
-                .titleMedium
-                ?.copyWith(fontWeight: FontWeight.w600),
-          ),
-          if (totalTime > Duration.zero)
-            Text(
-              DurationFormatter.formatHoursMinutesSeconds(totalTime),
-              style: TextStyle(
-                fontSize: 13,
-                color: Theme.of(context).colorScheme.secondary,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-        ],
-      ),
     );
   }
 }
