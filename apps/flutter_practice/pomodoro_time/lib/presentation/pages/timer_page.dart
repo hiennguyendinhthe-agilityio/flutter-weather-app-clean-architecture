@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:task_management_app/data/models/task.dart';
-import 'package:task_management_app/presentation/blocs/task/task_bloc.dart';
-import 'package:task_management_app/presentation/blocs/task/task_event.dart';
-import 'package:task_management_app/presentation/blocs/task/task_state.dart';
+import 'package:task_management_app/presentation/providers/task_provider.dart';
 import 'package:task_management_app/presentation/widgets/add_task_dialog.dart';
 import 'package:task_management_app/presentation/widgets/task_item.dart';
 import 'package:task_management_app/presentation/widgets/task_list_section.dart';
@@ -24,7 +22,6 @@ class _TimerPageState extends State<TimerPage>
   void initState() {
     super.initState();
 
-    context.read<TaskBloc>().add(LoadTasksEvent());
     _tabController = TabController(length: 2, vsync: this);
   }
 
@@ -37,13 +34,10 @@ class _TimerPageState extends State<TimerPage>
   void _showAddTaskDialog() {
     showDialog(
       context: context,
-      builder: (_) => BlocProvider.value(
-        value: BlocProvider.of<TaskBloc>(context),
-        child: AddTaskDialog(
-          onAddTask: (task) {
-            context.read<TaskBloc>().add(AddTaskEvent(task));
-          },
-        ),
+      builder: (_) => AddTaskDialog(
+        onAddTask: (task) {
+          Provider.of<TaskProvider>(context, listen: false).addTask(task);
+        },
       ),
     );
   }
@@ -53,27 +47,33 @@ class _TimerPageState extends State<TimerPage>
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: SafeArea(
-        child: BlocConsumer<TaskBloc, TaskState>(
-          listener: (context, state) {
-            if (state is TaskError) {
-              ScaffoldMessenger.of(context)
-                ..hideCurrentSnackBar()
-                ..showSnackBar(
-                  SnackBar(
-                    content: Text(state.message),
-                    backgroundColor: Colors.red,
-                    behavior: SnackBarBehavior.floating,
-                  ),
-                );
+        child: Consumer<TaskProvider>(
+          builder: (context, taskProvider, child) {
+            if (taskProvider.errorMessage != null) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                ScaffoldMessenger.of(context)
+                  ..hideCurrentSnackBar()
+                  ..showSnackBar(
+                    SnackBar(
+                      content: Text(taskProvider.errorMessage!),
+                      backgroundColor: Colors.red,
+                      behavior: SnackBarBehavior.floating,
+                      action: SnackBarAction(
+                        label: 'Dismiss',
+                        onPressed: () {
+                          taskProvider.clearError();
+                        },
+                      ),
+                    ),
+                  );
+                taskProvider.clearError();
+              });
             }
-          },
-          builder: (context, state) {
-            if (state is TasksLoaded) {
-              return _buildLoadedUI(state);
-            } else if (state is TaskLoading) {
+
+            if (taskProvider.isLoading) {
               return const Center(child: CircularProgressIndicator());
             } else {
-              return const Center(child: CircularProgressIndicator());
+              return _buildLoadedUI(taskProvider);
             }
           },
         ),
@@ -81,22 +81,22 @@ class _TimerPageState extends State<TimerPage>
     );
   }
 
-  Widget _buildLoadedUI(TasksLoaded state) {
+  Widget _buildLoadedUI(TaskProvider taskProvider) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TimerPageHeader(
-          taskCount: state.allTasks.length,
+          taskCount: taskProvider.allTasks.length,
           onAddTaskPressed: _showAddTaskDialog,
         ),
-        _buildTabBar(state),
+        _buildTabBar(taskProvider),
         const SizedBox(height: 16),
         Expanded(
           child: TabBarView(
             controller: _tabController,
             children: [
-              _buildActiveTasksView(state),
-              _buildArchivedTasksView(state),
+              _buildActiveTasksView(taskProvider),
+              _buildArchivedTasksView(taskProvider),
             ],
           ),
         ),
@@ -104,7 +104,7 @@ class _TimerPageState extends State<TimerPage>
     );
   }
 
-  Widget _buildTabBar(TasksLoaded state) {
+  Widget _buildTabBar(TaskProvider taskProvider) {
     return Container(
       height: 45,
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -138,15 +138,15 @@ class _TimerPageState extends State<TimerPage>
             ?.withValues(alpha: 0.7),
         splashBorderRadius: BorderRadius.circular(8),
         tabs: [
-          Tab(text: '${state.activeTasks.length} Active'),
-          Tab(text: '${state.archivedTasks.length} Archive'),
+          Tab(text: '${taskProvider.activeTasks.length} Active'),
+          Tab(text: '${taskProvider.archivedTasks.length} Archive'),
         ],
       ),
     );
   }
 
-  Widget _buildActiveTasksView(TasksLoaded state) {
-    if (state.tasksForActiveTab.isEmpty) {
+  Widget _buildActiveTasksView(TaskProvider taskProvider) {
+    if (taskProvider.tasksForActiveTab.isEmpty) {
       return const Center(
         child: Padding(
           padding: EdgeInsets.all(24.0),
@@ -159,13 +159,13 @@ class _TimerPageState extends State<TimerPage>
       );
     }
 
-    final todayTasks = state.todayTasksList;
-    final yesterdayTasks = state.yesterdayTasksList;
+    final todayTasks = taskProvider.todayTasksList;
+    final yesterdayTasks = taskProvider.yesterdayTasksList;
 
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final yesterday = today.subtract(const Duration(days: 1));
-    final otherTasks = state.tasksForActiveTab.where((task) {
+    final otherTasks = taskProvider.tasksForActiveTab.where((task) {
       final taskDay = DateTime(
           task.createdAt.year, task.createdAt.month, task.createdAt.day);
       return !taskDay.isAtSameMomentAs(today) &&
@@ -174,15 +174,16 @@ class _TimerPageState extends State<TimerPage>
 
     otherTasks.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     void toggleTask(String taskId) {
-      context.read<TaskBloc>().add(ToggleTaskCompletionEvent(taskId));
+      Provider.of<TaskProvider>(context, listen: false)
+          .toggleTaskCompletion(taskId);
     }
 
     void startTimer(String taskId) {
-      context.read<TaskBloc>().add(StartTaskTimerEvent(taskId));
+      Provider.of<TaskProvider>(context, listen: false).startTaskTimer(taskId);
     }
 
     void stopTimer(String taskId) {
-      context.read<TaskBloc>().add(StopTaskTimerEvent(taskId));
+      Provider.of<TaskProvider>(context, listen: false).stopTaskTimer(taskId);
     }
 
     return ListView(
@@ -223,8 +224,8 @@ class _TimerPageState extends State<TimerPage>
     );
   }
 
-  Widget _buildArchivedTasksView(TasksLoaded state) {
-    if (state.archivedTasks.isEmpty) {
+  Widget _buildArchivedTasksView(TaskProvider taskProvider) {
+    if (taskProvider.archivedTasks.isEmpty) {
       return const Center(
         child: Padding(
           padding: EdgeInsets.all(24.0),
@@ -237,7 +238,7 @@ class _TimerPageState extends State<TimerPage>
       );
     }
 
-    final sortedArchivedTasks = List<Task>.from(state.archivedTasks)
+    final sortedArchivedTasks = List<Task>.from(taskProvider.archivedTasks)
       ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
     return ListView(

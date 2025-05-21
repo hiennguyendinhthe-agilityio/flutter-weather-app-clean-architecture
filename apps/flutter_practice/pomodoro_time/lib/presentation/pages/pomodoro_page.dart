@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:task_management_app/core/themes/pomodoro_color_theme.dart';
 import 'package:task_management_app/data/models/settings.dart';
-import 'package:task_management_app/presentation/blocs/pomodoro/pomodoro_bloc.dart';
-import 'package:task_management_app/presentation/blocs/pomodoro/pomodoro_event.dart';
-import 'package:task_management_app/presentation/blocs/pomodoro/pomodoro_state.dart';
-import 'package:task_management_app/presentation/blocs/task/task_bloc.dart';
-import 'package:task_management_app/presentation/blocs/task/task_event.dart';
-import 'package:task_management_app/presentation/blocs/task/task_state.dart';
+import 'package:task_management_app/presentation/providers/pomodoro_provider.dart';
+import 'package:task_management_app/presentation/providers/task_provider.dart';
 import 'package:task_management_app/presentation/widgets/settings_dialog.dart';
 
 class PomodoroPage extends StatelessWidget {
@@ -15,16 +11,14 @@ class PomodoroPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PomodoroBloc, PomodoroState>(
-      builder: (context, state) {
+    return Consumer<PomodoroProvider>(
+      builder: (context, pomodoroProvider, child) {
         int currentDuration = 25;
 
-        if (state is PomodoroRunning) {
-          currentDuration = state.pomodoro.duration;
-        } else if (state is PomodoroPaused) {
-          currentDuration = state.pomodoro.duration;
-        } else if (state is PomodoroCompleted) {
-          currentDuration = state.pomodoro.duration;
+        if (pomodoroProvider.isRunning ||
+            pomodoroProvider.isPaused ||
+            pomodoroProvider.isCompleted) {
+          currentDuration = pomodoroProvider.duration;
         }
 
         final themeColors = PomodoroColorTheme.getThemeColors(currentDuration);
@@ -43,12 +37,18 @@ class PomodoroPage extends StatelessWidget {
                       child: Column(
                         children: [
                           _buildHeader(context, themeColors),
-                          _buildTimerDurationSelector(themeColors),
+                          _buildTimerDurationSelector(
+                              context, pomodoroProvider, themeColors),
                           SizedBox(
                             height: MediaQuery.of(context).size.height * 0.5,
-                            child: _buildPomodoroTimer(themeColors),
+                            child: _buildPomodoroTimer(
+                              context,
+                              pomodoroProvider,
+                              themeColors,
+                            ),
                           ),
-                          _buildCurrentTask(themeColors),
+                          _buildCurrentTask(
+                              context, pomodoroProvider, themeColors),
                           const SizedBox(height: 20),
                         ],
                       ),
@@ -62,8 +62,6 @@ class PomodoroPage extends StatelessWidget {
       },
     );
   }
-
-// Chỉnh sửa _buildHeader trong lib/presentation/pages/pomodoro_page.dart
 
   Widget _buildHeader(BuildContext context, PomodoroThemeColors themeColors) {
     return Padding(
@@ -106,9 +104,10 @@ class PomodoroPage extends StatelessWidget {
     );
   }
 
-  Widget _buildTimerDurationSelector(PomodoroThemeColors themeColors) {
-    return BlocBuilder<PomodoroBloc, PomodoroState>(
-      builder: (context, state) {
+  Widget _buildTimerDurationSelector(BuildContext context,
+      PomodoroProvider pomodoroProviderm, PomodoroThemeColors themeColors) {
+    return Consumer<PomodoroProvider>(
+      builder: (context, pomodoroProvider, child) {
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: SingleChildScrollView(
@@ -116,11 +115,15 @@ class PomodoroPage extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _buildDurationButton(context, 5, state, themeColors),
-                _buildDurationButton(context, 10, state, themeColors),
-                _buildDurationButton(context, 20, state, themeColors),
-                _buildDurationButton(context, 25, state, themeColors),
-                _buildDurationButton(context, 30, state, themeColors),
+                _buildDurationButton(context, 5, pomodoroProvider, themeColors),
+                _buildDurationButton(
+                    context, 10, pomodoroProvider, themeColors),
+                _buildDurationButton(
+                    context, 20, pomodoroProvider, themeColors),
+                _buildDurationButton(
+                    context, 25, pomodoroProvider, themeColors),
+                _buildDurationButton(
+                    context, 30, pomodoroProvider, themeColors),
               ],
             ),
           ),
@@ -130,15 +133,15 @@ class PomodoroPage extends StatelessWidget {
   }
 
   Widget _buildDurationButton(BuildContext context, int minutes,
-      PomodoroState state, PomodoroThemeColors themeColors) {
+      PomodoroProvider pomodoroProvider, PomodoroThemeColors themeColors) {
     bool isSelected = false;
 
-    if (state is PomodoroRunning) {
-      isSelected = state.pomodoro.duration == minutes;
-    } else if (state is PomodoroPaused) {
-      isSelected = state.pomodoro.duration == minutes;
-    } else if (state is PomodoroCompleted) {
-      isSelected = state.pomodoro.duration == minutes;
+    if (pomodoroProvider.isRunning ||
+        pomodoroProvider.isPaused ||
+        pomodoroProvider.isCompleted) {
+      isSelected = pomodoroProvider.duration == minutes;
+    } else {
+      isSelected = pomodoroProvider.duration == minutes;
     }
 
     final buttonThemeColors = PomodoroColorTheme.getThemeColors(minutes);
@@ -146,9 +149,7 @@ class PomodoroPage extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 4),
       child: ElevatedButton(
-        onPressed: () {
-          context.read<PomodoroBloc>().add(SetPomodoroDurationEvent(minutes));
-        },
+        onPressed: () {},
         style: ElevatedButton.styleFrom(
           backgroundColor:
               isSelected ? buttonThemeColors.primary : Colors.grey[200],
@@ -167,116 +168,104 @@ class PomodoroPage extends StatelessWidget {
     );
   }
 
-  Widget _buildPomodoroTimer(PomodoroThemeColors themeColors) {
-    return BlocBuilder<PomodoroBloc, PomodoroState>(
-      builder: (context, state) {
-        int remainingSeconds = 0;
+  Widget _buildPomodoroTimer(BuildContext context,
+      PomodoroProvider pomodoroProvider, PomodoroThemeColors themeColors) {
+    int remainingSeconds = pomodoroProvider.remainingTime;
+    final minutes = (remainingSeconds / 60).floor();
+    final seconds = remainingSeconds % 60;
 
-        if (state is PomodoroRunning) {
-          remainingSeconds = state.pomodoro.remainingTime;
-        } else if (state is PomodoroPaused) {
-          remainingSeconds = state.pomodoro.remainingTime;
-        } else if (state is PomodoroCompleted) {
-          remainingSeconds = 0;
-        }
-
-        final minutes = (remainingSeconds / 60).floor();
-        final seconds = remainingSeconds % 60;
-
-        return Center(
-          child: Stack(
-            alignment: Alignment.center,
+    return Center(
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Container(
+            width: 300,
+            height: 300,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                colors: [themeColors.primary, themeColors.secondary],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+          ),
+          Container(
+            width: 280,
+            height: 280,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white,
+            ),
+          ),
+          Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                width: 300,
-                height: 300,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                    colors: [themeColors.primary, themeColors.secondary],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
+              Text(
+                '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}',
+                style: TextStyle(
+                  fontSize: 60,
+                  fontWeight: FontWeight.bold,
+                  color: themeColors.primary,
                 ),
               ),
-              Container(
-                width: 280,
-                height: 280,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white,
-                ),
-              ),
-              Column(
+              const SizedBox(height: 20),
+              Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}',
-                    style: TextStyle(
-                      fontSize: 60,
-                      fontWeight: FontWeight.bold,
-                      color: themeColors.primary,
+                  if (pomodoroProvider.isInitial ||
+                      pomodoroProvider.isCompleted) ...[
+                    _buildControlButton(
+                      context,
+                      Icons.play_arrow,
+                      () =>
+                          Provider.of<PomodoroProvider>(context, listen: false)
+                              .startPomodoro(),
+                      themeColors,
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (state is PomodoroInitial ||
-                          state is PomodoroCompleted) ...[
-                        _buildControlButton(
-                          context,
-                          Icons.play_arrow,
-                          () => context
-                              .read<PomodoroBloc>()
-                              .add(StartPomodoroEvent()),
-                          themeColors,
-                        ),
-                      ] else if (state is PomodoroRunning) ...[
-                        _buildControlButton(
-                          context,
-                          Icons.pause,
-                          () => context
-                              .read<PomodoroBloc>()
-                              .add(PausePomodoroEvent()),
-                          themeColors,
-                        ),
-                        const SizedBox(width: 20),
-                        _buildControlButton(
-                          context,
-                          Icons.stop,
-                          () => context
-                              .read<PomodoroBloc>()
-                              .add(StopPomodoroEvent()),
-                          themeColors,
-                        ),
-                      ] else if (state is PomodoroPaused) ...[
-                        _buildControlButton(
-                          context,
-                          Icons.play_arrow,
-                          () => context
-                              .read<PomodoroBloc>()
-                              .add(ResumePomodoroEvent()),
-                          themeColors,
-                        ),
-                        const SizedBox(width: 20),
-                        _buildControlButton(
-                          context,
-                          Icons.stop,
-                          () => context
-                              .read<PomodoroBloc>()
-                              .add(StopPomodoroEvent()),
-                          themeColors,
-                        ),
-                      ],
-                    ],
-                  ),
+                  ] else if (pomodoroProvider.isRunning) ...[
+                    _buildControlButton(
+                      context,
+                      Icons.pause,
+                      () =>
+                          Provider.of<PomodoroProvider>(context, listen: false)
+                              .pausePomodoro(),
+                      themeColors,
+                    ),
+                    const SizedBox(width: 20),
+                    _buildControlButton(
+                      context,
+                      Icons.stop,
+                      () =>
+                          Provider.of<PomodoroProvider>(context, listen: false)
+                              .stopPomodoro(),
+                      themeColors,
+                    ),
+                  ] else if (pomodoroProvider.isPaused) ...[
+                    _buildControlButton(
+                      context,
+                      Icons.play_arrow,
+                      () =>
+                          Provider.of<PomodoroProvider>(context, listen: false)
+                              .resumePomodoro(),
+                      themeColors,
+                    ),
+                    const SizedBox(width: 20),
+                    _buildControlButton(
+                      context,
+                      Icons.stop,
+                      () =>
+                          Provider.of<PomodoroProvider>(context, listen: false)
+                              .stopPomodoro(),
+                      themeColors,
+                    ),
+                  ],
                 ],
               ),
             ],
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 
@@ -298,83 +287,76 @@ class PomodoroPage extends StatelessWidget {
     );
   }
 
-  Widget _buildCurrentTask(PomodoroThemeColors themeColors) {
-    return BlocBuilder<PomodoroBloc, PomodoroState>(
-      builder: (context, pomodoroState) {
-        return BlocBuilder<TaskBloc, TaskState>(
-          builder: (context, taskState) {
-            if (taskState is TasksLoaded) {
-              final currentTask = taskState.activeTasks.isNotEmpty
-                  ? taskState.activeTasks.first
-                  : null;
+  Widget _buildCurrentTask(BuildContext context,
+      PomodoroProvider pomodoroProvider, PomodoroThemeColors themeColors) {
+    return Consumer<TaskProvider>(
+      builder: (context, taskProvider, child) {
+        final currentTask = taskProvider.activeTasks.isNotEmpty
+            ? taskProvider.activeTasks.first
+            : null;
 
-              if (currentTask != null) {
-                return Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16.0),
-                  padding: const EdgeInsets.all(16.0),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12.0),
-                    border: Border.all(
-                        color: themeColors.primary.withOpacity(0.3),
-                        width: 1.5),
-                    boxShadow: [
-                      BoxShadow(
-                        color: themeColors.primary.withOpacity(0.1),
-                        blurRadius: 5,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
+        if (currentTask != null) {
+          return Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16.0),
+            padding: const EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12.0),
+              border: Border.all(
+                  color: themeColors.primary.withOpacity(0.3), width: 1.5),
+              boxShadow: [
+                BoxShadow(
+                  color: themeColors.primary.withOpacity(0.1),
+                  blurRadius: 5,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "I'm Focusing on",
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: themeColors.primary.withOpacity(0.7),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "I'm Focusing on",
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: themeColors.primary.withOpacity(0.7),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        currentTask.title,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: themeColors.primary,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: () {
-                          context.read<TaskBloc>().add(
-                                UpdateTaskEvent(
-                                  currentTask.copyWith(
-                                    isCompleted: true,
-                                  ),
-                                ),
-                              );
-                          context.read<PomodoroBloc>().add(StopPomodoroEvent());
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: themeColors.primary,
-                          foregroundColor: Colors.white,
-                          minimumSize: const Size(double.infinity, 50),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: const Text('End Now'),
-                      ),
-                    ],
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  currentTask.title,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: themeColors.primary,
                   ),
-                );
-              }
-            }
-            return const SizedBox.shrink();
-          },
-        );
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    final updatedTask = currentTask.copyWith(
+                      isCompleted: true,
+                    );
+                    Provider.of<TaskProvider>(context, listen: false)
+                        .updateTask(updatedTask);
+                    Provider.of<PomodoroProvider>(context, listen: false)
+                        .stopPomodoro();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: themeColors.primary,
+                    foregroundColor: Colors.white,
+                    minimumSize: const Size(double.infinity, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text('End Now'),
+                ),
+              ],
+            ),
+          );
+        }
+        return const SizedBox.shrink();
       },
     );
   }

@@ -1,26 +1,37 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
-import 'package:task_management_app/core/di/injection_container.dart' as di;
 import 'package:task_management_app/core/themes/app_theme.dart';
-import 'package:task_management_app/presentation/blocs/pomodoro/pomodoro_bloc.dart';
-import 'package:task_management_app/presentation/blocs/pomodoro/pomodoro_event.dart';
-import 'package:task_management_app/presentation/blocs/task/task_bloc.dart';
-import 'package:task_management_app/presentation/blocs/task/task_event.dart';
+import 'package:task_management_app/data/datasources/local_data_source.dart';
+import 'package:task_management_app/presentation/providers/pomodoro_provider.dart';
+import 'package:task_management_app/presentation/providers/task_provider.dart';
 import 'package:task_management_app/presentation/widgets/navigation_bar.dart';
 
-void main() async {
+main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   if (kIsWeb) {
     databaseFactory = databaseFactoryFfiWeb;
   }
-  // Initialize dependency injection
-  await di.init();
+  final localDataSource = await LocalDataSourceImpl.create();
 
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) =>
+              TaskProvider(localDataSource: localDataSource)..loadTasks(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => PomodoroProvider(localDataSource: localDataSource)
+            ..loadLastPomodoro(),
+        ),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -28,23 +39,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<TaskBloc>(
-          create: (context) => di.sl<TaskBloc>()..add(LoadTasksEvent()),
-        ),
-        BlocProvider<PomodoroBloc>(
-          create: (context) =>
-              di.sl<PomodoroBloc>()..add(LoadLastPomodoroEvent()),
-        ),
-      ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Task Management App',
-        theme: AppTheme.lightTheme,
-        themeMode: ThemeMode.system,
-        home: const NavigationBarRoute(),
-      ),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Task Management App',
+      theme: AppTheme.lightTheme,
+      themeMode: ThemeMode.system,
+      home: const NavigationBarRoute(),
     );
   }
 }

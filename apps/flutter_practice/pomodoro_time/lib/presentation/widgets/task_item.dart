@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:provider/provider.dart';
 import 'package:task_management_app/core/utils/duration_formatter.dart';
 import 'package:task_management_app/data/models/task.dart';
-import 'package:task_management_app/presentation/blocs/task/task_bloc.dart';
-import 'package:task_management_app/presentation/blocs/task/task_event.dart';
+import 'package:task_management_app/presentation/providers/task_provider.dart';
 import 'package:task_management_app/presentation/widgets/add_task_dialog.dart';
 
 class TaskItem extends StatelessWidget {
@@ -23,24 +22,23 @@ class TaskItem extends StatelessWidget {
   });
 
   void _showEditTaskDialog(BuildContext context, Task taskToEdit) {
-    final taskBloc = context.read<TaskBloc>();
+    final taskProvider = Provider.of<TaskProvider>(context, listen: false);
 
     showDialog(
       context: context,
-      builder: (_) => BlocProvider.value(
-        value: taskBloc,
-        child: AddTaskDialog(
-          taskToEdit: taskToEdit,
-          onAddTask: (updatedTask) {
-            taskBloc.add(UpdateTaskEvent(updatedTask));
-          },
-        ),
+      builder: (_) => AddTaskDialog(
+        taskToEdit: taskToEdit,
+        onAddTask: (updatedTask) {
+          taskProvider.updateTask(updatedTask);
+        },
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final taskProvider = Provider.of<TaskProvider>(context, listen: false);
+
     return Slidable(
       key: ValueKey(task.id),
       startActionPane: ActionPane(
@@ -49,7 +47,7 @@ class TaskItem extends StatelessWidget {
           if (task.isArchived)
             SlidableAction(
               onPressed: (context) {
-                context.read<TaskBloc>().add(UnarchiveTaskEvent(task.id));
+                taskProvider.unarchiveTask(task.id);
               },
               backgroundColor: Colors.orange,
               foregroundColor: Colors.white,
@@ -59,7 +57,7 @@ class TaskItem extends StatelessWidget {
           else
             SlidableAction(
               onPressed: (context) {
-                context.read<TaskBloc>().add(ArchiveTaskEvent(task.id));
+                taskProvider.archiveTask(task.id);
               },
               backgroundColor: Colors.green,
               foregroundColor: Colors.white,
@@ -82,7 +80,8 @@ class TaskItem extends StatelessWidget {
           ),
           SlidableAction(
             onPressed: (contextSA) {
-              final taskBloc = BlocProvider.of<TaskBloc>(contextSA);
+              final taskProvider =
+                  Provider.of<TaskProvider>(context, listen: false);
 
               showDialog(
                 context: contextSA,
@@ -103,7 +102,7 @@ class TaskItem extends StatelessWidget {
                       TextButton(
                         child: const Text('Delete'),
                         onPressed: () {
-                          taskBloc.add(DeleteTaskEvent(task.id));
+                          taskProvider.deleteTask(task.id);
 
                           if (ctxDialog.mounted) {
                             Navigator.of(ctxDialog).pop();

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:task_management_app/data/models/task.dart';
-import 'package:task_management_app/presentation/blocs/task/task_bloc.dart';
-import 'package:task_management_app/presentation/blocs/task/task_state.dart';
+import 'package:task_management_app/presentation/providers/task_provider.dart';
 
 class TaskPage extends StatefulWidget {
   const TaskPage({super.key});
@@ -25,25 +24,21 @@ class _TaskPageState extends State<TaskPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: BlocBuilder<TaskBloc, TaskState>(
-          builder: (context, state) {
-            if (state is TaskLoading) {
+        child: Consumer<TaskProvider>(
+          builder: (context, taskProvider, child) {
+            if (taskProvider.isLoading) {
               return const Center(child: CircularProgressIndicator());
-            } else if (state is TasksLoaded) {
+            } else {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildHeader(),
                   _buildDateSelector(),
                   Expanded(
-                    child: _buildTimelineView(state.allTasks),
+                    child: _buildTimelineView(taskProvider.allTasks),
                   ),
                 ],
               );
-            } else if (state is TaskError) {
-              return Center(child: Text(state.message));
-            } else {
-              return const Center(child: Text('No tasks found'));
             }
           },
         ),
