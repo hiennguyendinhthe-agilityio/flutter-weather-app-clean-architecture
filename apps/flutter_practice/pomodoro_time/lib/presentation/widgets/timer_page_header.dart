@@ -26,13 +26,16 @@ class TimerPageHeader extends StatelessWidget {
           Row(
             children: [
               Icon(Icons.calendar_today_outlined,
-                  color: Theme.of(context).colorScheme.primary),
+                  color: Theme.of(context).colorScheme.scrim),
               TextButton.icon(
                 onPressed: onAddTaskPressed,
-                icon: const Icon(Icons.add_circle_outline),
+                icon: Icon(
+                  Icons.add_circle_outline,
+                  color: Theme.of(context).colorScheme.scrim,
+                ),
                 label: const Text('New Task'),
                 style: TextButton.styleFrom(
-                    foregroundColor: Theme.of(context).colorScheme.primary,
+                    foregroundColor: Theme.of(context).colorScheme.scrim,
                     padding:
                         const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     shape: RoundedRectangleBorder(

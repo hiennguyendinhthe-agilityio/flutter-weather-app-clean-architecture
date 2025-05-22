@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class Task {
   final String id;
   final String title;
@@ -10,6 +12,8 @@ class Task {
   final bool isCompleted;
   final String projectColor;
   final bool isArchived;
+  final TimeOfDay? startTime;
+  final TimeOfDay? endTime;
 
   Task({
     required this.id,
@@ -23,6 +27,8 @@ class Task {
     this.isCompleted = false,
     required this.projectColor,
     this.isArchived = false,
+    this.startTime,
+    this.endTime,
   });
 
   factory Task.fromJson(Map<String, dynamic> json) {
@@ -38,6 +44,18 @@ class Task {
       isCompleted: json['isCompleted'],
       projectColor: json['projectColor'],
       isArchived: json['isArchived'] ?? false,
+      startTime: json['startTime'] != null
+          ? TimeOfDay(
+              hour: json['startTime']['hour'],
+              minute: json['startTime']['minute'],
+            )
+          : null,
+      endTime: json['endTime'] != null
+          ? TimeOfDay(
+              hour: json['endTime']['hour'],
+              minute: json['endTime']['minute'],
+            )
+          : null,
     );
   }
 
@@ -54,6 +72,12 @@ class Task {
       'isCompleted': isCompleted,
       'projectColor': projectColor,
       'isArchived': isArchived,
+      'startTime': startTime != null
+          ? {'hour': startTime!.hour, 'minute': startTime!.minute}
+          : null,
+      'endTime': endTime != null
+          ? {'hour': endTime!.hour, 'minute': endTime!.minute}
+          : null,
     };
   }
 
@@ -69,6 +93,8 @@ class Task {
     bool? isCompleted,
     String? projectColor,
     bool? isArchived,
+    TimeOfDay? startTime,
+    TimeOfDay? endTime,
   }) {
     return Task(
       id: id ?? this.id,
@@ -82,6 +108,8 @@ class Task {
       isCompleted: isCompleted ?? this.isCompleted,
       projectColor: projectColor ?? this.projectColor,
       isArchived: isArchived ?? this.isArchived,
+      startTime: startTime ?? this.startTime,
+      endTime: endTime ?? this.endTime,
     );
   }
 
@@ -98,6 +126,8 @@ class Task {
       isCompleted: task.isCompleted,
       projectColor: task.projectColor,
       isArchived: task.isArchived,
+      startTime: task.startTime,
+      endTime: task.endTime,
     );
   }
 }

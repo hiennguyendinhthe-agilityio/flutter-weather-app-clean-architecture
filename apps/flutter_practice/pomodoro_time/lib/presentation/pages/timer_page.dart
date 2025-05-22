@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:task_management_app/data/models/task.dart';
 import 'package:task_management_app/presentation/providers/task_provider.dart';
-import 'package:task_management_app/presentation/widgets/add_task_dialog.dart';
+import 'package:task_management_app/presentation/widgets/add_task_bottomsheet.dart'; // Đổi từ add_task_dialog.dart
+import 'package:task_management_app/presentation/widgets/common_gradient_background.dart';
 import 'package:task_management_app/presentation/widgets/task_item.dart';
 import 'package:task_management_app/presentation/widgets/task_list_section.dart';
 import 'package:task_management_app/presentation/widgets/timer_page_header.dart';
@@ -21,7 +22,6 @@ class _TimerPageState extends State<TimerPage>
   @override
   void initState() {
     super.initState();
-
     _tabController = TabController(length: 2, vsync: this);
   }
 
@@ -31,10 +31,12 @@ class _TimerPageState extends State<TimerPage>
     super.dispose();
   }
 
-  void _showAddTaskDialog() {
-    showDialog(
+  void _showAddTaskBottomSheet() {
+    showModalBottomSheet(
       context: context,
-      builder: (_) => AddTaskDialog(
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => AddTaskBottomsheet(
         onAddTask: (task) {
           Provider.of<TaskProvider>(context, listen: false).addTask(task);
         },
@@ -42,40 +44,51 @@ class _TimerPageState extends State<TimerPage>
     );
   }
 
+  void _removeTagFromTask(String taskId, String tag) async {
+    final taskProvider = Provider.of<TaskProvider>(context, listen: false);
+    final task = taskProvider.allTasks.firstWhere((t) => t.id == taskId);
+
+    final updatedTags = List<String>.from(task.tags)..remove(tag);
+
+    final updatedTask = task.copyWith(tags: updatedTags);
+    await taskProvider.updateTask(updatedTask);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      body: SafeArea(
-        child: Consumer<TaskProvider>(
-          builder: (context, taskProvider, child) {
-            if (taskProvider.errorMessage != null) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                ScaffoldMessenger.of(context)
-                  ..hideCurrentSnackBar()
-                  ..showSnackBar(
-                    SnackBar(
-                      content: Text(taskProvider.errorMessage!),
-                      backgroundColor: Colors.red,
-                      behavior: SnackBarBehavior.floating,
-                      action: SnackBarAction(
-                        label: 'Dismiss',
-                        onPressed: () {
-                          taskProvider.clearError();
-                        },
+      body: CommonGradientBackground(
+        child: SafeArea(
+          child: Consumer<TaskProvider>(
+            builder: (context, taskProvider, child) {
+              if (taskProvider.errorMessage != null) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  ScaffoldMessenger.of(context)
+                    ..hideCurrentSnackBar()
+                    ..showSnackBar(
+                      SnackBar(
+                        content: Text(taskProvider.errorMessage!),
+                        backgroundColor: Colors.red,
+                        behavior: SnackBarBehavior.floating,
+                        action: SnackBarAction(
+                          label: 'Dismiss',
+                          onPressed: () {
+                            taskProvider.clearError();
+                          },
+                        ),
                       ),
-                    ),
-                  );
-                taskProvider.clearError();
-              });
-            }
+                    );
+                  taskProvider.clearError();
+                });
+              }
 
-            if (taskProvider.isLoading) {
-              return const Center(child: CircularProgressIndicator());
-            } else {
-              return _buildLoadedUI(taskProvider);
-            }
-          },
+              if (taskProvider.isLoading) {
+                return const Center(child: CircularProgressIndicator());
+              } else {
+                return _buildLoadedUI(taskProvider);
+              }
+            },
+          ),
         ),
       ),
     );
@@ -87,7 +100,7 @@ class _TimerPageState extends State<TimerPage>
       children: [
         TimerPageHeader(
           taskCount: taskProvider.allTasks.length,
-          onAddTaskPressed: _showAddTaskDialog,
+          onAddTaskPressed: _showAddTaskBottomSheet, // Đổi sang bottomsheet
         ),
         _buildTabBar(taskProvider),
         const SizedBox(height: 16),
@@ -116,6 +129,7 @@ class _TimerPageState extends State<TimerPage>
         borderRadius: BorderRadius.circular(10),
       ),
       child: TabBar(
+        dividerColor: Colors.transparent,
         controller: _tabController,
         indicatorSize: TabBarIndicatorSize.tab,
         indicatorPadding: const EdgeInsets.all(4),
@@ -198,6 +212,7 @@ class _TimerPageState extends State<TimerPage>
           onToggleTaskCompletion: toggleTask,
           onStartTaskTimer: startTimer,
           onStopTaskTimer: stopTimer,
+          onRemoveTag: _removeTagFromTask,
         ),
         TaskListSection(
           title: 'Yesterday',
@@ -208,6 +223,7 @@ class _TimerPageState extends State<TimerPage>
           onToggleTaskCompletion: toggleTask,
           onStartTaskTimer: startTimer,
           onStopTaskTimer: stopTimer,
+          onRemoveTag: _removeTagFromTask,
         ),
         TaskListSection(
           title: 'Older / Upcoming',
@@ -218,6 +234,7 @@ class _TimerPageState extends State<TimerPage>
           onToggleTaskCompletion: toggleTask,
           onStartTaskTimer: startTimer,
           onStopTaskTimer: stopTimer,
+          onRemoveTag: _removeTagFromTask,
         ),
         const SizedBox(height: 20),
       ],
@@ -250,6 +267,9 @@ class _TimerPageState extends State<TimerPage>
                 onToggleCompletion: () {/* No action */},
                 onStartTimer: () {/* No action */},
                 onStopTimer: () {/* No action */},
+                onRemoveTag: (tag) {
+                  _removeTagFromTask(task.id, tag);
+                },
               ))
           .toList(),
     );

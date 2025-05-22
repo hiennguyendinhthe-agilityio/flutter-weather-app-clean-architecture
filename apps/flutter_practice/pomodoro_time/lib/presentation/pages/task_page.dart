@@ -3,6 +3,8 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:task_management_app/data/models/task.dart';
 import 'package:task_management_app/presentation/providers/task_provider.dart';
+import 'package:task_management_app/presentation/widgets/add_task_bottomsheet.dart';
+import 'package:task_management_app/presentation/widgets/common_gradient_background.dart';
 
 class TaskPage extends StatefulWidget {
   const TaskPage({super.key});
@@ -20,27 +22,39 @@ class _TaskPageState extends State<TaskPage> {
     _selectedDate = DateTime.now();
   }
 
+  void _showAddTaskBottomSheet() {
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (context) => AddTaskBottomsheet(onAddTask: (task) {
+              Provider.of<TaskProvider>(context, listen: false).addTask(task);
+            }));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Consumer<TaskProvider>(
-          builder: (context, taskProvider, child) {
-            if (taskProvider.isLoading) {
-              return const Center(child: CircularProgressIndicator());
-            } else {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildHeader(),
-                  _buildDateSelector(),
-                  Expanded(
-                    child: _buildTimelineView(taskProvider.allTasks),
-                  ),
-                ],
-              );
-            }
-          },
+      body: CommonGradientBackground(
+        child: SafeArea(
+          child: Consumer<TaskProvider>(
+            builder: (context, taskProvider, child) {
+              if (taskProvider.isLoading) {
+                return const Center(child: CircularProgressIndicator());
+              } else {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildHeader(),
+                    _buildDateSelector(),
+                    Expanded(
+                      child: _buildTimelineView(taskProvider.allTasks),
+                    ),
+                  ],
+                );
+              }
+            },
+          ),
         ),
       ),
     );
@@ -65,12 +79,9 @@ class _TaskPageState extends State<TaskPage> {
           ),
           const Spacer(),
           TextButton.icon(
-            icon: const Icon(Icons.add),
-            label: const Text('New Task'),
-            onPressed: () {
-              // Add new task logic
-            },
-          ),
+              icon: const Icon(Icons.add),
+              label: const Text('New Task'),
+              onPressed: _showAddTaskBottomSheet),
         ],
       ),
     );
@@ -156,7 +167,6 @@ class _TaskPageState extends State<TaskPage> {
   }
 
   Widget _buildTimelineView(List<Task> tasks) {
-    // Filter tasks for the selected date
     final filteredTasks = tasks.where((task) {
       final taskDate = DateTime(
         task.createdAt.year,
@@ -171,7 +181,6 @@ class _TaskPageState extends State<TaskPage> {
       return taskDate.isAtSameMomentAs(selectedDate);
     }).toList();
 
-    // Generate time slots from 6:00 to 18:00
     final timeSlots = List.generate(
       13,
       (index) => TimeOfDay(hour: 6 + index, minute: 0),
@@ -183,7 +192,6 @@ class _TaskPageState extends State<TaskPage> {
       itemBuilder: (context, index) {
         final timeSlot = timeSlots[index];
 
-        // Find tasks that start at this time slot (simplified for demo)
         final tasksAtThisTime = filteredTasks.where((task) {
           return task.createdAt.hour == timeSlot.hour;
         }).toList();
@@ -226,16 +234,16 @@ class _TaskPageState extends State<TaskPage> {
 
   Widget _buildTaskCard(Task task) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 8.0),
-      padding: const EdgeInsets.all(12.0),
+      margin: const EdgeInsets.only(bottom: 12.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(8.0),
+        borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 3,
-            offset: const Offset(0, 1),
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -243,20 +251,22 @@ class _TaskPageState extends State<TaskPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 30,
-            height: 30,
+            width: 40,
+            height: 40,
             decoration: BoxDecoration(
-              color:
-                  _getColorFromName(task.projectColor).withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(6.0),
+              border: Border.all(
+                color: _getColorFromName(task.projectColor),
+                width: 1,
+              ),
+              borderRadius: BorderRadius.circular(8),
             ),
             child: Center(
               child: Text(
-                task.assignee.isNotEmpty ? task.assignee[0] : '',
+                task.assignee.isNotEmpty ? task.assignee[0].toUpperCase() : '',
                 style: TextStyle(
                   color: _getColorFromName(task.projectColor),
                   fontWeight: FontWeight.bold,
-                  fontSize: 12,
+                  fontSize: 18,
                 ),
               ),
             ),
@@ -269,27 +279,33 @@ class _TaskPageState extends State<TaskPage> {
                 Text(
                   task.title,
                   style: const TextStyle(
-                    fontSize: 14,
                     fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    overflow: TextOverflow.ellipsis,
                   ),
+                  maxLines: 1,
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 6),
                 Row(
                   children: [
                     Container(
-                      width: 6,
-                      height: 6,
+                      width: 8,
+                      height: 8,
                       decoration: BoxDecoration(
                         color: _getColorFromName(task.projectColor),
                         shape: BoxShape.circle,
                       ),
                     ),
-                    const SizedBox(width: 4),
-                    Text(
-                      '${task.projectName} (${task.assignee})',
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: Colors.grey[600],
+                    const SizedBox(width: 6),
+                    Flexible(
+                      child: Text(
+                        '${task.projectName} (${task.assignee})',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey[600],
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        maxLines: 1,
                       ),
                     ),
                   ],
@@ -297,24 +313,21 @@ class _TaskPageState extends State<TaskPage> {
               ],
             ),
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                _formatDuration(task.timeSpent),
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                '\$${(task.timeSpent.inMinutes * 0.5).toStringAsFixed(2)}',
-                style: TextStyle(
-                  fontSize: 10,
-                  color: Colors.blue[700],
-                ),
-              ),
-            ],
+          Text(
+            _formatDuration(task.timeSpent),
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Text(
+            '\$${(task.timeSpent.inMinutes * 0.5).toStringAsFixed(2)}',
+            style: TextStyle(
+              fontSize: 13,
+              color: Colors.blue[700],
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ],
       ),

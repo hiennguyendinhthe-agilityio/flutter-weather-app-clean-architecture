@@ -11,6 +11,7 @@ class TaskListSection extends StatelessWidget {
   final Function(String taskId) onToggleTaskCompletion;
   final Function(String taskId) onStartTaskTimer;
   final Function(String taskId) onStopTaskTimer;
+  final void Function(String taskId, String tag)? onRemoveTag;
 
   const TaskListSection({
     super.key,
@@ -21,6 +22,7 @@ class TaskListSection extends StatelessWidget {
     required this.onToggleTaskCompletion,
     required this.onStartTaskTimer,
     required this.onStopTaskTimer,
+    this.onRemoveTag,
   });
 
   @override
@@ -56,13 +58,18 @@ class TaskListSection extends StatelessWidget {
             ],
           ),
         ),
-        ...tasks.map((task) => TaskItem(
-              key: ValueKey('$sectionKeyPrefix-${task.id}'),
-              task: task,
-              onToggleCompletion: () => onToggleTaskCompletion(task.id),
-              onStartTimer: () => onStartTaskTimer(task.id),
-              onStopTimer: () => onStopTaskTimer(task.id),
-            )),
+        ...tasks.map(
+          (task) => TaskItem(
+            key: ValueKey('$sectionKeyPrefix-${task.id}'),
+            task: task,
+            onToggleCompletion: () => onToggleTaskCompletion(task.id),
+            onStartTimer: () => onStartTaskTimer(task.id),
+            onStopTimer: () => onStopTaskTimer(task.id),
+            onRemoveTag: onRemoveTag != null
+                ? (tag) => onRemoveTag!(task.id, tag)
+                : null,
+          ),
+        ),
         const SizedBox(height: 16),
       ],
     );
