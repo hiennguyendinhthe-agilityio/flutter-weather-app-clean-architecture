@@ -15,11 +15,38 @@ class TaskPage extends StatefulWidget {
 
 class _TaskPageState extends State<TaskPage> {
   late DateTime _selectedDate;
-
+  late ScrollController _scrollController;
+  bool _hasScrolledToSelectedDate = false;
   @override
   void initState() {
     super.initState();
     _selectedDate = DateTime.now();
+    _scrollController = ScrollController();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!_hasScrolledToSelectedDate && _scrollController.hasClients) {
+        _jumpToToday();
+        _hasScrolledToSelectedDate = true;
+      }
+    });
+  }
+
+  void _jumpToToday() {
+    const itemWidth = 60.0 + 8.0; // item width + spacing
+    const todayIndex = 30; // because list has ±30 days = 61 total
+
+    final offset = todayIndex * itemWidth -
+        (MediaQuery.of(context).size.width / 2) +
+        (itemWidth / 2);
+
+    _scrollController
+        .jumpTo(offset.clamp(0.0, _scrollController.position.maxScrollExtent));
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   void _showAddTaskBottomSheet() {
@@ -79,9 +106,16 @@ class _TaskPageState extends State<TaskPage> {
           ),
           const Spacer(),
           TextButton.icon(
-              icon: const Icon(Icons.add),
-              label: const Text('New Task'),
-              onPressed: _showAddTaskBottomSheet),
+            onPressed: _showAddTaskBottomSheet,
+            icon: const Text(
+              'New Task',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            label: const Icon(Icons.add, color: Colors.black, size: 20),
+          ),
         ],
       ),
     );
@@ -89,10 +123,13 @@ class _TaskPageState extends State<TaskPage> {
 
   Widget _buildDateSelector() {
     final now = DateTime.now();
-    final weekDays = List.generate(
-      7,
-      (index) => now.add(Duration(days: index - now.weekday + 1)),
+    const totalDays = 61;
+    final days = List.generate(
+      totalDays,
+      (index) => now.subtract(Duration(days: 30 - index)),
     );
+
+    const dayItemWidth = 60.0;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -112,53 +149,65 @@ class _TaskPageState extends State<TaskPage> {
           const SizedBox(height: 16),
           SizedBox(
             height: 60,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              itemCount: weekDays.length,
-              itemBuilder: (context, index) {
-                final day = weekDays[index];
-                final isSelected = day.day == _selectedDate.day &&
-                    day.month == _selectedDate.month &&
-                    day.year == _selectedDate.year;
-
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _selectedDate = day;
-                    });
-                  },
-                  child: Container(
-                    width: 40,
-                    margin: const EdgeInsets.only(right: 8),
-                    decoration: BoxDecoration(
-                      color: isSelected ? Colors.blue : Colors.transparent,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          DateFormat('E').format(day)[0],
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: isSelected ? Colors.white : Colors.grey,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          day.day.toString(),
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: isSelected ? Colors.white : Colors.black,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+            child: GestureDetector(
+              onHorizontalDragUpdate: (details) {
+                _scrollController.jumpTo(
+                  _scrollController.offset - details.delta.dx,
                 );
               },
+              child: ListView.builder(
+                controller: _scrollController,
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                itemCount: days.length,
+                itemBuilder: (context, index) {
+                  final day = days[index];
+                  final isSelected = day.year == _selectedDate.year &&
+                      day.month == _selectedDate.month &&
+                      day.day == _selectedDate.day;
+
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _selectedDate = day;
+                        _jumpToToday();
+                      });
+                    },
+                    child: Container(
+                      width: dayItemWidth,
+                      margin: const EdgeInsets.only(right: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(50),
+                        border: isSelected
+                            ? Border.all(color: Colors.black, width: 2)
+                            : null,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            DateFormat('E').format(day)[0],
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            day.day.toString(),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
           ),
         ],
@@ -233,104 +282,144 @@ class _TaskPageState extends State<TaskPage> {
   }
 
   Widget _buildTaskCard(Task task) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12.0),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: _getColorFromName(task.projectColor),
-                width: 1,
-              ),
-              borderRadius: BorderRadius.circular(8),
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Container(
+          margin: const EdgeInsets.only(bottom: 24),
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: const Color(0xFFE5E7EB),
+              width: 1,
             ),
-            child: Center(
-              child: Text(
-                task.assignee.isNotEmpty ? task.assignee[0].toUpperCase() : '',
-                style: TextStyle(
-                  color: _getColorFromName(task.projectColor),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
               ),
-            ),
+            ],
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  task.title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                    overflow: TextOverflow.ellipsis,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: _getColorFromName(task.projectColor),
+                    width: 1,
                   ),
-                  maxLines: 1,
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                const SizedBox(height: 6),
-                Row(
-                  children: [
-                    Container(
-                      width: 8,
-                      height: 8,
-                      decoration: BoxDecoration(
-                        color: _getColorFromName(task.projectColor),
-                        shape: BoxShape.circle,
-                      ),
+                child: Center(
+                  child: Text(
+                    task.assignee.isNotEmpty
+                        ? task.assignee[0].toUpperCase()
+                        : '',
+                    style: TextStyle(
+                      color: _getColorFromName(task.projectColor),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
                     ),
-                    const SizedBox(width: 6),
-                    Flexible(
-                      child: Text(
-                        '${task.projectName} (${task.assignee})',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey[600],
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        maxLines: 1,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      task.title,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        overflow: TextOverflow.ellipsis,
                       ),
+                      maxLines: 1,
+                    ),
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        Container(
+                          width: 8,
+                          height: 8,
+                          decoration: BoxDecoration(
+                            color: _getColorFromName(task.projectColor),
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        Flexible(
+                          child: Text(
+                            '${task.projectName} (${task.assignee})',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey[600],
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            maxLines: 1,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
+                ),
+              ),
+              const SizedBox(height: 32),
+            ],
+          ),
+        ),
+        Positioned(
+          bottom: 8,
+          right: 12,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: const Color(0xFFDFE3E8),
+                width: 1,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.08),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  _formatDuration(task.timeSpent),
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  '\$${(task.timeSpent.inMinutes * 0.5).toStringAsFixed(2)}',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.blue[700],
+                  ),
                 ),
               ],
             ),
           ),
-          Text(
-            _formatDuration(task.timeSpent),
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 14,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Text(
-            '\$${(task.timeSpent.inMinutes * 0.5).toStringAsFixed(2)}',
-            style: TextStyle(
-              fontSize: 13,
-              color: Colors.blue[700],
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 

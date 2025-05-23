@@ -35,24 +35,37 @@ class _NavigationBarRouteState extends State<NavigationBarRoute> {
           });
         },
         type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(
+        items: [
+          const BottomNavigationBarItem(
             icon: Icon(Icons.timer_outlined),
             label: 'Timer',
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.task_outlined),
             label: 'Task',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.play_circle_outline),
-            label: 'Play',
+            icon: Container(
+              width: 56,
+              height: 56,
+              decoration: BoxDecoration(
+                color: const Color(0xFFEFF6FF),
+                borderRadius: BorderRadius.circular(28),
+                border: Border.all(color: const Color(0xFFBFDBFE)),
+              ),
+              child: const Icon(
+                Icons.play_arrow,
+                color: Colors.blue,
+                size: 30,
+              ),
+            ),
+            label: '',
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.bar_chart_outlined),
             label: 'Report',
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.person_outline),
             label: 'Account',
           ),
