@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:task_management_app/core/utils/duration_formatter.dart';
 import 'package:task_management_app/data/models/task.dart';
 import 'package:task_management_app/presentation/providers/task_provider.dart';
-import 'package:task_management_app/presentation/widgets/add_task_bottomsheet.dart';
 
 typedef TaskCallback = void Function(String taskId);
 typedef TagCallback = void Function(String tag);
@@ -17,6 +16,7 @@ class TaskItem extends StatelessWidget {
   final VoidCallback onStartTimer;
   final VoidCallback onStopTimer;
   final TagCallback? onRemoveTag;
+  final VoidCallback? onEdit;
 
   const TaskItem({
     super.key,
@@ -25,21 +25,8 @@ class TaskItem extends StatelessWidget {
     required this.onStartTimer,
     required this.onStopTimer,
     required this.onRemoveTag,
+    this.onEdit,
   });
-
-  void _showAddTaskBottomSheet(BuildContext context, Task taskToEdit) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => AddTaskBottomsheet(
-        onAddTask: (task) {
-          Provider.of<TaskProvider>(context, listen: false).addTask(task);
-        },
-        taskToEdit: taskToEdit,
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +66,7 @@ class TaskItem extends StatelessWidget {
           children: [
             SlidableAction(
               onPressed: (context) {
-                _showAddTaskBottomSheet(context, task);
+                if (onEdit != null) onEdit!();
               },
               backgroundColor: Colors.blue,
               foregroundColor: Colors.white,

@@ -12,6 +12,7 @@ class TaskListSection extends StatelessWidget {
   final Function(String taskId) onStartTaskTimer;
   final Function(String taskId) onStopTaskTimer;
   final void Function(String taskId, String tag)? onRemoveTag;
+  final void Function(Task task)? onEditTask;
 
   const TaskListSection({
     super.key,
@@ -23,6 +24,7 @@ class TaskListSection extends StatelessWidget {
     required this.onStartTaskTimer,
     required this.onStopTaskTimer,
     this.onRemoveTag,
+    this.onEditTask,
   });
 
   @override
@@ -68,6 +70,7 @@ class TaskListSection extends StatelessWidget {
             onRemoveTag: onRemoveTag != null
                 ? (tag) => onRemoveTag!(task.id, tag)
                 : null,
+            onEdit: onEditTask != null ? () => onEditTask!(task) : null,
           ),
         ),
         const SizedBox(height: 16),

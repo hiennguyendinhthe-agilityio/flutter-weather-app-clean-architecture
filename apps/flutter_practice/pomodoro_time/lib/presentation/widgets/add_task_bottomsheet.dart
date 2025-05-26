@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:task_management_app/data/models/task.dart';
 import 'package:uuid/uuid.dart';
 
 class AddTaskBottomsheet extends StatefulWidget {
   final Function(Task) onAddTask;
   final Task? taskToEdit;
-  const AddTaskBottomsheet(
-      {super.key, required this.onAddTask, this.taskToEdit});
+  final Function(Task)? onUpdateTask;
+
+  const AddTaskBottomsheet({
+    super.key,
+    required this.onAddTask,
+    this.taskToEdit,
+    this.onUpdateTask,
+  });
 
   @override
   State<AddTaskBottomsheet> createState() => _AddTaskBottomsheetState();
@@ -31,8 +38,8 @@ class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
     {'name': 'Teal', 'value': 'teal', 'color': Colors.teal},
   ];
 
-  TimeOfDay? _startTime;
-  TimeOfDay? _endTime;
+  DateTime? _startDateTime;
+  DateTime? _endDateTime;
 
   @override
   void initState() {
@@ -46,8 +53,8 @@ class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
     _tagController = TextEditingController();
     _tags = List<String>.from(widget.taskToEdit?.tags ?? []);
     _selectedColor = widget.taskToEdit?.projectColor ?? 'blue';
-    _startTime = widget.taskToEdit?.startTime;
-    _endTime = widget.taskToEdit?.endTime;
+    _startDateTime = widget.taskToEdit?.startTime;
+    _endDateTime = widget.taskToEdit?.endTime;
   }
 
   @override
@@ -56,7 +63,6 @@ class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
     _projectController.dispose();
     _assigneeController.dispose();
     _tagController.dispose();
-
     super.dispose();
   }
 
@@ -76,33 +82,60 @@ class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
     });
   }
 
-  Future<void> _selectStartTime() async {
-    final TimeOfDay? picked = await showTimePicker(
+  Future<void> _selectStartDateTime() async {
+    final DateTime now = DateTime.now();
+    final DateTime initialDate = _startDateTime ?? now;
+    final DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialTime: _startTime ?? TimeOfDay.now(),
+      initialDate: initialDate,
+      firstDate: now.subtract(const Duration(days: 365)),
+      lastDate: now.add(const Duration(days: 365)),
     );
-    if (picked != null) {
-      setState(() {
-        _startTime = picked;
-      });
-    }
+    if (pickedDate == null) return;
+
+    final TimeOfDay initialTime = TimeOfDay.fromDateTime(_startDateTime ?? now);
+
+    final TimeOfDay? pickedTime = await showTimePicker(
+      context: context,
+      initialTime: initialTime,
+    );
+    if (pickedTime == null) return;
+
+    setState(() {
+      _startDateTime = DateTime(pickedDate.year, pickedDate.month,
+          pickedDate.day, pickedTime.hour, pickedTime.minute);
+    });
   }
 
-  Future<void> _selectEndTime() async {
-    final TimeOfDay? picked = await showTimePicker(
+  Future<void> _selectEndDateTime() async {
+    final DateTime now = DateTime.now();
+    final DateTime initialDate = _endDateTime ?? _startDateTime ?? now;
+    final DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialTime: _endTime ?? TimeOfDay.now(),
+      initialDate: initialDate,
+      firstDate: _startDateTime ?? now.subtract(const Duration(days: 365)),
+      lastDate: now.add(const Duration(days: 365)),
     );
-    if (picked != null) {
-      setState(() {
-        _endTime = picked;
-      });
-    }
+    if (pickedDate == null) return;
+
+    final TimeOfDay initialTime =
+        TimeOfDay.fromDateTime(_endDateTime ?? _startDateTime ?? now);
+
+    final TimeOfDay? pickedTime = await showTimePicker(
+      context: context,
+      initialTime: initialTime,
+    );
+    if (pickedTime == null) return;
+
+    setState(() {
+      _endDateTime = DateTime(pickedDate.year, pickedDate.month, pickedDate.day,
+          pickedTime.hour, pickedTime.minute);
+    });
   }
 
-  String _formatTimeOfDay(TimeOfDay? time) {
-    if (time == null) return 'Select time';
-    return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
+  String _formatDateTime(DateTime? dt) {
+    if (dt == null) return 'Select date & time';
+    return '${DateFormat('yyyy-MM-dd').format(dt)}\n${DateFormat('HH:mm').format(dt)}';
   }
 
   @override
@@ -152,12 +185,9 @@ class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
                     labelText: 'Task Title',
                     border: OutlineInputBorder(),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a task title';
-                    }
-                    return null;
-                  },
+                  validator: (value) => value == null || value.isEmpty
+                      ? 'Please enter a task title'
+                      : null,
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
@@ -166,12 +196,9 @@ class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
                     labelText: 'Project Name',
                     border: OutlineInputBorder(),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a project name';
-                    }
-                    return null;
-                  },
+                  validator: (value) => value == null || value.isEmpty
+                      ? 'Please enter a project name'
+                      : null,
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
@@ -180,19 +207,16 @@ class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
                     labelText: 'Assignee',
                     border: OutlineInputBorder(),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter an assignee';
-                    }
-                    return null;
-                  },
+                  validator: (value) => value == null || value.isEmpty
+                      ? 'Please enter an assignee'
+                      : null,
                 ),
                 const SizedBox(height: 16),
                 Row(
                   children: [
                     Expanded(
                       child: GestureDetector(
-                        onTap: _selectStartTime,
+                        onTap: _selectStartDateTime,
                         child: Container(
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
@@ -201,20 +225,16 @@ class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
                           ),
                           child: Row(
                             children: [
-                              Icon(Icons.access_time,
+                              Icon(Icons.calendar_today,
                                   color: Colors.grey.shade600),
                               const SizedBox(width: 8),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text('Start Time'),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    _formatTimeOfDay(_startTime),
-                                    style: const TextStyle(fontSize: 16),
-                                  ),
-                                ],
-                              )
+                              Expanded(
+                                child: Text(
+                                  'Start: ${_formatDateTime(_startDateTime)}',
+                                  maxLines: 2,
+                                  style: const TextStyle(fontSize: 14),
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -223,7 +243,7 @@ class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
                     const SizedBox(width: 16),
                     Expanded(
                       child: GestureDetector(
-                        onTap: _selectEndTime,
+                        onTap: _selectEndDateTime,
                         child: Container(
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
@@ -232,20 +252,16 @@ class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
                           ),
                           child: Row(
                             children: [
-                              Icon(Icons.access_time,
+                              Icon(Icons.calendar_today,
                                   color: Colors.grey.shade600),
                               const SizedBox(width: 8),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text('End Time'),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    _formatTimeOfDay(_endTime),
-                                    style: const TextStyle(fontSize: 16),
-                                  ),
-                                ],
-                              )
+                              Expanded(
+                                child: Text(
+                                  'End: ${_formatDateTime(_endDateTime)}',
+                                  maxLines: 2,
+                                  style: const TextStyle(fontSize: 14),
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -358,45 +374,66 @@ class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            final String taskId = isEditing
-                                ? widget.taskToEdit!.id
-                                : const Uuid().v4();
-                            final DateTime createdAt = isEditing
-                                ? widget.taskToEdit!.createdAt
-                                : DateTime.now();
+                          if (!_formKey.currentState!.validate()) return;
 
-                            final bool initialIsActive =
-                                isEditing ? widget.taskToEdit!.isActive : false;
-                            final bool initialIsCompleted = isEditing
-                                ? widget.taskToEdit!.isCompleted
-                                : false;
-                            final bool initialIsArchived = isEditing
-                                ? widget.taskToEdit!.isArchived
-                                : false;
-                            final Duration initialTimeSpent = isEditing
-                                ? widget.taskToEdit!.timeSpent
-                                : Duration.zero;
-
-                            final taskData = Task(
-                              id: taskId,
-                              title: _titleController.text,
-                              projectName: _projectController.text,
-                              assignee: _assigneeController.text,
-                              tags: _tags,
-                              createdAt: createdAt,
-                              startTime: _startTime,
-                              endTime: _endTime,
-                              timeSpent: initialTimeSpent,
-                              isActive: initialIsActive,
-                              isCompleted: initialIsCompleted,
-                              projectColor: _selectedColor,
-                              isArchived: initialIsArchived,
+                          if (_startDateTime == null || _endDateTime == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                    'Please select start and end date/time'),
+                                backgroundColor: Colors.red,
+                              ),
                             );
-
-                            widget.onAddTask(taskData);
-                            Navigator.of(context).pop();
+                            return;
                           }
+                          if (_endDateTime!.isBefore(_startDateTime!)) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                    'End time cannot be before start time'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                            return;
+                          }
+
+                          final String taskId =
+                              widget.taskToEdit?.id ?? const Uuid().v4();
+                          final DateTime createdAt =
+                              widget.taskToEdit?.createdAt ?? DateTime.now();
+                          final bool initialIsActive =
+                              widget.taskToEdit?.isActive ?? false;
+                          final bool initialIsCompleted =
+                              widget.taskToEdit?.isCompleted ?? false;
+                          final bool initialIsArchived =
+                              widget.taskToEdit?.isArchived ?? false;
+                          final Duration initialTimeSpent =
+                              widget.taskToEdit?.timeSpent ?? Duration.zero;
+
+                          final taskData = Task(
+                            id: taskId,
+                            title: _titleController.text,
+                            projectName: _projectController.text,
+                            assignee: _assigneeController.text,
+                            tags: _tags,
+                            createdAt: createdAt,
+                            startTime: _startDateTime!,
+                            endTime: _endDateTime!,
+                            timeSpent: initialTimeSpent,
+                            isActive: initialIsActive,
+                            isCompleted: initialIsCompleted,
+                            projectColor: _selectedColor,
+                            isArchived: initialIsArchived,
+                          );
+
+                          if (widget.taskToEdit != null &&
+                              widget.onUpdateTask != null) {
+                            widget.onUpdateTask!(taskData);
+                          } else {
+                            widget.onAddTask(taskData);
+                          }
+
+                          Navigator.of(context).pop();
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Theme.of(context).primaryColor,
@@ -406,7 +443,9 @@ class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                        child: Text(isEditing ? 'Save Changes' : 'Add Task'),
+                        child: Text(widget.taskToEdit != null
+                            ? 'Save Changes'
+                            : 'Add Task'),
                       ),
                     )
                   ],

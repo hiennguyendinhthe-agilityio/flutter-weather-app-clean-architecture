@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:task_management_app/data/datasources/local_data_source.dart';
 import 'package:task_management_app/data/models/task.dart';
 
@@ -49,6 +49,7 @@ class TaskProvider extends ChangeNotifier {
   }
 
   bool get isLoading => _isLoading;
+
   String? get errorMessage => _errorMessage;
 
   TaskProvider({required this.localDataSource});
@@ -87,6 +88,12 @@ class TaskProvider extends ChangeNotifier {
   }
 
   Future<void> addTask(Task task) async {
+    if (task.endTime.isBefore(task.startTime)) {
+      _errorMessage = 'End time cannot be before start time.';
+      notifyListeners();
+      return;
+    }
+
     try {
       await localDataSource.saveTask(task);
 
@@ -107,6 +114,12 @@ class TaskProvider extends ChangeNotifier {
   }
 
   Future<void> updateTask(Task task) async {
+    if (task.endTime.isBefore(task.startTime)) {
+      _errorMessage = 'End time cannot be before start time.';
+      notifyListeners();
+      return;
+    }
+
     try {
       await localDataSource.updateTask(task);
 

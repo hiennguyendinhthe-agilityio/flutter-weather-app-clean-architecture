@@ -47,15 +47,4 @@ class Pomodoro {
           currentTask != null ? (currentTask as Task).toJson() : null,
     };
   }
-
-  factory Pomodoro.fromEntity(Pomodoro pomodoro) {
-    return Pomodoro(
-      duration: pomodoro.duration,
-      remainingTime: pomodoro.remainingTime,
-      isRunning: pomodoro.isRunning,
-      currentTask: pomodoro.currentTask != null
-          ? Task.fromEntity(pomodoro.currentTask!)
-          : null,
-    );
-  }
 }

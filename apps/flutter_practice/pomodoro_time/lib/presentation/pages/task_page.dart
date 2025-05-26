@@ -17,23 +17,40 @@ class _TaskPageState extends State<TaskPage> {
   late DateTime _selectedDate;
   late ScrollController _scrollController;
   bool _hasScrolledToSelectedDate = false;
+
+  static const double hourHeight = 60;
+  static const int startHour = 0;
+  late ScrollController _timelineScrollController;
+
   @override
   void initState() {
     super.initState();
     _selectedDate = DateTime.now();
     _scrollController = ScrollController();
+    _timelineScrollController = ScrollController();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!_hasScrolledToSelectedDate && _scrollController.hasClients) {
         _jumpToToday();
+        _scrollToCurrentTime();
         _hasScrolledToSelectedDate = true;
       }
     });
   }
 
+  void _scrollToCurrentTime() {
+    final now = TimeOfDay.now();
+    final minutesFromStart = (now.hour - startHour) * 60 + now.minute;
+    final offset = minutesFromStart * (hourHeight / 60) - 100;
+    if (_timelineScrollController.hasClients) {
+      _timelineScrollController.jumpTo(offset.clamp(
+          0.0, _timelineScrollController.position.maxScrollExtent));
+    }
+  }
+
   void _jumpToToday() {
-    const itemWidth = 60.0 + 8.0; // item width + spacing
-    const todayIndex = 30; // because list has ±30 days = 61 total
+    const itemWidth = 60.0 + 8.0;
+    const todayIndex = 30;
 
     final offset = todayIndex * itemWidth -
         (MediaQuery.of(context).size.width / 2) +
@@ -46,6 +63,7 @@ class _TaskPageState extends State<TaskPage> {
   @override
   void dispose() {
     _scrollController.dispose();
+    _timelineScrollController.dispose();
     super.dispose();
   }
 
@@ -170,8 +188,14 @@ class _TaskPageState extends State<TaskPage> {
                     onTap: () {
                       setState(() {
                         _selectedDate = day;
-                        _jumpToToday();
                       });
+                      if (_timelineScrollController.hasClients) {
+                        if (day == DateTime.now()) {
+                          _scrollToCurrentTime();
+                        } else {
+                          _timelineScrollController.jumpTo(0);
+                        }
+                      }
                     },
                     child: Container(
                       width: dayItemWidth,
@@ -218,9 +242,9 @@ class _TaskPageState extends State<TaskPage> {
   Widget _buildTimelineView(List<Task> tasks) {
     final filteredTasks = tasks.where((task) {
       final taskDate = DateTime(
-        task.createdAt.year,
-        task.createdAt.month,
-        task.createdAt.day,
+        task.startTime.year,
+        task.startTime.month,
+        task.startTime.day,
       );
       final selectedDate = DateTime(
         _selectedDate.year,
@@ -230,54 +254,56 @@ class _TaskPageState extends State<TaskPage> {
       return taskDate.isAtSameMomentAs(selectedDate);
     }).toList();
 
-    final timeSlots = List.generate(
-      13,
-      (index) => TimeOfDay(hour: 6 + index, minute: 0),
-    );
+    const totalHours = 24;
+    const timelineHeight = totalHours * hourHeight;
 
-    return ListView.builder(
-      padding: const EdgeInsets.all(16.0),
-      itemCount: timeSlots.length,
-      itemBuilder: (context, index) {
-        final timeSlot = timeSlots[index];
-
-        final tasksAtThisTime = filteredTasks.where((task) {
-          return task.createdAt.hour == timeSlot.hour;
-        }).toList();
-
-        return Column(
+    return SingleChildScrollView(
+      controller: ScrollController(),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      child: SizedBox(
+        height: timelineHeight,
+        child: Stack(
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 60,
-                  child: Text(
-                    '${timeSlot.hour.toString().padLeft(2, '0')}:${timeSlot.minute.toString().padLeft(2, '0')}',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    children: [
-                      Container(
-                        height: 1,
-                        color: Colors.grey[300],
+            ...List.generate(totalHours + 1, (index) {
+              final hour = index;
+              return Positioned(
+                top: index * hourHeight - 8,
+                left: 0,
+                right: 0,
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 60,
+                      child: Text(
+                        '${hour.toString().padLeft(2, '0')}:00',
+                        style: TextStyle(color: Colors.grey[600]),
                       ),
-                      const SizedBox(height: 8),
-                      ...tasksAtThisTime.map((task) => _buildTaskCard(task)),
-                      const SizedBox(height: 24),
-                    ],
-                  ),
+                    ),
+                    Expanded(
+                      child: Divider(color: Colors.grey[300], thickness: 1),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              );
+            }),
+            ...filteredTasks.map((task) {
+              final startMinutes =
+                  task.startTime.hour * 60 + task.startTime.minute;
+              final endMinutes = task.endTime.hour * 60 + task.endTime.minute;
+              final top = startMinutes * (hourHeight / 60);
+              final height = (endMinutes - startMinutes) * (hourHeight / 60);
+
+              return Positioned(
+                top: top,
+                left: 68,
+                right: 0,
+                height: height.clamp(40, double.infinity),
+                child: _buildTaskCard(task),
+              );
+            }),
           ],
-        );
-      },
+        ),
+      ),
     );
   }
 
@@ -331,44 +357,46 @@ class _TaskPageState extends State<TaskPage> {
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      task.title,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                        overflow: TextOverflow.ellipsis,
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        task.title,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        maxLines: 1,
                       ),
-                      maxLines: 1,
-                    ),
-                    const SizedBox(height: 6),
-                    Row(
-                      children: [
-                        Container(
-                          width: 8,
-                          height: 8,
-                          decoration: BoxDecoration(
-                            color: _getColorFromName(task.projectColor),
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                        const SizedBox(width: 6),
-                        Flexible(
-                          child: Text(
-                            '${task.projectName} (${task.assignee})',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey[600],
-                              overflow: TextOverflow.ellipsis,
+                      const SizedBox(height: 6),
+                      Row(
+                        children: [
+                          Container(
+                            width: 8,
+                            height: 8,
+                            decoration: BoxDecoration(
+                              color: _getColorFromName(task.projectColor),
+                              shape: BoxShape.circle,
                             ),
-                            maxLines: 1,
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                          const SizedBox(width: 6),
+                          Flexible(
+                            child: Text(
+                              '${task.projectName} (${task.assignee})',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey[600],
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              maxLines: 1,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 32),
@@ -433,6 +461,10 @@ class _TaskPageState extends State<TaskPage> {
         return Colors.orange;
       case 'red':
         return Colors.red;
+      case 'purple':
+        return Colors.purple;
+      case 'teal':
+        return Colors.teal;
       default:
         return Colors.grey;
     }

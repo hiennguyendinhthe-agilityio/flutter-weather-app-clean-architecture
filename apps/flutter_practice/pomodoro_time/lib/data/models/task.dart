@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class Task {
   final String id;
   final String title;
@@ -12,8 +10,8 @@ class Task {
   final bool isCompleted;
   final String projectColor;
   final bool isArchived;
-  final TimeOfDay? startTime;
-  final TimeOfDay? endTime;
+  final DateTime startTime;
+  final DateTime endTime;
 
   Task({
     required this.id,
@@ -27,8 +25,8 @@ class Task {
     this.isCompleted = false,
     required this.projectColor,
     this.isArchived = false,
-    this.startTime,
-    this.endTime,
+    required this.startTime,
+    required this.endTime,
   });
 
   factory Task.fromJson(Map<String, dynamic> json) {
@@ -45,17 +43,11 @@ class Task {
       projectColor: json['projectColor'],
       isArchived: json['isArchived'] ?? false,
       startTime: json['startTime'] != null
-          ? TimeOfDay(
-              hour: json['startTime']['hour'],
-              minute: json['startTime']['minute'],
-            )
-          : null,
+          ? DateTime.parse(json['startTime'])
+          : DateTime.now(),
       endTime: json['endTime'] != null
-          ? TimeOfDay(
-              hour: json['endTime']['hour'],
-              minute: json['endTime']['minute'],
-            )
-          : null,
+          ? DateTime.parse(json['endTime'])
+          : DateTime.now(),
     );
   }
 
@@ -72,12 +64,8 @@ class Task {
       'isCompleted': isCompleted,
       'projectColor': projectColor,
       'isArchived': isArchived,
-      'startTime': startTime != null
-          ? {'hour': startTime!.hour, 'minute': startTime!.minute}
-          : null,
-      'endTime': endTime != null
-          ? {'hour': endTime!.hour, 'minute': endTime!.minute}
-          : null,
+      'startTime': startTime.toIso8601String(),
+      'endTime': endTime.toIso8601String(),
     };
   }
 
@@ -93,8 +81,8 @@ class Task {
     bool? isCompleted,
     String? projectColor,
     bool? isArchived,
-    TimeOfDay? startTime,
-    TimeOfDay? endTime,
+    DateTime? startTime,
+    DateTime? endTime,
   }) {
     return Task(
       id: id ?? this.id,
@@ -113,7 +101,7 @@ class Task {
     );
   }
 
-  static fromEntity(Task task) {
+  fromEntity(Task task) {
     return Task(
       id: task.id,
       title: task.title,

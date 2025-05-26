@@ -44,6 +44,22 @@ class _TimerPageState extends State<TimerPage>
     );
   }
 
+  void _showEditTaskBottomSheet(Task task) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => AddTaskBottomsheet(
+        taskToEdit: task,
+        onAddTask: (task) {},
+        onUpdateTask: (updatedTask) {
+          Provider.of<TaskProvider>(context, listen: false)
+              .updateTask(updatedTask);
+        },
+      ),
+    );
+  }
+
   void _removeTagFromTask(String taskId, String tag) async {
     final taskProvider = Provider.of<TaskProvider>(context, listen: false);
     final task = taskProvider.allTasks.firstWhere((t) => t.id == taskId);
@@ -100,7 +116,7 @@ class _TimerPageState extends State<TimerPage>
       children: [
         TimerPageHeader(
           taskCount: taskProvider.allTasks.length,
-          onAddTaskPressed: _showAddTaskBottomSheet, // Đổi sang bottomsheet
+          onAddTaskPressed: _showAddTaskBottomSheet,
         ),
         _buildTabBar(taskProvider),
         const SizedBox(height: 16),
@@ -173,7 +189,11 @@ class _TimerPageState extends State<TimerPage>
       );
     }
 
-    final todayTasks = taskProvider.todayTasksList;
+    final todayTasks =
+        taskProvider.todayTasksList.fold<List<Task>>([], (acc, task) {
+      if (!acc.any((t) => t.id == task.id)) acc.add(task);
+      return acc;
+    });
     final yesterdayTasks = taskProvider.yesterdayTasksList;
 
     final now = DateTime.now();
@@ -213,6 +233,7 @@ class _TimerPageState extends State<TimerPage>
           onStartTaskTimer: startTimer,
           onStopTaskTimer: stopTimer,
           onRemoveTag: _removeTagFromTask,
+          onEditTask: (task) => _showEditTaskBottomSheet(task),
         ),
         TaskListSection(
           title: 'Yesterday',
@@ -224,6 +245,7 @@ class _TimerPageState extends State<TimerPage>
           onStartTaskTimer: startTimer,
           onStopTaskTimer: stopTimer,
           onRemoveTag: _removeTagFromTask,
+          onEditTask: (task) => _showEditTaskBottomSheet(task),
         ),
         TaskListSection(
           title: 'Older / Upcoming',
@@ -235,6 +257,7 @@ class _TimerPageState extends State<TimerPage>
           onStartTaskTimer: startTimer,
           onStopTaskTimer: stopTimer,
           onRemoveTag: _removeTagFromTask,
+          onEditTask: (task) => _showEditTaskBottomSheet(task),
         ),
         const SizedBox(height: 20),
       ],

@@ -40,7 +40,9 @@ class LocalDataSourceImpl {
             isActive INTEGER,
             isCompleted INTEGER,
             projectColor TEXT,
-            isArchived INTEGER DEFAULT 0
+            isArchived INTEGER DEFAULT 0,
+            startTime INTEGER DEFAULT 0,
+            endTime INTEGER DEFAULT 0
           )
           ''',
         );
@@ -68,6 +70,12 @@ class LocalDataSourceImpl {
             ''',
           );
         }
+        if (oldVersion < 3) {
+          await db.execute(
+              'ALTER TABLE tasks ADD COLUMN startTime INTEGER DEFAULT 0');
+          await db.execute(
+              'ALTER TABLE tasks ADD COLUMN endTime INTEGER DEFAULT 0');
+        }
       },
     );
 
@@ -80,6 +88,12 @@ class LocalDataSourceImpl {
   Future<List<Task>> getTasks() async {
     final taskMaps = await database.query('tasks');
 
+    int parseInt(dynamic value) {
+      if (value is int) return value;
+      if (value is String) return int.tryParse(value) ?? 0;
+      return 0;
+    }
+
     return taskMaps.map((map) {
       final tagsJson = map['tags'] as String? ?? '[]';
       final List<String> tags = List<String>.from(json.decode(tagsJson));
@@ -90,12 +104,19 @@ class LocalDataSourceImpl {
         projectName: map['projectName'] as String,
         assignee: map['assignee'] as String,
         tags: tags,
-        createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
-        timeSpent: Duration(milliseconds: map['timeSpent'] as int),
-        isActive: (map['isActive'] as int? ?? 0) == 1,
-        isCompleted: (map['isCompleted'] as int? ?? 0) == 1,
+        createdAt:
+            DateTime.fromMillisecondsSinceEpoch(parseInt(map['createdAt'])),
+        timeSpent: Duration(milliseconds: parseInt(map['timeSpent'])),
+        isActive: (parseInt(map['isActive']) == 1),
+        isCompleted: (parseInt(map['isCompleted']) == 1),
         projectColor: map['projectColor'] as String,
-        isArchived: (map['isArchived'] as int? ?? 0) == 1,
+        isArchived: (parseInt(map['isArchived']) == 1),
+        startTime: parseInt(map['startTime']) > 0
+            ? DateTime.fromMillisecondsSinceEpoch(parseInt(map['startTime']))
+            : DateTime.now(),
+        endTime: parseInt(map['endTime']) > 0
+            ? DateTime.fromMillisecondsSinceEpoch(parseInt(map['endTime']))
+            : DateTime.now(),
       );
     }).toList();
   }
@@ -115,6 +136,8 @@ class LocalDataSourceImpl {
         'isCompleted': task.isCompleted ? 1 : 0,
         'projectColor': task.projectColor,
         'isArchived': task.isArchived ? 1 : 0,
+        'startTime': task.startTime.millisecondsSinceEpoch,
+        'endTime': task.endTime.millisecondsSinceEpoch,
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
@@ -134,6 +157,8 @@ class LocalDataSourceImpl {
         'isCompleted': task.isCompleted ? 1 : 0,
         'projectColor': task.projectColor,
         'isArchived': task.isArchived ? 1 : 0,
+        'startTime': task.startTime.millisecondsSinceEpoch,
+        'endTime': task.endTime.millisecondsSinceEpoch,
       },
       where: 'id = ?',
       whereArgs: [task.id],
@@ -187,6 +212,11 @@ class LocalDataSourceImpl {
           isActive: taskMap['isActive'] == 1,
           isCompleted: taskMap['isCompleted'] == 1,
           projectColor: taskMap['projectColor'] as String,
+          isArchived: taskMap['isArchived'] == 1,
+          startTime: DateTime.fromMillisecondsSinceEpoch(
+              taskMap['startTime'] as int? ?? 0),
+          endTime: DateTime.fromMillisecondsSinceEpoch(
+              taskMap['endTime'] as int? ?? 0),
         );
       }
     }
