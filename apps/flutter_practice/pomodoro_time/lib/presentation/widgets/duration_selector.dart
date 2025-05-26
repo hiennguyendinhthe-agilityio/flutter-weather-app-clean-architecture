@@ -34,9 +34,7 @@ class DurationSelector extends StatelessWidget {
                       return SizedBox(
                         width: itemWidth,
                         child: GestureDetector(
-                          onTap: () {
-                            // TODO: handle +Add action
-                          },
+                          onTap: () {},
                           child: Container(
                             margin: const EdgeInsets.all(4),
                             alignment: Alignment.center,

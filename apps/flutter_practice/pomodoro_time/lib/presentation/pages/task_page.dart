@@ -357,46 +357,44 @@ class _TaskPageState extends State<TaskPage> {
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        task.title,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          overflow: TextOverflow.ellipsis,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      task.title,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      maxLines: 1,
+                    ),
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        Container(
+                          width: 8,
+                          height: 8,
+                          decoration: BoxDecoration(
+                            color: _getColorFromName(task.projectColor),
+                            shape: BoxShape.circle,
+                          ),
                         ),
-                        maxLines: 1,
-                      ),
-                      const SizedBox(height: 6),
-                      Row(
-                        children: [
-                          Container(
-                            width: 8,
-                            height: 8,
-                            decoration: BoxDecoration(
-                              color: _getColorFromName(task.projectColor),
-                              shape: BoxShape.circle,
+                        const SizedBox(width: 6),
+                        Flexible(
+                          child: Text(
+                            '${task.projectName} (${task.assignee})',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey[600],
+                              overflow: TextOverflow.ellipsis,
                             ),
+                            maxLines: 1,
                           ),
-                          const SizedBox(width: 6),
-                          Flexible(
-                            child: Text(
-                              '${task.projectName} (${task.assignee})',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.grey[600],
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              maxLines: 1,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 32),
