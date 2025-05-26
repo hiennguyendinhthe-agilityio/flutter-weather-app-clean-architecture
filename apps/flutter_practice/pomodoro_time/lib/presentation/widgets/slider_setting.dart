@@ -1,4 +1,3 @@
-// lib/presentation/widgets/common/slider_setting.dart
 import 'package:flutter/material.dart';
 
 class SliderSetting extends StatelessWidget {

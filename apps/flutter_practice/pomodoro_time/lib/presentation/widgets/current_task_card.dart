@@ -1,4 +1,3 @@
-// lib/presentation/widgets/current_task_card.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:task_management_app/core/themes/pomodoro_color_theme.dart';

@@ -37,9 +37,7 @@ class AccountPage extends StatelessWidget {
           const Spacer(),
           IconButton(
             icon: const Icon(Icons.settings_outlined),
-            onPressed: () {
-              // Settings action
-            },
+            onPressed: () {},
           ),
         ],
       ),

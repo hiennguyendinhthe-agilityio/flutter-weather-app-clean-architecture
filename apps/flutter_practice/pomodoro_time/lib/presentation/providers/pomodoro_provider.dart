@@ -1,5 +1,3 @@
-// lib/presentation/providers/pomodoro_provider.dart
-
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
@@ -18,14 +16,12 @@ class PomodoroProvider extends ChangeNotifier {
   bool _isCompleted = false;
   String? _errorMessage;
 
-  // Getters
   Pomodoro? get pomodoro => _pomodoro;
   bool get isRunning => _isRunning;
   bool get isPaused => _isPaused;
   bool get isCompleted => _isCompleted;
   String? get errorMessage => _errorMessage;
 
-  // Computed getters similar to states
   bool get isInitial =>
       _pomodoro == null && !_isRunning && !_isPaused && !_isCompleted;
 
@@ -223,7 +219,6 @@ class PomodoroProvider extends ChangeNotifier {
         _pomodoro = updatedPomodoro;
         notifyListeners();
 
-        // Save every minute to reduce database writes
         if (updatedPomodoro.remainingTime % 60 == 0) {
           try {
             await localDataSource.savePomodoro(updatedPomodoro);

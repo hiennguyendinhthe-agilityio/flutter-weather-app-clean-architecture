@@ -1,4 +1,3 @@
-// lib/presentation/widgets/common/switch_setting.dart
 import 'package:flutter/material.dart';
 
 class SwitchSetting extends StatelessWidget {

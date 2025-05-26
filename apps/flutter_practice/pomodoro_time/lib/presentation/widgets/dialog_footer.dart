@@ -1,4 +1,3 @@
-// lib/presentation/widgets/common/dialog_footer.dart
 import 'package:flutter/material.dart';
 
 class DialogFooter extends StatelessWidget {

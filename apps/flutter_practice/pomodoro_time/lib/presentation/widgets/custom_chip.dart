@@ -1,4 +1,3 @@
-// lib/presentation/widgets/common/custom_chip.dart
 import 'package:flutter/material.dart';
 
 class CustomChip extends StatelessWidget {

@@ -1,4 +1,3 @@
-// lib/presentation/widgets/settings_dialog.dart
 import 'package:flutter/material.dart';
 import 'package:task_management_app/data/models/settings.dart';
 import 'package:task_management_app/presentation/widgets/dialog_footer.dart';

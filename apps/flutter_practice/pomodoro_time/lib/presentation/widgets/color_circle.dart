@@ -1,4 +1,3 @@
-// lib/presentation/widgets/common/color_circle.dart
 import 'package:flutter/material.dart';
 
 class ColorCircle extends StatelessWidget {

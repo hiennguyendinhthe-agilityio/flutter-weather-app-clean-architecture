@@ -1,4 +1,3 @@
-// lib/presentation/widgets/common/dialog_header.dart
 import 'package:flutter/material.dart';
 
 class DialogHeader extends StatelessWidget {

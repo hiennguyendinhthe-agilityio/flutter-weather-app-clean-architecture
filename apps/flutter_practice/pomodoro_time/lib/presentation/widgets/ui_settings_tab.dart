@@ -1,4 +1,3 @@
-// lib/presentation/widgets/settings_tabs/ui_settings_tab.dart
 import 'package:flutter/material.dart';
 import 'package:task_management_app/core/themes/pomodoro_color_theme.dart';
 import 'package:task_management_app/data/models/settings.dart';

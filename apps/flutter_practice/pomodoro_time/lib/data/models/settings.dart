@@ -1,4 +1,3 @@
-// lib/data/models/settings.dart
 class Settings {
   // Time settings
   final List<int> availableDurations;

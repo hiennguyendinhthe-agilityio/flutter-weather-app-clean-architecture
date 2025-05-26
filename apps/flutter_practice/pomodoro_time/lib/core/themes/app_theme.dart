@@ -1,4 +1,3 @@
-// lib/core/themes/app_theme.dart
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -93,7 +92,6 @@ class PomodoroColorTheme {
           background: isDarkMode ? Colors.black : const Color(0xFFF8F0FF),
         );
       default:
-        // Nếu là giá trị tùy chỉnh, sử dụng màu dựa trên phạm vi
         if (duration < 15) {
           return PomodoroThemeColors(
             primary: Colors.teal,

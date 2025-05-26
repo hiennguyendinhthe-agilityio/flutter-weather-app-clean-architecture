@@ -1,4 +1,3 @@
-// lib/presentation/widgets/pomodoro_timer.dart
 import 'dart:math';
 
 import 'package:flutter/material.dart';
