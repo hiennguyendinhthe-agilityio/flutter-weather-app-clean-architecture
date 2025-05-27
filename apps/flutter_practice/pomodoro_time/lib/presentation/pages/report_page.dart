@@ -86,8 +86,9 @@ class _ReportPageState extends State<ReportPage> {
 
   Widget _buildPeriodSelector() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      padding: const EdgeInsets.all(8.0),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           _buildPeriodButton('Day'),
           _buildPeriodButton('Week'),

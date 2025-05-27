@@ -53,7 +53,10 @@ class TaskListSection extends StatelessWidget {
                   DurationFormatter.formatHoursMinutesSeconds(totalTime),
                   style: TextStyle(
                     fontSize: 13,
-                    color: Theme.of(context).colorScheme.secondary,
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withOpacity(0.6),
                     fontWeight: FontWeight.w500,
                   ),
                 ),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:task_management_app/presentation/pages/account_page.dart';
 import 'package:task_management_app/presentation/pages/pomodoro_page.dart';
 import 'package:task_management_app/presentation/pages/report_page.dart';
-import 'package:task_management_app/presentation/pages/task_page.dart';
+import 'package:task_management_app/presentation/pages/task_page/task_page.dart';
 import 'package:task_management_app/presentation/pages/timer_page.dart';
 
 class NavigationBarRoute extends StatefulWidget {

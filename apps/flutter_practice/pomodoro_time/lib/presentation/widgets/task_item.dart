@@ -5,6 +5,8 @@ import 'package:task_management_app/core/utils/duration_formatter.dart';
 import 'package:task_management_app/data/models/task.dart';
 import 'package:task_management_app/presentation/providers/task_provider.dart';
 
+import '../../core/utils/task_utils.dart';
+
 typedef TaskCallback = void Function(String taskId);
 typedef TagCallback = void Function(String tag);
 typedef TaskTagCallback = void Function(String taskId, String tag);
@@ -141,7 +143,7 @@ class TaskItem extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8.0),
                       border: Border.all(
-                        color: _getColorFromName(task.projectColor),
+                        color: getColorFromName(task.projectColor),
                         width: 1,
                       ),
                     ),
@@ -149,7 +151,7 @@ class TaskItem extends StatelessWidget {
                       child: Text(
                         task.assignee.isNotEmpty ? task.assignee[0] : '',
                         style: TextStyle(
-                          color: _getColorFromName(task.projectColor),
+                          color: getColorFromName(task.projectColor),
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -186,7 +188,7 @@ class TaskItem extends StatelessWidget {
                               width: 8,
                               height: 8,
                               decoration: BoxDecoration(
-                                color: _getColorFromName(task.projectColor),
+                                color: getColorFromName(task.projectColor),
                                 shape: BoxShape.circle,
                               ),
                             ),
@@ -260,7 +262,7 @@ class TaskItem extends StatelessWidget {
                           IconButton(
                             icon: Icon(
                               task.isActive ? Icons.pause : Icons.play_arrow,
-                              color: _getColorFromName(task.projectColor),
+                              color: getColorFromName(task.projectColor),
                             ),
                             onPressed:
                                 task.isActive ? onStopTimer : onStartTimer,
@@ -276,28 +278,5 @@ class TaskItem extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Color _getColorFromName(String colorName) {
-    switch (colorName.toLowerCase()) {
-      case 'blue':
-        return Colors.blue;
-      case 'green':
-        return Colors.green;
-      case 'orange':
-        return Colors.orange;
-      case 'red':
-        return Colors.red;
-      case 'purple':
-        return Colors.purple;
-      case 'teal':
-        return Colors.teal;
-      case 'pink':
-        return Colors.pink;
-      case 'amber':
-        return Colors.amber;
-      default:
-        return Colors.grey;
-    }
   }
 }
