@@ -21,7 +21,7 @@ class CircleProgressPainter extends CustomPainter {
     final radius = (size.width / 2) - strokeWidth / 2;
 
     final bgPaint = Paint()
-      ..color = Colors.grey.shade300
+      ..color = Colors.transparent
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth;
     canvas.drawCircle(center, radius, bgPaint);

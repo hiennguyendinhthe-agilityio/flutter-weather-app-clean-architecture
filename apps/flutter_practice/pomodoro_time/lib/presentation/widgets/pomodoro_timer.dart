@@ -53,14 +53,6 @@ class PomodoroTimer extends StatelessWidget {
                   ),
                 ),
               ),
-              Container(
-                width: 280,
-                height: 280,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white,
-                ),
-              ),
               _buildKnob(pomodoroProvider, themeColors),
               Column(
                 mainAxisSize: MainAxisSize.min,

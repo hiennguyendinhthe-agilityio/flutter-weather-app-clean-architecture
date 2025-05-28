@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:task_management_app/data/models/task.dart';
+import 'package:task_management_app/presentation/pages/task_page/widgets/task_detail_dialog.dart';
 import 'package:task_management_app/presentation/providers/task_provider.dart';
 import 'package:task_management_app/presentation/widgets/add_task_bottomsheet.dart';
 import 'package:task_management_app/presentation/widgets/common_gradient_background.dart';
@@ -224,6 +225,13 @@ class _TimerPageState extends State<TimerPage>
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       children: [
         TaskListSection(
+          onTap: (task) {
+            showDialog(
+                context: context,
+                builder: (context) => TaskDetailDialog(
+                      task: task,
+                    ));
+          },
           title: 'Today',
           tasks: todayTasks,
           totalTime: todayTasks.fold(
@@ -246,8 +254,22 @@ class _TimerPageState extends State<TimerPage>
           onStopTaskTimer: stopTimer,
           onRemoveTag: _removeTagFromTask,
           onEditTask: (task) => _showEditTaskBottomSheet(task),
+          onTap: (task) {
+            showDialog(
+                context: context,
+                builder: (context) => TaskDetailDialog(
+                      task: task,
+                    ));
+          },
         ),
         TaskListSection(
+          onTap: (task) {
+            showDialog(
+                context: context,
+                builder: (context) => TaskDetailDialog(
+                      task: task,
+                    ));
+          },
           title: 'Older / Upcoming',
           tasks: otherTasks,
           totalTime: otherTasks.fold(

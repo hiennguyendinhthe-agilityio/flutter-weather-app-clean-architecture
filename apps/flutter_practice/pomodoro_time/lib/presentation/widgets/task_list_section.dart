@@ -13,6 +13,7 @@ class TaskListSection extends StatelessWidget {
   final Function(String taskId) onStopTaskTimer;
   final void Function(String taskId, String tag)? onRemoveTag;
   final void Function(Task task)? onEditTask;
+  final void Function(Task task)? onTap;
 
   const TaskListSection({
     super.key,
@@ -25,6 +26,7 @@ class TaskListSection extends StatelessWidget {
     required this.onStopTaskTimer,
     this.onRemoveTag,
     this.onEditTask,
+    this.onTap,
   });
 
   @override
@@ -64,16 +66,19 @@ class TaskListSection extends StatelessWidget {
           ),
         ),
         ...tasks.map(
-          (task) => TaskItem(
-            key: ValueKey('$sectionKeyPrefix-${task.id}'),
-            task: task,
-            onToggleCompletion: () => onToggleTaskCompletion(task.id),
-            onStartTimer: () => onStartTaskTimer(task.id),
-            onStopTimer: () => onStopTaskTimer(task.id),
-            onRemoveTag: onRemoveTag != null
-                ? (tag) => onRemoveTag!(task.id, tag)
-                : null,
-            onEdit: onEditTask != null ? () => onEditTask!(task) : null,
+          (task) => GestureDetector(
+            onTap: () => onTap?.call(task),
+            child: TaskItem(
+              key: ValueKey('$sectionKeyPrefix-${task.id}'),
+              task: task,
+              onToggleCompletion: () => onToggleTaskCompletion(task.id),
+              onStartTimer: () => onStartTaskTimer(task.id),
+              onStopTimer: () => onStopTaskTimer(task.id),
+              onRemoveTag: onRemoveTag != null
+                  ? (tag) => onRemoveTag!(task.id, tag)
+                  : null,
+              onEdit: onEditTask != null ? () => onEditTask!(task) : null,
+            ),
           ),
         ),
         const SizedBox(height: 16),
