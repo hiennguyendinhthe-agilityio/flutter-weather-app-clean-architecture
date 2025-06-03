@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:task_management_app/presentation/widgets/common_gradient_background.dart';
 
 class AccountPage extends StatelessWidget {
   const AccountPage({super.key});
@@ -6,16 +7,18 @@ class AccountPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildHeader(),
-              _buildProfileSection(),
-              _buildStatisticsSection(),
-              _buildSettingsSection(),
-            ],
+      body: CommonGradientBackground(
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildHeader(),
+                _buildProfileSection(),
+                _buildStatisticsSection(),
+                _buildSettingsSection(),
+              ],
+            ),
           ),
         ),
       ),

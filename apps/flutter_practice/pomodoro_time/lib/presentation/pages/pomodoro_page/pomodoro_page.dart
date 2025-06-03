@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:task_management_app/core/themes/pomodoro_color_theme.dart';
 import 'package:task_management_app/data/models/settings.dart';
+import 'package:task_management_app/presentation/pages/pomodoro_page/widgets/duration_selector.dart';
+import 'package:task_management_app/presentation/pages/pomodoro_page/widgets/pomodoro_timer.dart';
 import 'package:task_management_app/presentation/providers/pomodoro_provider.dart';
 import 'package:task_management_app/presentation/widgets/common_gradient_background.dart';
 import 'package:task_management_app/presentation/widgets/current_task_card.dart';
-import 'package:task_management_app/presentation/widgets/duration_selector.dart';
-import 'package:task_management_app/presentation/widgets/pomodoro_timer.dart';
 import 'package:task_management_app/presentation/widgets/settings_dialog.dart';
 
 class PomodoroPage extends StatelessWidget {
@@ -88,8 +88,8 @@ class PomodoroPage extends StatelessWidget {
                     availableDurations: [5, 10, 20, 25, 30],
                   ),
                   onSettingsChanged: (Settings) {},
-                  onAddDuration: (int) {},
-                  onRemoveDuration: (int) {},
+                  onAddDuration: (int newDuration) {},
+                  onRemoveDuration: (int durationToRemove) {},
                 ),
               );
             },

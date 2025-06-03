@@ -33,7 +33,44 @@ class DurationSelector extends StatelessWidget {
                       return SizedBox(
                         width: itemWidth,
                         child: GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                final controller = TextEditingController();
+                                return AlertDialog(
+                                  title: const Text('Add Custom Duratiom'),
+                                  content: TextField(
+                                    controller: controller,
+                                    keyboardType: TextInputType.number,
+                                    decoration: const InputDecoration(
+                                      labelText: 'Duration in minutes',
+                                      border: OutlineInputBorder(),
+                                    ),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      child: const Text('Cancel'),
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                    TextButton(
+                                      child: const Text('Add'),
+                                      onPressed: () {
+                                        pomodoroProvider.setPomodoroDuration(
+                                            int.parse(controller.text));
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                  ],
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                );
+                              },
+                            );
+                          },
                           child: Container(
                             margin: const EdgeInsets.all(4),
                             alignment: Alignment.center,

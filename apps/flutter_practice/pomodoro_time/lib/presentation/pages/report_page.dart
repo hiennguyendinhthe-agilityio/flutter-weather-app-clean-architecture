@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:task_management_app/core/utils/duration_formatter.dart';
 import 'package:task_management_app/data/models/task.dart';
 import 'package:task_management_app/presentation/providers/task_provider.dart';
+import 'package:task_management_app/presentation/widgets/common_gradient_background.dart';
 
 class ReportPage extends StatefulWidget {
   const ReportPage({super.key});
@@ -18,15 +19,17 @@ class _ReportPageState extends State<ReportPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Consumer<TaskProvider>(
-          builder: (context, taskProvider, child) {
-            if (taskProvider.isLoading) {
-              return const Center(child: CircularProgressIndicator());
-            } else {
-              return _buildContent(context, taskProvider.allTasks);
-            }
-          },
+      body: CommonGradientBackground(
+        child: SafeArea(
+          child: Consumer<TaskProvider>(
+            builder: (context, taskProvider, child) {
+              if (taskProvider.isLoading) {
+                return const Center(child: CircularProgressIndicator());
+              } else {
+                return _buildContent(context, taskProvider.allTasks);
+              }
+            },
+          ),
         ),
       ),
     );
