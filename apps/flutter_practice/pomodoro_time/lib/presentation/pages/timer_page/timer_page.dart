@@ -1,18 +1,19 @@
 // ignore_for_file: avoid_types_as_parameter_names, non_constant_identifier_names
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:task_management_app/core/themes/pomodoro_color_theme.dart';
 import 'package:task_management_app/data/models/settings.dart';
-import 'package:task_management_app/presentation/pages/pomodoro_page/widgets/duration_selector.dart';
-import 'package:task_management_app/presentation/pages/pomodoro_page/widgets/pomodoro_timer.dart';
+import 'package:task_management_app/presentation/pages/timer_page/widgets/duration_selector.dart';
+import 'package:task_management_app/presentation/pages/timer_page/widgets/pomodoro_timer.dart';
 import 'package:task_management_app/presentation/providers/pomodoro_provider.dart';
 import 'package:task_management_app/presentation/widgets/common_gradient_background.dart';
 import 'package:task_management_app/presentation/widgets/current_task_card.dart';
 import 'package:task_management_app/presentation/widgets/settings_dialog.dart';
 
-class PomodoroPage extends StatelessWidget {
-  const PomodoroPage({super.key});
+class TimerPage extends StatelessWidget {
+  const TimerPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -70,10 +71,10 @@ class PomodoroPage extends StatelessWidget {
         children: [
           Text(
             'Pomodoro',
-            style: TextStyle(
+            style: GoogleFonts.inter(
               fontSize: 24,
               fontWeight: FontWeight.bold,
-              color: themeColors.primary,
+              color: Colors.black,
             ),
           ),
           IconButton(

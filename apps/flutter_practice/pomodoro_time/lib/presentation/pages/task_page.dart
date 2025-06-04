@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:task_management_app/data/models/task.dart';
-import 'package:task_management_app/presentation/pages/task_page/widgets/task_detail_dialog.dart';
+import 'package:task_management_app/presentation/pages/calendar_page/widgets/task_detail_dialog.dart';
 import 'package:task_management_app/presentation/providers/task_provider.dart';
 import 'package:task_management_app/presentation/widgets/add_task_bottomsheet.dart';
 import 'package:task_management_app/presentation/widgets/common_gradient_background.dart';
 import 'package:task_management_app/presentation/widgets/task_item.dart';
 import 'package:task_management_app/presentation/widgets/task_list_section.dart';
-import 'package:task_management_app/presentation/widgets/timer_page_header.dart';
+import 'package:task_management_app/presentation/widgets/task_page_header.dart';
 
-class TimerPage extends StatefulWidget {
-  const TimerPage({super.key});
+class TaskPage extends StatefulWidget {
+  const TaskPage({super.key});
 
   @override
-  State<TimerPage> createState() => _TimerPageState();
+  State<TaskPage> createState() => _TaskPageState();
 }
 
-class _TimerPageState extends State<TimerPage>
+class _TaskPageState extends State<TaskPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
@@ -115,7 +115,7 @@ class _TimerPageState extends State<TimerPage>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        TimerPageHeader(
+        TaskPageHeader(
           taskCount: taskProvider.allTasks.length,
           onAddTaskPressed: _showAddTaskBottomSheet,
         ),

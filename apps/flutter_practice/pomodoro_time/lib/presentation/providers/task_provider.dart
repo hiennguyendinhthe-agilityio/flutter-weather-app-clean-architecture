@@ -15,6 +15,50 @@ class TaskProvider extends ChangeNotifier {
   bool _isLoading = false;
   String? _errorMessage;
 
+  String? _selectedTaskId;
+  String? get selectedTaskId => _selectedTaskId;
+
+  void setSelectedTask(String? taskId) {
+    _selectedTaskId = taskId;
+    notifyListeners();
+  }
+
+  Task? get selectedTask => _allTasks.firstWhere(
+        (task) => task.id == _selectedTaskId,
+        orElse: () => Task(
+          projectColor: '',
+          projectName: '',
+          id: '',
+          title: '',
+          startTime: DateTime.now(),
+          endTime: DateTime.now(),
+          isActive: false,
+          isCompleted: false,
+          isArchived: false,
+          timeSpent: Duration.zero,
+          createdAt: DateTime.now(),
+          assignee: '',
+          tags: [],
+        ),
+      );
+  Task? get runningTask => _allTasks.firstWhere(
+        (t) => t.isActive && !t.isCompleted && !t.isArchived,
+        orElse: () => Task(
+          projectColor: '',
+          projectName: '',
+          id: '',
+          title: '',
+          startTime: DateTime.now(),
+          endTime: DateTime.now(),
+          isActive: false,
+          isCompleted: false,
+          isArchived: false,
+          timeSpent: Duration.zero,
+          createdAt: DateTime.now(),
+          assignee: '',
+          tags: [],
+        ),
+      );
   List<Task> _allTasks = [];
   List<Task> get allTasks => _allTasks;
 

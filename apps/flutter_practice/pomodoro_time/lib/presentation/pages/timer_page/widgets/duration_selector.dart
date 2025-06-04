@@ -19,7 +19,7 @@ class DurationSelector extends StatelessWidget {
             height: 50,
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(15),
               border: Border.all(color: Colors.grey.shade300),
             ),
             child: LayoutBuilder(
@@ -76,12 +76,12 @@ class DurationSelector extends StatelessWidget {
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.circular(5),
+                              borderRadius: BorderRadius.circular(15),
                             ),
                             child: const Text(
                               '+ Add',
                               style: TextStyle(
-                                fontSize: 13,
+                                fontSize: 11,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black87,
                               ),
@@ -110,12 +110,12 @@ class DurationSelector extends StatelessWidget {
                                   : Colors.transparent,
                               width: 2,
                             ),
-                            borderRadius: BorderRadius.circular(5),
+                            borderRadius: BorderRadius.circular(10),
                           ),
                           child: Text(
                             time.toString(),
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 11,
                               fontWeight: FontWeight.bold,
                               color: isSelected
                                   ? Colors.lightBlueAccent

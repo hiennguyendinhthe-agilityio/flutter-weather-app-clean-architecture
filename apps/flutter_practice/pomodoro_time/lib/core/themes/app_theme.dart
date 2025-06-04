@@ -13,7 +13,7 @@ class AppTheme {
         foregroundColor: Colors.black,
         elevation: 0,
       ),
-      textTheme: GoogleFonts.sourceSerifProTextTheme(
+      textTheme: GoogleFonts.interTextTheme(
         ThemeData.light().textTheme,
       ),
       colorScheme: ColorScheme.fromSwatch(
@@ -39,7 +39,7 @@ class AppTheme {
       ),
       colorScheme: ColorScheme.fromSwatch(
         primarySwatch: Colors.blue,
-        brightness: Brightness.dark,
+        brightness: Brightness.light,
       ),
     );
   }

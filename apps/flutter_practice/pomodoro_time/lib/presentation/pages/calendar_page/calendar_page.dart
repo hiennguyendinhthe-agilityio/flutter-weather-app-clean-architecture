@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:task_management_app/presentation/pages/task_page/widgets/date_selector.dart';
-import 'package:task_management_app/presentation/pages/task_page/widgets/task_header.dart';
-import 'package:task_management_app/presentation/pages/task_page/widgets/timeline_view.dart';
+import 'package:task_management_app/presentation/pages/calendar_page/widgets/date_selector.dart';
+import 'package:task_management_app/presentation/pages/calendar_page/widgets/task_header.dart';
+import 'package:task_management_app/presentation/pages/calendar_page/widgets/timeline_view.dart';
 import 'package:task_management_app/presentation/widgets/add_task_bottomsheet.dart';
 import 'package:task_management_app/presentation/widgets/common_gradient_background.dart';
 
 import '../../providers/task_provider.dart';
 
-class TaskPage extends StatefulWidget {
-  const TaskPage({super.key});
+class CalendarPage extends StatefulWidget {
+  const CalendarPage({super.key});
 
   @override
-  State<TaskPage> createState() => _TaskPageState();
+  State<CalendarPage> createState() => _CalendarPageState();
 }
 
-class _TaskPageState extends State<TaskPage> {
+class _CalendarPageState extends State<CalendarPage> {
   late DateTime _selectedDate;
   late ScrollController _scrollController;
   bool _hasScrolledToSelectedDate = false;

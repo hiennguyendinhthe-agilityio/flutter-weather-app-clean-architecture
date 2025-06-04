@@ -1,3 +1,4 @@
+import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -7,7 +8,7 @@ import 'package:task_management_app/core/themes/app_theme.dart';
 import 'package:task_management_app/data/datasources/local_data_source.dart';
 import 'package:task_management_app/presentation/providers/pomodoro_provider.dart';
 import 'package:task_management_app/presentation/providers/task_provider.dart';
-import 'package:task_management_app/presentation/widgets/navigation_bar.dart';
+import 'package:task_management_app/router/app_router.dart';
 
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,18 +19,24 @@ main() async {
   final localDataSource = await LocalDataSourceImpl.create();
 
   runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (_) =>
-              TaskProvider(localDataSource: localDataSource)..loadTasks(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => PomodoroProvider(localDataSource: localDataSource)
-            ..loadLastPomodoro(),
-        ),
+    DevicePreview(
+      enabled: true,
+      tools: const [
+        ...DevicePreview.defaultTools,
       ],
-      child: const MyApp(),
+      builder: (context) => MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: (_) =>
+                TaskProvider(localDataSource: localDataSource)..loadTasks(),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => PomodoroProvider(localDataSource: localDataSource)
+              ..loadLastPomodoro(),
+          ),
+        ],
+        child: const MyApp(),
+      ),
     ),
   );
 }
@@ -39,12 +46,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'Task Management App',
       theme: AppTheme.lightTheme,
       themeMode: ThemeMode.system,
-      home: const NavigationBarRoute(),
+      routerConfig: router,
     );
   }
 }

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:task_management_app/presentation/pages/calendar_page/calendar_page.dart';
 
-class TimerPageHeader extends StatelessWidget {
+class TaskPageHeader extends StatelessWidget {
   final int taskCount;
   final VoidCallback onAddTaskPressed;
-  const TimerPageHeader({
+  const TaskPageHeader({
     super.key,
     required this.taskCount,
     required this.onAddTaskPressed,
@@ -25,8 +26,19 @@ class TimerPageHeader extends StatelessWidget {
           ),
           Row(
             children: [
-              Icon(Icons.calendar_today_outlined,
-                  color: Theme.of(context).colorScheme.scrim),
+              IconButton(
+                color: Theme.of(context).colorScheme.scrim,
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const CalendarPage(),
+                      ));
+                },
+                icon: const Icon(
+                  Icons.calendar_today_outlined,
+                ),
+              ),
               TextButton.icon(
                 onPressed: onAddTaskPressed,
                 icon: Icon(
