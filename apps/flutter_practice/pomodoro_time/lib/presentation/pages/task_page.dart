@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:task_management_app/data/models/task.dart';
-import 'package:task_management_app/presentation/pages/calendar_page/widgets/task_detail_dialog.dart';
+import 'package:task_management_app/presentation/pages/calendar/widgets/task_detail_dialog.dart';
 import 'package:task_management_app/presentation/providers/task_provider.dart';
 import 'package:task_management_app/presentation/widgets/add_task_bottomsheet.dart';
 import 'package:task_management_app/presentation/widgets/common_gradient_background.dart';

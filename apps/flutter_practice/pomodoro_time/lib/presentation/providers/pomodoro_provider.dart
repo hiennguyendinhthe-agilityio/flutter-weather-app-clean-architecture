@@ -1,12 +1,33 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:task_management_app/core/audio_service.dart';
 import 'package:task_management_app/data/datasources/local_data_source.dart';
 import 'package:task_management_app/data/models/pomodoro.dart';
 import 'package:task_management_app/data/models/task.dart';
 
 class PomodoroProvider extends ChangeNotifier {
   final LocalDataSourceImpl localDataSource;
+
+  late final AudioService _audioService;
+
+  final List<String> _songUrls = [
+    'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+    'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+    'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+  ];
+
+  final List<String> _songTitles = [
+    'Begin Again',
+    'Song 2',
+    'Song 3',
+  ];
+
+  final List<String> _songArtists = [
+    'Taylor Swift',
+    'Artist 2',
+    'Artist 3',
+  ];
 
   Timer? _timer;
 
@@ -15,6 +36,14 @@ class PomodoroProvider extends ChangeNotifier {
   bool _isPaused = false;
   bool _isCompleted = false;
   String? _errorMessage;
+
+  int? _currentSongIndex;
+
+  String get currentSongTitle =>
+      _audioService.getCurrentTitle(_currentSongIndex, _songTitles);
+
+  String get currentSongArtist =>
+      _audioService.getCurrentArtist(_currentSongIndex, _songArtists);
 
   Pomodoro? get pomodoro => _pomodoro;
   bool get isRunning => _isRunning;
@@ -29,7 +58,26 @@ class PomodoroProvider extends ChangeNotifier {
   int get duration => _pomodoro?.duration ?? 25;
   Task? get currentTask => _pomodoro?.currentTask;
 
-  PomodoroProvider({required this.localDataSource});
+  PomodoroProvider({required this.localDataSource}) {
+    _audioService = AudioService(
+      urls: _songUrls,
+    );
+    _initAudio();
+  }
+  bool _audioReady = false;
+
+  Future<void> _initAudio() async {
+    await _audioService.initPlaylist(loopPlaylist: true);
+    _audioReady = true;
+
+    _audioService.sequenceStateStream.listen((sequence) {
+      final index = sequence?.currentIndex;
+      if (index != null && index < _songTitles.length) {
+        _currentSongIndex = index;
+        notifyListeners();
+      }
+    });
+  }
 
   Future<void> loadLastPomodoro() async {
     try {
@@ -74,6 +122,10 @@ class PomodoroProvider extends ChangeNotifier {
     _isRunning = true;
     _isPaused = false;
     _isCompleted = false;
+    if (!_audioReady) {
+      await _initAudio();
+    }
+    await _audioService.play();
 
     notifyListeners();
 
@@ -92,11 +144,13 @@ class PomodoroProvider extends ChangeNotifier {
   Future<void> pausePomodoro() async {
     _timer?.cancel();
 
-    if (_isRunning) {
+    if (_isRunning && _pomodoro != null && _pomodoro!.remainingTime > 0) {
       final updatedPomodoro = _pomodoro!.copyWith(isRunning: false);
       _pomodoro = updatedPomodoro;
       _isRunning = false;
       _isPaused = true;
+
+      await _audioService.pause();
 
       notifyListeners();
 
@@ -116,6 +170,7 @@ class PomodoroProvider extends ChangeNotifier {
       _isRunning = true;
       _isPaused = false;
 
+      await _audioService.play();
       notifyListeners();
 
       try {
@@ -151,6 +206,8 @@ class PomodoroProvider extends ChangeNotifier {
     _isCompleted = false;
 
     notifyListeners();
+
+    await _audioService.stop();
   }
 
   Future<void> resetPomodoro() async {
@@ -170,6 +227,7 @@ class PomodoroProvider extends ChangeNotifier {
       _isCompleted = false;
 
       notifyListeners();
+      await _audioService.play();
 
       try {
         await localDataSource.savePomodoro(resetPomodoro);
@@ -186,6 +244,7 @@ class PomodoroProvider extends ChangeNotifier {
 
   Future<void> setPomodoroDuration(int minutes) async {
     _timer?.cancel();
+    await _audioService.pause();
 
     final newPomodoro = Pomodoro(
       duration: minutes,
@@ -234,6 +293,7 @@ class PomodoroProvider extends ChangeNotifier {
         _isCompleted = true;
 
         notifyListeners();
+        await _audioService.stop();
 
         try {
           await localDataSource
@@ -254,6 +314,8 @@ class PomodoroProvider extends ChangeNotifier {
   @override
   void dispose() {
     _timer?.cancel();
+    _audioService.stop();
+    _audioService.dispose();
     super.dispose();
   }
 }

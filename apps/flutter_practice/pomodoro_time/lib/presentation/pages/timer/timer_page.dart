@@ -5,8 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:task_management_app/core/themes/pomodoro_color_theme.dart';
 import 'package:task_management_app/data/models/settings.dart';
-import 'package:task_management_app/presentation/pages/timer_page/widgets/duration_selector.dart';
-import 'package:task_management_app/presentation/pages/timer_page/widgets/pomodoro_timer.dart';
+import 'package:task_management_app/presentation/pages/timer/widgets/duration_selector.dart';
+import 'package:task_management_app/presentation/pages/timer/widgets/pomodoro_timer.dart';
 import 'package:task_management_app/presentation/providers/pomodoro_provider.dart';
 import 'package:task_management_app/presentation/widgets/common_gradient_background.dart';
 import 'package:task_management_app/presentation/widgets/current_task_card.dart';
@@ -65,7 +65,7 @@ class TimerPage extends StatelessWidget {
 
   Widget _buildHeader(BuildContext context, PomodoroThemeColors themeColors) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -74,11 +74,11 @@ class TimerPage extends StatelessWidget {
             style: GoogleFonts.inter(
               fontSize: 24,
               fontWeight: FontWeight.bold,
-              color: Colors.black,
+              color: Colors.black87,
             ),
           ),
           IconButton(
-            icon: Icon(Icons.settings, color: themeColors.primary),
+            icon: const Icon(Icons.settings, size: 24, color: Colors.black54),
             onPressed: () {
               showDialog(
                 context: context,

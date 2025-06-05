@@ -7,53 +7,55 @@ class CircleProgressPainter extends CustomPainter {
   final Color colorStart;
   final Color colorEnd;
   final double strokeWidth;
+  final Color backgroundColor;
 
   CircleProgressPainter({
     required this.progress,
     required this.colorStart,
     required this.colorEnd,
-    this.strokeWidth = 10,
-  });
+    this.strokeWidth = 20.0,
+    this.backgroundColor = Colors.transparent,
+  }) : super();
 
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
-    final radius = (size.width / 2) - strokeWidth / 2;
+    final radius = (size.width / 2) - (strokeWidth / 2);
 
-    final bgPaint = Paint()
-      ..color = Colors.transparent
+    final backgroundPaint = Paint()
+      ..color = backgroundColor
       ..style = PaintingStyle.stroke
-      ..strokeWidth = strokeWidth;
-    canvas.drawCircle(center, radius, bgPaint);
+      ..strokeWidth = strokeWidth
+      ..strokeCap = StrokeCap.round;
 
-    final rect = Rect.fromCircle(center: center, radius: radius);
-    final gradient = SweepGradient(
-      startAngle: -pi / 2,
-      endAngle: 3 * pi / 2,
-      colors: [colorStart, colorEnd],
-    );
-
-    final paint = Paint()
-      ..shader = gradient.createShader(rect)
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round
-      ..strokeWidth = strokeWidth;
+    canvas.drawCircle(center, radius, backgroundPaint);
 
     final sweepAngle = 2 * pi * progress;
 
+    final foregroundPaint = Paint()
+      ..shader = SweepGradient(
+        colors: [colorStart, colorEnd],
+        startAngle: 0.0,
+        endAngle: 2 * pi,
+      ).createShader(Rect.fromCircle(center: center, radius: radius))
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth
+      ..strokeCap = StrokeCap.round;
+
     canvas.drawArc(
       Rect.fromCircle(center: center, radius: radius),
-      -pi / 2,
+      0.0,
       sweepAngle,
       false,
-      paint,
+      foregroundPaint,
     );
   }
 
   @override
-  bool shouldRepaint(CircleProgressPainter oldDelegate) {
-    return progress != oldDelegate.progress ||
-        colorStart != oldDelegate.colorStart ||
-        colorEnd != oldDelegate.colorEnd;
+  bool shouldRepaint(covariant CircleProgressPainter oldDelegate) {
+    return oldDelegate.progress != progress ||
+        oldDelegate.colorStart != colorStart ||
+        oldDelegate.colorEnd != colorEnd ||
+        oldDelegate.strokeWidth != strokeWidth;
   }
 }

@@ -18,11 +18,12 @@ class CommonGradientBackground extends StatelessWidget {
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Colors.lightBlue,
-            Colors.white,
+            Color.fromARGB(255, 95, 219, 250),
+            Color(0xFFDFE3E6),
           ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
+          stops: [0.3, 1.0],
         ),
       ),
       child: child,

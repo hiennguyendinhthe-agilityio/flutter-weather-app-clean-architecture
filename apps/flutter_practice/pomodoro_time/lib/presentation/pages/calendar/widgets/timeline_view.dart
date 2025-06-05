@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:task_management_app/data/models/task.dart';
-import 'package:task_management_app/presentation/pages/calendar_page/widgets/task_detail_dialog.dart';
+import 'package:task_management_app/presentation/pages/calendar/widgets/task_detail_dialog.dart';
 
 import 'task_card.dart';
 

@@ -22,6 +22,18 @@ class PomodoroTimer extends StatelessWidget {
         int remainingSeconds = pomodoroProvider.remainingTime;
         final totalSeconds = pomodoroProvider.duration * 60;
 
+        final isTrackInfoVisible =
+            pomodoroProvider.isRunning || pomodoroProvider.isPaused;
+        final progress =
+            totalSeconds > 0 ? remainingSeconds / totalSeconds : 0.0;
+        final angle = 2 * pi * progress;
+        const radius = 150.0;
+        final knobOffset = Offset(
+          radius * cos(angle),
+          radius * sin(angle),
+        );
+        final showKnob = remainingSeconds > 0;
+
         final hoursNum = (remainingSeconds ~/ 3600);
         final minutesNum = ((remainingSeconds % 3600) ~/ 60);
         final secondsNum = (remainingSeconds % 60);
@@ -29,9 +41,6 @@ class PomodoroTimer extends StatelessWidget {
         final hours = hoursNum.toString().padLeft(2, '0');
         final minutes = minutesNum.toString().padLeft(2, '0');
         final seconds = secondsNum.toString().padLeft(2, '0');
-
-        final progress =
-            totalSeconds > 0 ? remainingSeconds / totalSeconds : 0.0;
 
         final isHoursActive = hoursNum > 0;
         final isMinutesActive = minutesNum > 0 || isHoursActive;
@@ -47,13 +56,43 @@ class PomodoroTimer extends StatelessWidget {
                 child: CustomPaint(
                   painter: CircleProgressPainter(
                     progress: progress,
-                    colorStart: themeColors.primary,
-                    colorEnd: themeColors.secondary,
+                    colorStart: themeColors.secondary,
+                    colorEnd: themeColors.primary,
                     strokeWidth: 20,
                   ),
                 ),
               ),
-              _buildKnob(pomodoroProvider, themeColors),
+              if (isTrackInfoVisible && showKnob) ...[
+                Transform.translate(
+                  offset: knobOffset * 1.2,
+                  child: _buildTrackInfoBubble(
+                    pomodoroProvider.currentSongTitle,
+                    pomodoroProvider.currentSongArtist,
+                    themeColors,
+                  ),
+                ),
+              ],
+              if (showKnob) ...[
+                Transform.translate(
+                  offset: knobOffset,
+                  child: Container(
+                    width: 24,
+                    height: 24,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: themeColors.primary, width: 3),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -179,36 +218,62 @@ class PomodoroTimer extends StatelessWidget {
     );
   }
 
-  Widget _buildKnob(
-      PomodoroProvider pomodoroProvider, PomodoroThemeColors themeColors) {
-    final totalSeconds = pomodoroProvider.duration * 60;
-    final remainingSeconds = pomodoroProvider.remainingTime;
-
-    final progress = totalSeconds > 0 ? remainingSeconds / totalSeconds : 0.0;
-    final angle = 2 * pi * progress - pi / 2;
-
-    const radius = 150.0;
-
-    return Transform.translate(
-      offset: Offset(
-        radius * cos(angle),
-        radius * sin(angle),
-      ),
-      child: Container(
-        width: 24,
-        height: 24,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          shape: BoxShape.circle,
-          border: Border.all(color: themeColors.primary, width: 3),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.1),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
+  Widget _buildTrackInfoBubble(
+      String title, String artist, PomodoroThemeColors themeColors) {
+    return Material(
+      color: Colors.transparent,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: themeColors.primary,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.15),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
-          ],
-        ),
+            child: RichText(
+              text: TextSpan(
+                children: [
+                  const WidgetSpan(
+                    child:
+                        Icon(Icons.music_note, size: 14, color: Colors.white),
+                  ),
+                  const WidgetSpan(child: SizedBox(width: 4)),
+                  TextSpan(
+                    text: title,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
+                  ),
+                  const TextSpan(
+                    text: ' - ',
+                    style: TextStyle(
+                        color: Colors.white70,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 12),
+                  ),
+                  TextSpan(
+                    text: artist,
+                    style: const TextStyle(
+                      color: Colors.white70,
+                      fontStyle: FontStyle.italic,
+                      fontSize: 11,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

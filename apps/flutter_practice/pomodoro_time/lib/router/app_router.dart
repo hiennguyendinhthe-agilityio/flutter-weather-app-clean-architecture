@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:task_management_app/presentation/pages/account_page.dart';
-import 'package:task_management_app/presentation/pages/calendar_page/calendar_page.dart';
+import 'package:task_management_app/presentation/pages/calendar/calendar_page.dart';
 import 'package:task_management_app/presentation/pages/play_page.dart';
 import 'package:task_management_app/presentation/pages/report_page.dart';
 import 'package:task_management_app/presentation/pages/task_page.dart';
-import 'package:task_management_app/presentation/pages/timer_page/timer_page.dart';
+import 'package:task_management_app/presentation/pages/timer/timer_page.dart';
 
 final GoRouter router = GoRouter(
   initialLocation: '/timer',
