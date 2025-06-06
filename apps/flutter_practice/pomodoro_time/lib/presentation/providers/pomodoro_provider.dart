@@ -65,10 +65,13 @@ class PomodoroProvider extends ChangeNotifier {
     _initAudio();
   }
   bool _audioReady = false;
-
   Future<void> _initAudio() async {
-    await _audioService.initPlaylist(loopPlaylist: true);
-    _audioReady = true;
+    try {
+      await _audioService.initPlaylist(loopPlaylist: true);
+      _audioReady = true;
+    } catch (e) {
+      debugPrint('Error initAudio: $e');
+    }
 
     _audioService.sequenceStateStream.listen((sequence) {
       final index = sequence?.currentIndex;
@@ -122,12 +125,12 @@ class PomodoroProvider extends ChangeNotifier {
     _isRunning = true;
     _isPaused = false;
     _isCompleted = false;
+
+    notifyListeners();
     if (!_audioReady) {
       await _initAudio();
     }
     await _audioService.play();
-
-    notifyListeners();
 
     try {
       await localDataSource.savePomodoro(newPomodoro);

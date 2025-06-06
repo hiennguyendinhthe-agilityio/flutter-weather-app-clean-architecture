@@ -7,13 +7,10 @@ import 'package:task_management_app/presentation/providers/task_provider.dart';
 
 import '../../core/utils/task_utils.dart';
 
-typedef TaskCallback = void Function(String taskId);
 typedef TagCallback = void Function(String tag);
-typedef TaskTagCallback = void Function(String taskId, String tag);
 
 class TaskItem extends StatelessWidget {
   final Task task;
-
   final VoidCallback onToggleCompletion;
   final VoidCallback onStartTimer;
   final VoidCallback onStopTimer;
@@ -21,14 +18,14 @@ class TaskItem extends StatelessWidget {
   final VoidCallback? onEdit;
 
   const TaskItem({
-    super.key,
+    Key? key,
     required this.task,
     required this.onToggleCompletion,
     required this.onStartTimer,
     required this.onStopTimer,
-    required this.onRemoveTag,
+    this.onRemoveTag,
     this.onEdit,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +40,7 @@ class TaskItem extends StatelessWidget {
           children: [
             if (task.isArchived)
               SlidableAction(
-                onPressed: (context) {
+                onPressed: (ctx) {
                   taskProvider.unarchiveTask(task.id);
                 },
                 backgroundColor: Colors.orange,
@@ -53,7 +50,7 @@ class TaskItem extends StatelessWidget {
               )
             else
               SlidableAction(
-                onPressed: (context) {
+                onPressed: (ctx) {
                   taskProvider.archiveTask(task.id);
                 },
                 backgroundColor: Colors.green,
@@ -67,7 +64,7 @@ class TaskItem extends StatelessWidget {
           motion: const StretchMotion(),
           children: [
             SlidableAction(
-              onPressed: (context) {
+              onPressed: (ctx) {
                 if (onEdit != null) onEdit!();
               },
               backgroundColor: Colors.blue,
@@ -76,34 +73,28 @@ class TaskItem extends StatelessWidget {
               label: 'Edit',
             ),
             SlidableAction(
-              onPressed: (contextSA) {
-                final taskProvider =
-                    Provider.of<TaskProvider>(context, listen: false);
-
+              onPressed: (ctx) {
                 showDialog(
-                  context: contextSA,
-                  builder: (BuildContext ctxDialog) {
+                  context: ctx,
+                  builder: (dialogCtx) {
                     return AlertDialog(
                       title: const Text('Confirm Delete'),
                       content: const Text(
                           'Are you sure you want to delete this task?'),
-                      actions: <Widget>[
+                      actions: [
                         TextButton(
                           child: const Text('Cancel'),
                           onPressed: () {
-                            if (ctxDialog.mounted) {
-                              Navigator.of(ctxDialog).pop();
-                            }
+                            if (dialogCtx.mounted)
+                              Navigator.of(dialogCtx).pop();
                           },
                         ),
                         TextButton(
                           child: const Text('Delete'),
                           onPressed: () {
                             taskProvider.deleteTask(task.id);
-
-                            if (ctxDialog.mounted) {
-                              Navigator.of(ctxDialog).pop();
-                            }
+                            if (dialogCtx.mounted)
+                              Navigator.of(dialogCtx).pop();
                           },
                         ),
                       ],
@@ -125,7 +116,7 @@ class TaskItem extends StatelessWidget {
             borderRadius: BorderRadius.circular(12.0),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
+                color: Colors.black.withOpacity(0.05),
                 blurRadius: 5,
                 offset: const Offset(0, 2),
               ),
@@ -162,24 +153,17 @@ class TaskItem extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                task.title,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  decoration: task.isCompleted
-                                      ? TextDecoration.lineThrough
-                                      : null,
-                                  color: task.isCompleted
-                                      ? Colors.grey
-                                      : Colors.black,
-                                ),
-                              ),
-                            ),
-                          ],
+                        Text(
+                          task.title,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            decoration: task.isCompleted
+                                ? TextDecoration.lineThrough
+                                : null,
+                            color:
+                                task.isCompleted ? Colors.grey : Colors.black,
+                          ),
                         ),
                         const SizedBox(height: 4),
                         Row(
@@ -234,7 +218,9 @@ class TaskItem extends StatelessWidget {
                             if (!task.isCompleted && !task.isArchived) ...[
                               const SizedBox(width: 4),
                               GestureDetector(
-                                onTap: () => onRemoveTag!(tag),
+                                onTap: () {
+                                  if (onRemoveTag != null) onRemoveTag!(tag);
+                                },
                                 child: Icon(
                                   Icons.close,
                                   size: 14,
@@ -248,28 +234,14 @@ class TaskItem extends StatelessWidget {
                     }).toList(),
                   ),
                   if (!task.isArchived)
-                    Row(
-                      children: [
-                        Text(
-                          DurationFormatter.format(task.timeSpent),
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        if (!task.isCompleted)
-                          IconButton(
-                            icon: Icon(
-                              task.isActive ? Icons.pause : Icons.play_arrow,
-                              color: getColorFromName(task.projectColor),
-                            ),
-                            onPressed:
-                                task.isActive ? onStopTimer : onStartTimer,
-                            padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints(),
-                          ),
-                      ],
+                    Text(
+                      DurationFormatter.format(
+                        task.endTime.difference(task.startTime),
+                      ),
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                 ],
               ),

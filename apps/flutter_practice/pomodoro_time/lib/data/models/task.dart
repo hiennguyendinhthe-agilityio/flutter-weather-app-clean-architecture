@@ -12,6 +12,9 @@ class Task {
   final bool isArchived;
   final DateTime startTime;
   final DateTime endTime;
+  String? note;
+  String? musicTitle;
+  String? musicArtist;
 
   Task({
     required this.id,
@@ -27,6 +30,9 @@ class Task {
     this.isArchived = false,
     required this.startTime,
     required this.endTime,
+    this.note,
+    this.musicTitle,
+    this.musicArtist,
   });
 
   factory Task.fromJson(Map<String, dynamic> json) {
@@ -48,6 +54,9 @@ class Task {
       endTime: json['endTime'] != null
           ? DateTime.parse(json['endTime'])
           : DateTime.now(),
+      note: json['note'],
+      musicTitle: json['musicTitle'],
+      musicArtist: json['musicArtist'],
     );
   }
 
@@ -66,6 +75,9 @@ class Task {
       'isArchived': isArchived,
       'startTime': startTime.toIso8601String(),
       'endTime': endTime.toIso8601String(),
+      'note': note,
+      'musicTitle': musicTitle,
+      'musicArtist': musicArtist,
     };
   }
 
@@ -83,6 +95,9 @@ class Task {
     bool? isArchived,
     DateTime? startTime,
     DateTime? endTime,
+    String? note,
+    String? musicTitle,
+    String? musicArtist,
   }) {
     return Task(
       id: id ?? this.id,
@@ -98,6 +113,9 @@ class Task {
       isArchived: isArchived ?? this.isArchived,
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
+      note: note ?? this.note,
+      musicTitle: musicTitle ?? this.musicTitle,
+      musicArtist: musicArtist ?? this.musicArtist,
     );
   }
 
@@ -116,6 +134,9 @@ class Task {
       isArchived: task.isArchived,
       startTime: task.startTime,
       endTime: task.endTime,
+      note: task.note,
+      musicTitle: task.musicTitle,
+      musicArtist: task.musicArtist,
     );
   }
 }

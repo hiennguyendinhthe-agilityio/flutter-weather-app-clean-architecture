@@ -52,7 +52,7 @@ class TaskListSection extends StatelessWidget {
               ),
               if (totalTime > Duration.zero)
                 Text(
-                  DurationFormatter.formatHoursMinutesSeconds(totalTime),
+                  DurationFormatter.format(totalTime),
                   style: TextStyle(
                     fontSize: 13,
                     color: Theme.of(context)

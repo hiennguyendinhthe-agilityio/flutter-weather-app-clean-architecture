@@ -195,8 +195,17 @@ class _TaskPageState extends State<TaskPage>
       if (!acc.any((t) => t.id == task.id)) acc.add(task);
       return acc;
     });
-    final yesterdayTasks = taskProvider.yesterdayTasksList;
 
+    final Duration totalToday = todayTasks.fold(
+      Duration.zero,
+      (prev, task) => prev + (task.endTime.difference(task.startTime)),
+    );
+
+    final yesterdayTasks = taskProvider.yesterdayTasksList;
+    final Duration totalYesterday = yesterdayTasks.fold(
+      Duration.zero,
+      (prev, task) => prev + (task.endTime.difference(task.startTime)),
+    );
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final yesterday = today.subtract(const Duration(days: 1));
@@ -206,7 +215,10 @@ class _TaskPageState extends State<TaskPage>
       return !taskDay.isAtSameMomentAs(today) &&
           !taskDay.isAtSameMomentAs(yesterday);
     }).toList();
-
+    final Duration totalOther = otherTasks.fold(
+      Duration.zero,
+      (prev, task) => prev + (task.endTime.difference(task.startTime)),
+    );
     otherTasks.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     void toggleTask(String taskId) {
       Provider.of<TaskProvider>(context, listen: false)
@@ -234,8 +246,7 @@ class _TaskPageState extends State<TaskPage>
           },
           title: 'Today',
           tasks: todayTasks,
-          totalTime: todayTasks.fold(
-              Duration.zero, (prev, task) => prev + task.timeSpent),
+          totalTime: totalToday,
           sectionKeyPrefix: 'active-today',
           onToggleTaskCompletion: toggleTask,
           onStartTaskTimer: startTimer,
@@ -246,8 +257,7 @@ class _TaskPageState extends State<TaskPage>
         TaskListSection(
           title: 'Yesterday',
           tasks: yesterdayTasks,
-          totalTime: yesterdayTasks.fold(
-              Duration.zero, (prev, task) => prev + task.timeSpent),
+          totalTime: totalYesterday,
           sectionKeyPrefix: 'active-yesterday',
           onToggleTaskCompletion: toggleTask,
           onStartTaskTimer: startTimer,
@@ -272,8 +282,7 @@ class _TaskPageState extends State<TaskPage>
           },
           title: 'Older / Upcoming',
           tasks: otherTasks,
-          totalTime: otherTasks.fold(
-              Duration.zero, (prev, task) => prev + task.timeSpent),
+          totalTime: totalOther,
           sectionKeyPrefix: 'active-other',
           onToggleTaskCompletion: toggleTask,
           onStartTaskTimer: startTimer,
