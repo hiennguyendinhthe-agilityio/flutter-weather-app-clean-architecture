@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:task_management_app/data/models/task.dart';
 import 'package:task_management_app/presentation/widgets/common_input_decoration.dart';
@@ -199,22 +197,26 @@ class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const SizedBox(height: 24),
+                Text('I’m focusing on',
+                    style: Theme.of(context).textTheme.titleMedium),
+                const SizedBox(height: 4),
                 TextFormField(
                   controller: _titleController,
                   decoration: buildCommonDecoration(
                     context: context,
-                    label: 'I’m focusing on',
+                    hintText: 'Enter task title',
                   ),
                   validator: (val) => val == null || val.isEmpty
                       ? 'Please enter a task title'
                       : null,
                 ),
                 const SizedBox(height: 16),
+                Text('Project', style: Theme.of(context).textTheme.titleMedium),
+                const SizedBox(height: 4),
                 TextFormField(
                   controller: _projectController,
                   decoration: buildCommonDecoration(
                     context: context,
-                    label: 'Project',
                     hintText: 'Select project',
                   ),
                   validator: (value) => value == null || value.isEmpty
@@ -222,7 +224,6 @@ class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
                       : null,
                   readOnly: true,
                   onTap: () {
-                    // Open project selection dialog or dropdown
                     showDialog(
                       context: context,
                       builder: (context) {
@@ -254,17 +255,22 @@ class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
                   },
                 ),
                 const SizedBox(height: 16),
+                Text('Assignee',
+                    style: Theme.of(context).textTheme.titleMedium),
+                const SizedBox(height: 4),
                 TextFormField(
                   controller: _assigneeController,
                   decoration: buildCommonDecoration(
                     context: context,
-                    label: 'Assignee',
                   ),
                   validator: (value) => value == null || value.isEmpty
                       ? 'Please enter an assignee'
                       : null,
                 ),
                 const SizedBox(height: 16),
+                Text('Add music (Optional)',
+                    style: Theme.of(context).textTheme.titleMedium),
+                const SizedBox(height: 4),
                 GestureDetector(
                   onTap: _selectMusic,
                   child: Container(
@@ -305,17 +311,19 @@ class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
                   ),
                 ),
                 const SizedBox(height: 16),
+                Text('Note', style: Theme.of(context).textTheme.titleMedium),
                 TextFormField(
                   controller: _noteController,
                   decoration: buildCommonDecoration(
                     context: context,
-                    label: 'Note',
                     hintText: 'Type here...',
                     isMultiline: true,
                   ),
                   maxLines: 3,
                 ),
                 const SizedBox(height: 16),
+                Text('Tags', style: Theme.of(context).textTheme.titleMedium),
+                const SizedBox(height: 4),
                 Row(
                   children: [
                     Expanded(
@@ -331,14 +339,21 @@ class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
                           runSpacing: 6,
                           crossAxisAlignment: WrapCrossAlignment.center,
                           children: [
-                            ..._tags.map((tag) => Chip(
-                                  label: Text(tag),
-                                  onDeleted: () => _removeTag(tag),
-                                  backgroundColor: Colors.grey.shade200,
-                                  deleteIcon: const Icon(Icons.close, size: 16),
-                                  materialTapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
-                                )),
+                            ..._tags.map(
+                              (tag) => Chip(
+                                label: Text(tag),
+                                onDeleted: () => _removeTag(tag),
+                                backgroundColor: Colors.grey.shade200,
+                                deleteIcon: const Icon(Icons.close, size: 16),
+                                materialTapTargetSize:
+                                    MaterialTapTargetSize.shrinkWrap,
+                                shape: RoundedRectangleBorder(
+                                  side: const BorderSide(
+                                      color: Colors.grey, width: 1.0),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
+                            ),
                             SizedBox(
                               width: 80,
                               child: IntrinsicWidth(

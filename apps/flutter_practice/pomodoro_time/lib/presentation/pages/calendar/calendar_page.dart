@@ -107,6 +107,11 @@ class _CalendarPageState extends State<CalendarPage> {
                         }
                       },
                       scrollController: _scrollController,
+                      totalTime: taskProvider.activeTasks.fold(
+                        Duration.zero,
+                        (prev, task) =>
+                            prev + (task.endTime.difference(task.startTime)),
+                      ),
                     ),
                     Expanded(
                       child: TimelineView(

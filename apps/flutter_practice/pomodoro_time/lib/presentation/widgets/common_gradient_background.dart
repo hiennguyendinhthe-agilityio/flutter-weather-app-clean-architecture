@@ -19,10 +19,10 @@ class CommonGradientBackground extends StatelessWidget {
         gradient: LinearGradient(
           colors: [
             Color.fromARGB(255, 95, 219, 250),
-            Color(0xFFDFE3E6),
+            Colors.white,
           ],
           begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
+          end: Alignment.center,
           stops: [0.3, 1.0],
         ),
       ),

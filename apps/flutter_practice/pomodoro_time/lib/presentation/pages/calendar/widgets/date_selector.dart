@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../core/utils/duration_formatter.dart';
+
 class DateSelector extends StatelessWidget {
   final DateTime selectedDate;
   final ValueChanged<DateTime> onDateSelected;
   final ScrollController scrollController;
 
+  final Duration totalTime;
+
   const DateSelector({
     required this.selectedDate,
     required this.onDateSelected,
     required this.scrollController,
+    required this.totalTime,
     Key? key,
   }) : super(key: key);
 
@@ -31,12 +36,29 @@ class DateSelector extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Text(
-              'Today, ${DateFormat('MMMM d').format(selectedDate)}',
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  DateFormat('EEE, d/M/y').format(selectedDate),
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                if (totalTime > Duration.zero)
+                  Text(
+                    DurationFormatter.format(totalTime),
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withOpacity(0.6),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+              ],
             ),
           ),
           const SizedBox(height: 16),

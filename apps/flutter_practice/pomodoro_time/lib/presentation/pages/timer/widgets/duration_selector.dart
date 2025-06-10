@@ -106,7 +106,7 @@ class DurationSelector extends StatelessWidget {
                           decoration: BoxDecoration(
                             border: Border.all(
                               color: isSelected
-                                  ? themeColors.primary
+                                  ? Colors.grey.shade300
                                   : Colors.transparent,
                               width: 2,
                             ),

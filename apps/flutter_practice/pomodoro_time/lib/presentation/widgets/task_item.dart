@@ -85,16 +85,18 @@ class TaskItem extends StatelessWidget {
                         TextButton(
                           child: const Text('Cancel'),
                           onPressed: () {
-                            if (dialogCtx.mounted)
+                            if (dialogCtx.mounted) {
                               Navigator.of(dialogCtx).pop();
+                            }
                           },
                         ),
                         TextButton(
                           child: const Text('Delete'),
                           onPressed: () {
                             taskProvider.deleteTask(task.id);
-                            if (dialogCtx.mounted)
+                            if (dialogCtx.mounted) {
                               Navigator.of(dialogCtx).pop();
+                            }
                           },
                         ),
                       ],
@@ -110,7 +112,10 @@ class TaskItem extends StatelessWidget {
           ],
         ),
         child: Container(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16.0,
+            vertical: 12.0,
+          ),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12.0),
@@ -134,7 +139,7 @@ class TaskItem extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8.0),
                       border: Border.all(
-                        color: getColorFromName(task.projectColor),
+                        color: Colors.grey,
                         width: 1,
                       ),
                     ),
@@ -142,7 +147,7 @@ class TaskItem extends StatelessWidget {
                       child: Text(
                         task.assignee.isNotEmpty ? task.assignee[0] : '',
                         style: TextStyle(
-                          color: getColorFromName(task.projectColor),
+                          color: Colors.grey[800],
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -234,14 +239,25 @@ class TaskItem extends StatelessWidget {
                     }).toList(),
                   ),
                   if (!task.isArchived)
-                    Text(
-                      DurationFormatter.format(
-                        task.endTime.difference(task.startTime),
-                      ),
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    Row(
+                      children: [
+                        Text(
+                          DurationFormatter.format(
+                            task.endTime.difference(task.startTime),
+                          ),
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(
+                            Icons.play_arrow,
+                            color: Colors.black,
+                          ),
+                          onPressed: () {},
+                        ),
+                      ],
                     ),
                 ],
               ),

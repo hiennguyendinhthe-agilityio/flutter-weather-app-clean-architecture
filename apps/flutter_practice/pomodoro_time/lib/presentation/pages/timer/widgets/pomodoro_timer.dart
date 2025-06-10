@@ -238,39 +238,42 @@ class PomodoroTimer extends StatelessWidget {
                 ),
               ],
             ),
-            child: RichText(
-              text: TextSpan(
-                children: [
-                  const WidgetSpan(
-                    child:
-                        Icon(Icons.music_note, size: 14, color: Colors.white),
-                  ),
-                  const WidgetSpan(child: SizedBox(width: 4)),
-                  TextSpan(
-                    text: title,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.music_note, size: 14, color: Colors.white),
+                const SizedBox(width: 4),
+                Flexible(
+                  child: Text(
+                    title,
                     style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 12,
                     ),
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  const TextSpan(
-                    text: ' - ',
-                    style: TextStyle(
-                        color: Colors.white70,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 12),
+                ),
+                const Text(
+                  ' - ',
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 12,
                   ),
-                  TextSpan(
-                    text: artist,
+                ),
+                Flexible(
+                  child: Text(
+                    artist,
                     style: const TextStyle(
                       color: Colors.white70,
                       fontStyle: FontStyle.italic,
                       fontSize: 11,
                     ),
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ],

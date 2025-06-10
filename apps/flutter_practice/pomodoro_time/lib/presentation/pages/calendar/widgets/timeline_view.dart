@@ -31,9 +31,19 @@ class TimelineView extends StatelessWidget {
       );
       return taskDate.isAtSameMomentAs(selDate);
     }).toList();
+
+    filteredTasks.sort((a, b) => a.startTime.compareTo(b.startTime));
+
+    final columns = _calculateColumns(filteredTasks);
+
     const double hourHeight = 60;
     const totalHours = 24;
     const timelineHeight = totalHours * hourHeight;
+    const double timeLabelWidth = 68;
+    final double availableWidth =
+        MediaQuery.of(context).size.width - timeLabelWidth - 32;
+    final int maxColumns = columns.length;
+    final double columnWidth = availableWidth / maxColumns;
 
     return SingleChildScrollView(
       controller: timelineScrollController,
@@ -51,7 +61,7 @@ class TimelineView extends StatelessWidget {
                 child: Row(
                   children: [
                     SizedBox(
-                      width: 60,
+                      width: timeLabelWidth,
                       child: Text(
                         '${hour.toString().padLeft(2, '0')}:00',
                         style: TextStyle(color: Colors.grey[600]),
@@ -73,17 +83,24 @@ class TimelineView extends StatelessWidget {
                   (endMinutes - startMinutes) * (hourHeight / 60);
 
               const minHeight = 80.0;
-              const maxHeight = double.infinity;
-              final height = calculatedHeight < minHeight
-                  ? minHeight
-                  : (calculatedHeight > maxHeight
-                      ? maxHeight
-                      : calculatedHeight);
+              final height =
+                  calculatedHeight < minHeight ? minHeight : calculatedHeight;
+
+              int columnIndex = -1;
+              for (int i = 0; i < columns.length; i++) {
+                if (columns[i].contains(task)) {
+                  columnIndex = i;
+                  break;
+                }
+              }
+
+              final left = timeLabelWidth + columnIndex * columnWidth;
+              final right = availableWidth - (columnIndex + 1) * columnWidth;
 
               return Positioned(
                 top: top,
-                left: 68,
-                right: 0,
+                left: left,
+                right: right,
                 height: height,
                 child: GestureDetector(
                   onTap: () {
@@ -93,7 +110,9 @@ class TimelineView extends StatelessWidget {
                     );
                   },
                   child: TaskCard(
-                      task: task, isCompactMode: calculatedHeight < minHeight),
+                    task: task,
+                    isCompactMode: calculatedHeight < minHeight,
+                  ),
                 ),
               );
             }),
@@ -101,5 +120,27 @@ class TimelineView extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  List<List<Task>> _calculateColumns(List<Task> tasks) {
+    List<List<Task>> columns = [];
+    for (var task in tasks) {
+      bool placed = false;
+      for (var column in columns) {
+        if (!column.any((t) => _overlaps(t, task))) {
+          column.add(task);
+          placed = true;
+          break;
+        }
+      }
+      if (!placed) {
+        columns.add([task]);
+      }
+    }
+    return columns;
+  }
+
+  bool _overlaps(Task a, Task b) {
+    return a.startTime.isBefore(b.endTime) && b.startTime.isBefore(a.endTime);
   }
 }

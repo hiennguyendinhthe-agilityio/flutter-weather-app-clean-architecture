@@ -46,12 +46,6 @@ class TaskPageHeader extends StatelessWidget {
                   color: Theme.of(context).colorScheme.scrim,
                 ),
                 label: const Text('New Task'),
-                style: TextButton.styleFrom(
-                    foregroundColor: Theme.of(context).colorScheme.scrim,
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20))),
               )
             ],
           )

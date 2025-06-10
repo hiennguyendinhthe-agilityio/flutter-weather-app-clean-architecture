@@ -34,6 +34,7 @@ class _TaskPageState extends State<TaskPage>
 
   void _showAddTaskBottomSheet() {
     showModalBottomSheet(
+      constraints: const BoxConstraints(maxHeight: 600),
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
@@ -47,6 +48,7 @@ class _TaskPageState extends State<TaskPage>
 
   void _showEditTaskBottomSheet(Task task) {
     showModalBottomSheet(
+      constraints: const BoxConstraints(maxHeight: 600),
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,

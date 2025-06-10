@@ -1,15 +1,12 @@
-// file: widgets/common_input_decoration.dart
 import 'package:flutter/material.dart';
 
 InputDecoration buildCommonDecoration({
   required BuildContext context,
-  required String label,
   String? hintText,
   Widget? suffixIcon,
   bool isMultiline = false,
 }) {
   return InputDecoration(
-    labelText: label,
     hintText: hintText,
     labelStyle: const TextStyle(fontSize: 14),
     isDense: true,
