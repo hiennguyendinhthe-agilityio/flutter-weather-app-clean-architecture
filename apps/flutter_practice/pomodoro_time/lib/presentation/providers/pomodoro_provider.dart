@@ -39,6 +39,14 @@ class PomodoroProvider extends ChangeNotifier {
 
   int? _currentSongIndex;
 
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+
+  void _setLoading(bool value) {
+    _isLoading = value;
+    notifyListeners();
+  }
+
   String get currentSongTitle =>
       _audioService.getCurrentTitle(_currentSongIndex, _songTitles);
 
@@ -65,16 +73,16 @@ class PomodoroProvider extends ChangeNotifier {
     _initAudio();
   }
   bool _audioReady = false;
+
   Future<void> _initAudio() async {
     try {
       await _audioService.initPlaylist(loopPlaylist: true);
       _audioReady = true;
+      notifyListeners();
     } catch (e) {
       debugPrint('Error initAudio: $e');
     }
-
-    _audioService.sequenceStateStream.listen((sequence) {
-      final index = sequence?.currentIndex;
+    _audioService.currentIndexStream.listen((index) {
       if (index != null && index < _songTitles.length) {
         _currentSongIndex = index;
         notifyListeners();
@@ -112,7 +120,14 @@ class PomodoroProvider extends ChangeNotifier {
   }
 
   Future<void> startPomodoro({Task? task}) async {
-    _timer?.cancel();
+    if (_isRunning || _isLoading) return;
+
+    if (!_audioReady) {
+      _setLoading(true);
+      await _initAudio();
+      _setLoading(false);
+    }
+    if (_isRunning) return;
 
     final newPomodoro = Pomodoro(
       duration: _pomodoro?.duration ?? 25,
@@ -120,17 +135,19 @@ class PomodoroProvider extends ChangeNotifier {
       isRunning: true,
       currentTask: task,
     );
-
     _pomodoro = newPomodoro;
     _isRunning = true;
     _isPaused = false;
     _isCompleted = false;
 
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) => _onTick());
     notifyListeners();
-    if (!_audioReady) {
-      await _initAudio();
+
+    try {
+      await _audioService.play();
+    } catch (e) {
+      debugPrint('Audio start error: $e');
     }
-    await _audioService.play();
 
     try {
       await localDataSource.savePomodoro(newPomodoro);
@@ -138,10 +155,6 @@ class PomodoroProvider extends ChangeNotifier {
       _errorMessage = 'Failed to save pomodoro: $e';
       notifyListeners();
     }
-
-    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      _onTick();
-    });
   }
 
   Future<void> pausePomodoro() async {

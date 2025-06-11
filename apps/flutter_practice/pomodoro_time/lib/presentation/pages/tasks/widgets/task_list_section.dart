@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:task_management_app/core/utils/duration_formatter.dart';
 import 'package:task_management_app/data/models/task.dart';
-import 'package:task_management_app/presentation/widgets/task_item.dart';
+import 'package:task_management_app/presentation/pages/tasks/widgets/task_item.dart';
 
 class TaskListSection extends StatelessWidget {
   final String title;

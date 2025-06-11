@@ -10,7 +10,7 @@ import 'package:task_management_app/presentation/pages/timer/widgets/pomodoro_ti
 import 'package:task_management_app/presentation/providers/pomodoro_provider.dart';
 import 'package:task_management_app/presentation/widgets/common_gradient_background.dart';
 import 'package:task_management_app/presentation/widgets/current_task_card.dart';
-import 'package:task_management_app/presentation/widgets/settings_dialog.dart';
+import 'package:task_management_app/presentation/widgets/dialogs.dart';
 
 class TimerPage extends StatelessWidget {
   const TimerPage({super.key});

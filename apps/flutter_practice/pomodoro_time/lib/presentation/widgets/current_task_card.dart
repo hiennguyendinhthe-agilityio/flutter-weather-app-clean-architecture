@@ -65,9 +65,26 @@ class CurrentTaskCard extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: runningTask != null
-                    ? () {
+              Container(
+                width: 160,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(15),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.3),
+                      blurRadius: 15,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
+                ),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(15),
+                    onTap: () {
+                      if (runningTask != null) {
                         final updatedTask =
                             runningTask.copyWith(isCompleted: true);
                         Provider.of<TaskProvider>(context, listen: false)
@@ -75,18 +92,18 @@ class CurrentTaskCard extends StatelessWidget {
                         Provider.of<PomodoroProvider>(context, listen: false)
                             .stopPomodoro();
                       }
-                    : null,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: themeColors.primary,
-                  foregroundColor: Colors.white,
-                  minimumSize: const Size(double.infinity, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
+                    },
+                    child: const Center(
+                      child: Text(
+                        'End Now',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-                child: const Text(
-                  'End Now',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                 ),
               ),
             ],

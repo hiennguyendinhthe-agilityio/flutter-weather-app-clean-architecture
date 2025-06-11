@@ -3,9 +3,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:task_management_app/core/themes/pomodoro_color_theme.dart';
+import 'package:task_management_app/presentation/pages/timer/widgets/circle_progress_painter.dart';
+import 'package:task_management_app/presentation/pages/timer/widgets/control_button.dart';
 import 'package:task_management_app/presentation/providers/pomodoro_provider.dart';
-import 'package:task_management_app/presentation/widgets/circle_progress_painter.dart';
-import 'package:task_management_app/presentation/widgets/control_button.dart';
 
 class PomodoroTimer extends StatelessWidget {
   final PomodoroThemeColors themeColors;
@@ -175,38 +175,54 @@ class PomodoroTimer extends StatelessWidget {
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      if (pomodoroProvider.isInitial ||
-                          pomodoroProvider.isCompleted) ...[
-                        ControlButton(
-                          icon: Icons.play_arrow,
-                          onPressed: () => pomodoroProvider.startPomodoro(),
-                          backgroundColor: themeColors.primary,
-                        ),
-                      ] else if (pomodoroProvider.isRunning) ...[
-                        ControlButton(
-                          icon: Icons.pause,
-                          onPressed: () => pomodoroProvider.pausePomodoro(),
-                          backgroundColor: themeColors.primary,
-                        ),
-                        const SizedBox(width: 20),
-                        ControlButton(
-                          icon: Icons.stop,
-                          onPressed: () => pomodoroProvider.stopPomodoro(),
-                          backgroundColor: themeColors.primary,
-                        ),
-                      ] else if (pomodoroProvider.isPaused) ...[
-                        ControlButton(
-                          icon: Icons.play_arrow,
-                          onPressed: () => pomodoroProvider.resumePomodoro(),
-                          backgroundColor: themeColors.primary,
-                        ),
-                        const SizedBox(width: 20),
-                        ControlButton(
-                          icon: Icons.stop,
-                          onPressed: () => pomodoroProvider.stopPomodoro(),
-                          backgroundColor: themeColors.primary,
-                        ),
-                      ],
+                      // Use spread operator with conditional lists
+                      ...pomodoroProvider.isLoading
+                          ? [const CircularProgressIndicator()]
+                          : pomodoroProvider.isInitial ||
+                                  pomodoroProvider.isCompleted
+                              ? [
+                                  ControlButton(
+                                    icon: Icons.play_arrow,
+                                    onPressed: () =>
+                                        pomodoroProvider.startPomodoro(),
+                                    backgroundColor: themeColors.primary,
+                                  ),
+                                ]
+                              : pomodoroProvider.isRunning
+                                  ? [
+                                      ControlButton(
+                                        icon: Icons.pause,
+                                        onPressed: () =>
+                                            pomodoroProvider.pausePomodoro(),
+                                        backgroundColor: themeColors.primary,
+                                      ),
+                                      const SizedBox(width: 20),
+                                      ControlButton(
+                                        icon: Icons.stop,
+                                        onPressed: () =>
+                                            pomodoroProvider.stopPomodoro(),
+                                        backgroundColor: themeColors.primary,
+                                      ),
+                                    ]
+                                  : pomodoroProvider.isPaused
+                                      ? [
+                                          ControlButton(
+                                            icon: Icons.play_arrow,
+                                            onPressed: () => pomodoroProvider
+                                                .resumePomodoro(),
+                                            backgroundColor:
+                                                themeColors.primary,
+                                          ),
+                                          const SizedBox(width: 20),
+                                          ControlButton(
+                                            icon: Icons.stop,
+                                            onPressed: () =>
+                                                pomodoroProvider.stopPomodoro(),
+                                            backgroundColor:
+                                                themeColors.primary,
+                                          ),
+                                        ]
+                                      : <Widget>[],
                     ],
                   ),
                 ],
@@ -226,52 +242,43 @@ class PomodoroTimer extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: themeColors.primary,
-              borderRadius: BorderRadius.circular(12),
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.15),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
+                  blurRadius: 15,
+                  offset: const Offset(0, 4),
                 ),
               ],
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.music_note, size: 14, color: Colors.white),
-                const SizedBox(width: 4),
-                Flexible(
-                  child: Text(
-                    title,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
+                const Text('🎵', style: TextStyle(fontSize: 14)),
+                const SizedBox(width: 6),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
                     ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                const Text(
-                  ' - ',
-                  style: TextStyle(
-                    color: Colors.white70,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 12,
-                  ),
-                ),
-                Flexible(
-                  child: Text(
-                    artist,
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontStyle: FontStyle.italic,
-                      fontSize: 11,
+                    Text(
+                      artist,
+                      style: const TextStyle(
+                        fontSize: 10,
+                        color: Colors.black54,
+                      ),
                     ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                  ],
                 ),
               ],
             ),

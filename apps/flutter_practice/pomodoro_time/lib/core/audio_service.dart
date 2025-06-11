@@ -5,6 +5,8 @@ class AudioService {
 
   final List<AudioSource> _playlist;
 
+  Stream<int?> get currentIndexStream => _player.currentIndexStream;
+
   Stream<SequenceState?> get sequenceStateStream => _player.sequenceStateStream;
 
   Stream<PlayerState> get playerStateStream => _player.playerStateStream;

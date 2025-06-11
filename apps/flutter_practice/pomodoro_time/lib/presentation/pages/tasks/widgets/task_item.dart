@@ -5,7 +5,7 @@ import 'package:task_management_app/core/utils/duration_formatter.dart';
 import 'package:task_management_app/data/models/task.dart';
 import 'package:task_management_app/presentation/providers/task_provider.dart';
 
-import '../../core/utils/task_utils.dart';
+import '../../../../core/utils/task_utils.dart';
 
 typedef TagCallback = void Function(String tag);
 

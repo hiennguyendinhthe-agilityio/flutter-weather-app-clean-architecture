@@ -4,7 +4,7 @@ import 'package:task_management_app/presentation/pages/account_page.dart';
 import 'package:task_management_app/presentation/pages/calendar/calendar_page.dart';
 import 'package:task_management_app/presentation/pages/play_page.dart';
 import 'package:task_management_app/presentation/pages/report_page.dart';
-import 'package:task_management_app/presentation/pages/task_page.dart';
+import 'package:task_management_app/presentation/pages/tasks/task_page.dart';
 import 'package:task_management_app/presentation/pages/timer/timer_page.dart';
 
 final GoRouter router = GoRouter(
@@ -81,11 +81,11 @@ class NavigationScaffold extends StatelessWidget {
         type: BottomNavigationBarType.fixed,
         items: [
           const BottomNavigationBarItem(
-            icon: Icon(Icons.timer_outlined),
+            icon: Icon(Icons.timer),
             label: 'Timer',
           ),
           const BottomNavigationBarItem(
-            icon: Icon(Icons.task_outlined),
+            icon: Icon(Icons.task),
             label: 'Task',
           ),
           BottomNavigationBarItem(

@@ -32,6 +32,7 @@ class TaskHeader extends StatelessWidget {
             icon: const Text(
               'New Task',
               style: TextStyle(
+                decoration: TextDecoration.underline,
                 color: Colors.black,
                 fontWeight: FontWeight.w500,
               ),

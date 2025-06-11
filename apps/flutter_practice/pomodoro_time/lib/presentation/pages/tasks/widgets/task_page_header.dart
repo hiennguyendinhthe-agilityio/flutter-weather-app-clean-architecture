@@ -45,7 +45,12 @@ class TaskPageHeader extends StatelessWidget {
                   Icons.add_circle_outline,
                   color: Theme.of(context).colorScheme.scrim,
                 ),
-                label: const Text('New Task'),
+                label: const Text(
+                  'New Task',
+                  style: TextStyle(
+                      color: Colors.black,
+                      decoration: TextDecoration.underline),
+                ),
               )
             ],
           )
