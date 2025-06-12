@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class TaskHeader extends StatelessWidget {
+class CalendarHeader extends StatelessWidget {
   final VoidCallback onNewTaskPressed;
 
-  const TaskHeader({required this.onNewTaskPressed, Key? key})
+  const CalendarHeader({required this.onNewTaskPressed, Key? key})
       : super(key: key);
 
   @override

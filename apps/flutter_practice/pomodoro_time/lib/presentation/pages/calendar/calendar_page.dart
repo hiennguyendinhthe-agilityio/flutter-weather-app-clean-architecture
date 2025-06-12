@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:task_management_app/presentation/pages/calendar/widgets/calendar_header.dart';
 import 'package:task_management_app/presentation/pages/calendar/widgets/date_selector.dart';
-import 'package:task_management_app/presentation/pages/calendar/widgets/task_header.dart';
 import 'package:task_management_app/presentation/pages/calendar/widgets/timeline_view.dart';
 import 'package:task_management_app/presentation/pages/tasks/widgets/add_task_bottomsheet.dart';
 import 'package:task_management_app/presentation/widgets/common_gradient_background.dart';
@@ -91,7 +91,7 @@ class _CalendarPageState extends State<CalendarPage> {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    TaskHeader(onNewTaskPressed: _showAddTaskBottomSheet),
+                    CalendarHeader(onNewTaskPressed: _showAddTaskBottomSheet),
                     DateSelector(
                       selectedDate: _selectedDate,
                       onDateSelected: (date) {
