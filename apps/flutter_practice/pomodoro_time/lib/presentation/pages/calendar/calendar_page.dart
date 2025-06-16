@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:task_management_app/data/models/task.dart';
 import 'package:task_management_app/presentation/pages/calendar/widgets/calendar_header.dart';
 import 'package:task_management_app/presentation/pages/calendar/widgets/date_selector.dart';
-import 'package:task_management_app/presentation/pages/calendar/widgets/timeline_view.dart';
+import 'package:task_management_app/presentation/pages/calendar/widgets/task_card.dart';
 import 'package:task_management_app/presentation/pages/tasks/widgets/add_task_bottomsheet.dart';
+import 'package:task_management_app/presentation/pages/tasks/widgets/task_detail_dialog.dart';
+import 'package:task_management_app/presentation/providers/task_provider.dart';
 import 'package:task_management_app/presentation/widgets/common_gradient_background.dart';
-
-import '../../providers/task_provider.dart';
+import 'package:task_management_app/presentation/widgets/timeline/timeline_event.dart';
+import 'package:task_management_app/presentation/widgets/timeline/timeline_view.dart';
 
 class CalendarPage extends StatefulWidget {
   const CalendarPage({super.key});
@@ -17,65 +20,51 @@ class CalendarPage extends StatefulWidget {
 
 class _CalendarPageState extends State<CalendarPage> {
   late DateTime _selectedDate;
-  late ScrollController _scrollController;
-  bool _hasScrolledToSelectedDate = false;
-
+  late ScrollController _dateScrollController;
   late ScrollController _timelineScrollController;
+  bool _hasInitialized = false;
 
   @override
   void initState() {
     super.initState();
     _selectedDate = DateTime.now();
-    _scrollController = ScrollController();
+    _dateScrollController = ScrollController();
     _timelineScrollController = ScrollController();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!_hasScrolledToSelectedDate && _scrollController.hasClients) {
-        _jumpToToday();
+      if (!_hasInitialized) {
+        _centerDateSelectorOnToday();
         _scrollToCurrentTime();
-        _hasScrolledToSelectedDate = true;
+        _hasInitialized = true;
       }
     });
   }
 
-  void _scrollToCurrentTime() {
-    final now = TimeOfDay.now();
-    final minutesFromStart = (now.hour) * 60 + now.minute;
-    const hourHeight = 60.0;
-    final offset = minutesFromStart * (hourHeight / 60) - 100;
-    if (_timelineScrollController.hasClients) {
-      _timelineScrollController.jumpTo(offset.clamp(
-          0.0, _timelineScrollController.position.maxScrollExtent));
-    }
+  void _centerDateSelectorOnToday() {
+    const itemWidth = 68.0;
+    const todayIndex = 30;
+    final screenW = MediaQuery.of(context).size.width;
+    final offset = todayIndex * itemWidth - (screenW - itemWidth) / 2;
+    _dateScrollController.jumpTo(
+      offset.clamp(0, _dateScrollController.position.maxScrollExtent),
+    );
   }
 
-  void _jumpToToday() {
-    const itemWidth = 60.0 + 8.0;
-    const todayIndex = 30;
-
-    final offset = todayIndex * itemWidth -
-        (MediaQuery.of(context).size.width / 2) +
-        (itemWidth / 2);
-
-    _scrollController
-        .jumpTo(offset.clamp(0.0, _scrollController.position.maxScrollExtent));
+  void _scrollToCurrentTime() {
+    final now = TimeOfDay.now();
+    final minutes = now.hour * 60 + now.minute;
+    const hourH = 60.0;
+    final target = minutes * (hourH / 60) - 100;
+    _timelineScrollController.jumpTo(
+      target.clamp(0, _timelineScrollController.position.maxScrollExtent),
+    );
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    _dateScrollController.dispose();
     _timelineScrollController.dispose();
     super.dispose();
-  }
-
-  void _showAddTaskBottomSheet() {
-    showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        backgroundColor: Colors.transparent,
-        builder: (context) => AddTaskBottomsheet(onAddTask: (task) {
-              Provider.of<TaskProvider>(context, listen: false).addTask(task);
-            }));
   }
 
   @override
@@ -84,45 +73,77 @@ class _CalendarPageState extends State<CalendarPage> {
       body: CommonGradientBackground(
         child: SafeArea(
           child: Consumer<TaskProvider>(
-            builder: (context, taskProvider, child) {
-              if (taskProvider.isLoading) {
+            builder: (ctx, provider, _) {
+              if (provider.isLoading) {
                 return const Center(child: CircularProgressIndicator());
-              } else {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CalendarHeader(onNewTaskPressed: _showAddTaskBottomSheet),
-                    DateSelector(
-                      selectedDate: _selectedDate,
-                      onDateSelected: (date) {
-                        setState(() {
-                          _selectedDate = date;
-                        });
-                        if (_timelineScrollController.hasClients) {
-                          if (date == DateTime.now()) {
-                            _scrollToCurrentTime();
-                          } else {
-                            _timelineScrollController.jumpTo(0);
-                          }
-                        }
-                      },
-                      scrollController: _scrollController,
-                      totalTime: taskProvider.activeTasks.fold(
-                        Duration.zero,
-                        (prev, task) =>
-                            prev + (task.endTime.difference(task.startTime)),
-                      ),
-                    ),
-                    Expanded(
-                      child: TimelineView(
-                        selectedDate: _selectedDate,
-                        tasks: taskProvider.allTasks,
-                        timelineScrollController: _timelineScrollController,
-                      ),
-                    ),
-                  ],
-                );
               }
+
+              final dayTasks = provider.allTasks.where((t) {
+                return t.startTime.year == _selectedDate.year &&
+                    t.startTime.month == _selectedDate.month &&
+                    t.startTime.day == _selectedDate.day;
+              }).toList()
+                ..sort((a, b) => a.startTime.compareTo(b.startTime));
+
+              final events = dayTasks
+                  .map((t) => TimelineEvent<Task>(
+                        start: t.startTime,
+                        end: t.endTime,
+                        data: t,
+                      ))
+                  .toList();
+
+              final totalTime = events.fold<Duration>(
+                Duration.zero,
+                (sum, e) => sum + e.end.difference(e.start),
+              );
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CalendarHeader(
+                    onNewTaskPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        backgroundColor: Colors.transparent,
+                        builder: (_) => AddTaskBottomsheet(
+                          onAddTask: provider.addTask,
+                        ),
+                      );
+                    },
+                  ),
+                  DateSelector(
+                    selectedDate: _selectedDate,
+                    onDateSelected: (d) {
+                      setState(() => _selectedDate = d);
+                      if (d == DateTime.now()) {
+                        _scrollToCurrentTime();
+                      } else {
+                        _timelineScrollController.jumpTo(0);
+                      }
+                    },
+                    scrollController: _dateScrollController,
+                    totalTime: totalTime,
+                  ),
+                  Expanded(
+                    child: TimelineView<Task>(
+                      events: events,
+                      itemBuilder: (ctx, task, isCompact) => GestureDetector(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) =>
+                                  TaskDetailDialog(task: task),
+                            );
+                          },
+                          child:
+                              TaskCard(task: task, isCompactMode: isCompact)),
+                      scrollController: _timelineScrollController,
+                    ),
+                  ),
+                ],
+              );
             },
           ),
         ),

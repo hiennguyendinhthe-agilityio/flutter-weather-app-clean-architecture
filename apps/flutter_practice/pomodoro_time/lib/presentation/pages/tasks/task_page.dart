@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:task_management_app/data/models/task.dart';
-import 'package:task_management_app/presentation/pages/calendar/widgets/task_detail_dialog.dart';
 import 'package:task_management_app/presentation/pages/tasks/widgets/add_task_bottomsheet.dart';
+import 'package:task_management_app/presentation/pages/tasks/widgets/task_detail_dialog.dart';
 import 'package:task_management_app/presentation/pages/tasks/widgets/task_item.dart';
 import 'package:task_management_app/presentation/pages/tasks/widgets/task_list_section.dart';
 import 'package:task_management_app/presentation/pages/tasks/widgets/task_page_header.dart';
