@@ -1,0 +1,27 @@
+name: timeline_tile_app
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.6.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+  timeline_tile: ^2.0.0
+  google_fonts: ^6.1.0
+  provider: ^6.1.2
+  flutter_local_notifications: ^17.2.3
+  intl: ^0.19.0
+  uuid: ^4.5.0
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
