@@ -1,4 +1,3 @@
-/// Mô tả một event bất kỳ trên timeline
 class TimelineEvent<T> {
   final DateTime start;
   final DateTime end;

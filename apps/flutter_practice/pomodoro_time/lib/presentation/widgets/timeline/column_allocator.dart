@@ -1,4 +1,3 @@
-/// Gom các item không chồng lấn vào từng “cột”
 class ColumnAllocator<T> {
   List<List<T>> allocate(
     List<T> items,

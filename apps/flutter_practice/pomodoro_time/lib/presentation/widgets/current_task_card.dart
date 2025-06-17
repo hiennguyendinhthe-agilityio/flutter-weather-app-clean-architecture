@@ -4,7 +4,6 @@ import 'package:task_management_app/core/themes/pomodoro_color_theme.dart';
 import 'package:task_management_app/presentation/providers/pomodoro_provider.dart';
 import 'package:task_management_app/presentation/providers/task_provider.dart';
 
-// Cập nhật CurrentTaskCard để thêm biểu tượng trái tim
 class CurrentTaskCard extends StatelessWidget {
   final PomodoroThemeColors themeColors;
 
