@@ -1,11 +1,11 @@
 class TimelineEvent<T> {
+  final T data;
   final DateTime start;
   final DateTime end;
-  final T data;
 
-  const TimelineEvent({
+  TimelineEvent({
+    required this.data,
     required this.start,
     required this.end,
-    required this.data,
   });
 }

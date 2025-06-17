@@ -6,13 +6,14 @@ import 'package:task_management_app/presentation/pages/calendar/widgets/date_sel
 import 'package:task_management_app/presentation/pages/calendar/widgets/task_card.dart';
 import 'package:task_management_app/presentation/pages/tasks/widgets/add_task_bottomsheet.dart';
 import 'package:task_management_app/presentation/pages/tasks/widgets/task_detail_dialog.dart';
-import 'package:task_management_app/presentation/providers/task_provider.dart';
 import 'package:task_management_app/presentation/widgets/common_gradient_background.dart';
 import 'package:task_management_app/presentation/widgets/timeline/timeline_event.dart';
 import 'package:task_management_app/presentation/widgets/timeline/timeline_view.dart';
 
+import '../../providers/task_provider.dart';
+
 class CalendarPage extends StatefulWidget {
-  const CalendarPage({super.key});
+  const CalendarPage({Key? key}) : super(key: key);
 
   @override
   State<CalendarPage> createState() => _CalendarPageState();
@@ -20,51 +21,65 @@ class CalendarPage extends StatefulWidget {
 
 class _CalendarPageState extends State<CalendarPage> {
   late DateTime _selectedDate;
-  late ScrollController _dateScrollController;
+  late ScrollController _headerScrollController;
   late ScrollController _timelineScrollController;
-  bool _hasInitialized = false;
+  bool _hasScrolledToSelectedDate = false;
 
   @override
   void initState() {
     super.initState();
     _selectedDate = DateTime.now();
-    _dateScrollController = ScrollController();
+    _headerScrollController = ScrollController();
     _timelineScrollController = ScrollController();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!_hasInitialized) {
-        _centerDateSelectorOnToday();
+      if (!_hasScrolledToSelectedDate && _headerScrollController.hasClients) {
+        _jumpToToday();
         _scrollToCurrentTime();
-        _hasInitialized = true;
+        _hasScrolledToSelectedDate = true;
       }
     });
   }
 
-  void _centerDateSelectorOnToday() {
-    const itemWidth = 68.0;
+  void _jumpToToday() {
+    const itemWidth = 60.0 + 8.0;
     const todayIndex = 30;
-    final screenW = MediaQuery.of(context).size.width;
-    final offset = todayIndex * itemWidth - (screenW - itemWidth) / 2;
-    _dateScrollController.jumpTo(
-      offset.clamp(0, _dateScrollController.position.maxScrollExtent),
-    );
+    final offset = todayIndex * itemWidth -
+        (MediaQuery.of(context).size.width / 2) +
+        (itemWidth / 2);
+    _headerScrollController.jumpTo(offset.clamp(
+      0.0,
+      _headerScrollController.position.maxScrollExtent,
+    ));
   }
 
   void _scrollToCurrentTime() {
     final now = TimeOfDay.now();
-    final minutes = now.hour * 60 + now.minute;
-    const hourH = 60.0;
-    final target = minutes * (hourH / 60) - 100;
-    _timelineScrollController.jumpTo(
-      target.clamp(0, _timelineScrollController.position.maxScrollExtent),
-    );
+    final minutesFromStart = now.hour * 60 + now.minute;
+    const hourHeight = 60.0;
+    final offset = minutesFromStart * (hourHeight / 60) - 100;
+    _timelineScrollController.jumpTo(offset.clamp(
+      0.0,
+      _timelineScrollController.position.maxScrollExtent,
+    ));
   }
 
   @override
   void dispose() {
-    _dateScrollController.dispose();
+    _headerScrollController.dispose();
     _timelineScrollController.dispose();
     super.dispose();
+  }
+
+  void _showAddTaskBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => AddTaskBottomsheet(onAddTask: (task) {
+        Provider.of<TaskProvider>(ctx, listen: false).addTask(task);
+      }),
+    );
   }
 
   @override
@@ -73,73 +88,56 @@ class _CalendarPageState extends State<CalendarPage> {
       body: CommonGradientBackground(
         child: SafeArea(
           child: Consumer<TaskProvider>(
-            builder: (ctx, provider, _) {
-              if (provider.isLoading) {
+            builder: (context, taskProvider, child) {
+              if (taskProvider.isLoading) {
                 return const Center(child: CircularProgressIndicator());
               }
 
-              final dayTasks = provider.allTasks.where((t) {
-                return t.startTime.year == _selectedDate.year &&
-                    t.startTime.month == _selectedDate.month &&
-                    t.startTime.day == _selectedDate.day;
-              }).toList()
-                ..sort((a, b) => a.startTime.compareTo(b.startTime));
-
-              final events = dayTasks
+              final events = taskProvider.allTasks
                   .map((t) => TimelineEvent<Task>(
+                        data: t,
                         start: t.startTime,
                         end: t.endTime,
-                        data: t,
                       ))
                   .toList();
-
-              final totalTime = events.fold<Duration>(
-                Duration.zero,
-                (sum, e) => sum + e.end.difference(e.start),
-              );
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CalendarHeader(
-                    onNewTaskPressed: () {
-                      showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        backgroundColor: Colors.transparent,
-                        builder: (_) => AddTaskBottomsheet(
-                          onAddTask: provider.addTask,
-                        ),
-                      );
-                    },
-                  ),
+                  CalendarHeader(onNewTaskPressed: _showAddTaskBottomSheet),
                   DateSelector(
                     selectedDate: _selectedDate,
-                    onDateSelected: (d) {
-                      setState(() => _selectedDate = d);
-                      if (d == DateTime.now()) {
-                        _scrollToCurrentTime();
-                      } else {
-                        _timelineScrollController.jumpTo(0);
+                    onDateSelected: (date) {
+                      setState(() => _selectedDate = date);
+                      if (_timelineScrollController.hasClients) {
+                        if (date == DateTime.now()) {
+                          _scrollToCurrentTime();
+                        } else {
+                          _timelineScrollController.jumpTo(0);
+                        }
                       }
                     },
-                    scrollController: _dateScrollController,
-                    totalTime: totalTime,
+                    scrollController: _headerScrollController,
+                    totalTime: taskProvider.activeTasks.fold(
+                      Duration.zero,
+                      (sum, t) => sum + t.endTime.difference(t.startTime),
+                    ),
                   ),
                   Expanded(
                     child: TimelineView<Task>(
+                      selectedDate: _selectedDate,
                       events: events,
-                      itemBuilder: (ctx, task, isCompact) => GestureDetector(
-                          onTap: () {
-                            showDialog(
-                              context: context,
-                              builder: (context) =>
-                                  TaskDetailDialog(task: task),
-                            );
-                          },
-                          child:
-                              TaskCard(task: task, isCompactMode: isCompact)),
                       scrollController: _timelineScrollController,
+                      eventBuilder: (ctx, task, isCompact) => GestureDetector(
+                        onTap: () => showDialog(
+                          context: ctx,
+                          builder: (_) => TaskDetailDialog(task: task),
+                        ),
+                        child: TaskCard(
+                          task: task,
+                          isCompactMode: isCompact,
+                        ),
+                      ),
                     ),
                   ),
                 ],

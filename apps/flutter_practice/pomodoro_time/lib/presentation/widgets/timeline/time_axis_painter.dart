@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 
 class TimeAxisPainter extends CustomPainter {
   final double hourHeight;
-  final TextStyle labelStyle;
+  final double timeLabelWidth;
   final Color lineColor;
+  final TextStyle labelStyle;
 
   const TimeAxisPainter({
-    required this.hourHeight,
-    required this.labelStyle,
+    this.hourHeight = 60.0,
+    this.timeLabelWidth = 68.0,
     this.lineColor = const Color(0xFFE0E0E0),
+    this.labelStyle = const TextStyle(color: Colors.grey),
   });
 
   @override
@@ -16,21 +18,27 @@ class TimeAxisPainter extends CustomPainter {
     final paint = Paint()
       ..color = lineColor
       ..strokeWidth = 1;
-    final tp = TextPainter(textDirection: TextDirection.ltr);
+    final textPainter = TextPainter(textDirection: TextDirection.ltr);
 
-    for (var hour = 0; hour <= 24; hour++) {
-      final y = hour * hourHeight;
-      canvas.drawLine(Offset(0, y), Offset(size.width, y), paint);
+    for (var i = 0; i <= 24; i++) {
+      final y = i * hourHeight;
 
-      tp.text = TextSpan(
-        text: '${hour.toString().padLeft(2, '0')}:00',
-        style: labelStyle,
+      canvas.drawLine(
+        Offset(timeLabelWidth, y),
+        Offset(size.width, y),
+        paint,
       );
-      tp.layout();
-      tp.paint(canvas, Offset(0, y - tp.height / 2));
+
+      final label = '${i.toString().padLeft(2, '0')}:00';
+      textPainter.text = TextSpan(text: label, style: labelStyle);
+      textPainter.layout();
+      textPainter.paint(
+        canvas,
+        Offset(0, y - textPainter.height / 2),
+      );
     }
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(TimeAxisPainter oldDelegate) => false;
 }

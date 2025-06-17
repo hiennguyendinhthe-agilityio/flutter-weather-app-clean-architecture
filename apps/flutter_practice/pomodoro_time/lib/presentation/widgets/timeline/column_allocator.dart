@@ -1,22 +1,25 @@
-class ColumnAllocator<T> {
-  List<List<T>> allocate(
-    List<T> items,
-    bool Function(T a, T b) overlaps,
-  ) {
-    final cols = <List<T>>[];
-    for (final item in items) {
-      var placed = false;
-      for (final col in cols) {
-        if (!col.any((other) => overlaps(other, item))) {
-          col.add(item);
-          placed = true;
-          break;
-        }
-      }
-      if (!placed) {
-        cols.add([item]);
+import 'timeline_event.dart';
+
+bool _overlaps<T>(TimelineEvent<T> a, TimelineEvent<T> b) {
+  return a.start.isBefore(b.end) && b.start.isBefore(a.end);
+}
+
+List<List<TimelineEvent<T>>> allocateColumns<T>(
+  List<TimelineEvent<T>> events,
+) {
+  final columns = <List<TimelineEvent<T>>>[];
+  for (var event in events) {
+    var placed = false;
+    for (var col in columns) {
+      if (!col.any((e) => _overlaps(e, event))) {
+        col.add(event);
+        placed = true;
+        break;
       }
     }
-    return cols;
+    if (!placed) {
+      columns.add([event]);
+    }
   }
+  return columns;
 }
