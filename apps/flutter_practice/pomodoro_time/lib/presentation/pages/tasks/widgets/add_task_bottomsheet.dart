@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:task_management_app/data/models/task.dart';
 import 'package:task_management_app/presentation/widgets/common_input_decoration.dart';
-import 'package:task_management_app/presentation/widgets/date_time_field.dart';
 import 'package:uuid/uuid.dart';
 
 class AddTaskBottomsheet extends StatefulWidget {
@@ -95,28 +95,65 @@ class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
     });
   }
 
-  Future<void> _selectStartDateTime() async {
-    final DateTime now = DateTime.now();
-    final DateTime initialDate = _startDateTime ?? now;
-    final DateTime? pickedDate = await showDatePicker(
+  Future<void> _selectDate() async {
+    final now = DateTime.now();
+    final initial = _startDateTime ?? now;
+    final picked = await showDatePicker(
       context: context,
-      initialDate: initialDate,
+      initialDate: initial,
       firstDate: now.subtract(const Duration(days: 365)),
       lastDate: now.add(const Duration(days: 365)),
     );
-    if (pickedDate == null) return;
-
-    final TimeOfDay initialTime = TimeOfDay.fromDateTime(_startDateTime ?? now);
-
-    final TimeOfDay? pickedTime = await showTimePicker(
-      context: context,
-      initialTime: initialTime,
-    );
-    if (pickedTime == null) return;
+    if (picked == null) return;
 
     setState(() {
-      _startDateTime = DateTime(pickedDate.year, pickedDate.month,
-          pickedDate.day, pickedTime.hour, pickedTime.minute);
+      final oldStart = _startDateTime ?? now;
+      _startDateTime = DateTime(
+        picked.year,
+        picked.month,
+        picked.day,
+        oldStart.hour,
+        oldStart.minute,
+      );
+
+      if (_endDateTime == null ||
+          DateTime(_endDateTime!.year, _endDateTime!.month, _endDateTime!.day)
+              .isBefore(DateTime(picked.year, picked.month, picked.day))) {
+        _endDateTime = _startDateTime!.add(const Duration(hours: 1));
+      } else {
+        final oldEnd = _endDateTime!;
+        _endDateTime = DateTime(
+          picked.year,
+          picked.month,
+          picked.day,
+          oldEnd.hour,
+          oldEnd.minute,
+        );
+      }
+    });
+  }
+
+  Future<void> _selectStartDateTime() async {
+    final initial = TimeOfDay.fromDateTime(_startDateTime ?? DateTime.now());
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: initial,
+    );
+    if (picked == null) return;
+
+    setState(() {
+      final d = _startDateTime ?? DateTime.now();
+      _startDateTime = DateTime(
+        d.year,
+        d.month,
+        d.day,
+        picked.hour,
+        picked.minute,
+      );
+
+      if (_endDateTime != null && _endDateTime!.isBefore(_startDateTime!)) {
+        _endDateTime = _startDateTime!.add(const Duration(hours: 1));
+      }
     });
   }
 
@@ -130,28 +167,27 @@ class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
   }
 
   Future<void> _selectEndDateTime() async {
-    final DateTime now = DateTime.now();
-    final DateTime initialDate = _endDateTime ?? _startDateTime ?? now;
-    final DateTime? pickedDate = await showDatePicker(
+    final initial = TimeOfDay.fromDateTime(
+        _endDateTime ?? _startDateTime ?? DateTime.now());
+    final picked = await showTimePicker(
       context: context,
-      initialDate: initialDate,
-      firstDate: _startDateTime ?? now.subtract(const Duration(days: 365)),
-      lastDate: now.add(const Duration(days: 365)),
+      initialTime: initial,
     );
-    if (pickedDate == null) return;
-
-    final TimeOfDay initialTime =
-        TimeOfDay.fromDateTime(_endDateTime ?? _startDateTime ?? now);
-
-    final TimeOfDay? pickedTime = await showTimePicker(
-      context: context,
-      initialTime: initialTime,
-    );
-    if (pickedTime == null) return;
+    if (picked == null) return;
 
     setState(() {
-      _endDateTime = DateTime(pickedDate.year, pickedDate.month, pickedDate.day,
-          pickedTime.hour, pickedTime.minute);
+      final base = _endDateTime ?? _startDateTime ?? DateTime.now();
+      _endDateTime = DateTime(
+        base.year,
+        base.month,
+        base.day,
+        picked.hour,
+        picked.minute,
+      );
+
+      if (_startDateTime != null && _endDateTime!.isBefore(_startDateTime!)) {
+        _endDateTime = _startDateTime!.add(const Duration(hours: 1));
+      }
     });
   }
 
@@ -390,18 +426,64 @@ class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
                 Row(
                   children: [
                     Expanded(
-                      child: DateTimeField(
-                        dateTime: _startDateTime,
-                        labelPrefix: 'Start',
-                        onTap: _selectStartDateTime,
+                      flex: 2,
+                      child: GestureDetector(
+                        onTap: _selectDate,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 14),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade200,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            _startDateTime != null
+                                ? DateFormat('EEEE, MMM d')
+                                    .format(_startDateTime!)
+                                : 'Select date',
+                            style: const TextStyle(fontSize: 14),
+                          ),
+                        ),
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: 8),
                     Expanded(
-                      child: DateTimeField(
-                        dateTime: _endDateTime,
-                        labelPrefix: 'End',
+                      child: GestureDetector(
+                        onTap: _selectStartDateTime,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 14),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade200,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            _startDateTime != null
+                                ? DateFormat('h:mma').format(_startDateTime!)
+                                : 'Start',
+                            style: const TextStyle(fontSize: 14),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: GestureDetector(
                         onTap: _selectEndDateTime,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 14),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade200,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            _endDateTime != null
+                                ? DateFormat('h:mma').format(_endDateTime!)
+                                : 'End',
+                            style: const TextStyle(fontSize: 14),
+                          ),
+                        ),
                       ),
                     ),
                   ],
