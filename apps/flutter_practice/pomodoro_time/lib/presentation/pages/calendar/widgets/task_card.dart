@@ -6,43 +6,57 @@ import '../../../../data/models/task.dart';
 class TaskCard extends StatelessWidget {
   final Task task;
   final bool isCompactMode;
+  static const double _hourHeight = 60.0;
+  static const double _minHeight = 80.0;
 
   const TaskCard({required this.task, this.isCompactMode = false, Key? key})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        Container(
-          margin: const EdgeInsets.only(bottom: 24),
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: const Color(0xFFE5E7EB),
-              width: 1,
-            ),
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 4,
-                offset: const Offset(0, 2),
+    final duration = task.endTime.difference(task.startTime);
+    final rawHeight = duration.inMinutes * (_hourHeight / 60);
+    final height = rawHeight < _minHeight ? _minHeight : rawHeight;
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SizedBox(
+          width: constraints.maxWidth,
+          height: height,
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Container(
+                margin: const EdgeInsets.only(bottom: 24),
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: const Color(0xFFE5E7EB),
+                    width: 1,
+                  ),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: isCompactMode
+                    ? _buildCompactTaskContent()
+                    : _buildNormalTaskContent(),
+              ),
+              Positioned(
+                bottom: 8,
+                right: 12,
+                child: _buildDurationBadge(),
               ),
             ],
           ),
-          child: isCompactMode
-              ? _buildCompactTaskContent()
-              : _buildNormalTaskContent(),
-        ),
-        Positioned(
-          bottom: 8,
-          right: 12,
-          child: _buildDurationBadge(),
-        ),
-      ],
+        );
+      },
     );
   }
 

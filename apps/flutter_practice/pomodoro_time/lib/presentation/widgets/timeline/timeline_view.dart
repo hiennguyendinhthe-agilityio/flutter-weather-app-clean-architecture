@@ -62,13 +62,18 @@ class TimelineView<T> extends StatelessWidget {
             ),
             for (var colIndex = 0; colIndex < columns.length; colIndex++)
               for (var event in columns[colIndex])
-                _buildPositioned(
-                  context,
-                  event,
-                  colIndex,
-                  columnWidth,
-                  hourHeight,
-                  timeLabelWidth,
+                Positioned(
+                  top: _minutesToOffset(event.start, hourHeight),
+                  left: timeLabelWidth + colIndex * columnWidth,
+                  right: MediaQuery.of(context).size.width -
+                      timeLabelWidth -
+                      (colIndex + 1) * columnWidth -
+                      32.0,
+                  child: eventBuilder(
+                    context,
+                    event.data,
+                    _isCompact(event, hourHeight),
+                  ),
                 ),
           ],
         ),
@@ -76,34 +81,14 @@ class TimelineView<T> extends StatelessWidget {
     );
   }
 
-  Widget _buildPositioned(
-    BuildContext context,
-    TimelineEvent<T> event,
-    int colIndex,
-    double columnWidth,
-    double hourHeight,
-    double timeLabelWidth,
-  ) {
-    final startMin = event.start.hour * 60 + event.start.minute;
-    final endMin = event.end.hour * 60 + event.end.minute;
-    final top = startMin * (hourHeight / 60);
-    final rawHeight = (endMin - startMin) * (hourHeight / 60);
-    final height = rawHeight < 80.0 ? 80.0 : rawHeight;
+  double _minutesToOffset(DateTime start, double hourHeight) {
+    final startMin = start.hour * 60 + start.minute;
+    return startMin * (hourHeight / 60);
+  }
 
-    final left = timeLabelWidth + colIndex * columnWidth;
-    final right = MediaQuery.of(context).size.width -
-        timeLabelWidth -
-        (colIndex + 1) * columnWidth -
-        32.0;
-
-    final isCompact = rawHeight < 80.0;
-
-    return Positioned(
-      top: top,
-      left: left,
-      right: right,
-      height: height,
-      child: eventBuilder(context, event.data, isCompact),
-    );
+  bool _isCompact(TimelineEvent<T> event, double hourHeight) {
+    final durationMin = event.end.difference(event.start).inMinutes;
+    final rawHeight = durationMin * (hourHeight / 60);
+    return rawHeight < 80.0;
   }
 }
