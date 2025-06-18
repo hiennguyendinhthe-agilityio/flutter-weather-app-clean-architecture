@@ -76,7 +76,7 @@ class TaskProvider extends ChangeNotifier {
     final today = DateTime(now.year, now.month, now.day);
     return tasksForActiveTab.where((task) {
       final taskDay = DateTime(
-          task.createdAt.year, task.createdAt.month, task.createdAt.day);
+          task.startTime.year, task.startTime.month, task.startTime.day);
       return taskDay.isAtSameMomentAs(today);
     }).toList();
   }
@@ -87,7 +87,7 @@ class TaskProvider extends ChangeNotifier {
     final yesterday = today.subtract(const Duration(days: 1));
     return tasksForActiveTab.where((task) {
       final taskDay = DateTime(
-          task.createdAt.year, task.createdAt.month, task.createdAt.day);
+          task.startTime.year, task.startTime.month, task.startTime.day);
       return taskDay.isAtSameMomentAs(yesterday);
     }).toList();
   }

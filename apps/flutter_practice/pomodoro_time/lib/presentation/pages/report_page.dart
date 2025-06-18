@@ -42,6 +42,16 @@ class _ReportPageState extends State<ReportPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              UnconstrainedBox(
+                alignment: Alignment.centerLeft,
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  child: const Text(
+                    'Track your productivity and project progress with detailed reports.',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+              ),
               _buildHeader(),
               _buildPeriodSelector(),
               _buildTimeChart(tasks),

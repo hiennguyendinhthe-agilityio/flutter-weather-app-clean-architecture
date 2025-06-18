@@ -213,7 +213,7 @@ class _TaskPageState extends State<TaskPage>
     final yesterday = today.subtract(const Duration(days: 1));
     final otherTasks = taskProvider.tasksForActiveTab.where((task) {
       final taskDay = DateTime(
-          task.createdAt.year, task.createdAt.month, task.createdAt.day);
+          task.startTime.year, task.startTime.month, task.startTime.day);
       return !taskDay.isAtSameMomentAs(today) &&
           !taskDay.isAtSameMomentAs(yesterday);
     }).toList();
@@ -221,7 +221,7 @@ class _TaskPageState extends State<TaskPage>
       Duration.zero,
       (prev, task) => prev + (task.endTime.difference(task.startTime)),
     );
-    otherTasks.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    otherTasks.sort((a, b) => b.startTime.compareTo(a.startTime));
     void toggleTask(String taskId) {
       Provider.of<TaskProvider>(context, listen: false)
           .toggleTaskCompletion(taskId);

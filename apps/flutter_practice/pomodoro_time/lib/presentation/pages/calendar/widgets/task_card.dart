@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:task_management_app/core/utils/duration_formatter.dart';
 import 'package:task_management_app/core/utils/task_utils.dart';
 
 import '../../../../data/models/task.dart';
@@ -9,8 +10,11 @@ class TaskCard extends StatelessWidget {
   static const double _hourHeight = 60.0;
   static const double _minHeight = 80.0;
 
-  const TaskCard({required this.task, this.isCompactMode = false, Key? key})
-      : super(key: key);
+  const TaskCard({
+    required this.task,
+    this.isCompactMode = false,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,37 +27,50 @@ class TaskCard extends StatelessWidget {
         return SizedBox(
           width: constraints.maxWidth,
           height: height,
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Container(
-                margin: const EdgeInsets.only(bottom: 24),
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: const Color(0xFFE5E7EB),
-                    width: 1,
-                  ),
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(
+                  color: const Color(0xFFE5E7EB),
+                  width: 2,
                 ),
-                child: isCompactMode
-                    ? _buildCompactTaskContent()
-                    : _buildNormalTaskContent(),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
-              Positioned(
-                bottom: 8,
-                right: 12,
-                child: _buildDurationBadge(),
+              child: Column(
+                children: [
+                  // Main content stretches to fill remaining space
+                  Expanded(
+                    child: isCompactMode
+                        ? _buildCompactTaskContent()
+                        : _buildNormalTaskContent(),
+                  ),
+                  // Duration badge pinned at bottom-right
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: constraints.maxWidth - 24,
+                        maxHeight: height - 16,
+                      ),
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.bottomRight,
+                        child: _buildDurationBadge(),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         );
       },
@@ -209,46 +226,46 @@ class TaskCard extends StatelessWidget {
   }
 
   Widget _buildDurationBadge() {
-    return IntrinsicWidth(
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: const Color(0xFFDFE3E8),
-            width: 1,
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: const Color(0xFFDFE3E8),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.08),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            DurationFormatter.format(
+              task.endTime.difference(task.startTime),
             ),
-          ],
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              formatDuration(task.timeSpent),
-              style: const TextStyle(
-                fontSize: 12,
-                color: Colors.black87,
-                fontWeight: FontWeight.w500,
-              ),
+            style: const TextStyle(
+              fontSize: 12,
+              color: Colors.black87,
+              fontWeight: FontWeight.w500,
             ),
-            const SizedBox(width: 8),
-            Text(
-              '\$${(task.timeSpent.inMinutes * 0.5).toStringAsFixed(2)}',
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: Colors.blue[700],
-              ),
+          ),
+          const SizedBox(width: 8),
+          Text(
+            '\$${(task.endTime.difference(task.startTime).inMinutes * 0.5).toStringAsFixed(2)}',
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: Colors.blue[700],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
