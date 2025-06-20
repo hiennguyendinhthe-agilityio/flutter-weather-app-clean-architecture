@@ -61,7 +61,7 @@ class UISettingsTab extends StatelessWidget {
                 ColorCircle(color: themeColors.secondary),
                 const SizedBox(width: 16.0),
                 Text(
-                  '$duration phút',
+                  '$duration minutes',
                   style: TextStyle(
                     color: themeColors.primary,
                     fontWeight: FontWeight.bold,

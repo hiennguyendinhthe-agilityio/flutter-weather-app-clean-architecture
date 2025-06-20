@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:task_management_app/data/models/task.dart';
-import 'package:task_management_app/presentation/pages/calendar/widgets/calendar_header.dart';
 import 'package:task_management_app/presentation/pages/calendar/widgets/date_selector.dart';
 import 'package:task_management_app/presentation/pages/calendar/widgets/task_card.dart';
 import 'package:task_management_app/presentation/pages/tasks/widgets/add_task_bottomsheet.dart';
@@ -39,6 +38,38 @@ class _CalendarPageState extends State<CalendarPage> {
         _hasScrolledToSelectedDate = true;
       }
     });
+  }
+
+  void _scrollToFirstTaskOfDay(
+      List<TimelineEvent<Task>> events, DateTime date) {
+    final dayZero = DateTime(date.year, date.month, date.day);
+    final dayEvents = events
+        .where((e) =>
+            e.start.year == dayZero.year &&
+            e.start.month == dayZero.month &&
+            e.start.day == dayZero.day)
+        .toList()
+      ..sort((a, b) => a.start.compareTo(b.start));
+
+    if (dayEvents.isNotEmpty) {
+      final firstStart = dayEvents.first.start;
+      final minutesFromStart = firstStart.hour * 60 + firstStart.minute;
+      const hourHeight = 60.0;
+      final offset = minutesFromStart * (hourHeight / 60) - 100;
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (_timelineScrollController.hasClients) {
+          _timelineScrollController.animateTo(
+            offset.clamp(
+              0.0,
+              _timelineScrollController.position.maxScrollExtent,
+            ),
+            duration: const Duration(milliseconds: 400),
+            curve: Curves.easeInOut,
+          );
+        }
+      });
+    }
   }
 
   void _jumpToToday() {
@@ -86,48 +117,90 @@ class _CalendarPageState extends State<CalendarPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: CommonGradientBackground(
-        child: SafeArea(
-          child: Consumer<TaskProvider>(
-            builder: (context, taskProvider, child) {
-              if (taskProvider.isLoading) {
-                return const Center(child: CircularProgressIndicator());
-              }
+        child: Consumer<TaskProvider>(
+          builder: (context, taskProvider, child) {
+            if (taskProvider.isLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-              final events = taskProvider.allTasks
-                  .map((t) => TimelineEvent<Task>(
-                        data: t,
-                        start: t.startTime,
-                        end: t.endTime,
-                      ))
-                  .toList();
+            final events = taskProvider.allTasks
+                .map((t) => TimelineEvent<Task>(
+                      data: t,
+                      start: t.startTime,
+                      end: t.endTime,
+                    ))
+                .toList();
 
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CalendarHeader(onNewTaskPressed: _showAddTaskBottomSheet),
-                  DateSelector(
-                    selectedDate: _selectedDate,
-                    onDateSelected: (date) {
-                      setState(() => _selectedDate = date);
-                      if (_timelineScrollController.hasClients) {
-                        if (date == DateTime.now()) {
-                          _scrollToCurrentTime();
-                        } else {
-                          _timelineScrollController.jumpTo(0);
-                        }
-                      }
+            return CustomScrollView(
+              controller: _timelineScrollController,
+              slivers: [
+                // CALENDAR HEADER
+                SliverAppBar(
+                  centerTitle: false,
+                  actions: [
+                    TextButton.icon(
+                      onPressed: _showAddTaskBottomSheet,
+                      icon: const Text(
+                        'New Task',
+                        style: TextStyle(
+                          decoration: TextDecoration.underline,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      label:
+                          const Icon(Icons.add, color: Colors.black, size: 20),
+                    ),
+                  ],
+                  leading: IconButton(
+                    icon: const Icon(Icons.arrow_back),
+                    onPressed: () {
+                      Navigator.pop(context);
                     },
-                    scrollController: _headerScrollController,
-                    totalTime: taskProvider.activeTasks.fold(
-                      Duration.zero,
-                      (sum, t) => sum + t.endTime.difference(t.startTime),
+                  ),
+                  title: const Text(
+                    'Calendar',
+                  ),
+                  pinned: true,
+                  backgroundColor: const Color.fromARGB(255, 95, 219, 250),
+                  elevation: 0,
+                  automaticallyImplyLeading: false,
+                ),
+
+                // DATE SELECTOR
+                SliverAppBar(
+                  pinned: true,
+                  backgroundColor: const Color.fromARGB(255, 95, 219, 250),
+                  elevation: 0,
+                  toolbarHeight: 120,
+                  automaticallyImplyLeading: false,
+                  flexibleSpace: Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: DateSelector(
+                      selectedDate: _selectedDate,
+                      onDateSelected: (date) {
+                        setState(() {
+                          _selectedDate = date;
+                          _scrollToFirstTaskOfDay(events, date);
+                        });
+                      },
+                      scrollController: _headerScrollController,
+                      totalTime: taskProvider.activeTasks.fold(
+                        Duration.zero,
+                        (sum, t) => sum + t.endTime.difference(t.startTime),
+                      ),
                     ),
                   ),
-                  Expanded(
+                ),
+
+                // TIMELINE VIEW
+                SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: 24 * 60.0,
                     child: TimelineView<Task>(
                       selectedDate: _selectedDate,
                       events: events,
-                      scrollController: _timelineScrollController,
+                      scrollController: ScrollController(), // nested scroll
                       eventBuilder: (ctx, task, isCompact) => GestureDetector(
                         onTap: () => showDialog(
                           context: ctx,
@@ -140,10 +213,10 @@ class _CalendarPageState extends State<CalendarPage> {
                       ),
                     ),
                   ),
-                ],
-              );
-            },
-          ),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
