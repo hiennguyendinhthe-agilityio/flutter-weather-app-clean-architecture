@@ -1,3 +1,4 @@
+// ✅ Refactored PomodoroTimer with scaling text/buttons for small screens
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -12,7 +13,7 @@ class PomodoroTimer extends StatelessWidget {
   const PomodoroTimer({required this.themeColors, super.key});
 
   Color _getNumberColor(bool isActive, Color activeColor) {
-    return isActive ? activeColor : activeColor.withValues(alpha: 0.3);
+    return isActive ? activeColor : activeColor.withOpacity(0.3);
   }
 
   @override
@@ -27,11 +28,6 @@ class PomodoroTimer extends StatelessWidget {
         final progress =
             totalSeconds > 0 ? remainingSeconds / totalSeconds : 0.0;
         final angle = 2 * pi * progress;
-        const radius = 150.0;
-        final knobOffset = Offset(
-          radius * cos(angle),
-          radius * sin(angle),
-        );
         final showKnob = remainingSeconds > 0;
 
         final hoursNum = (remainingSeconds ~/ 3600);
@@ -46,191 +42,156 @@ class PomodoroTimer extends StatelessWidget {
         final isMinutesActive = minutesNum > 0 || isHoursActive;
         const isSecondsActive = true;
 
-        return Center(
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              SizedBox(
-                width: 320,
-                height: 320,
-                child: CustomPaint(
-                  painter: CircleProgressPainter(
-                    progress: progress,
-                    colorStart: themeColors.secondary,
-                    colorEnd: themeColors.primary,
-                    strokeWidth: 20,
-                  ),
-                ),
-              ),
-              if (isTrackInfoVisible && showKnob) ...[
-                Transform.translate(
-                  offset: knobOffset * 1.2,
-                  child: _buildTrackInfoBubble(
-                    pomodoroProvider.currentSongTitle,
-                    pomodoroProvider.currentSongArtist,
-                    themeColors,
-                  ),
-                ),
-              ],
-              if (showKnob) ...[
-                Transform.translate(
-                  offset: knobOffset,
-                  child: Container(
-                    width: 24,
-                    height: 24,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: themeColors.primary, width: 3),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 4,
-                          offset: const Offset(0, 2),
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            final size = min(constraints.maxWidth, constraints.maxHeight);
+            final radius = size / 2 - 26;
+            final knobOffset = Offset(
+              radius * cos(angle),
+              radius * sin(angle),
+            );
+
+            final fontSize = size * 0.08;
+
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: AspectRatio(
+                  aspectRatio: 1,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      CustomPaint(
+                        size: Size.infinite,
+                        painter: CircleProgressPainter(
+                          progress: progress,
+                          colorStart: themeColors.secondary,
+                          colorEnd: themeColors.primary,
+                          strokeWidth: 20,
+                        ),
+                      ),
+                      if (isTrackInfoVisible && showKnob) ...[
+                        Transform.translate(
+                          offset: knobOffset * 1.2,
+                          child: _buildTrackInfoBubble(
+                            pomodoroProvider.currentSongTitle,
+                            pomodoroProvider.currentSongArtist,
+                            themeColors,
+                          ),
                         ),
                       ],
-                    ),
+                      if (showKnob) ...[
+                        Transform.translate(
+                          offset: knobOffset,
+                          child: Container(
+                            width: 24,
+                            height: 24,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                  color: themeColors.primary, width: 3),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          FittedBox(
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                for (final c in hours.characters)
+                                  _buildTimeChar(c, isHoursActive, fontSize),
+                                _buildTimeChar(':', false, fontSize),
+                                for (final c in minutes.characters)
+                                  _buildTimeChar(c, isMinutesActive, fontSize),
+                                _buildTimeChar(':', false, fontSize),
+                                for (final c in seconds.characters)
+                                  _buildTimeChar(c, isSecondsActive, fontSize),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          Wrap(
+                            alignment: WrapAlignment.center,
+                            spacing: 16,
+                            runSpacing: 8,
+                            children: [
+                              if (pomodoroProvider.isLoading) ...[
+                                const CircularProgressIndicator()
+                              ] else if (pomodoroProvider.isInitial ||
+                                  pomodoroProvider.isCompleted) ...[
+                                ControlButton(
+                                  icon: Icons.play_arrow,
+                                  onPressed: () =>
+                                      pomodoroProvider.startPomodoro(),
+                                  backgroundColor: themeColors.primary,
+                                )
+                              ] else if (pomodoroProvider.isRunning) ...[
+                                ControlButton(
+                                  icon: Icons.pause,
+                                  onPressed: () =>
+                                      pomodoroProvider.pausePomodoro(),
+                                  backgroundColor: themeColors.primary,
+                                ),
+                                ControlButton(
+                                  icon: Icons.stop,
+                                  onPressed: () =>
+                                      pomodoroProvider.stopPomodoro(),
+                                  backgroundColor: themeColors.primary,
+                                )
+                              ] else if (pomodoroProvider.isPaused) ...[
+                                ControlButton(
+                                  icon: Icons.play_arrow,
+                                  onPressed: () =>
+                                      pomodoroProvider.resumePomodoro(),
+                                  backgroundColor: themeColors.primary,
+                                ),
+                                ControlButton(
+                                  icon: Icons.stop,
+                                  onPressed: () =>
+                                      pomodoroProvider.stopPomodoro(),
+                                  backgroundColor: themeColors.primary,
+                                )
+                              ]
+                            ],
+                          )
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-              ],
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        hours.substring(0, 1),
-                        style: TextStyle(
-                          fontSize: 48,
-                          fontWeight: FontWeight.bold,
-                          color: _getNumberColor(
-                              isHoursActive, themeColors.primary),
-                        ),
-                      ),
-                      Text(
-                        hours.substring(1, 2),
-                        style: TextStyle(
-                          fontSize: 48,
-                          fontWeight: FontWeight.bold,
-                          color: _getNumberColor(
-                              isHoursActive, themeColors.primary),
-                        ),
-                      ),
-                      Text(
-                        ':',
-                        style: TextStyle(
-                          fontSize: 48,
-                          fontWeight: FontWeight.bold,
-                          color: themeColors.primary.withValues(alpha: 0.3),
-                        ),
-                      ),
-                      Text(
-                        minutes.substring(0, 1),
-                        style: TextStyle(
-                          fontSize: 48,
-                          fontWeight: FontWeight.bold,
-                          color: _getNumberColor(
-                              isMinutesActive, themeColors.primary),
-                        ),
-                      ),
-                      Text(
-                        minutes.substring(1, 2),
-                        style: TextStyle(
-                          fontSize: 48,
-                          fontWeight: FontWeight.bold,
-                          color: _getNumberColor(
-                              isMinutesActive, themeColors.primary),
-                        ),
-                      ),
-                      Text(
-                        ':',
-                        style: TextStyle(
-                          fontSize: 48,
-                          fontWeight: FontWeight.bold,
-                          color: themeColors.primary.withValues(alpha: 0.3),
-                        ),
-                      ),
-                      Text(
-                        seconds.substring(0, 1),
-                        style: TextStyle(
-                          fontSize: 48,
-                          fontWeight: FontWeight.bold,
-                          color: _getNumberColor(
-                              isSecondsActive, themeColors.primary),
-                        ),
-                      ),
-                      Text(
-                        seconds.substring(1, 2),
-                        style: TextStyle(
-                          fontSize: 48,
-                          fontWeight: FontWeight.bold,
-                          color: _getNumberColor(
-                              isSecondsActive, themeColors.primary),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // Use spread operator with conditional lists
-                      ...pomodoroProvider.isLoading
-                          ? [const CircularProgressIndicator()]
-                          : pomodoroProvider.isInitial ||
-                                  pomodoroProvider.isCompleted
-                              ? [
-                                  ControlButton(
-                                    icon: Icons.play_arrow,
-                                    onPressed: () =>
-                                        pomodoroProvider.startPomodoro(),
-                                    backgroundColor: themeColors.primary,
-                                  ),
-                                ]
-                              : pomodoroProvider.isRunning
-                                  ? [
-                                      ControlButton(
-                                        icon: Icons.pause,
-                                        onPressed: () =>
-                                            pomodoroProvider.pausePomodoro(),
-                                        backgroundColor: themeColors.primary,
-                                      ),
-                                      const SizedBox(width: 20),
-                                      ControlButton(
-                                        icon: Icons.stop,
-                                        onPressed: () =>
-                                            pomodoroProvider.stopPomodoro(),
-                                        backgroundColor: themeColors.primary,
-                                      ),
-                                    ]
-                                  : pomodoroProvider.isPaused
-                                      ? [
-                                          ControlButton(
-                                            icon: Icons.play_arrow,
-                                            onPressed: () => pomodoroProvider
-                                                .resumePomodoro(),
-                                            backgroundColor:
-                                                themeColors.primary,
-                                          ),
-                                          const SizedBox(width: 20),
-                                          ControlButton(
-                                            icon: Icons.stop,
-                                            onPressed: () =>
-                                                pomodoroProvider.stopPomodoro(),
-                                            backgroundColor:
-                                                themeColors.primary,
-                                          ),
-                                        ]
-                                      : <Widget>[],
-                    ],
-                  ),
-                ],
               ),
-            ],
-          ),
+            );
+          },
         );
       },
+    );
+  }
+
+  Widget _buildTimeChar(String c, bool isActive, double fontSize) {
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 200),
+      child: Text(
+        c,
+        key: ValueKey(c),
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontFamily: 'SFProDisplay',
+          fontSize: fontSize,
+          fontWeight: FontWeight.w700,
+          color: _getNumberColor(isActive, themeColors.primary),
+        ),
+      ),
     );
   }
 

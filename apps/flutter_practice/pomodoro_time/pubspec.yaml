@@ -80,3 +80,8 @@ dev_dependencies:
 # Settings Flutter
 flutter:
   uses-material-design: true
+  fonts:
+    - family: SFProDisplay
+      fonts:
+        - asset: assets/fonts/SF-Pro-Display-Medium.otf
+          weight: 700

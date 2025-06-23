@@ -18,7 +18,7 @@ class CurrentTaskCard extends StatelessWidget {
 
         return Container(
           margin: const EdgeInsets.symmetric(horizontal: 16.0),
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           decoration: const BoxDecoration(
             color: Colors.transparent,
           ),
@@ -33,7 +33,6 @@ class CurrentTaskCard extends StatelessWidget {
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              const SizedBox(height: 8),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

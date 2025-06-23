@@ -43,12 +43,15 @@ class TimerPage extends StatelessWidget {
                           children: [
                             _buildHeader(context, themeColors),
                             DurationSelector(themeColors: themeColors),
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.5,
-                              child: PomodoroTimer(themeColors: themeColors),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
+                              child: AspectRatio(
+                                aspectRatio: 1,
+                                child: PomodoroTimer(themeColors: themeColors),
+                              ),
                             ),
                             CurrentTaskCard(themeColors: themeColors),
-                            const SizedBox(height: 20),
                           ],
                         ),
                       ),
@@ -65,7 +68,7 @@ class TimerPage extends StatelessWidget {
 
   Widget _buildHeader(BuildContext context, PomodoroThemeColors themeColors) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

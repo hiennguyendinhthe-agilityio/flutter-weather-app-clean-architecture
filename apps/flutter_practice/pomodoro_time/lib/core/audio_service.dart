@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 
 class AudioService {
@@ -35,6 +36,14 @@ class AudioService {
 
   Future<void> dispose() async {
     await _player.dispose();
+  }
+
+  Future<void> seekToStart() async {
+    try {
+      await _player.seek(Duration.zero, index: 0);
+    } catch (e) {
+      debugPrint('seekToStart error: $e');
+    }
   }
 
   String getCurrentTitle(int? index, List<String> titles) {

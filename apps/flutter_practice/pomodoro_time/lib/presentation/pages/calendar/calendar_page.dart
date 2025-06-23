@@ -34,7 +34,15 @@ class _CalendarPageState extends State<CalendarPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!_hasScrolledToSelectedDate && _headerScrollController.hasClients) {
         _jumpToToday();
-        _scrollToCurrentTime();
+        final taskProvider = Provider.of<TaskProvider>(context, listen: false);
+        final events = taskProvider.allTasks
+            .map((t) => TimelineEvent<Task>(
+                  data: t,
+                  start: t.startTime,
+                  end: t.endTime,
+                ))
+            .toList();
+        _scrollToFirstTaskOfDay(events, _selectedDate);
         _hasScrolledToSelectedDate = true;
       }
     });
@@ -81,17 +89,6 @@ class _CalendarPageState extends State<CalendarPage> {
     _headerScrollController.jumpTo(offset.clamp(
       0.0,
       _headerScrollController.position.maxScrollExtent,
-    ));
-  }
-
-  void _scrollToCurrentTime() {
-    final now = TimeOfDay.now();
-    final minutesFromStart = now.hour * 60 + now.minute;
-    const hourHeight = 60.0;
-    final offset = minutesFromStart * (hourHeight / 60) - 100;
-    _timelineScrollController.jumpTo(offset.clamp(
-      0.0,
-      _timelineScrollController.position.maxScrollExtent,
     ));
   }
 
@@ -192,28 +189,20 @@ class _CalendarPageState extends State<CalendarPage> {
                     ),
                   ),
                 ),
-
-                // TIMELINE VIEW
-                SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: 24 * 60.0,
-                    child: TimelineView<Task>(
-                      selectedDate: _selectedDate,
-                      events: events,
-                      scrollController: ScrollController(), // nested scroll
-                      eventBuilder: (ctx, task, isCompact) => GestureDetector(
-                        onTap: () => showDialog(
-                          context: ctx,
-                          builder: (_) => TaskDetailDialog(task: task),
-                        ),
-                        child: TaskCard(
-                          task: task,
-                          isCompactMode: isCompact,
-                        ),
-                      ),
+                TimelineViewSliver<Task>(
+                  selectedDate: _selectedDate,
+                  events: events,
+                  eventBuilder: (ctx, task, isCompact) => GestureDetector(
+                    onTap: () => showDialog(
+                      context: ctx,
+                      builder: (_) => TaskDetailDialog(task: task),
+                    ),
+                    child: TaskCard(
+                      task: task,
+                      isCompactMode: isCompact,
                     ),
                   ),
-                ),
+                )
               ],
             );
           },

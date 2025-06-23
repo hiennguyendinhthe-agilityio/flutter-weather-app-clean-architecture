@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'column_allocator.dart';
-import 'time_axis_painter.dart';
 import 'timeline_event.dart';
 
 typedef EventBuilder<T> = Widget Function(
@@ -10,85 +9,140 @@ typedef EventBuilder<T> = Widget Function(
   bool isCompactMode,
 );
 
-class TimelineView<T> extends StatelessWidget {
+class TimelineViewSliver<T> extends StatelessWidget {
   final DateTime selectedDate;
   final List<TimelineEvent<T>> events;
-  final ScrollController scrollController;
   final EventBuilder<T> eventBuilder;
 
-  const TimelineView({
+  const TimelineViewSliver({
     Key? key,
     required this.selectedDate,
     required this.events,
-    required this.scrollController,
     required this.eventBuilder,
   }) : super(key: key);
 
+  static const double hourHeight = 60.0;
+  static const double timeLabelWidth = 68.0;
+  static const double horizontalPadding = 16.0;
+
   @override
   Widget build(BuildContext context) {
-    final dayZero = DateTime(
+    const timelineHeight = 24 * hourHeight;
+
+    final dayStart = DateTime(
       selectedDate.year,
       selectedDate.month,
       selectedDate.day,
     );
-    final filtered = events.where((e) {
-      final d = e.start;
-      final dayOfEvent = DateTime(d.year, d.month, d.day);
-      return dayOfEvent.isAtSameMomentAs(dayZero);
-    }).toList()
+    final dayEnd = dayStart.add(const Duration(days: 1));
+
+    final filteredEvents = events
+        .where((e) =>
+            e.start.isBefore(dayEnd) &&
+            e.end.isAfter(dayStart)) // overlaps today
+        .toList()
       ..sort((a, b) => a.start.compareTo(b.start));
 
-    final columns = allocateColumns(filtered);
+    final columns = allocateColumns(filteredEvents);
+    final columnCount = columns.length;
 
-    const hourHeight = 60.0;
-    const totalHours = 24;
-    const timelineHeight = totalHours * hourHeight;
-    const timeLabelWidth = 68.0;
-    final availableWidth =
-        MediaQuery.of(context).size.width - timeLabelWidth - 32.0;
+    final availableWidth = MediaQuery.of(context).size.width -
+        timeLabelWidth -
+        2 * horizontalPadding;
     final columnWidth =
-        columns.isEmpty ? availableWidth : availableWidth / columns.length;
+        columnCount == 0 ? availableWidth : availableWidth / columnCount;
 
-    return SingleChildScrollView(
-      controller: scrollController,
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-      child: SizedBox(
-        height: timelineHeight,
-        child: Stack(
-          children: [
-            const CustomPaint(
-              size: Size(double.infinity, timelineHeight),
-              painter: TimeAxisPainter(),
-            ),
-            for (var colIndex = 0; colIndex < columns.length; colIndex++)
-              for (var event in columns[colIndex])
+    const double taskPadding = 4.0;
+
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: horizontalPadding),
+        child: SizedBox(
+          height: timelineHeight,
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              // Timeline hours
+              for (int hour = 0; hour <= 24; hour++)
                 Positioned(
-                  top: _minutesToOffset(event.start, hourHeight),
-                  left: timeLabelWidth + colIndex * columnWidth,
-                  right: MediaQuery.of(context).size.width -
-                      timeLabelWidth -
-                      (colIndex + 1) * columnWidth -
-                      32.0,
-                  child: eventBuilder(
-                    context,
-                    event.data,
-                    _isCompact(event, hourHeight),
-                  ),
+                  top: hour * hourHeight,
+                  left: 0,
+                  right: 0,
+                  child:
+                      _HourLine(label: '${hour.toString().padLeft(2, '0')}:00'),
                 ),
-          ],
+
+              // Events positioned by start time
+              for (int colIndex = 0; colIndex < columns.length; colIndex++)
+                for (final event in columns[colIndex])
+                  Positioned(
+                    top: _minutesFromStart(event.start, dayStart) *
+                        (hourHeight / 60),
+                    left: timeLabelWidth + colIndex * columnWidth + taskPadding,
+                    width: columnWidth - taskPadding * 2,
+                    height: _durationInMinutes(event) * (hourHeight / 60),
+                    child: eventBuilder(
+                      context,
+                      event.data,
+                      _isCompact(event),
+                    ),
+                  ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  double _minutesToOffset(DateTime start, double hourHeight) {
-    final startMin = start.hour * 60 + start.minute;
-    return startMin * (hourHeight / 60);
+  double _minutesFromStart(DateTime dt, DateTime dayStart) {
+    return dt.difference(dayStart).inMinutes.toDouble();
   }
 
-  bool _isCompact(TimelineEvent<T> event, double hourHeight) {
-    final durationMin = event.end.difference(event.start).inMinutes;
-    final rawHeight = durationMin * (hourHeight / 60);
-    return rawHeight < 80.0;
+  int _durationInMinutes(TimelineEvent<T> e) {
+    return e.end.difference(e.start).inMinutes;
+  }
+
+  bool _isCompact(TimelineEvent<T> event) {
+    return _durationInMinutes(event) * (hourHeight / 60) < 80;
+  }
+}
+
+class _HourLine extends StatelessWidget {
+  final String label;
+
+  const _HourLine({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: TimelineViewSliver.hourHeight,
+      child: Stack(
+        children: [
+          // line
+          Positioned(
+            left: TimelineViewSliver.timeLabelWidth,
+            right: 0,
+            top: 0,
+            child: Container(height: 1, color: const Color(0xFFE0E0E0)),
+          ),
+          // label
+          Positioned(
+            left: 0,
+            top: 0,
+            bottom: 0,
+            child: SizedBox(
+              width: TimelineViewSliver.timeLabelWidth,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  label,
+                  style: const TextStyle(color: Colors.grey, fontSize: 12),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
