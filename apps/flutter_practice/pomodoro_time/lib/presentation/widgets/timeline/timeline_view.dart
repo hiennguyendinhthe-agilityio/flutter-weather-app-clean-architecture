@@ -13,12 +13,14 @@ class TimelineViewSliver<T> extends StatelessWidget {
   final DateTime selectedDate;
   final List<TimelineEvent<T>> events;
   final EventBuilder<T> eventBuilder;
+  final Map<DateTime, GlobalKey> taskKeys;
 
   const TimelineViewSliver({
     Key? key,
     required this.selectedDate,
     required this.events,
     required this.eventBuilder,
+    required this.taskKeys,
   }) : super(key: key);
 
   static const double hourHeight = 60.0;
@@ -81,10 +83,20 @@ class TimelineViewSliver<T> extends StatelessWidget {
                     left: timeLabelWidth + colIndex * columnWidth + taskPadding,
                     width: columnWidth - taskPadding * 2,
                     height: _durationInMinutes(event) * (hourHeight / 60),
-                    child: eventBuilder(
-                      context,
-                      event.data,
-                      _isCompact(event),
+                    child: Builder(
+                      builder: (context) {
+                        final key = GlobalKey();
+                        taskKeys[event.start] = key;
+
+                        return KeyedSubtree(
+                          key: key,
+                          child: eventBuilder(
+                            context,
+                            event.data,
+                            _isCompact(event),
+                          ),
+                        );
+                      },
                     ),
                   ),
             ],

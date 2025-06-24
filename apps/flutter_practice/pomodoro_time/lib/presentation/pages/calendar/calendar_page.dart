@@ -22,7 +22,8 @@ class _CalendarPageState extends State<CalendarPage> {
   late DateTime _selectedDate;
   late ScrollController _headerScrollController;
   late ScrollController _timelineScrollController;
-  bool _hasScrolledToSelectedDate = false;
+
+  final Map<DateTime, GlobalKey> _taskKeys = {};
 
   @override
   void initState() {
@@ -32,51 +33,43 @@ class _CalendarPageState extends State<CalendarPage> {
     _timelineScrollController = ScrollController();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!_hasScrolledToSelectedDate && _headerScrollController.hasClients) {
+      if (_headerScrollController.hasClients) {
         _jumpToToday();
-        final taskProvider = Provider.of<TaskProvider>(context, listen: false);
-        final events = taskProvider.allTasks
-            .map((t) => TimelineEvent<Task>(
-                  data: t,
-                  start: t.startTime,
-                  end: t.endTime,
-                ))
-            .toList();
-        _scrollToFirstTaskOfDay(events, _selectedDate);
-        _hasScrolledToSelectedDate = true;
       }
     });
   }
 
-  void _scrollToFirstTaskOfDay(
-      List<TimelineEvent<Task>> events, DateTime date) {
+  void _scrollToFirstTask(DateTime date) {
+    final taskProvider = Provider.of<TaskProvider>(context, listen: false);
+
     final dayZero = DateTime(date.year, date.month, date.day);
-    final dayEvents = events
-        .where((e) =>
-            e.start.year == dayZero.year &&
-            e.start.month == dayZero.month &&
-            e.start.day == dayZero.day)
+    final dayEvents = taskProvider.allTasks
+        .where((t) =>
+            t.startTime.year == dayZero.year &&
+            t.startTime.month == dayZero.month &&
+            t.startTime.day == dayZero.day)
         .toList()
-      ..sort((a, b) => a.start.compareTo(b.start));
+      ..sort((a, b) => a.startTime.compareTo(b.startTime));
 
     if (dayEvents.isNotEmpty) {
-      final firstStart = dayEvents.first.start;
-      final minutesFromStart = firstStart.hour * 60 + firstStart.minute;
-      const hourHeight = 60.0;
-      final offset = minutesFromStart * (hourHeight / 60) - 100;
+      final key = _taskKeys[dayEvents.first.startTime];
 
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (_timelineScrollController.hasClients) {
-          _timelineScrollController.animateTo(
-            offset.clamp(
-              0.0,
-              _timelineScrollController.position.maxScrollExtent,
-            ),
-            duration: const Duration(milliseconds: 400),
-            curve: Curves.easeInOut,
-          );
-        }
-      });
+      if (key?.currentContext != null) {
+        Scrollable.ensureVisible(
+          key!.currentContext!,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+          alignment: 0.2,
+        );
+      }
+    } else {
+      if (_timelineScrollController.hasClients) {
+        _timelineScrollController.animateTo(
+          0.0,
+          duration: const Duration(milliseconds: 400),
+          curve: Curves.easeInOut,
+        );
+      }
     }
   }
 
@@ -119,6 +112,11 @@ class _CalendarPageState extends State<CalendarPage> {
             if (taskProvider.isLoading) {
               return const Center(child: CircularProgressIndicator());
             }
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) {
+                _scrollToFirstTask(_selectedDate);
+              }
+            });
 
             final events = taskProvider.allTasks
                 .map((t) => TimelineEvent<Task>(
@@ -128,10 +126,10 @@ class _CalendarPageState extends State<CalendarPage> {
                     ))
                 .toList();
 
+            _taskKeys.clear();
             return CustomScrollView(
               controller: _timelineScrollController,
               slivers: [
-                // CALENDAR HEADER
                 SliverAppBar(
                   centerTitle: false,
                   actions: [
@@ -163,8 +161,6 @@ class _CalendarPageState extends State<CalendarPage> {
                   elevation: 0,
                   automaticallyImplyLeading: false,
                 ),
-
-                // DATE SELECTOR
                 SliverAppBar(
                   pinned: true,
                   backgroundColor: const Color.fromARGB(255, 95, 219, 250),
@@ -178,7 +174,6 @@ class _CalendarPageState extends State<CalendarPage> {
                       onDateSelected: (date) {
                         setState(() {
                           _selectedDate = date;
-                          _scrollToFirstTaskOfDay(events, date);
                         });
                       },
                       scrollController: _headerScrollController,
@@ -192,6 +187,7 @@ class _CalendarPageState extends State<CalendarPage> {
                 TimelineViewSliver<Task>(
                   selectedDate: _selectedDate,
                   events: events,
+                  taskKeys: _taskKeys,
                   eventBuilder: (ctx, task, isCompact) => GestureDetector(
                     onTap: () => showDialog(
                       context: ctx,
