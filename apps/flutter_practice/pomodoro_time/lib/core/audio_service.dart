@@ -24,7 +24,7 @@ class AudioService {
 
       await _player.setLoopMode(loopPlaylist ? LoopMode.all : LoopMode.off);
     } catch (e) {
-      print('❌ Error setting audio source: $e');
+      debugPrint('❌ Error setting audio source: $e');
     }
   }
 
