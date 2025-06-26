@@ -1,3 +1,4 @@
+// ✅ Cleaned version of CalendarPage with optimized imports, formatting, and type safety
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:task_management_app/data/models/task.dart';
@@ -42,14 +43,18 @@ class _CalendarPageState extends State<CalendarPage> {
     return Scaffold(
       body: CommonGradientBackground(
         child: Consumer<TaskProvider>(
-          builder: (context, taskProvider, child) {
+          builder: (context, taskProvider, _) {
             if (taskProvider.isLoading) {
               return const Center(child: CircularProgressIndicator());
             }
 
             final dayStart = DateTime(
-                _selectedDate.year, _selectedDate.month, _selectedDate.day);
+              _selectedDate.year,
+              _selectedDate.month,
+              _selectedDate.day,
+            );
             final dayEnd = dayStart.add(const Duration(days: 1));
+
             final tasksForSelectedDay = taskProvider.allTasks
                 .where((task) =>
                     !task.startTime.isBefore(dayStart) &&
@@ -57,21 +62,21 @@ class _CalendarPageState extends State<CalendarPage> {
                 .toList()
               ..sort((a, b) => a.startTime.compareTo(b.startTime));
 
-            final bool hasTask = tasksForSelectedDay.isNotEmpty;
-            final int firstHourWithTask =
+            final hasTask = tasksForSelectedDay.isNotEmpty;
+            final firstHour =
                 hasTask ? tasksForSelectedDay.first.startTime.hour : 0;
 
             return hasTask
                 ? _buildTaskScrollLayout(
-                    taskProvider, tasksForSelectedDay, firstHourWithTask)
-                : _buildNormalScrollLayout(taskProvider, tasksForSelectedDay);
+                    taskProvider, tasksForSelectedDay, firstHour)
+                : _buildNormalScrollLayout(taskProvider);
           },
         ),
       ),
     );
   }
 
-  Widget _buildNormalScrollLayout(TaskProvider provider, List tasks) {
+  Widget _buildNormalScrollLayout(TaskProvider provider) {
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
       slivers: [
@@ -92,7 +97,7 @@ class _CalendarPageState extends State<CalendarPage> {
   Widget _buildTaskScrollLayout(
       TaskProvider provider, List<Task> tasks, int firstHour) {
     final centerKey = _hourKeys[firstHour];
-    final bool useAnchor = firstHour > 0;
+    final useAnchor = firstHour > 0;
 
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
