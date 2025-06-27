@@ -34,7 +34,9 @@ class _TaskPageState extends State<TaskPage>
 
   void _showAddTaskBottomSheet() {
     showModalBottomSheet(
-      constraints: const BoxConstraints(maxHeight: 600),
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.7,
+      ),
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
@@ -48,7 +50,9 @@ class _TaskPageState extends State<TaskPage>
 
   void _showEditTaskBottomSheet(Task task) {
     showModalBottomSheet(
-      constraints: const BoxConstraints(maxHeight: 600),
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.7,
+      ),
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
@@ -227,14 +231,6 @@ class _TaskPageState extends State<TaskPage>
           .toggleTaskCompletion(taskId);
     }
 
-    void startTimer(String taskId) {
-      Provider.of<TaskProvider>(context, listen: false).startTaskTimer(taskId);
-    }
-
-    void stopTimer(String taskId) {
-      Provider.of<TaskProvider>(context, listen: false).stopTaskTimer(taskId);
-    }
-
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       children: [
@@ -251,8 +247,6 @@ class _TaskPageState extends State<TaskPage>
           totalTime: totalToday,
           sectionKeyPrefix: 'active-today',
           onToggleTaskCompletion: toggleTask,
-          onStartTaskTimer: startTimer,
-          onStopTaskTimer: stopTimer,
           onRemoveTag: _removeTagFromTask,
           onEditTask: (task) => _showEditTaskBottomSheet(task),
         ),
@@ -262,8 +256,6 @@ class _TaskPageState extends State<TaskPage>
           totalTime: totalYesterday,
           sectionKeyPrefix: 'active-yesterday',
           onToggleTaskCompletion: toggleTask,
-          onStartTaskTimer: startTimer,
-          onStopTaskTimer: stopTimer,
           onRemoveTag: _removeTagFromTask,
           onEditTask: (task) => _showEditTaskBottomSheet(task),
           onTap: (task) {
@@ -287,8 +279,6 @@ class _TaskPageState extends State<TaskPage>
           totalTime: totalOther,
           sectionKeyPrefix: 'active-other',
           onToggleTaskCompletion: toggleTask,
-          onStartTaskTimer: startTimer,
-          onStopTaskTimer: stopTimer,
           onRemoveTag: _removeTagFromTask,
           onEditTask: (task) => _showEditTaskBottomSheet(task),
         ),
@@ -321,8 +311,6 @@ class _TaskPageState extends State<TaskPage>
                 key: ValueKey('archive-${task.id}'),
                 task: task,
                 onToggleCompletion: () {/* No action */},
-                onStartTimer: () {/* No action */},
-                onStopTimer: () {/* No action */},
                 onRemoveTag: (tag) {
                   _removeTagFromTask(task.id, tag);
                 },

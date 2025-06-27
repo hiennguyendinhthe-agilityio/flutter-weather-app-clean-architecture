@@ -1,3 +1,5 @@
+// ✅ Refactored TaskItem with duration only (timer button removed)
+
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
@@ -12,8 +14,6 @@ typedef TagCallback = void Function(String tag);
 class TaskItem extends StatelessWidget {
   final Task task;
   final VoidCallback onToggleCompletion;
-  final VoidCallback onStartTimer;
-  final VoidCallback onStopTimer;
   final TagCallback? onRemoveTag;
   final VoidCallback? onEdit;
 
@@ -21,8 +21,6 @@ class TaskItem extends StatelessWidget {
     Key? key,
     required this.task,
     required this.onToggleCompletion,
-    required this.onStartTimer,
-    required this.onStopTimer,
     this.onRemoveTag,
     this.onEdit,
   }) : super(key: key);
@@ -40,9 +38,7 @@ class TaskItem extends StatelessWidget {
           children: [
             if (task.isArchived)
               SlidableAction(
-                onPressed: (ctx) {
-                  taskProvider.unarchiveTask(task.id);
-                },
+                onPressed: (ctx) => taskProvider.unarchiveTask(task.id),
                 backgroundColor: Colors.orange,
                 foregroundColor: Colors.white,
                 icon: Icons.unarchive,
@@ -50,9 +46,7 @@ class TaskItem extends StatelessWidget {
               )
             else
               SlidableAction(
-                onPressed: (ctx) {
-                  taskProvider.archiveTask(task.id);
-                },
+                onPressed: (ctx) => taskProvider.archiveTask(task.id),
                 backgroundColor: Colors.green,
                 foregroundColor: Colors.white,
                 icon: Icons.archive,
@@ -64,9 +58,7 @@ class TaskItem extends StatelessWidget {
           motion: const StretchMotion(),
           children: [
             SlidableAction(
-              onPressed: (ctx) {
-                if (onEdit != null) onEdit!();
-              },
+              onPressed: (ctx) => onEdit?.call(),
               backgroundColor: Colors.blue,
               foregroundColor: Colors.white,
               icon: Icons.edit,
@@ -76,32 +68,26 @@ class TaskItem extends StatelessWidget {
               onPressed: (ctx) {
                 showDialog(
                   context: ctx,
-                  builder: (dialogCtx) {
-                    return AlertDialog(
-                      title: const Text('Confirm Delete'),
-                      content: const Text(
-                          'Are you sure you want to delete this task?'),
-                      actions: [
-                        TextButton(
-                          child: const Text('Cancel'),
-                          onPressed: () {
-                            if (dialogCtx.mounted) {
-                              Navigator.of(dialogCtx).pop();
-                            }
-                          },
-                        ),
-                        TextButton(
-                          child: const Text('Delete'),
-                          onPressed: () {
-                            taskProvider.deleteTask(task.id);
-                            if (dialogCtx.mounted) {
-                              Navigator.of(dialogCtx).pop();
-                            }
-                          },
-                        ),
-                      ],
-                    );
-                  },
+                  builder: (dialogCtx) => AlertDialog(
+                    title: const Text('Confirm Delete'),
+                    content: const Text(
+                        'Are you sure you want to delete this task?'),
+                    actions: [
+                      TextButton(
+                        child: const Text('Cancel'),
+                        onPressed: () => dialogCtx.mounted
+                            ? Navigator.of(dialogCtx).pop()
+                            : null,
+                      ),
+                      TextButton(
+                        child: const Text('Delete'),
+                        onPressed: () {
+                          taskProvider.deleteTask(task.id);
+                          if (dialogCtx.mounted) Navigator.of(dialogCtx).pop();
+                        },
+                      ),
+                    ],
+                  ),
                 );
               },
               backgroundColor: Colors.red,
@@ -112,16 +98,13 @@ class TaskItem extends StatelessWidget {
           ],
         ),
         child: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16.0,
-            vertical: 12.0,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12.0),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
+                color: Colors.black.withOpacity(0.05),
                 blurRadius: 5,
                 offset: const Offset(0, 2),
               ),
@@ -138,10 +121,7 @@ class TaskItem extends StatelessWidget {
                     height: 40,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8.0),
-                      border: Border.all(
-                        color: Colors.grey,
-                        width: 1,
-                      ),
+                      border: Border.all(color: Colors.grey, width: 1),
                     ),
                     child: Center(
                       child: Text(
@@ -185,9 +165,7 @@ class TaskItem extends StatelessWidget {
                             Text(
                               '${task.projectName} (${task.assignee})',
                               style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.grey[600],
-                              ),
+                                  fontSize: 12, color: Colors.grey[600]),
                             ),
                           ],
                         ),
@@ -216,48 +194,28 @@ class TaskItem extends StatelessWidget {
                             Text(
                               tag,
                               style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.grey[800],
-                              ),
+                                  fontSize: 12, color: Colors.grey[800]),
                             ),
-                            if (!task.isCompleted && !task.isArchived) ...[
-                              const SizedBox(width: 4),
-                              GestureDetector(
-                                onTap: () {
-                                  if (onRemoveTag != null) onRemoveTag!(tag);
-                                },
-                                child: Icon(
-                                  Icons.close,
-                                  size: 14,
-                                  color: Colors.grey[600],
+                            if (!task.isCompleted && !task.isArchived)
+                              Padding(
+                                padding: const EdgeInsets.only(left: 4.0),
+                                child: GestureDetector(
+                                  onTap: () => onRemoveTag?.call(tag),
+                                  child: Icon(Icons.close,
+                                      size: 14, color: Colors.grey[600]),
                                 ),
                               ),
-                            ],
                           ],
                         ),
                       );
                     }).toList(),
                   ),
                   if (!task.isArchived)
-                    Row(
-                      children: [
-                        Text(
-                          DurationFormatter.format(
-                            task.endTime.difference(task.startTime),
-                          ),
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(
-                            Icons.play_arrow,
-                            color: Colors.black,
-                          ),
-                          onPressed: () {},
-                        ),
-                      ],
+                    Text(
+                      DurationFormatter.format(
+                          task.endTime.difference(task.startTime)),
+                      style: const TextStyle(
+                          fontSize: 14, fontWeight: FontWeight.bold),
                     ),
                 ],
               ),

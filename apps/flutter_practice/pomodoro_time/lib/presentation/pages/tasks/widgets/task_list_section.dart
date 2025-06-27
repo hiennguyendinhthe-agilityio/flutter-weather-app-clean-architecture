@@ -8,9 +8,7 @@ class TaskListSection extends StatelessWidget {
   final List<Task> tasks;
   final Duration totalTime;
   final String sectionKeyPrefix;
-  final Function(String taskId) onToggleTaskCompletion;
-  final Function(String taskId) onStartTaskTimer;
-  final Function(String taskId) onStopTaskTimer;
+  final void Function(String taskId) onToggleTaskCompletion;
   final void Function(String taskId, String tag)? onRemoveTag;
   final void Function(Task task)? onEditTask;
   final void Function(Task task)? onTap;
@@ -22,8 +20,6 @@ class TaskListSection extends StatelessWidget {
     required this.totalTime,
     required this.sectionKeyPrefix,
     required this.onToggleTaskCompletion,
-    required this.onStartTaskTimer,
-    required this.onStopTaskTimer,
     this.onRemoveTag,
     this.onEditTask,
     this.onTap,
@@ -31,9 +27,7 @@ class TaskListSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (tasks.isEmpty) {
-      return const SizedBox.shrink();
-    }
+    if (tasks.isEmpty) return const SizedBox.shrink();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -58,7 +52,7 @@ class TaskListSection extends StatelessWidget {
                     color: Theme.of(context)
                         .colorScheme
                         .onSurface
-                        .withValues(alpha: 0.6),
+                        .withOpacity(0.6),
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -72,8 +66,6 @@ class TaskListSection extends StatelessWidget {
               key: ValueKey('$sectionKeyPrefix-${task.id}'),
               task: task,
               onToggleCompletion: () => onToggleTaskCompletion(task.id),
-              onStartTimer: () => onStartTaskTimer(task.id),
-              onStopTimer: () => onStopTaskTimer(task.id),
               onRemoveTag: onRemoveTag != null
                   ? (tag) => onRemoveTag!(task.id, tag)
                   : null,

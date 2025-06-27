@@ -6,9 +6,7 @@ import '../../../../data/models/task.dart';
 class TaskCard extends StatelessWidget {
   final Task task;
   final bool isCompactMode;
-  static const double _hourHeight = 60.0;
-  static const double _minHeight = 80.0;
-  static const double _badgeHeight = 24.0; // Base height of the badge
+  static const double _badgeHeight = 24.0;
 
   const TaskCard({
     required this.task,
@@ -18,65 +16,64 @@ class TaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final duration = task.endTime.difference(task.startTime);
-    final rawHeight = duration.inMinutes * (_hourHeight / 60);
-    final height = rawHeight < _minHeight ? _minHeight : rawHeight;
-
     return LayoutBuilder(
       builder: (context, constraints) {
-        final avatarSize = isCompactMode
-            ? (height * 0.25).clamp(24.0, 32.0)
-            : (height * 0.2).clamp(19.0, 25.0);
+        final avatarSize = _calculateAvatarSize(constraints.maxHeight);
 
-        return SizedBox(
-          width: constraints.maxWidth,
-          height: height,
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              // Main card, with bottom margin to accommodate half-overlap of badge
-              Container(
-                margin: const EdgeInsets.only(bottom: _badgeHeight / 2),
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: const Color(0xFFE5E7EB), width: 1),
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: isCompactMode
-                    ? _buildCompactTaskContent(avatarSize)
-                    : _buildNormalTaskContent(avatarSize),
-              ),
-
-              // Badge half inside, half outside the card
-              Positioned(
-                bottom: -_badgeHeight / 150,
-                right: 8,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxWidth: constraints.maxWidth - 24,
-                    // Allow badge to stretch a bit if needed
-                    maxHeight: height + (_badgeHeight / 2),
-                  ),
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    alignment: Alignment.bottomRight,
-                    child: _buildDurationBadge(),
-                  ),
-                ),
-              ),
-            ],
-          ),
+        return Stack(
+          clipBehavior: Clip.none,
+          children: [
+            _buildCardContent(avatarSize, constraints),
+            _buildBadgeOverlay(constraints),
+          ],
         );
       },
     );
+  }
+
+  Widget _buildCardContent(double avatarSize, BoxConstraints constraints) {
+    return Container(
+      width: constraints.maxWidth,
+      height: constraints.maxHeight,
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: const Color(0xFFE5E7EB), width: 1),
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: isCompactMode
+          ? _buildCompactTaskContent(avatarSize)
+          : _buildNormalTaskContent(avatarSize),
+    );
+  }
+
+  Widget _buildBadgeOverlay(BoxConstraints constraints) {
+    return Positioned(
+      bottom: -_badgeHeight / 2,
+      right: 8,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: constraints.maxWidth - 24),
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.bottomRight,
+          child: _buildDurationBadge(),
+        ),
+      ),
+    );
+  }
+
+  double _calculateAvatarSize(double cardHeight) {
+    final scale = isCompactMode ? 0.25 : 0.2;
+    final min = isCompactMode ? 24.0 : 19.0;
+    final max = isCompactMode ? 32.0 : 25.0;
+    return (cardHeight * scale).clamp(min, max);
   }
 
   Widget _buildCompactTaskContent(double avatarSize) => Row(
@@ -84,9 +81,7 @@ class TaskCard extends StatelessWidget {
         children: [
           _buildAvatar(avatarSize),
           const SizedBox(width: 8),
-          Expanded(
-              child: _buildTextColumn(
-                  fontSize: avatarSize * 0.4, dotSize: avatarSize * 0.19)),
+          Expanded(child: _buildTextColumn(avatarSize, compact: true)),
         ],
       );
 
@@ -95,9 +90,7 @@ class TaskCard extends StatelessWidget {
         children: [
           _buildAvatar(avatarSize),
           const SizedBox(width: 12),
-          Expanded(
-              child: _buildTextColumn(
-                  fontSize: avatarSize * 0.5, dotSize: avatarSize * 0.2)),
+          Expanded(child: _buildTextColumn(avatarSize, compact: false)),
         ],
       );
 
@@ -120,42 +113,45 @@ class TaskCard extends StatelessWidget {
         ),
       );
 
-  Widget _buildTextColumn(
-          {required double fontSize, required double dotSize}) =>
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            task.title,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: fontSize),
-            maxLines: isCompactMode ? 1 : 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 4),
-          Row(
-            children: [
-              Container(
-                width: dotSize,
-                height: dotSize,
-                decoration: BoxDecoration(
-                  color: getColorFromName(task.projectColor),
-                  shape: BoxShape.circle,
-                ),
+  Widget _buildTextColumn(double avatarSize, {required bool compact}) {
+    final fontSize = avatarSize * (compact ? 0.4 : 0.5);
+    final dotSize = avatarSize * (compact ? 0.19 : 0.2);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          task.title,
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: fontSize),
+          maxLines: compact ? 1 : 2,
+          overflow: TextOverflow.ellipsis,
+        ),
+        const SizedBox(height: 4),
+        Row(
+          children: [
+            Container(
+              width: dotSize,
+              height: dotSize,
+              decoration: BoxDecoration(
+                color: getColorFromName(task.projectColor),
+                shape: BoxShape.circle,
               ),
-              const SizedBox(width: 6),
-              Expanded(
-                child: Text(
-                  '${task.projectName} (${task.assignee})',
-                  style: TextStyle(
-                      fontSize: fontSize * 0.75, color: Colors.grey[600]),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
+            ),
+            const SizedBox(width: 6),
+            Expanded(
+              child: Text(
+                '${task.projectName} (${task.assignee})',
+                style: TextStyle(
+                    fontSize: fontSize * 0.75, color: Colors.grey[600]),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
-            ],
-          ),
-        ],
-      );
+            ),
+          ],
+        ),
+      ],
+    );
+  }
 
   Widget _buildDurationBadge() {
     final dur = task.endTime.difference(task.startTime);
@@ -169,7 +165,7 @@ class TaskCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(_badgeHeight / 2),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
+            color: Colors.black.withOpacity(0.08),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
