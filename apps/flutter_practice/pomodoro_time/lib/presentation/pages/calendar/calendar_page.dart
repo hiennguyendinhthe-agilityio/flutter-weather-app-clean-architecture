@@ -14,12 +14,36 @@ class CalendarPage extends StatefulWidget {
 }
 
 class _CalendarPageState extends State<CalendarPage> {
-  late DateTime _selectedDate;
   final GlobalKey _firstTaskSliverKey = GlobalKey();
+
+  final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
-    _selectedDate = DateTime.now();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToFirstTask());
+  }
+
+  void _scrollToFirstTask() {
+    final taskProvider = Provider.of<TaskProvider>(context, listen: false);
+    if (taskProvider.tasksForSelectedDate.isNotEmpty) {
+      final keyContext = _firstTaskSliverKey.currentContext;
+      if (keyContext != null) {
+        Scrollable.ensureVisible(
+          keyContext,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+          alignment: 0.5,
+        );
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   void _showAddTaskBottomSheet() {
@@ -48,6 +72,7 @@ class _CalendarPageState extends State<CalendarPage> {
         centerTitle: false,
         automaticallyImplyLeading: false,
         leading: IconButton(
+          color: Colors.black,
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
@@ -73,27 +98,12 @@ class _CalendarPageState extends State<CalendarPage> {
               return const Center(child: CircularProgressIndicator());
             }
 
-            final dayStart = DateTime(
-              _selectedDate.year,
-              _selectedDate.month,
-              _selectedDate.day,
-            );
-            final dayEnd = dayStart.add(const Duration(days: 1));
-
-            final tasksForSelectedDay = taskProvider.allTasks
-                .where((task) =>
-                    !task.startTime.isBefore(dayStart) &&
-                    task.startTime.isBefore(dayEnd))
-                .toList()
-              ..sort((a, b) => a.startTime.compareTo(b.startTime));
-
-            final bool hasTasks = tasksForSelectedDay.isNotEmpty;
-
-            final List<Widget> slivers;
+            final tasksForSelectedDay = taskProvider.tasksForSelectedDate;
+            final hasTasks = tasksForSelectedDay.isNotEmpty;
+            final slivers = <Widget>[_buildStickyHeader(taskProvider)];
 
             if (!hasTasks) {
-              slivers = [
-                _buildStickyHeader(taskProvider),
+              slivers.add(
                 const SliverToBoxAdapter(
                   child: TimelineHourItem(
                     startHour: 0,
@@ -101,37 +111,37 @@ class _CalendarPageState extends State<CalendarPage> {
                     tasks: [],
                   ),
                 ),
-              ];
+              );
             } else {
-              final firstTask = tasksForSelectedDay.first;
-
-              final firstTaskHour = firstTask.startTime.hour;
-
-              slivers = [_buildStickyHeader(taskProvider)];
+              final firstTaskHour = tasksForSelectedDay.first.startTime.hour;
 
               if (firstTaskHour > 0) {
-                slivers.add(SliverToBoxAdapter(
-                  child: TimelineHourItem(
-                    startHour: 0,
-                    endHour: firstTaskHour,
-                    tasks: const [],
+                slivers.add(
+                  SliverToBoxAdapter(
+                    child: TimelineHourItem(
+                      startHour: 0,
+                      endHour: firstTaskHour,
+                      tasks: const [],
+                    ),
                   ),
-                ));
+                );
               }
 
-              slivers.add(SliverToBoxAdapter(
-                key: _firstTaskSliverKey,
-                child: TimelineHourItem(
-                  startHour: firstTaskHour,
-                  endHour: 24,
-                  tasks: tasksForSelectedDay,
+              slivers.add(
+                SliverToBoxAdapter(
+                  key: _firstTaskSliverKey,
+                  child: TimelineHourItem(
+                    startHour: firstTaskHour,
+                    endHour: 24,
+                    tasks: tasksForSelectedDay,
+                  ),
                 ),
-              ));
+              );
             }
 
             return CustomScrollView(
+              controller: _scrollController,
               physics: const BouncingScrollPhysics(),
-              center: hasTasks ? _firstTaskSliverKey : null,
               slivers: slivers,
             );
           },
@@ -144,8 +154,13 @@ class _CalendarPageState extends State<CalendarPage> {
     return SliverPersistentHeader(
       pinned: true,
       delegate: StickyHeaderDelegate(
-        selectedDate: _selectedDate,
-        onDateSelected: (date) => setState(() => _selectedDate = date),
+        selectedDate: provider.selectedDate,
+        onDateSelected: (date) {
+          provider.setSelectedDate(date);
+
+          WidgetsBinding.instance
+              .addPostFrameCallback((_) => _scrollToFirstTask());
+        },
         totalTime: provider.activeTasks.fold(
           Duration.zero,
           (sum, t) => sum + t.endTime.difference(t.startTime),
