@@ -1,20 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:task_management_app/presentation/widgets/common_gradient_background.dart';
 
 class PlayPage extends StatelessWidget {
-  const PlayPage({super.key});
-
+  const PlayPage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Play Page'),
-      ),
-      body: Center(
-        child: Text(
-          'This is the Play Page',
-          style: Theme.of(context).textTheme.headlineMedium,
-        ),
-      ),
-    );
+    return const CommonGradientBackground(
+        child: Center(child: Text('Coming Soon!')));
   }
 }

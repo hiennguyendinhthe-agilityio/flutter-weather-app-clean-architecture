@@ -1,4 +1,3 @@
-// ✅ Refactored PomodoroTimer with scaling text/buttons for small screens
 import 'dart:math';
 
 import 'package:flutter/material.dart';

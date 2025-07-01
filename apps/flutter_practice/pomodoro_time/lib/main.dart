@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'Task Management App',
-      theme: AppTheme.lightTheme,
+      theme: PtTheme.light,
       themeMode: ThemeMode.system,
       routerConfig: router,
     );

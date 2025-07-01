@@ -1,5 +1,3 @@
-// ✅ Refactored TaskProvider (cleaned unused flags & redundant logic)
-
 import 'dart:async';
 
 import 'package:collection/collection.dart';
@@ -9,38 +7,47 @@ import 'package:task_management_app/data/models/task.dart';
 
 class TaskProvider extends ChangeNotifier {
   final LocalDataSourceImpl localDataSource;
-
   Timer? _masterUpdateTimer;
   final Set<String> _tasksWithActiveTimers = {};
   final Map<String, DateTime> _lastUpdateTimes = {};
-
   bool _isLoading = false;
   String? _errorMessage;
-
   String? _selectedTaskId;
+  DateTime _selectedDate = DateTime.now();
   List<Task> _allTasks = [];
 
   TaskProvider({required this.localDataSource});
 
+  // Getters
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   List<Task> get allTasks => _allTasks;
   String? get selectedTaskId => _selectedTaskId;
+  DateTime get selectedDate => _selectedDate;
 
+  Task? get selectedTask =>
+      _allTasks.firstWhereOrNull((t) => t.id == _selectedTaskId);
+  Task? get runningTask => _allTasks
+      .firstWhereOrNull((t) => t.isActive && !t.isCompleted && !t.isArchived);
   List<Task> get archivedTasks => _allTasks.where((t) => t.isArchived).toList();
   List<Task> get activeTasks =>
       _allTasks.where((t) => !t.isArchived && !t.isCompleted).toList();
   List<Task> get tasksForActiveTab =>
       _allTasks.where((t) => !t.isArchived).toList();
 
-  Task? get selectedTask =>
-      _allTasks.firstWhereOrNull((t) => t.id == _selectedTaskId);
-
-  Task? get runningTask => _allTasks.firstWhereOrNull(
-        (t) => t.isActive && !t.isCompleted && !t.isArchived,
-      );
   List<Task> get todayTasksList => _filterTasksByDay(0);
   List<Task> get yesterdayTasksList => _filterTasksByDay(1);
+
+  List<Task> get tasksForSelectedDate {
+    final base =
+        DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day);
+    return tasksForActiveTab.where((task) {
+      final d = DateTime(
+          task.startTime.year, task.startTime.month, task.startTime.day);
+      return d.isAtSameMomentAs(base);
+    }).toList()
+      ..sort((a, b) => a.startTime.compareTo(b.startTime));
+  }
 
   List<Task> _filterTasksByDay(int subtractDays) {
     final now = DateTime.now();
@@ -58,6 +65,16 @@ class TaskProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setSelectedDate(DateTime date) {
+    _selectedDate = date;
+    notifyListeners();
+  }
+
+  void clearError() {
+    _errorMessage = null;
+    notifyListeners();
+  }
+
   Future<void> loadTasks() async {
     _setLoading(true);
     try {
@@ -66,7 +83,7 @@ class TaskProvider extends ChangeNotifier {
       _initializeActiveTimers(tasks);
       _errorMessage = null;
     } catch (e) {
-      _errorMessage = 'Failed to load tasks: \$e';
+      _errorMessage = 'Failed to load tasks: $e';
     } finally {
       _setLoading(false);
     }
@@ -80,7 +97,7 @@ class TaskProvider extends ChangeNotifier {
       if (task.isActive) _trackTaskTimer(task.id);
       notifyListeners();
     } catch (e) {
-      _errorMessage = 'Failed to add task: \$e';
+      _errorMessage = 'Failed to add task: $e';
       notifyListeners();
     }
   }
@@ -97,7 +114,7 @@ class TaskProvider extends ChangeNotifier {
         await loadTasks();
       }
     } catch (e) {
-      _errorMessage = 'Failed to update task: \$e';
+      _errorMessage = 'Failed to update task: $e';
       await loadTasks();
     }
     notifyListeners();
@@ -110,7 +127,7 @@ class TaskProvider extends ChangeNotifier {
     try {
       await localDataSource.deleteTask(taskId);
     } catch (e) {
-      _errorMessage = 'Failed to delete task: \$e';
+      _errorMessage = 'Failed to delete task: $e';
       await loadTasks();
     }
   }
@@ -118,7 +135,6 @@ class TaskProvider extends ChangeNotifier {
   Future<void> toggleTaskCompletion(String taskId) async {
     final index = _allTasks.indexWhere((t) => t.id == taskId);
     if (index == -1) return;
-
     final task = _allTasks[index];
     final updated = task.copyWith(
       isCompleted: !task.isCompleted,
@@ -134,25 +150,20 @@ class TaskProvider extends ChangeNotifier {
   Future<void> startTaskTimer(String taskId) async {
     final index = _allTasks.indexWhere((t) => t.id == taskId);
     if (index == -1) return;
-
     final task = _allTasks[index];
     if (task.isCompleted ||
         task.isArchived ||
-        _tasksWithActiveTimers.contains(taskId)) {
-      return;
-    }
-
+        _tasksWithActiveTimers.contains(taskId)) return;
     final updated = task.copyWith(isActive: true);
     _allTasks[index] = updated;
     _trackTaskTimer(taskId);
     notifyListeners();
-
     try {
       await localDataSource.updateTask(updated);
     } catch (e) {
       _untrackTaskTimer(taskId);
       _allTasks[index] = task;
-      _errorMessage = 'Failed to start timer: \$e';
+      _errorMessage = 'Failed to start timer: $e';
       notifyListeners();
     }
   }
@@ -160,23 +171,16 @@ class TaskProvider extends ChangeNotifier {
   Future<void> stopTaskTimer(String taskId) async {
     final index = _allTasks.indexWhere((t) => t.id == taskId);
     if (index == -1) return;
-
     final updated = _allTasks[index].copyWith(isActive: false);
     _allTasks[index] = updated;
     _untrackTaskTimer(taskId);
     notifyListeners();
-
     try {
       await localDataSource.updateTask(updated);
     } catch (e) {
-      _errorMessage = 'Failed to stop timer: \$e';
+      _errorMessage = 'Failed to stop timer: $e';
       notifyListeners();
     }
-  }
-
-  void clearError() {
-    _errorMessage = null;
-    notifyListeners();
   }
 
   @override
@@ -185,7 +189,7 @@ class TaskProvider extends ChangeNotifier {
       final task = _allTasks.firstWhereOrNull((t) => t.id == id);
       if (task != null) {
         localDataSource.updateTask(task).catchError((e) {
-          debugPrint('Dispose failed to save task: \$e');
+          debugPrint('Dispose failed to save task: $e');
         });
       }
     }
@@ -193,7 +197,6 @@ class TaskProvider extends ChangeNotifier {
     super.dispose();
   }
 
-  // 🔧 Helpers
   bool _validateTimeRange(Task task) {
     if (task.endTime.isBefore(task.startTime)) {
       _errorMessage = 'End time cannot be before start time.';
@@ -243,7 +246,6 @@ class TaskProvider extends ChangeNotifier {
   Future<void> _archiveToggle(String taskId, bool archive) async {
     final index = _allTasks.indexWhere((t) => t.id == taskId);
     if (index == -1) return;
-
     final updated = _allTasks[index].copyWith(
       isArchived: archive,
       isActive: archive ? false : _allTasks[index].isActive,
@@ -253,10 +255,8 @@ class TaskProvider extends ChangeNotifier {
 
   void _ensureMasterTimerIsRunning() {
     if (_masterUpdateTimer == null || !_masterUpdateTimer!.isActive) {
-      _masterUpdateTimer = Timer.periodic(
-        const Duration(seconds: 1),
-        _onMasterTimerTick,
-      );
+      _masterUpdateTimer =
+          Timer.periodic(const Duration(seconds: 1), _onMasterTimerTick);
     }
   }
 
@@ -272,11 +272,9 @@ class TaskProvider extends ChangeNotifier {
       _stopMasterTimerIfNoActiveTasks();
       return;
     }
-
     final now = DateTime.now();
     bool hasChanges = false;
     bool needsSave = false;
-
     for (int i = 0; i < _allTasks.length; i++) {
       final task = _allTasks[i];
       if (_tasksWithActiveTimers.contains(task.id) &&
@@ -287,7 +285,6 @@ class TaskProvider extends ChangeNotifier {
           timeSpent: task.timeSpent + const Duration(seconds: 1),
         );
         hasChanges = true;
-
         final lastSave = _lastUpdateTimes[task.id] ?? now;
         if (now.difference(lastSave).inSeconds >= 15) {
           needsSave = true;
@@ -295,16 +292,14 @@ class TaskProvider extends ChangeNotifier {
         }
       }
     }
-
     if (hasChanges) notifyListeners();
-
     if (needsSave) {
       for (final task in _allTasks) {
         if (_tasksWithActiveTimers.contains(task.id)) {
           try {
             await localDataSource.updateTask(task);
           } catch (e) {
-            debugPrint('Auto-save failed: \$e');
+            debugPrint('Auto-save failed: $e');
           }
         }
       }

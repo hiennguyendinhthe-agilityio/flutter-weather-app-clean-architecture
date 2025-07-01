@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:task_management_app/data/models/task.dart';
-import 'package:task_management_app/presentation/widgets/common_input_decoration.dart';
+import 'package:task_management_app/presentation/widgets/cancel_save_button_row.dart';
+import 'package:task_management_app/presentation/widgets/color_picker.dart';
+import 'package:task_management_app/presentation/widgets/date_time_picker_row.dart';
+import 'package:task_management_app/presentation/widgets/music_picker_tile.dart';
+import 'package:task_management_app/presentation/widgets/tag_input_field.dart';
+import 'package:task_management_app/presentation/widgets/text_field.dart';
 import 'package:uuid/uuid.dart';
 
 class AddTaskBottomsheet extends StatefulWidget {
@@ -32,15 +36,6 @@ class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
   List<String> _tags = [];
   String _selectedColor = 'blue';
 
-  final List<Map<String, dynamic>> _colorOptions = [
-    {'name': 'Blue', 'value': 'blue', 'color': Colors.blue},
-    {'name': 'Green', 'value': 'green', 'color': Colors.green},
-    {'name': 'Orange', 'value': 'orange', 'color': Colors.orange},
-    {'name': 'Red', 'value': 'red', 'color': Colors.red},
-    {'name': 'Purple', 'value': 'purple', 'color': Colors.purple},
-    {'name': 'Teal', 'value': 'teal', 'color': Colors.teal},
-  ];
-
   DateTime? _startDateTime;
   DateTime? _endDateTime;
 
@@ -60,6 +55,7 @@ class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
     _tagController = TextEditingController();
     _noteController =
         TextEditingController(text: widget.taskToEdit?.note ?? '');
+
     _tags = List<String>.from(widget.taskToEdit?.tags ?? []);
     _selectedColor = widget.taskToEdit?.projectColor ?? 'blue';
     _startDateTime = widget.taskToEdit?.startTime;
@@ -79,121 +75,9 @@ class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
     super.dispose();
   }
 
-  void _addTag() {
-    final text = _tagController.text.trim();
-    if (text.isNotEmpty && !_tags.contains(text)) {
-      setState(() {
-        _tags.add(text);
-        _tagController.clear();
-      });
-    }
-  }
-
-  void _removeTag(String tag) {
-    setState(() {
-      _tags.remove(tag);
-    });
-  }
-
-  Future<void> _selectDate() async {
-    final now = DateTime.now();
-    final initial = _startDateTime ?? now;
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: initial,
-      firstDate: now.subtract(const Duration(days: 365)),
-      lastDate: now.add(const Duration(days: 365)),
-    );
-    if (picked == null) return;
-
-    setState(() {
-      final oldStart = _startDateTime ?? now;
-      _startDateTime = DateTime(
-        picked.year,
-        picked.month,
-        picked.day,
-        oldStart.hour,
-        oldStart.minute,
-      );
-
-      if (_endDateTime == null ||
-          DateTime(_endDateTime!.year, _endDateTime!.month, _endDateTime!.day)
-              .isBefore(DateTime(picked.year, picked.month, picked.day))) {
-        _endDateTime = _startDateTime!.add(const Duration(hours: 1));
-      } else {
-        final oldEnd = _endDateTime!;
-        _endDateTime = DateTime(
-          picked.year,
-          picked.month,
-          picked.day,
-          oldEnd.hour,
-          oldEnd.minute,
-        );
-      }
-    });
-  }
-
-  Future<void> _selectStartDateTime() async {
-    final initial = TimeOfDay.fromDateTime(_startDateTime ?? DateTime.now());
-    final picked = await showTimePicker(
-      context: context,
-      initialTime: initial,
-    );
-    if (picked == null) return;
-
-    setState(() {
-      final d = _startDateTime ?? DateTime.now();
-      _startDateTime = DateTime(
-        d.year,
-        d.month,
-        d.day,
-        picked.hour,
-        picked.minute,
-      );
-
-      if (_endDateTime != null && _endDateTime!.isBefore(_startDateTime!)) {
-        _endDateTime = _startDateTime!.add(const Duration(hours: 1));
-      }
-    });
-  }
-
-  Future<void> _selectMusic() async {
-    const pickedTitle = 'Begin Again';
-    const pickedArtist = 'Taylor Swift';
-    setState(() {
-      _selectedMusicTitle = pickedTitle;
-      _selectedMusicArtist = pickedArtist;
-    });
-  }
-
-  Future<void> _selectEndDateTime() async {
-    final initial = TimeOfDay.fromDateTime(
-        _endDateTime ?? _startDateTime ?? DateTime.now());
-    final picked = await showTimePicker(
-      context: context,
-      initialTime: initial,
-    );
-    if (picked == null) return;
-
-    setState(() {
-      final base = _endDateTime ?? _startDateTime ?? DateTime.now();
-      _endDateTime = DateTime(
-        base.year,
-        base.month,
-        base.day,
-        picked.hour,
-        picked.minute,
-      );
-
-      if (_startDateTime != null && _endDateTime!.isBefore(_startDateTime!)) {
-        _endDateTime = _startDateTime!.add(const Duration(hours: 1));
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    final bool isEditing = widget.taskToEdit != null;
+    final isEditing = widget.taskToEdit != null;
 
     return Container(
       decoration: const BoxDecoration(
@@ -203,444 +87,150 @@ class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
           topRight: Radius.circular(16),
         ),
       ),
-      child: Padding(
-        padding: EdgeInsets.only(
-          left: 20,
-          right: 20,
-          top: 20,
-          bottom: MediaQuery.of(context).viewInsets.bottom + 20,
-        ),
-        child: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Container(
-                    width: 40,
-                    height: 5,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade300,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+      padding: EdgeInsets.only(
+        left: 20,
+        right: 20,
+        top: 20,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+      ),
+      child: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 5,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade300,
+                    borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                const SizedBox(height: 16),
-                Text(
-                  isEditing ? 'Edit Task' : 'Add New Task',
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                const SizedBox(height: 24),
-                Text('I’m focusing on',
-                    style: Theme.of(context).textTheme.titleMedium),
-                const SizedBox(height: 4),
-                TextFormField(
-                  controller: _titleController,
-                  decoration: buildCommonDecoration(
-                    context: context,
-                    hintText: 'Enter task title',
-                  ),
-                  validator: (val) => val == null || val.isEmpty
-                      ? 'Please enter a task title'
-                      : null,
-                ),
-                const SizedBox(height: 16),
-                Text('Project', style: Theme.of(context).textTheme.titleMedium),
-                const SizedBox(height: 4),
-                TextFormField(
-                  controller: _projectController,
-                  decoration: buildCommonDecoration(
-                    context: context,
-                    hintText: 'Select project',
-                  ),
-                  validator: (value) => value == null || value.isEmpty
-                      ? 'Please select a project'
-                      : null,
-                  readOnly: true,
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: const Text('Select Project'),
-                          content: SingleChildScrollView(
-                            child: ListBody(
-                              children: [
-                                ListTile(
-                                  title: const Text('Project A'),
-                                  onTap: () {
-                                    _projectController.text = 'Project A';
-                                    Navigator.of(context).pop();
-                                  },
-                                ),
-                                ListTile(
-                                  title: const Text('Project B'),
-                                  onTap: () {
-                                    _projectController.text = 'Project B';
-                                    Navigator.of(context).pop();
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                ),
-                const SizedBox(height: 16),
-                Text('Assignee',
-                    style: Theme.of(context).textTheme.titleMedium),
-                const SizedBox(height: 4),
-                TextFormField(
-                  controller: _assigneeController,
-                  decoration: buildCommonDecoration(
-                    context: context,
-                  ),
-                  validator: (value) => value == null || value.isEmpty
-                      ? 'Please enter an assignee'
-                      : null,
-                ),
-                const SizedBox(height: 16),
-                Text('Add music (Optional)',
-                    style: Theme.of(context).textTheme.titleMedium),
-                const SizedBox(height: 4),
-                GestureDetector(
-                  onTap: _selectMusic,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 14),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey.shade300),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.music_note,
-                          color: Colors.blueAccent,
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            _selectedMusicTitle != null
-                                ? '$_selectedMusicTitle ($_selectedMusicArtist)'
-                                : 'Add music (Optional)',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: _selectedMusicTitle != null
-                                  ? Colors.black87
-                                  : Colors.grey.shade600,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        const Icon(
-                          Icons.search,
-                          color: Colors.grey,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Text('Note', style: Theme.of(context).textTheme.titleMedium),
-                TextFormField(
-                  controller: _noteController,
-                  decoration: buildCommonDecoration(
-                    context: context,
-                    hintText: 'Type here...',
-                    isMultiline: true,
-                  ),
-                  maxLines: 3,
-                ),
-                const SizedBox(height: 16),
-                Text('Tags', style: Theme.of(context).textTheme.titleMedium),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 8),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey.shade300),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Wrap(
-                          spacing: 6,
-                          runSpacing: 6,
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          children: [
-                            ..._tags.map(
-                              (tag) => Chip(
-                                label: Text(tag),
-                                onDeleted: () => _removeTag(tag),
-                                backgroundColor: Colors.grey.shade200,
-                                deleteIcon: const Icon(Icons.close, size: 16),
-                                materialTapTargetSize:
-                                    MaterialTapTargetSize.shrinkWrap,
-                                shape: RoundedRectangleBorder(
-                                  side: const BorderSide(
-                                      color: Colors.grey, width: 1.0),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 80,
-                              child: IntrinsicWidth(
-                                child: TextField(
-                                  controller: _tagController,
-                                  decoration: const InputDecoration(
-                                    hintText: 'Add tag',
-                                    isDense: true,
-                                    contentPadding: EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 6),
-                                    border: InputBorder.none,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primary,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: IconButton(
-                        icon: const Icon(Icons.add, color: Colors.white),
-                        onPressed: _addTag,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(
-                      flex: 2,
-                      child: GestureDetector(
-                        onTap: _selectDate,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 14),
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade200,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            _startDateTime != null
-                                ? DateFormat('EEEE, MMM d')
-                                    .format(_startDateTime!)
-                                : 'Select date',
-                            style: const TextStyle(fontSize: 14),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: _selectStartDateTime,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 14),
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade200,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            _startDateTime != null
-                                ? DateFormat('h:mma').format(_startDateTime!)
-                                : 'Start',
-                            style: const TextStyle(fontSize: 14),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: _selectEndDateTime,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 14),
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade200,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            _endDateTime != null
-                                ? DateFormat('h:mma').format(_endDateTime!)
-                                : 'End',
-                            style: const TextStyle(fontSize: 14),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  'Project Color:',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: _colorOptions.map((option) {
-                    final String val = option['value'];
-                    final Color col = option['color'];
-                    final bool isSelected = (_selectedColor == val);
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _selectedColor = val;
-                        });
-                      },
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: col,
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color:
-                                isSelected ? Colors.black : Colors.transparent,
-                            width: 2,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.1),
-                              spreadRadius: 1,
-                              blurRadius: 5,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: isSelected
-                            ? const Icon(Icons.check, color: Colors.white)
-                            : null,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                isEditing ? 'Edit Task' : 'Add New Task',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(height: 24),
+              PtTextField(
+                controller: _titleController,
+                labelText: 'I’m focusing on',
+                hintText: 'Enter task title',
+                validator: (val) => val == null || val.isEmpty
+                    ? 'Please enter a task title'
+                    : null,
+              ),
+              const SizedBox(height: 16),
+              PtTextField(
+                controller: _assigneeController,
+                labelText: 'Assignee',
+                hintText: 'Enter assignee',
+                validator: (val) => val == null || val.isEmpty
+                    ? 'Please enter an assignee'
+                    : null,
+              ),
+              const SizedBox(height: 16),
+              MusicPickerTile(
+                labelText: 'Music (Optional)',
+                selectedTitle: _selectedMusicTitle,
+                selectedArtist: _selectedMusicArtist,
+                onPickMusic: () {
+                  setState(() {
+                    _selectedMusicTitle = 'Begin Again';
+                    _selectedMusicArtist = 'Taylor Swift';
+                  });
+                },
+              ),
+              const SizedBox(height: 16),
+              PtTextField(
+                controller: _noteController,
+                labelText: 'Note',
+                hintText: 'Type here...',
+                isMultiline: true,
+              ),
+              const SizedBox(height: 16),
+              PtTagInputField(
+                labelText: 'Tag',
+                tagController: _tagController,
+                tags: _tags,
+                onAdd: (tag) => setState(() => _tags.add(tag)),
+                onRemove: (tag) => setState(() => _tags.remove(tag)),
+              ),
+              const SizedBox(height: 16),
+              DateTimePickerRow(
+                labelText: 'Start & End Time',
+                startDateTime: _startDateTime,
+                endDateTime: _endDateTime,
+                onPickDate: (dt) => setState(() => _startDateTime = dt),
+                onPickStartTime: (dt) => setState(() => _startDateTime = dt),
+                onPickEndTime: (dt) => setState(() => _endDateTime = dt),
+              ),
+              const SizedBox(height: 16),
+              ColorPicker(
+                selectedColor: _selectedColor,
+                onColorSelected: (color) =>
+                    setState(() => _selectedColor = color),
+              ),
+              const SizedBox(height: 24),
+              CancelSaveButtonRow(
+                isEditing: isEditing,
+                onCancel: () => Navigator.pop(context),
+                onSave: () {
+                  if (!_formKey.currentState!.validate()) return;
+
+                  if (_startDateTime == null || _endDateTime == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Please select start and end date/time'),
+                        backgroundColor: Colors.red,
                       ),
                     );
-                  }).toList(),
-                ),
-                const SizedBox(height: 24),
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () => Navigator.pop(context),
-                        style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          side:
-                              BorderSide(color: Colors.grey.shade400, width: 1),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        child: const Text(
-                          'Cancel',
-                          style: TextStyle(color: Colors.black87),
-                        ),
+                    return;
+                  }
+                  if (_endDateTime!.isBefore(_startDateTime!)) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('End time cannot be before start time'),
+                        backgroundColor: Colors.red,
                       ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          if (!_formKey.currentState!.validate()) return;
+                    );
+                    return;
+                  }
 
-                          if (_startDateTime == null || _endDateTime == null) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                    'Please select start and end date/time'),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
-                            return;
-                          }
-                          if (_endDateTime!.isBefore(_startDateTime!)) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                    'End time cannot be before start time'),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
-                            return;
-                          }
+                  final task = Task(
+                    id: widget.taskToEdit?.id ?? const Uuid().v4(),
+                    title: _titleController.text,
+                    projectName: _projectController.text,
+                    assignee: _assigneeController.text,
+                    tags: _tags,
+                    note: _noteController.text,
+                    musicTitle: _selectedMusicTitle,
+                    musicArtist: _selectedMusicArtist,
+                    createdAt: widget.taskToEdit?.createdAt ?? DateTime.now(),
+                    startTime: _startDateTime!,
+                    endTime: _endDateTime!,
+                    timeSpent: widget.taskToEdit?.timeSpent ?? Duration.zero,
+                    isActive: widget.taskToEdit?.isActive ?? false,
+                    isCompleted: widget.taskToEdit?.isCompleted ?? false,
+                    projectColor: _selectedColor,
+                    isArchived: widget.taskToEdit?.isArchived ?? false,
+                  );
 
-                          final String taskId =
-                              widget.taskToEdit?.id ?? const Uuid().v4();
-                          final DateTime createdAt =
-                              widget.taskToEdit?.createdAt ?? DateTime.now();
-                          final bool initialIsActive =
-                              widget.taskToEdit?.isActive ?? false;
-                          final bool initialIsCompleted =
-                              widget.taskToEdit?.isCompleted ?? false;
-                          final bool initialIsArchived =
-                              widget.taskToEdit?.isArchived ?? false;
-                          final Duration initialTimeSpent =
-                              widget.taskToEdit?.timeSpent ?? Duration.zero;
+                  if (isEditing && widget.onUpdateTask != null) {
+                    widget.onUpdateTask!(task);
+                  } else {
+                    widget.onAddTask(task);
+                  }
 
-                          final taskData = Task(
-                            id: taskId,
-                            title: _titleController.text,
-                            projectName: _projectController.text,
-                            assignee: _assigneeController.text,
-                            tags: _tags,
-                            note: _noteController.text,
-                            musicTitle: _selectedMusicTitle,
-                            musicArtist: _selectedMusicArtist,
-                            createdAt: createdAt,
-                            startTime: _startDateTime!,
-                            endTime: _endDateTime!,
-                            timeSpent: initialTimeSpent,
-                            isActive: initialIsActive,
-                            isCompleted: initialIsCompleted,
-                            projectColor: _selectedColor,
-                            isArchived: initialIsArchived,
-                          );
-
-                          if (widget.taskToEdit != null &&
-                              widget.onUpdateTask != null) {
-                            widget.onUpdateTask!(taskData);
-                          } else {
-                            widget.onAddTask(taskData);
-                          }
-
-                          Navigator.of(context).pop();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Theme.of(context).primaryColor,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        child: Text(isEditing ? 'Save Changes' : 'Add Task'),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-              ],
-            ),
+                  Navigator.of(context).pop();
+                },
+              ),
+              const SizedBox(height: 8),
+            ],
           ),
         ),
       ),

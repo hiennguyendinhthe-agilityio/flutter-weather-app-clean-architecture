@@ -34,6 +34,7 @@ class _TaskPageState extends State<TaskPage>
 
   void _showAddTaskBottomSheet() {
     showModalBottomSheet(
+      useRootNavigator: true,
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.7,
       ),
@@ -42,7 +43,7 @@ class _TaskPageState extends State<TaskPage>
       backgroundColor: Colors.transparent,
       builder: (context) => AddTaskBottomsheet(
         onAddTask: (task) {
-          Provider.of<TaskProvider>(context, listen: false).addTask(task);
+          context.read<TaskProvider>().addTask(task);
         },
       ),
     );
@@ -50,6 +51,7 @@ class _TaskPageState extends State<TaskPage>
 
   void _showEditTaskBottomSheet(Task task) {
     showModalBottomSheet(
+      useRootNavigator: true,
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.7,
       ),
@@ -58,21 +60,18 @@ class _TaskPageState extends State<TaskPage>
       backgroundColor: Colors.transparent,
       builder: (context) => AddTaskBottomsheet(
         taskToEdit: task,
-        onAddTask: (task) {},
+        onAddTask: (_) {},
         onUpdateTask: (updatedTask) {
-          Provider.of<TaskProvider>(context, listen: false)
-              .updateTask(updatedTask);
+          context.read<TaskProvider>().updateTask(updatedTask);
         },
       ),
     );
   }
 
   void _removeTagFromTask(String taskId, String tag) async {
-    final taskProvider = Provider.of<TaskProvider>(context, listen: false);
+    final taskProvider = context.read<TaskProvider>();
     final task = taskProvider.allTasks.firstWhere((t) => t.id == taskId);
-
     final updatedTags = List<String>.from(task.tags)..remove(tag);
-
     final updatedTask = task.copyWith(tags: updatedTags);
     await taskProvider.updateTask(updatedTask);
   }
@@ -83,7 +82,7 @@ class _TaskPageState extends State<TaskPage>
       body: CommonGradientBackground(
         child: SafeArea(
           child: Consumer<TaskProvider>(
-            builder: (context, taskProvider, child) {
+            builder: (context, taskProvider, _) {
               if (taskProvider.errorMessage != null) {
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   ScaffoldMessenger.of(context)
@@ -95,9 +94,7 @@ class _TaskPageState extends State<TaskPage>
                         behavior: SnackBarBehavior.floating,
                         action: SnackBarAction(
                           label: 'Dismiss',
-                          onPressed: () {
-                            taskProvider.clearError();
-                          },
+                          onPressed: taskProvider.clearError,
                         ),
                       ),
                     );
@@ -145,10 +142,8 @@ class _TaskPageState extends State<TaskPage>
       height: 45,
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       decoration: BoxDecoration(
-        color: Theme.of(context)
-            .colorScheme
-            .surfaceContainerHighest
-            .withValues(alpha: 0.5),
+        color:
+            Theme.of(context).colorScheme.surfaceContainerHighest.withAlpha(50),
         borderRadius: BorderRadius.circular(10),
       ),
       child: TabBar(
@@ -161,18 +156,15 @@ class _TaskPageState extends State<TaskPage>
           borderRadius: BorderRadius.circular(8),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.1),
+              color: Colors.black.withAlpha(25),
               blurRadius: 3,
               offset: const Offset(0, 1),
             )
           ],
         ),
         labelColor: Theme.of(context).colorScheme.primary,
-        unselectedLabelColor: Theme.of(context)
-            .textTheme
-            .bodyMedium
-            ?.color
-            ?.withValues(alpha: 0.7),
+        unselectedLabelColor:
+            Theme.of(context).textTheme.bodyMedium?.color?.withAlpha(180),
         splashBorderRadius: BorderRadius.circular(8),
         tabs: [
           Tab(text: '${taskProvider.activeTasks.length} Active'),
@@ -196,91 +188,59 @@ class _TaskPageState extends State<TaskPage>
       );
     }
 
-    final todayTasks =
-        taskProvider.todayTasksList.fold<List<Task>>([], (acc, task) {
-      if (!acc.any((t) => t.id == task.id)) acc.add(task);
-      return acc;
-    });
+    void toggleTask(String taskId) {
+      context.read<TaskProvider>().toggleTaskCompletion(taskId);
+    }
 
-    final Duration totalToday = todayTasks.fold(
-      Duration.zero,
-      (prev, task) => prev + (task.endTime.difference(task.startTime)),
-    );
-
-    final yesterdayTasks = taskProvider.yesterdayTasksList;
-    final Duration totalYesterday = yesterdayTasks.fold(
-      Duration.zero,
-      (prev, task) => prev + (task.endTime.difference(task.startTime)),
-    );
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final yesterday = today.subtract(const Duration(days: 1));
+
+    final todayTasks = taskProvider.todayTasksList;
+    final yesterdayTasks = taskProvider.yesterdayTasksList;
     final otherTasks = taskProvider.tasksForActiveTab.where((task) {
       final taskDay = DateTime(
           task.startTime.year, task.startTime.month, task.startTime.day);
       return !taskDay.isAtSameMomentAs(today) &&
           !taskDay.isAtSameMomentAs(yesterday);
-    }).toList();
-    final Duration totalOther = otherTasks.fold(
-      Duration.zero,
-      (prev, task) => prev + (task.endTime.difference(task.startTime)),
-    );
-    otherTasks.sort((a, b) => b.startTime.compareTo(a.startTime));
-    void toggleTask(String taskId) {
-      Provider.of<TaskProvider>(context, listen: false)
-          .toggleTaskCompletion(taskId);
-    }
+    }).toList()
+      ..sort((a, b) => b.startTime.compareTo(a.startTime));
+
+    Duration sumTime(List<Task> tasks) => tasks.fold(
+        Duration.zero, (sum, t) => sum + t.endTime.difference(t.startTime));
 
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       children: [
         TaskListSection(
-          onTap: (task) {
-            showDialog(
-                context: context,
-                builder: (context) => TaskDetailDialog(
-                      task: task,
-                    ));
-          },
+          onTap: (task) => _showTaskDialog(task),
           title: 'Today',
           tasks: todayTasks,
-          totalTime: totalToday,
+          totalTime: sumTime(todayTasks),
           sectionKeyPrefix: 'active-today',
           onToggleTaskCompletion: toggleTask,
           onRemoveTag: _removeTagFromTask,
-          onEditTask: (task) => _showEditTaskBottomSheet(task),
+          onEditTask: _showEditTaskBottomSheet,
         ),
         TaskListSection(
           title: 'Yesterday',
           tasks: yesterdayTasks,
-          totalTime: totalYesterday,
+          totalTime: sumTime(yesterdayTasks),
           sectionKeyPrefix: 'active-yesterday',
           onToggleTaskCompletion: toggleTask,
           onRemoveTag: _removeTagFromTask,
-          onEditTask: (task) => _showEditTaskBottomSheet(task),
-          onTap: (task) {
-            showDialog(
-                context: context,
-                builder: (context) => TaskDetailDialog(
-                      task: task,
-                    ));
-          },
+          onEditTask: _showEditTaskBottomSheet,
+          onTap: _showTaskDialog,
         ),
         TaskListSection(
-          onTap: (task) {
-            showDialog(
-                context: context,
-                builder: (context) => TaskDetailDialog(
-                      task: task,
-                    ));
-          },
           title: 'Older / Upcoming',
           tasks: otherTasks,
-          totalTime: totalOther,
+          totalTime: sumTime(otherTasks),
           sectionKeyPrefix: 'active-other',
+          onTap: _showTaskDialog,
           onToggleTaskCompletion: toggleTask,
           onRemoveTag: _removeTagFromTask,
-          onEditTask: (task) => _showEditTaskBottomSheet(task),
+          onEditTask: _showEditTaskBottomSheet,
         ),
         const SizedBox(height: 20),
       ],
@@ -301,21 +261,26 @@ class _TaskPageState extends State<TaskPage>
       );
     }
 
-    final sortedArchivedTasks = List<Task>.from(taskProvider.archivedTasks)
+    final sorted = List<Task>.from(taskProvider.archivedTasks)
       ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      children: sortedArchivedTasks
+      children: sorted
           .map((task) => TaskItem(
                 key: ValueKey('archive-${task.id}'),
                 task: task,
-                onToggleCompletion: () {/* No action */},
-                onRemoveTag: (tag) {
-                  _removeTagFromTask(task.id, tag);
-                },
+                onToggleCompletion: () {},
+                onRemoveTag: (tag) => _removeTagFromTask(task.id, tag),
               ))
           .toList(),
+    );
+  }
+
+  void _showTaskDialog(Task task) {
+    showDialog(
+      context: context,
+      builder: (context) => TaskDetailDialog(task: task),
     );
   }
 }

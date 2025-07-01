@@ -1,116 +1,217 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:task_management_app/core/themes/app_colors.dart';
+import 'package:task_management_app/core/themes/app_palette.dart';
+import 'package:task_management_app/core/themes/typography.dart';
 
-class AppTheme {
-  static ThemeData get lightTheme {
-    return ThemeData(
-      primarySwatch: Colors.blue,
-      visualDensity: VisualDensity.adaptivePlatformDensity,
-      brightness: Brightness.light,
-      scaffoldBackgroundColor: Colors.white,
-      appBarTheme: const AppBarTheme(
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        elevation: 0,
-      ),
-      textTheme: GoogleFonts.interTextTheme(
-        ThemeData.light().textTheme,
-      ),
-      colorScheme: ColorScheme.fromSwatch(
-        primarySwatch: Colors.blue,
-        brightness: Brightness.light,
-      ),
+class PtTheme {
+  static ThemeData get light {
+    final defaultTheme = ThemeData.light(
+      useMaterial3: true,
     );
-  }
 
-  static ThemeData get darkTheme {
-    return ThemeData(
-      primarySwatch: Colors.blue,
-      visualDensity: VisualDensity.adaptivePlatformDensity,
-      brightness: Brightness.dark,
-      scaffoldBackgroundColor: const Color(0xFF121212),
-      appBarTheme: const AppBarTheme(
-        backgroundColor: Color(0xFF121212),
-        foregroundColor: Colors.white,
-        elevation: 0,
-      ),
-      textTheme: GoogleFonts.sourceSerifProTextTheme(
-        ThemeData.dark().textTheme,
-      ),
-      colorScheme: ColorScheme.fromSwatch(
-        primarySwatch: Colors.blue,
+    return defaultTheme.copyWith(
+        colorScheme: PtColors.light,
         brightness: Brightness.light,
+        textTheme: _textTheme,
+        inputDecorationTheme: _inputDecorationTheme,
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: PtPalette.purple[5],
+            foregroundColor: Colors.white,
+            textStyle: _textTheme.labelLarge?.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5),
+            ),
+          ),
+        ),
+        outlinedButtonTheme: OutlinedButtonThemeData(
+          style: OutlinedButton.styleFrom(
+            foregroundColor: PtPalette.purple[5],
+            textStyle: _textTheme.labelLarge?.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5),
+            ),
+          ),
+        ),
+        appBarTheme: const AppBarTheme(
+          elevation: 0,
+          foregroundColor: Colors.transparent,
+          scrolledUnderElevation: 0,
+          titleTextStyle: TextStyle(
+            fontFamily: PtTypography.familyBahnschrift,
+            fontSize: PtTypography.fontSizeLabelLarge,
+            fontWeight: FontWeight.w400,
+            color: PtPalette.genericBlack,
+          ),
+        ));
+  }
+
+  static const _textTheme = TextTheme(
+    displayLarge: TextStyle(
+      fontFamily: PtTypography.familyBahnschrift,
+      fontSize: PtTypography.fontSizeDisplayLarge,
+      fontWeight: FontWeight.w700,
+      color: PtPalette.genericBlack,
+    ),
+    displayMedium: TextStyle(
+      fontFamily: PtTypography.familyBahnschrift,
+      fontSize: PtTypography.fontSizeDisplayMedium,
+      fontWeight: FontWeight.w700,
+      color: PtPalette.genericBlack,
+    ),
+    displaySmall: TextStyle(
+      fontFamily: PtTypography.familyBahnschrift,
+      fontSize: PtTypography.fontSizeDisplaySmall,
+      fontWeight: FontWeight.w700,
+      color: PtPalette.genericBlack,
+    ),
+    headlineLarge: TextStyle(
+      fontFamily: PtTypography.familyBahnschrift,
+      fontSize: PtTypography.fontSizeHeadlineLarge,
+      fontWeight: FontWeight.w700,
+      color: PtPalette.genericBlack,
+    ),
+    headlineMedium: TextStyle(
+      fontFamily: PtTypography.familyBahnschrift,
+      fontSize: PtTypography.fontSizeHeadlineMedium,
+      fontWeight: FontWeight.w700,
+      color: PtPalette.genericBlack,
+    ),
+    headlineSmall: TextStyle(
+      fontFamily: PtTypography.familyBahnschrift,
+      fontSize: PtTypography.fontSizeHeadlineSmall,
+      fontWeight: FontWeight.w700,
+      color: PtPalette.genericBlack,
+    ),
+    titleLarge: TextStyle(
+      fontFamily: PtTypography.familyBahnschrift,
+      fontSize: PtTypography.fontSizeTitleLarge,
+      fontWeight: FontWeight.w400,
+      color: PtPalette.genericBlack,
+    ),
+    titleMedium: TextStyle(
+      fontFamily: PtTypography.familyBahnschrift,
+      fontSize: PtTypography.fontSizeTitleMedium,
+      fontWeight: FontWeight.w400,
+      color: PtPalette.genericBlack,
+    ),
+    titleSmall: TextStyle(
+      fontFamily: PtTypography.familyBahnschrift,
+      fontSize: PtTypography.fontSizeTitleSmall,
+      fontWeight: FontWeight.w400,
+      color: PtPalette.genericBlack,
+    ),
+    labelLarge: TextStyle(
+      fontFamily: PtTypography.familyBahnschrift,
+      fontSize: PtTypography.fontSizeLabelLarge,
+      fontWeight: FontWeight.w400,
+      color: PtPalette.genericBlack,
+    ),
+    labelMedium: TextStyle(
+      fontFamily: PtTypography.familyBahnschrift,
+      fontSize: PtTypography.fontSizeLabelMedium,
+      fontWeight: FontWeight.w400,
+      color: PtPalette.genericBlack,
+    ),
+    labelSmall: TextStyle(
+      fontFamily: PtTypography.familyBahnschrift,
+      fontSize: PtTypography.fontSizeLabelSmall,
+      fontWeight: FontWeight.w400,
+      color: PtPalette.genericBlack,
+    ),
+    bodyLarge: TextStyle(
+      fontFamily: PtTypography.familyBahnschrift,
+      fontSize: PtTypography.fontSizeBodyLarge,
+      fontWeight: FontWeight.w400,
+      color: PtPalette.genericBlack,
+    ),
+    bodyMedium: TextStyle(
+      fontFamily: PtTypography.familyBahnschrift,
+      fontSize: PtTypography.fontSizeBodyMedium,
+      fontWeight: FontWeight.w400,
+      color: PtPalette.genericBlack,
+    ),
+    bodySmall: TextStyle(
+      fontFamily: PtTypography.familyBahnschrift,
+      fontSize: PtTypography.fontSizeBodySmall,
+      fontWeight: FontWeight.w400,
+      color: PtPalette.genericBlack,
+    ),
+  );
+
+  static final _inputDecorationTheme = InputDecorationTheme(
+    filled: true,
+    fillColor: PtPalette.grey[4],
+    prefixIconColor: PtPalette.grey[5],
+    suffixIconColor: PtPalette.grey[5],
+    contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+    constraints: const BoxConstraints(minHeight: 48),
+    suffixIconConstraints: const BoxConstraints(minWidth: 24, minHeight: 24),
+    hintStyle: TextStyle(
+      fontFamily: PtTypography.familyBahnschrift,
+      fontSize: PtTypography.fontSizeLabelLarge,
+      fontWeight: FontWeight.w400,
+      height: 1.14,
+      color: PtPalette.grey[5],
+    ),
+    labelStyle: TextStyle(
+      fontFamily: PtTypography.familyBahnschrift,
+      fontSize: PtTypography.fontSizeLabelLarge,
+      fontWeight: FontWeight.w400,
+      color: PtPalette.grey[5],
+    ),
+    border: OutlineInputBorder(
+      borderSide: BorderSide(
+        color: PtPalette.grey[2]!,
       ),
-    );
-  }
-}
-
-class PomodoroThemeColors {
-  final Color primary;
-  final Color secondary;
-  final Color background;
-
-  PomodoroThemeColors({
-    required this.primary,
-    required this.secondary,
-    required this.background,
-  });
-}
-
-class PomodoroColorTheme {
-  static PomodoroThemeColors getThemeColors(int duration,
-      {bool isDarkMode = false}) {
-    switch (duration) {
-      case 5:
-        return PomodoroThemeColors(
-          primary: Colors.green,
-          secondary: Colors.lightGreen,
-          background: isDarkMode ? Colors.black : const Color(0xFFF0F8F0),
-        );
-      case 10:
-        return PomodoroThemeColors(
-          primary: Colors.blue,
-          secondary: Colors.lightBlue,
-          background: isDarkMode ? Colors.black : const Color(0xFFF0F4FF),
-        );
-      case 20:
-        return PomodoroThemeColors(
-          primary: Colors.orange,
-          secondary: Colors.amber,
-          background: isDarkMode ? Colors.black : const Color(0xFFFFF8F0),
-        );
-      case 25:
-        return PomodoroThemeColors(
-          primary: Colors.red,
-          secondary: Colors.redAccent,
-          background: isDarkMode ? Colors.black : const Color(0xFFFFF0F0),
-        );
-      case 30:
-        return PomodoroThemeColors(
-          primary: Colors.purple,
-          secondary: Colors.purpleAccent,
-          background: isDarkMode ? Colors.black : const Color(0xFFF8F0FF),
-        );
-      default:
-        if (duration < 15) {
-          return PomodoroThemeColors(
-            primary: Colors.teal,
-            secondary: Colors.tealAccent,
-            background: isDarkMode ? Colors.black : const Color(0xFFF0FFFF),
-          );
-        } else if (duration < 25) {
-          return PomodoroThemeColors(
-            primary: Colors.deepOrange,
-            secondary: Colors.orangeAccent,
-            background: isDarkMode ? Colors.black : const Color(0xFFFFF4F0),
-          );
-        } else {
-          return PomodoroThemeColors(
-            primary: Colors.indigo,
-            secondary: Colors.indigoAccent,
-            background: isDarkMode ? Colors.black : const Color(0xFFF0F0FF),
-          );
-        }
-    }
-  }
+      borderRadius: const BorderRadius.all(
+        Radius.circular(8),
+      ),
+    ),
+    outlineBorder: BorderSide(
+      color: PtPalette.grey[2]!,
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderSide: BorderSide(
+        color: PtPalette.grey[2]!,
+      ),
+      borderRadius: const BorderRadius.all(
+        Radius.circular(8),
+      ),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderSide: BorderSide(
+        color: PtPalette.grey[5]!,
+      ),
+      borderRadius: const BorderRadius.all(
+        Radius.circular(8),
+      ),
+    ),
+    floatingLabelBehavior: FloatingLabelBehavior.never,
+    errorBorder: const OutlineInputBorder(
+      borderSide: BorderSide(
+        color: PtPalette.red,
+      ),
+      borderRadius: BorderRadius.all(
+        Radius.circular(8),
+      ),
+    ),
+    focusedErrorBorder: const OutlineInputBorder(
+      borderSide: BorderSide(
+        color: PtPalette.red,
+      ),
+      borderRadius: BorderRadius.all(
+        Radius.circular(8),
+      ),
+    ),
+    errorStyle: const TextStyle(
+      fontSize: 12,
+      height: 1.4,
+      color: PtPalette.red,
+    ),
+  );
 }

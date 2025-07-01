@@ -4,13 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:task_management_app/core/themes/pomodoro_color_theme.dart';
-import 'package:task_management_app/data/models/settings.dart';
+import 'package:task_management_app/presentation/pages/tasks/widgets/current_task_card.dart';
 import 'package:task_management_app/presentation/pages/timer/widgets/duration_selector.dart';
 import 'package:task_management_app/presentation/pages/timer/widgets/pomodoro_timer.dart';
 import 'package:task_management_app/presentation/providers/pomodoro_provider.dart';
 import 'package:task_management_app/presentation/widgets/common_gradient_background.dart';
-import 'package:task_management_app/presentation/widgets/current_task_card.dart';
-import 'package:task_management_app/presentation/widgets/dialogs.dart';
 
 class TimerPage extends StatelessWidget {
   const TimerPage({super.key});
@@ -82,21 +80,7 @@ class TimerPage extends StatelessWidget {
           ),
           IconButton(
             icon: const Icon(Icons.settings, size: 24, color: Colors.black54),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) => SettingsDialog(
-                  settings: const Settings(
-                    darkMode: false,
-                    customColors: false,
-                    availableDurations: [5, 10, 20, 25, 30],
-                  ),
-                  onSettingsChanged: (Settings) {},
-                  onAddDuration: (int newDuration) {},
-                  onRemoveDuration: (int durationToRemove) {},
-                ),
-              );
-            },
+            onPressed: () {},
           ),
         ],
       ),

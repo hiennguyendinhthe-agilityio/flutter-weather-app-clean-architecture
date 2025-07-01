@@ -1,4 +1,3 @@
-// 📁 pt_text_field.dart
 import 'package:flutter/material.dart';
 
 class PtTextField extends StatelessWidget {
@@ -11,16 +10,32 @@ class PtTextField extends StatelessWidget {
     this.readOnly = false,
     this.onTap,
     this.isMultiline = false,
+    this.suffixIcon,
   });
 
+  /// Controls the text being edited.
   final TextEditingController controller;
+
+  /// Label text displayed above the input.
   final String? labelText;
+
+  /// Hint text displayed inside the input when empty.
   final String? hintText;
+
+  /// Optional validator function for form validation.
   final String? Function(String?)? validator;
+
+  /// Whether the input is read-only.
   final bool readOnly;
+
+  /// Callback triggered when the input is tapped.
   final VoidCallback? onTap;
+
+  /// Whether the input supports multiple lines.
   final bool isMultiline;
 
+  /// Optional widget displayed at the end of the input field.
+  final Widget? suffixIcon;
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -45,6 +60,7 @@ class PtTextField extends StatelessWidget {
           maxLines: isMultiline ? null : 1,
           style: theme.textTheme.labelLarge,
           decoration: InputDecoration(
+            suffixIcon: suffixIcon,
             errorBorder: theme.inputDecorationTheme.errorBorder,
             hintText: hintText,
             hintStyle: theme.textTheme.labelLarge?.copyWith(

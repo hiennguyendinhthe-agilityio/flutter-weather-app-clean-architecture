@@ -48,6 +48,7 @@ class _CalendarPageState extends State<CalendarPage> {
 
   void _showAddTaskBottomSheet() {
     showModalBottomSheet(
+      useRootNavigator: true,
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
