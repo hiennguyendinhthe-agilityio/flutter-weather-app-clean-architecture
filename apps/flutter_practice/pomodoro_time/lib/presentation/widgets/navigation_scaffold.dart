@@ -21,7 +21,7 @@ class PtNavigationScaffold extends StatelessWidget {
     if (currentIndex == -1) currentIndex = 0;
 
     return Scaffold(
-      resizeToAvoidBottomInset: true,
+      resizeToAvoidBottomInset: false,
       body: child,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,

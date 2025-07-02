@@ -1,15 +1,25 @@
-import 'dart:ui';
+class ProjectModel {
+  final String projectName;
+  final String clientName;
+  final String clientRole;
+  final String avatarUrl;
 
-class Project {
-  final String id;
-  final String name;
-  final Color color;
-  final String? avatarUrl;
-
-  Project({
-    required this.id,
-    required this.name,
-    required this.color,
-    this.avatarUrl,
+  ProjectModel({
+    required this.projectName,
+    required this.clientName,
+    required this.clientRole,
+    required this.avatarUrl,
   });
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ProjectModel &&
+          runtimeType == other.runtimeType &&
+          projectName == other.projectName;
+
+  @override
+  int get hashCode => projectName.hashCode;
+
+  String get fullClientInfo => '$clientName ($clientRole)';
 }

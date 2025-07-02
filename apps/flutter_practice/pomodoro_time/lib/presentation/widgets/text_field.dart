@@ -11,6 +11,7 @@ class PtTextField extends StatelessWidget {
     this.onTap,
     this.isMultiline = false,
     this.suffixIcon,
+    this.focusNode,
   });
 
   /// Controls the text being edited.
@@ -36,6 +37,9 @@ class PtTextField extends StatelessWidget {
 
   /// Optional widget displayed at the end of the input field.
   final Widget? suffixIcon;
+
+  /// Focus node for the title field, useful for managing focus.
+  final FocusNode? focusNode;
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -53,6 +57,7 @@ class PtTextField extends StatelessWidget {
           const SizedBox(height: 4),
         ],
         TextFormField(
+          focusNode: focusNode,
           controller: controller,
           validator: validator,
           readOnly: readOnly,
@@ -66,23 +71,11 @@ class PtTextField extends StatelessWidget {
             hintStyle: theme.textTheme.labelLarge?.copyWith(
               color: theme.hintColor,
             ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(
-                color: theme.dividerColor,
-              ),
-            ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(
                 color: theme.colorScheme.primary,
                 width: 1.8,
-              ),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(
-                color: theme.dividerColor,
               ),
             ),
             contentPadding: const EdgeInsets.symmetric(

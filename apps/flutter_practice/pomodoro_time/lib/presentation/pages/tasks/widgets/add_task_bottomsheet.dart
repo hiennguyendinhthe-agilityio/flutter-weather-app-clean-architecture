@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:task_management_app/data/models/task.dart';
-import 'package:task_management_app/presentation/widgets/cancel_save_button_row.dart';
+import 'package:task_management_app/data/models/task_form_view_model.dart';
+import 'package:task_management_app/presentation/pages/calendar/widgets/cancel_save_button_row.dart';
+import 'package:task_management_app/presentation/pages/calendar/widgets/date_time_picker_row.dart';
+import 'package:task_management_app/presentation/pages/calendar/widgets/music_picker_dropdown.dart';
+import 'package:task_management_app/presentation/pages/calendar/widgets/project_picker_dropdown.dart';
+import 'package:task_management_app/presentation/pages/calendar/widgets/tag_input_field.dart';
 import 'package:task_management_app/presentation/widgets/color_picker.dart';
-import 'package:task_management_app/presentation/widgets/date_time_picker_row.dart';
-import 'package:task_management_app/presentation/widgets/music_picker_tile.dart';
-import 'package:task_management_app/presentation/widgets/tag_input_field.dart';
 import 'package:task_management_app/presentation/widgets/text_field.dart';
-import 'package:uuid/uuid.dart';
 
-class AddTaskBottomsheet extends StatefulWidget {
+class AddTaskBottomsheet extends StatelessWidget {
   final Function(Task) onAddTask;
   final Task? taskToEdit;
   final Function(Task)? onUpdateTask;
@@ -21,64 +23,51 @@ class AddTaskBottomsheet extends StatefulWidget {
   });
 
   @override
-  State<AddTaskBottomsheet> createState() => _AddTaskBottomsheetState();
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => TaskFormViewModel(taskToEdit: taskToEdit),
+      child: _AddTaskForm(
+        isEditing: taskToEdit != null,
+        onAddTask: onAddTask,
+        onUpdateTask: onUpdateTask,
+      ),
+    );
+  }
 }
 
-class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
+class _AddTaskForm extends StatefulWidget {
+  final bool isEditing;
+  final Function(Task) onAddTask;
+  final Function(Task)? onUpdateTask;
+
+  const _AddTaskForm({
+    required this.isEditing,
+    required this.onAddTask,
+    this.onUpdateTask,
+  });
+
+  @override
+  State<_AddTaskForm> createState() => _AddTaskFormState();
+}
+
+class _AddTaskFormState extends State<_AddTaskForm> {
   final _formKey = GlobalKey<FormState>();
-
-  late TextEditingController _titleController;
-  late TextEditingController _projectController;
-  late TextEditingController _assigneeController;
-  late TextEditingController _tagController;
-  late TextEditingController _noteController;
-
-  List<String> _tags = [];
-  String _selectedColor = 'blue';
-
-  DateTime? _startDateTime;
-  DateTime? _endDateTime;
-
-  String? _selectedMusicTitle;
-  String? _selectedMusicArtist;
-
+  late FocusNode _titleFocusNode;
   @override
   void initState() {
     super.initState();
-
-    _titleController =
-        TextEditingController(text: widget.taskToEdit?.title ?? '');
-    _projectController =
-        TextEditingController(text: widget.taskToEdit?.projectName ?? '');
-    _assigneeController =
-        TextEditingController(text: widget.taskToEdit?.assignee ?? '');
-    _tagController = TextEditingController();
-    _noteController =
-        TextEditingController(text: widget.taskToEdit?.note ?? '');
-
-    _tags = List<String>.from(widget.taskToEdit?.tags ?? []);
-    _selectedColor = widget.taskToEdit?.projectColor ?? 'blue';
-    _startDateTime = widget.taskToEdit?.startTime;
-    _endDateTime = widget.taskToEdit?.endTime;
-
-    _selectedMusicTitle = widget.taskToEdit?.musicTitle;
-    _selectedMusicArtist = widget.taskToEdit?.musicArtist;
+    _titleFocusNode = FocusNode();
   }
 
   @override
   void dispose() {
-    _titleController.dispose();
-    _projectController.dispose();
-    _assigneeController.dispose();
-    _tagController.dispose();
-    _noteController.dispose();
+    _titleFocusNode.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final isEditing = widget.taskToEdit != null;
-
+    final viewModel = context.watch<TaskFormViewModel>();
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,
@@ -112,12 +101,13 @@ class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
               ),
               const SizedBox(height: 16),
               Text(
-                isEditing ? 'Edit Task' : 'Add New Task',
+                widget.isEditing ? 'Edit Task' : 'Add New Task',
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: 24),
               PtTextField(
-                controller: _titleController,
+                focusNode: _titleFocusNode,
+                controller: viewModel.titleController,
                 labelText: 'I’m focusing on',
                 hintText: 'Enter task title',
                 validator: (val) => val == null || val.isEmpty
@@ -125,8 +115,14 @@ class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
                     : null,
               ),
               const SizedBox(height: 16),
+              ProjectPickerDropdown(
+                labelText: "Project",
+                initialValue: viewModel.selectedProject,
+                onChanged: viewModel.selectProject,
+              ),
+              const SizedBox(height: 16),
               PtTextField(
-                controller: _assigneeController,
+                controller: viewModel.assigneeController,
                 labelText: 'Assignee',
                 hintText: 'Enter assignee',
                 validator: (val) => val == null || val.isEmpty
@@ -134,20 +130,14 @@ class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
                     : null,
               ),
               const SizedBox(height: 16),
-              MusicPickerTile(
+              MusicPickerDropdown(
                 labelText: 'Music (Optional)',
-                selectedTitle: _selectedMusicTitle,
-                selectedArtist: _selectedMusicArtist,
-                onPickMusic: () {
-                  setState(() {
-                    _selectedMusicTitle = 'Begin Again';
-                    _selectedMusicArtist = 'Taylor Swift';
-                  });
-                },
+                initialValue: viewModel.selectedMusic,
+                onChanged: viewModel.selectMusic,
               ),
               const SizedBox(height: 16),
               PtTextField(
-                controller: _noteController,
+                controller: viewModel.noteController,
                 labelText: 'Note',
                 hintText: 'Type here...',
                 isMultiline: true,
@@ -155,77 +145,47 @@ class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
               const SizedBox(height: 16),
               PtTagInputField(
                 labelText: 'Tag',
-                tagController: _tagController,
-                tags: _tags,
-                onAdd: (tag) => setState(() => _tags.add(tag)),
-                onRemove: (tag) => setState(() => _tags.remove(tag)),
+                tagController: viewModel.tagController,
+                tags: viewModel.tags,
+                onAdd: viewModel.addTag,
+                onRemove: viewModel.removeTag,
               ),
               const SizedBox(height: 16),
               DateTimePickerRow(
                 labelText: 'Start & End Time',
-                startDateTime: _startDateTime,
-                endDateTime: _endDateTime,
-                onPickDate: (dt) => setState(() => _startDateTime = dt),
-                onPickStartTime: (dt) => setState(() => _startDateTime = dt),
-                onPickEndTime: (dt) => setState(() => _endDateTime = dt),
+                startDateTime: viewModel.startDateTime,
+                endDateTime: viewModel.endDateTime,
+                onPickDate: viewModel.updateStartDateTime,
+                onPickStartTime: viewModel.updateStartDateTime,
+                onPickEndTime: viewModel.updateEndDateTime,
               ),
               const SizedBox(height: 16),
               ColorPicker(
-                selectedColor: _selectedColor,
-                onColorSelected: (color) =>
-                    setState(() => _selectedColor = color),
+                selectedColor: viewModel.selectedColor,
+                onColorSelected: viewModel.selectColor,
               ),
               const SizedBox(height: 24),
               CancelSaveButtonRow(
-                isEditing: isEditing,
+                isEditing: widget.isEditing,
                 onCancel: () => Navigator.pop(context),
                 onSave: () {
-                  if (!_formKey.currentState!.validate()) return;
+                  if (!viewModel.validateForm(_formKey)) return;
 
-                  if (_startDateTime == null || _endDateTime == null) {
+                  final error = viewModel.timeValidationError;
+                  if (error != null) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Please select start and end date/time'),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
-                    return;
-                  }
-                  if (_endDateTime!.isBefore(_startDateTime!)) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('End time cannot be before start time'),
-                        backgroundColor: Colors.red,
-                      ),
+                      SnackBar(
+                          content: Text(error), backgroundColor: Colors.red),
                     );
                     return;
                   }
 
-                  final task = Task(
-                    id: widget.taskToEdit?.id ?? const Uuid().v4(),
-                    title: _titleController.text,
-                    projectName: _projectController.text,
-                    assignee: _assigneeController.text,
-                    tags: _tags,
-                    note: _noteController.text,
-                    musicTitle: _selectedMusicTitle,
-                    musicArtist: _selectedMusicArtist,
-                    createdAt: widget.taskToEdit?.createdAt ?? DateTime.now(),
-                    startTime: _startDateTime!,
-                    endTime: _endDateTime!,
-                    timeSpent: widget.taskToEdit?.timeSpent ?? Duration.zero,
-                    isActive: widget.taskToEdit?.isActive ?? false,
-                    isCompleted: widget.taskToEdit?.isCompleted ?? false,
-                    projectColor: _selectedColor,
-                    isArchived: widget.taskToEdit?.isArchived ?? false,
-                  );
-
-                  if (isEditing && widget.onUpdateTask != null) {
+                  final task = viewModel.buildTask();
+                  if (widget.isEditing && widget.onUpdateTask != null) {
                     widget.onUpdateTask!(task);
                   } else {
                     widget.onAddTask(task);
                   }
-
                   Navigator.of(context).pop();
                 },
               ),
