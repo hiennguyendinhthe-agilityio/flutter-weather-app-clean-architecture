@@ -15,14 +15,30 @@ class CalendarPage extends StatefulWidget {
 
 class _CalendarPageState extends State<CalendarPage> {
   final GlobalKey _firstTaskSliverKey = GlobalKey();
-
   final ScrollController _scrollController = ScrollController();
+
+  final Map<DateTime, double> _scrollOffsets = {};
+
+  DateTime _normalizeDate(DateTime date) {
+    return DateTime(date.year, date.month, date.day);
+  }
 
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(_saveCurrentScrollOffset);
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToFirstTask());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollToFirstTask();
+    });
+  }
+
+  void _saveCurrentScrollOffset() {
+    final taskProvider = Provider.of<TaskProvider>(context, listen: false);
+    final currentDate = _normalizeDate(taskProvider.selectedDate);
+    if (_scrollController.hasClients) {
+      _scrollOffsets[currentDate] = _scrollController.offset;
+    }
   }
 
   void _scrollToFirstTask() {
@@ -34,7 +50,7 @@ class _CalendarPageState extends State<CalendarPage> {
           keyContext,
           duration: const Duration(milliseconds: 500),
           curve: Curves.easeInOut,
-          alignment: 0.5,
+          alignment: 0.0,
         );
       }
     }
@@ -43,10 +59,12 @@ class _CalendarPageState extends State<CalendarPage> {
   @override
   void dispose() {
     _scrollController.dispose();
+    _scrollController.removeListener(_saveCurrentScrollOffset);
     super.dispose();
   }
 
   void _showAddTaskBottomSheet() {
+    final taskProvider = Provider.of<TaskProvider>(context, listen: false);
     showModalBottomSheet(
       useRootNavigator: true,
       context: context,
@@ -56,9 +74,7 @@ class _CalendarPageState extends State<CalendarPage> {
         maxHeight: MediaQuery.of(context).size.height * 0.7,
       ),
       builder: (ctx) => AddTaskBottomsheet(
-        onAddTask: (task) {
-          Provider.of<TaskProvider>(ctx, listen: false).addTask(task);
-        },
+        onAddTask: (task) => taskProvider.addTask(task),
       ),
     );
   }
@@ -157,10 +173,17 @@ class _CalendarPageState extends State<CalendarPage> {
       delegate: StickyHeaderDelegate(
         selectedDate: provider.selectedDate,
         onDateSelected: (date) {
+          final normalizedDate = _normalizeDate(date);
+
           provider.setSelectedDate(date);
 
-          WidgetsBinding.instance
-              .addPostFrameCallback((_) => _scrollToFirstTask());
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (_scrollOffsets.containsKey(normalizedDate)) {
+              _scrollController.jumpTo(_scrollOffsets[normalizedDate]!);
+            } else {
+              _scrollToFirstTask();
+            }
+          });
         },
         totalTime: provider.activeTasks.fold(
           Duration.zero,

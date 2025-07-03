@@ -1,3 +1,4 @@
+// 📁 add_task_bottomsheet.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:task_management_app/data/models/task.dart';
@@ -9,188 +10,180 @@ import 'package:task_management_app/presentation/pages/calendar/widgets/project_
 import 'package:task_management_app/presentation/pages/calendar/widgets/tag_input_field.dart';
 import 'package:task_management_app/presentation/widgets/color_picker.dart';
 import 'package:task_management_app/presentation/widgets/text_field.dart';
+import 'package:uuid/uuid.dart';
 
-class AddTaskBottomsheet extends StatelessWidget {
+class AddTaskBottomsheet extends StatefulWidget {
   final Function(Task) onAddTask;
   final Task? taskToEdit;
   final Function(Task)? onUpdateTask;
+  final DateTime? selectedDate;
 
   const AddTaskBottomsheet({
     super.key,
     required this.onAddTask,
     this.taskToEdit,
     this.onUpdateTask,
+    this.selectedDate,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => TaskFormViewModel(taskToEdit: taskToEdit),
-      child: _AddTaskForm(
-        isEditing: taskToEdit != null,
-        onAddTask: onAddTask,
-        onUpdateTask: onUpdateTask,
-      ),
-    );
-  }
+  State<AddTaskBottomsheet> createState() => _AddTaskBottomsheetState();
 }
 
-class _AddTaskForm extends StatefulWidget {
-  final bool isEditing;
-  final Function(Task) onAddTask;
-  final Function(Task)? onUpdateTask;
-
-  const _AddTaskForm({
-    required this.isEditing,
-    required this.onAddTask,
-    this.onUpdateTask,
-  });
-
-  @override
-  State<_AddTaskForm> createState() => _AddTaskFormState();
-}
-
-class _AddTaskFormState extends State<_AddTaskForm> {
+class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
   final _formKey = GlobalKey<FormState>();
-  late FocusNode _titleFocusNode;
+  late TaskFormViewModel _viewModel;
+
   @override
   void initState() {
     super.initState();
-    _titleFocusNode = FocusNode();
+    _viewModel = TaskFormViewModel(
+      taskToEdit: widget.taskToEdit,
+      initialDate: widget.selectedDate,
+    );
   }
 
   @override
   void dispose() {
-    _titleFocusNode.dispose();
+    _viewModel.disposeControllers();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<TaskFormViewModel>();
-    return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(16),
-          topRight: Radius.circular(16),
-        ),
-      ),
-      padding: EdgeInsets.only(
-        left: 20,
-        right: 20,
-        top: 20,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 20,
-      ),
-      child: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 5,
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade300,
-                    borderRadius: BorderRadius.circular(10),
+    final isEditing = widget.taskToEdit != null;
+
+    return ChangeNotifierProvider.value(
+      value: _viewModel,
+      child: Consumer<TaskFormViewModel>(
+        builder: (context, model, _) => Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(16),
+              topRight: Radius.circular(16),
+            ),
+          ),
+          padding: EdgeInsets.only(
+            left: 20,
+            right: 20,
+            top: 20,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 2,
+          ),
+          child: Form(
+            key: _formKey,
+            child: ListView(
+              shrinkWrap: true,
+              children: [
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 5,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade300,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                widget.isEditing ? 'Edit Task' : 'Add New Task',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              const SizedBox(height: 24),
-              PtTextField(
-                focusNode: _titleFocusNode,
-                controller: viewModel.titleController,
-                labelText: 'I’m focusing on',
-                hintText: 'Enter task title',
-                validator: (val) => val == null || val.isEmpty
-                    ? 'Please enter a task title'
-                    : null,
-              ),
-              const SizedBox(height: 16),
-              ProjectPickerDropdown(
-                labelText: "Project",
-                initialValue: viewModel.selectedProject,
-                onChanged: viewModel.selectProject,
-              ),
-              const SizedBox(height: 16),
-              PtTextField(
-                controller: viewModel.assigneeController,
-                labelText: 'Assignee',
-                hintText: 'Enter assignee',
-                validator: (val) => val == null || val.isEmpty
-                    ? 'Please enter an assignee'
-                    : null,
-              ),
-              const SizedBox(height: 16),
-              MusicPickerDropdown(
-                labelText: 'Music (Optional)',
-                initialValue: viewModel.selectedMusic,
-                onChanged: viewModel.selectMusic,
-              ),
-              const SizedBox(height: 16),
-              PtTextField(
-                controller: viewModel.noteController,
-                labelText: 'Note',
-                hintText: 'Type here...',
-                isMultiline: true,
-              ),
-              const SizedBox(height: 16),
-              PtTagInputField(
-                labelText: 'Tag',
-                tagController: viewModel.tagController,
-                tags: viewModel.tags,
-                onAdd: viewModel.addTag,
-                onRemove: viewModel.removeTag,
-              ),
-              const SizedBox(height: 16),
-              DateTimePickerRow(
-                labelText: 'Start & End Time',
-                startDateTime: viewModel.startDateTime,
-                endDateTime: viewModel.endDateTime,
-                onPickDate: viewModel.updateStartDateTime,
-                onPickStartTime: viewModel.updateStartDateTime,
-                onPickEndTime: viewModel.updateEndDateTime,
-              ),
-              const SizedBox(height: 16),
-              ColorPicker(
-                selectedColor: viewModel.selectedColor,
-                onColorSelected: viewModel.selectColor,
-              ),
-              const SizedBox(height: 24),
-              CancelSaveButtonRow(
-                isEditing: widget.isEditing,
-                onCancel: () => Navigator.pop(context),
-                onSave: () {
-                  if (!viewModel.validateForm(_formKey)) return;
+                const SizedBox(height: 16),
+                Text(
+                  isEditing ? 'Edit Task' : 'Add New Task',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const SizedBox(height: 24),
+                PtTextField(
+                  controller: model.titleController,
+                  labelText: 'I’m focusing on',
+                  hintText: 'Enter task title',
+                  validator: (val) => val == null || val.isEmpty
+                      ? 'Please enter a task title'
+                      : null,
+                ),
+                const SizedBox(height: 16),
+                ProjectPickerDropdown(
+                  labelText: "Project",
+                  initialValue: model.selectedProject,
+                  onChanged: (project) => model.updateSelectedProject(project),
+                ),
+                const SizedBox(height: 16),
+                PtTextField(
+                  controller: model.assigneeController,
+                  labelText: 'Assignee',
+                  hintText: 'Enter assignee',
+                  validator: (val) => val == null || val.isEmpty
+                      ? 'Please enter an assignee'
+                      : null,
+                ),
+                const SizedBox(height: 16),
+                MusicPickerDropdown(
+                  labelText: 'Music (Optional)',
+                  initialValue: model.selectedMusic,
+                  onChanged: (music) => model.updateSelectedMusic(music),
+                ),
+                const SizedBox(height: 16),
+                PtTextField(
+                  controller: model.noteController,
+                  labelText: 'Note',
+                  hintText: 'Type here...',
+                  isMultiline: true,
+                ),
+                const SizedBox(height: 16),
+                PtTagInputField(
+                  labelText: 'Tag',
+                  tagController: model.tagController,
+                  tags: model.tags,
+                  onAdd: (tag) => model.addTag(tag),
+                  onRemove: (tag) => model.removeTag(tag),
+                ),
+                const SizedBox(height: 16),
+                DateTimePickerRow(
+                  labelText: 'Start & End Time',
+                  startDateTime: model.startDateTime,
+                  endDateTime: model.endDateTime,
+                  onPickDate: (dt) => model.updateDate(dt),
+                  onPickStartTime: (dt) => model.updateStartTime(dt),
+                  onPickEndTime: (dt) => model.updateEndTime(dt),
+                ),
+                const SizedBox(height: 16),
+                ColorPicker(
+                  selectedColor: model.selectedColor,
+                  onColorSelected: (color) => model.updateSelectedColor(color),
+                ),
+                const SizedBox(height: 24),
+                CancelSaveButtonRow(
+                  isEditing: isEditing,
+                  onCancel: () => Navigator.pop(context),
+                  onSave: () {
+                    if (!_formKey.currentState!.validate()) {
+                      return;
+                    }
+                    final dateTimeError = model.validateDateTime();
+                    if (dateTimeError != null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(dateTimeError),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                      return;
+                    }
 
-                  final error = viewModel.timeValidationError;
-                  if (error != null) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                          content: Text(error), backgroundColor: Colors.red),
+                    final task = model.toTask(
+                      id: const Uuid().v4(),
+                      createdAt: DateTime.now(),
                     );
-                    return;
-                  }
+                    if (isEditing && widget.onUpdateTask != null) {
+                      widget.onUpdateTask!(task);
+                    } else {
+                      widget.onAddTask(task);
+                    }
 
-                  final task = viewModel.buildTask();
-                  if (widget.isEditing && widget.onUpdateTask != null) {
-                    widget.onUpdateTask!(task);
-                  } else {
-                    widget.onAddTask(task);
-                  }
-                  Navigator.of(context).pop();
-                },
-              ),
-              const SizedBox(height: 8),
-            ],
+                    Navigator.of(context).pop();
+                  },
+                ),
+                const SizedBox(height: 8),
+              ],
+            ),
           ),
         ),
       ),

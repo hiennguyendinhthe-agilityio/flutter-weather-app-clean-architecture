@@ -12,9 +12,9 @@ class Task {
   final bool isArchived;
   final DateTime startTime;
   final DateTime endTime;
-  String? note;
-  String? musicTitle;
-  String? musicArtist;
+  final String? note;
+  final String? musicTitle;
+  final String? musicArtist;
 
   Task({
     required this.id,
@@ -25,9 +25,9 @@ class Task {
     required this.createdAt,
     required this.timeSpent,
     required this.isActive,
-    this.isCompleted = false,
+    required this.isCompleted,
     required this.projectColor,
-    this.isArchived = false,
+    required this.isArchived,
     required this.startTime,
     required this.endTime,
     this.note,
@@ -42,18 +42,14 @@ class Task {
       projectName: json['projectName'],
       assignee: json['assignee'],
       tags: List<String>.from(json['tags']),
-      createdAt: DateTime.parse(json['createdAt']),
-      timeSpent: Duration(milliseconds: json['timeSpent']),
-      isActive: json['isActive'],
-      isCompleted: json['isCompleted'],
-      projectColor: json['projectColor'],
+      createdAt: DateTime.tryParse(json['createdAt'] ?? '') ?? DateTime.now(),
+      timeSpent: Duration(milliseconds: json['timeSpent'] ?? 0),
+      isActive: json['isActive'] ?? false,
+      isCompleted: json['isCompleted'] ?? false,
+      projectColor: json['projectColor'] ?? 'blue',
       isArchived: json['isArchived'] ?? false,
-      startTime: json['startTime'] != null
-          ? DateTime.parse(json['startTime'])
-          : DateTime.now(),
-      endTime: json['endTime'] != null
-          ? DateTime.parse(json['endTime'])
-          : DateTime.now(),
+      startTime: DateTime.tryParse(json['startTime'] ?? '') ?? DateTime.now(),
+      endTime: DateTime.tryParse(json['endTime'] ?? '') ?? DateTime.now(),
       note: json['note'],
       musicTitle: json['musicTitle'],
       musicArtist: json['musicArtist'],
@@ -116,27 +112,6 @@ class Task {
       note: note ?? this.note,
       musicTitle: musicTitle ?? this.musicTitle,
       musicArtist: musicArtist ?? this.musicArtist,
-    );
-  }
-
-  fromEntity(Task task) {
-    return Task(
-      id: task.id,
-      title: task.title,
-      projectName: task.projectName,
-      assignee: task.assignee,
-      tags: task.tags,
-      createdAt: task.createdAt,
-      timeSpent: task.timeSpent,
-      isActive: task.isActive,
-      isCompleted: task.isCompleted,
-      projectColor: task.projectColor,
-      isArchived: task.isArchived,
-      startTime: task.startTime,
-      endTime: task.endTime,
-      note: task.note,
-      musicTitle: task.musicTitle,
-      musicArtist: task.musicArtist,
     );
   }
 }

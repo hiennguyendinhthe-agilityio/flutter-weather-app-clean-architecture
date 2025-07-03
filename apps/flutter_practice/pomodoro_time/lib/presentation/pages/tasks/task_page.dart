@@ -59,6 +59,7 @@ class _TaskPageState extends State<TaskPage>
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => AddTaskBottomsheet(
+        selectedDate: task.startTime,
         taskToEdit: task,
         onAddTask: (_) {},
         onUpdateTask: (updatedTask) {
@@ -98,7 +99,6 @@ class _TaskPageState extends State<TaskPage>
                         ),
                       ),
                     );
-                  taskProvider.clearError();
                 });
               }
 
@@ -198,11 +198,18 @@ class _TaskPageState extends State<TaskPage>
 
     final todayTasks = taskProvider.todayTasksList;
     final yesterdayTasks = taskProvider.yesterdayTasksList;
-    final otherTasks = taskProvider.tasksForActiveTab.where((task) {
+
+    final upcomingTasks = taskProvider.tasksForActiveTab.where((task) {
       final taskDay = DateTime(
           task.startTime.year, task.startTime.month, task.startTime.day);
-      return !taskDay.isAtSameMomentAs(today) &&
-          !taskDay.isAtSameMomentAs(yesterday);
+      return taskDay.isAfter(today);
+    }).toList()
+      ..sort((a, b) => a.startTime.compareTo(b.startTime));
+
+    final olderTasks = taskProvider.tasksForActiveTab.where((task) {
+      final taskDay = DateTime(
+          task.startTime.year, task.startTime.month, task.startTime.day);
+      return taskDay.isBefore(yesterday);
     }).toList()
       ..sort((a, b) => b.startTime.compareTo(a.startTime));
 
@@ -212,36 +219,50 @@ class _TaskPageState extends State<TaskPage>
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       children: [
-        TaskListSection(
-          onTap: (task) => _showTaskDialog(task),
-          title: 'Today',
-          tasks: todayTasks,
-          totalTime: sumTime(todayTasks),
-          sectionKeyPrefix: 'active-today',
-          onToggleTaskCompletion: toggleTask,
-          onRemoveTag: _removeTagFromTask,
-          onEditTask: _showEditTaskBottomSheet,
-        ),
-        TaskListSection(
-          title: 'Yesterday',
-          tasks: yesterdayTasks,
-          totalTime: sumTime(yesterdayTasks),
-          sectionKeyPrefix: 'active-yesterday',
-          onToggleTaskCompletion: toggleTask,
-          onRemoveTag: _removeTagFromTask,
-          onEditTask: _showEditTaskBottomSheet,
-          onTap: _showTaskDialog,
-        ),
-        TaskListSection(
-          title: 'Older / Upcoming',
-          tasks: otherTasks,
-          totalTime: sumTime(otherTasks),
-          sectionKeyPrefix: 'active-other',
-          onTap: _showTaskDialog,
-          onToggleTaskCompletion: toggleTask,
-          onRemoveTag: _removeTagFromTask,
-          onEditTask: _showEditTaskBottomSheet,
-        ),
+        if (todayTasks.isNotEmpty)
+          TaskListSection(
+            onTap: (task) => _showTaskDialog(task),
+            title: 'Today',
+            tasks: todayTasks,
+            totalTime: sumTime(todayTasks),
+            sectionKeyPrefix: 'active-today',
+            onToggleTaskCompletion: toggleTask,
+            onRemoveTag: _removeTagFromTask,
+            onEditTask: _showEditTaskBottomSheet,
+          ),
+        if (yesterdayTasks.isNotEmpty)
+          TaskListSection(
+            title: 'Yesterday',
+            tasks: yesterdayTasks,
+            totalTime: sumTime(yesterdayTasks),
+            sectionKeyPrefix: 'active-yesterday',
+            onToggleTaskCompletion: toggleTask,
+            onRemoveTag: _removeTagFromTask,
+            onEditTask: _showEditTaskBottomSheet,
+            onTap: _showTaskDialog,
+          ),
+        if (upcomingTasks.isNotEmpty)
+          TaskListSection(
+            title: 'Upcoming',
+            tasks: upcomingTasks,
+            totalTime: sumTime(upcomingTasks),
+            sectionKeyPrefix: 'active-upcoming',
+            onTap: _showTaskDialog,
+            onToggleTaskCompletion: toggleTask,
+            onRemoveTag: _removeTagFromTask,
+            onEditTask: _showEditTaskBottomSheet,
+          ),
+        if (olderTasks.isNotEmpty)
+          TaskListSection(
+            title: 'Older',
+            tasks: olderTasks,
+            totalTime: sumTime(olderTasks),
+            sectionKeyPrefix: 'active-older',
+            onTap: _showTaskDialog,
+            onToggleTaskCompletion: toggleTask,
+            onRemoveTag: _removeTagFromTask,
+            onEditTask: _showEditTaskBottomSheet,
+          ),
         const SizedBox(height: 20),
       ],
     );

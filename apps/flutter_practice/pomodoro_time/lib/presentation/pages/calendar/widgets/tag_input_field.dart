@@ -127,7 +127,7 @@ class _PtTagInputFieldState extends State<PtTagInputField> {
                           child: TextField(
                             focusNode: _textFieldFocusNode,
                             controller: widget.tagController,
-                            style: Theme.of(context).textTheme.bodyLarge,
+                            style: Theme.of(context).textTheme.titleSmall,
                             decoration: const InputDecoration(
                               hintText: 'Add tag',
                               isDense: true,
