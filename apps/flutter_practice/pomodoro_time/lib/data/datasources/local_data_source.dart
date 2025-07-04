@@ -4,7 +4,6 @@ import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:task_management_app/data/models/pomodoro.dart';
-import 'package:task_management_app/data/models/settings.dart';
 import 'package:task_management_app/data/models/task.dart';
 
 class LocalDataSourceImpl {
@@ -239,21 +238,6 @@ class LocalDataSourceImpl {
         'currentTaskId': pomodoro.currentTask?.id,
         'timestamp': DateTime.now().millisecondsSinceEpoch,
       },
-    );
-  }
-
-  Future<Settings> getSettings() async {
-    final settingsJson = sharedPreferences.getString('settings');
-    if (settingsJson != null) {
-      return Settings.fromJson(json.decode(settingsJson));
-    }
-    return const Settings();
-  }
-
-  Future<void> saveSettings(Settings settings) async {
-    await sharedPreferences.setString(
-      'settings',
-      json.encode(settings.toJson()),
     );
   }
 }

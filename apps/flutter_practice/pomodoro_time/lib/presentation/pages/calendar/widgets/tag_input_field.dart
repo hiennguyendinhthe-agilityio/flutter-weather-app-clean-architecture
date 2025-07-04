@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class PtTagInputField extends StatefulWidget {
   const PtTagInputField({
@@ -9,6 +8,7 @@ class PtTagInputField extends StatefulWidget {
     required this.onAdd,
     required this.onRemove,
     required this.labelText,
+    this.focusNode,
   });
 
   /// Controller to handle input for new tag.
@@ -25,23 +25,29 @@ class PtTagInputField extends StatefulWidget {
 
   /// Optional label text to display above the input field.
   final String? labelText;
+
+  /// Optional focus node to manage focus for the input field.
+  final FocusNode? focusNode;
   @override
   State<PtTagInputField> createState() => _PtTagInputFieldState();
 }
 
 class _PtTagInputFieldState extends State<PtTagInputField> {
-  final FocusNode _textFieldFocusNode = FocusNode();
-  final FocusNode _keyboardListenerFocusNode = FocusNode();
+  // Use the parent's focus node if provided, otherwise create and manage one internally.
+  late final FocusNode _focusNode;
 
   @override
   void initState() {
     super.initState();
+    _focusNode = widget.focusNode ?? FocusNode();
   }
 
   @override
   void dispose() {
-    _textFieldFocusNode.dispose();
-    _keyboardListenerFocusNode.dispose();
+    // Only dispose the focus node if it was created inside this widget.
+    if (widget.focusNode == null) {
+      _focusNode.dispose();
+    }
     super.dispose();
   }
 
@@ -51,17 +57,6 @@ class _PtTagInputFieldState extends State<PtTagInputField> {
       widget.onAdd(tag);
       widget.tagController.clear();
     }
-  }
-
-  KeyEventResult _handleKey(FocusNode node, KeyEvent event) {
-    if (event is KeyDownEvent &&
-        event.logicalKey == LogicalKeyboardKey.backspace &&
-        widget.tagController.text.isEmpty &&
-        widget.tags.isNotEmpty) {
-      widget.onRemove(widget.tags.last);
-      return KeyEventResult.handled;
-    }
-    return KeyEventResult.ignored;
   }
 
   @override
@@ -80,77 +75,68 @@ class _PtTagInputFieldState extends State<PtTagInputField> {
           ),
           const SizedBox(height: 4),
         ],
-        KeyboardListener(
-          focusNode: _keyboardListenerFocusNode,
-          onKeyEvent: (event) => _handleKey(_keyboardListenerFocusNode, event),
-          child: GestureDetector(
-            onTap: () {
-              // ensure keyboard focus is active for text input
-              _textFieldFocusNode.requestFocus();
-              _keyboardListenerFocusNode.requestFocus();
-            },
-            behavior: HitTestBehavior.translucent,
-            child: Stack(
-              alignment: Alignment.centerRight,
-              children: [
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.only(
-                      right: 40, left: 8, top: 8, bottom: 8),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey.shade300),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Wrap(
-                    spacing: 6,
-                    runSpacing: 6,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [
-                      ...widget.tags.map(
-                        (tag) => Chip(
-                          label: Text(tag),
-                          onDeleted: () => widget.onRemove(tag),
-                          backgroundColor: Colors.grey.shade200,
-                          deleteIcon: const Icon(Icons.close, size: 16),
-                          materialTapTargetSize:
-                              MaterialTapTargetSize.shrinkWrap,
-                          shape: RoundedRectangleBorder(
-                            side: const BorderSide(
-                                color: Colors.grey, width: 1.0),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
+        GestureDetector(
+          onTap: () => _focusNode.requestFocus(),
+          behavior: HitTestBehavior.translucent,
+          child: Stack(
+            alignment: Alignment.centerRight,
+            children: [
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.only(
+                    right: 40, left: 8, top: 8, bottom: 8),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey.shade300),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    ...widget.tags.map(
+                      (tag) => Chip(
+                        label: Text(tag),
+                        onDeleted: () => widget.onRemove(tag),
+                        backgroundColor: Colors.grey.shade200,
+                        deleteIcon: const Icon(Icons.close, size: 16),
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        shape: RoundedRectangleBorder(
+                          side:
+                              const BorderSide(color: Colors.grey, width: 1.0),
+                          borderRadius: BorderRadius.circular(5),
                         ),
                       ),
-                      SizedBox(
-                        width: 80,
-                        child: IntrinsicWidth(
-                          child: TextField(
-                            focusNode: _textFieldFocusNode,
-                            controller: widget.tagController,
-                            style: Theme.of(context).textTheme.titleSmall,
-                            decoration: const InputDecoration(
-                              hintText: 'Add tag',
-                              isDense: true,
-                              contentPadding: EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 13),
-                              border: InputBorder.none,
-                            ),
-                            onSubmitted: (_) => _handleAdd(),
+                    ),
+                    SizedBox(
+                      width: 80,
+                      child: IntrinsicWidth(
+                        child: TextField(
+                          focusNode: _focusNode,
+                          controller: widget.tagController,
+                          style: Theme.of(context).textTheme.titleSmall,
+                          decoration: const InputDecoration(
+                            hintText: 'Add tag',
+                            isDense: true,
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 13),
+                            border: InputBorder.none,
                           ),
+                          onSubmitted: (_) => _handleAdd(),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                Positioned(
-                  right: 8,
-                  child: GestureDetector(
-                    onTap: _handleAdd,
-                    child: const Icon(Icons.add, color: Colors.black, size: 24),
-                  ),
+              ),
+              Positioned(
+                right: 8,
+                child: GestureDetector(
+                  onTap: _handleAdd,
+                  child: const Icon(Icons.add, color: Colors.black, size: 24),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ],

@@ -33,6 +33,10 @@ class AddTaskBottomsheet extends StatefulWidget {
 class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
   final _formKey = GlobalKey<FormState>();
   late TaskFormViewModel _viewModel;
+  final _titleFocusNode = FocusNode();
+  final _assigneeFocusNode = FocusNode();
+  final _noteFocusNode = FocusNode();
+  final _tagFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -46,6 +50,10 @@ class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
   @override
   void dispose() {
     _viewModel.disposeControllers();
+    _titleFocusNode.dispose();
+    _assigneeFocusNode.dispose();
+    _noteFocusNode.dispose();
+    _tagFocusNode.dispose();
     super.dispose();
   }
 
@@ -73,6 +81,7 @@ class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
           child: Form(
             key: _formKey,
             child: ListView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               shrinkWrap: true,
               children: [
                 Center(
@@ -92,6 +101,7 @@ class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
                 ),
                 const SizedBox(height: 24),
                 PtTextField(
+                  focusNode: _titleFocusNode,
                   controller: model.titleController,
                   labelText: 'I’m focusing on',
                   hintText: 'Enter task title',
@@ -107,6 +117,7 @@ class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
                 ),
                 const SizedBox(height: 16),
                 PtTextField(
+                  focusNode: _assigneeFocusNode,
                   controller: model.assigneeController,
                   labelText: 'Assignee',
                   hintText: 'Enter assignee',
@@ -122,6 +133,7 @@ class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
                 ),
                 const SizedBox(height: 16),
                 PtTextField(
+                  focusNode: _noteFocusNode,
                   controller: model.noteController,
                   labelText: 'Note',
                   hintText: 'Type here...',
@@ -129,6 +141,7 @@ class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
                 ),
                 const SizedBox(height: 16),
                 PtTagInputField(
+                  focusNode: _tagFocusNode,
                   labelText: 'Tag',
                   tagController: model.tagController,
                   tags: model.tags,

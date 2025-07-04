@@ -1,3 +1,4 @@
+import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -18,18 +19,24 @@ main() async {
   final localDataSource = await LocalDataSourceImpl.create();
 
   runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (_) =>
-              TaskProvider(localDataSource: localDataSource)..loadTasks(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => PomodoroProvider(localDataSource: localDataSource)
-            ..loadLastPomodoro(),
-        ),
+    DevicePreview(
+      enabled: true,
+      tools: const [
+        ...DevicePreview.defaultTools,
       ],
-      child: const MyApp(),
+      builder: (context) => MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: (_) =>
+                TaskProvider(localDataSource: localDataSource)..loadTasks(),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => PomodoroProvider(localDataSource: localDataSource)
+              ..loadLastPomodoro(),
+          ),
+        ],
+        child: const MyApp(),
+      ),
     ),
   );
 }
@@ -40,6 +47,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      useInheritedMediaQuery: true,
+      locale: DevicePreview.locale(context),
+      builder: DevicePreview.appBuilder,
       debugShowCheckedModeBanner: false,
       title: 'Task Management App',
       theme: PtTheme.light,
