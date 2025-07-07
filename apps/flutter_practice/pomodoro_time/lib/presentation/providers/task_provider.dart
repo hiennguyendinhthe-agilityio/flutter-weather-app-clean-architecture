@@ -15,6 +15,8 @@ class TaskProvider extends ChangeNotifier {
   String? _selectedTaskId;
   DateTime _selectedDate = DateTime.now();
   List<Task> _allTasks = [];
+  String? _recentlyAddedTaskId;
+  String? get recentlyAddedTaskId => _recentlyAddedTaskId;
 
   TaskProvider({required this.localDataSource});
 
@@ -29,14 +31,50 @@ class TaskProvider extends ChangeNotifier {
       _allTasks.firstWhereOrNull((t) => t.id == _selectedTaskId);
   Task? get runningTask => _allTasks
       .firstWhereOrNull((t) => t.isActive && !t.isCompleted && !t.isArchived);
-  List<Task> get archivedTasks => _allTasks.where((t) => t.isArchived).toList();
+  List<Task> get archivedTasks => _allTasks.where((t) => t.isArchived).toList()
+    ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
   List<Task> get activeTasks =>
       _allTasks.where((t) => !t.isArchived && !t.isCompleted).toList();
   List<Task> get tasksForActiveTab =>
       _allTasks.where((t) => !t.isArchived).toList();
 
-  List<Task> get todayTasksList => _filterTasksByDay(0);
-  List<Task> get yesterdayTasksList => _filterTasksByDay(1);
+  // Getters for task sections
+  List<Task> get todayTasks {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    return tasksForActiveTab.where((task) {
+      final taskDay = DateTime(
+          task.startTime.year, task.startTime.month, task.startTime.day);
+      return taskDay.isAtSameMomentAs(today);
+    }).toList();
+  }
+
+  List<Task> get yesterdayTasks {
+    final now = DateTime.now();
+    final yesterday = DateTime(now.year, now.month, now.day)
+        .subtract(const Duration(days: 1));
+    return tasksForActiveTab.where((task) {
+      final taskDay = DateTime(
+          task.startTime.year, task.startTime.month, task.startTime.day);
+      return taskDay.isAtSameMomentAs(yesterday);
+    }).toList();
+  }
+
+  List<Task> get upcomingTasks => tasksForActiveTab.where((task) {
+        final taskDay = DateTime(
+            task.startTime.year, task.startTime.month, task.startTime.day);
+        return taskDay.isAfter(DateTime.now());
+      }).toList()
+        ..sort((a, b) => a.startTime.compareTo(b.startTime));
+
+  List<Task> get olderTasks => tasksForActiveTab.where((task) {
+        final taskDay = DateTime(
+            task.startTime.year, task.startTime.month, task.startTime.day);
+        final yesterday = DateTime.now().subtract(const Duration(days: 1));
+        return taskDay
+            .isBefore(DateTime(yesterday.year, yesterday.month, yesterday.day));
+      }).toList()
+        ..sort((a, b) => b.startTime.compareTo(a.startTime));
 
   List<Task> get tasksForSelectedDate {
     final base =
@@ -49,15 +87,9 @@ class TaskProvider extends ChangeNotifier {
       ..sort((a, b) => a.startTime.compareTo(b.startTime));
   }
 
-  List<Task> _filterTasksByDay(int subtractDays) {
-    final now = DateTime.now();
-    final base = DateTime(now.year, now.month, now.day)
-        .subtract(Duration(days: subtractDays));
-    return tasksForActiveTab.where((task) {
-      final d = DateTime(
-          task.startTime.year, task.startTime.month, task.startTime.day);
-      return d.isAtSameMomentAs(base);
-    }).toList();
+  void clearRecentlyAddedTask() {
+    _recentlyAddedTaskId = null;
+    notifyListeners();
   }
 
   void setSelectedTask(String? taskId) {
@@ -94,6 +126,8 @@ class TaskProvider extends ChangeNotifier {
     try {
       await localDataSource.saveTask(task);
       _allTasks.add(task);
+      _recentlyAddedTaskId = task.id;
+
       if (task.isActive) _trackTaskTimer(task.id);
       notifyListeners();
     } catch (e) {
@@ -141,6 +175,15 @@ class TaskProvider extends ChangeNotifier {
       isActive: task.isCompleted ? task.isActive : false,
     );
     await updateTask(updated);
+  }
+
+  Future<void> removeTagFromTask(String taskId, String tag) async {
+    final task = _allTasks.firstWhereOrNull((t) => t.id == taskId);
+    if (task == null) return;
+
+    final updatedTags = List<String>.from(task.tags)..remove(tag);
+    final updatedTask = task.copyWith(tags: updatedTags);
+    await updateTask(updatedTask);
   }
 
   Future<void> archiveTask(String taskId) async => _archiveToggle(taskId, true);

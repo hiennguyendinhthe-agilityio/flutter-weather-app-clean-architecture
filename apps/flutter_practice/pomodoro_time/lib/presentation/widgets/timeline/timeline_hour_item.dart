@@ -9,12 +9,16 @@ class TimelineHourItem extends StatelessWidget {
   final int startHour;
   final int endHour;
   final List<Task> tasks;
+  final String? highlightedTaskId;
+  final Map<String, GlobalKey>? taskKeys;
 
   const TimelineHourItem({
     Key? key,
     required this.startHour,
     required this.endHour,
     required this.tasks,
+    this.highlightedTaskId,
+    this.taskKeys,
   }) : super(key: key);
 
   @override
@@ -27,7 +31,6 @@ class TimelineHourItem extends StatelessWidget {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          // Hour markers and grid lines
           ...List.generate(totalHours, (index) {
             final hour = startHour + index;
             final topOffset = index * hourHeight;
@@ -64,8 +67,6 @@ class TimelineHourItem extends StatelessWidget {
               ),
             );
           }),
-
-          // Group overlapping tasks and layout side-by-side
           ..._buildGroupedTaskCards(context),
         ],
       ),
@@ -88,8 +89,13 @@ class TimelineHourItem extends StatelessWidget {
         final cardWidth =
             taskWidthFactor * (MediaQuery.of(context).size.width - 96);
 
+        final bool isHighlighted = task.id == highlightedTaskId;
+
+        final key = taskKeys != null ? taskKeys![task.id] : null;
+
         positionedCards.add(
           Positioned(
+            key: key,
             top: topOffset,
             left: leftOffset,
             width: cardWidth,
@@ -101,7 +107,7 @@ class TimelineHourItem extends StatelessWidget {
                   builder: (_) => TaskDetailDialog(task: task),
                 );
               },
-              child: TaskCard(task: task),
+              child: TaskCard(task: task, isHighlighted: isHighlighted),
             ),
           ),
         );

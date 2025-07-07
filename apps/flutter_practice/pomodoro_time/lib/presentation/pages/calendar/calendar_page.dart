@@ -18,6 +18,7 @@ class _CalendarPageState extends State<CalendarPage> {
   final ScrollController _scrollController = ScrollController();
 
   final Map<DateTime, double> _scrollOffsets = {};
+  final Map<String, GlobalKey> _taskKeys = {};
 
   DateTime _normalizeDate(DateTime date) {
     return DateTime(date.year, date.month, date.day);
@@ -27,6 +28,16 @@ class _CalendarPageState extends State<CalendarPage> {
   void initState() {
     super.initState();
     _scrollController.addListener(_saveCurrentScrollOffset);
+
+    final taskProvider = Provider.of<TaskProvider>(context, listen: false);
+    final today = DateTime.now();
+    final selected = _normalizeDate(taskProvider.selectedDate);
+    final normalizedToday = _normalizeDate(today);
+    if (selected != normalizedToday) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        taskProvider.setSelectedDate(normalizedToday);
+      });
+    }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollToFirstTask();
@@ -56,6 +67,21 @@ class _CalendarPageState extends State<CalendarPage> {
     }
   }
 
+  void _scrollToRecentlyAddedTask(String? taskId) {
+    if (taskId == null) return;
+    final key = _taskKeys[taskId];
+    if (key == null) return;
+    final context = key.currentContext;
+    if (context != null) {
+      Scrollable.ensureVisible(
+        context,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+        alignment: 0.1,
+      );
+    }
+  }
+
   @override
   void dispose() {
     _scrollController.dispose();
@@ -74,13 +100,29 @@ class _CalendarPageState extends State<CalendarPage> {
         maxHeight: MediaQuery.of(context).size.height * 0.7,
       ),
       builder: (ctx) => AddTaskBottomsheet(
-        onAddTask: (task) => taskProvider.addTask(task),
+        onAddTask: (task) {
+          final taskDate = DateTime(
+              task.startTime.year, task.startTime.month, task.startTime.day);
+          Provider.of<TaskProvider>(context, listen: false)
+              .setSelectedDate(taskDate);
+          taskProvider.addTask(task);
+        },
       ),
     );
   }
 
+  void _clearHighlightAfterFrame(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final taskProvider = Provider.of<TaskProvider>(context, listen: false);
+      if (taskProvider.recentlyAddedTaskId != null) {
+        taskProvider.clearRecentlyAddedTask();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    _clearHighlightAfterFrame(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 95, 219, 250),
@@ -118,6 +160,12 @@ class _CalendarPageState extends State<CalendarPage> {
             final tasksForSelectedDay = taskProvider.tasksForSelectedDate;
             final hasTasks = tasksForSelectedDay.isNotEmpty;
             final slivers = <Widget>[_buildStickyHeader(taskProvider)];
+            final highlightedTaskId = taskProvider.recentlyAddedTaskId;
+
+            _taskKeys.clear();
+            for (var task in tasksForSelectedDay) {
+              _taskKeys[task.id] = GlobalKey();
+            }
 
             if (!hasTasks) {
               slivers.add(
@@ -139,6 +187,8 @@ class _CalendarPageState extends State<CalendarPage> {
                       startHour: 0,
                       endHour: firstTaskHour,
                       tasks: const [],
+                      highlightedTaskId: highlightedTaskId,
+                      taskKeys: _taskKeys,
                     ),
                   ),
                 );
@@ -148,13 +198,21 @@ class _CalendarPageState extends State<CalendarPage> {
                 SliverToBoxAdapter(
                   key: _firstTaskSliverKey,
                   child: TimelineHourItem(
+                    highlightedTaskId: highlightedTaskId,
                     startHour: firstTaskHour,
                     endHour: 24,
                     tasks: tasksForSelectedDay,
+                    taskKeys: _taskKeys,
                   ),
                 ),
               );
             }
+
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (highlightedTaskId != null) {
+                _scrollToRecentlyAddedTask(highlightedTaskId);
+              }
+            });
 
             return CustomScrollView(
               controller: _scrollController,

@@ -7,10 +7,12 @@ class TaskCard extends StatelessWidget {
   final Task task;
   final bool isCompactMode;
   static const double _badgeHeight = 24.0;
+  final bool isHighlighted;
 
   const TaskCard({
     required this.task,
     this.isCompactMode = false,
+    this.isHighlighted = false,
     Key? key,
   }) : super(key: key);
 
@@ -32,13 +34,17 @@ class TaskCard extends StatelessWidget {
   }
 
   Widget _buildCardContent(double avatarSize, BoxConstraints constraints) {
+    final cardColor = isHighlighted ? Colors.yellow[200] : Colors.blue[100];
+    final borderColor = isHighlighted ? Colors.green : Colors.transparent;
+    final borderWidth = isHighlighted ? 3.0 : 0.0;
+
     return Container(
       width: constraints.maxWidth,
       height: constraints.maxHeight,
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: const Color(0xFFE5E7EB), width: 1),
+        color: cardColor,
+        border: Border.all(color: borderColor, width: borderWidth),
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -89,7 +95,7 @@ class TaskCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildAvatar(avatarSize),
-          const SizedBox(width: 12),
+          const SizedBox(width: 8),
           Expanded(child: _buildTextColumn(avatarSize, compact: false)),
         ],
       );
@@ -105,7 +111,7 @@ class TaskCard extends StatelessWidget {
           child: Text(
             task.assignee.isNotEmpty ? task.assignee[0].toUpperCase() : '',
             style: TextStyle(
-              fontSize: size * 0.45,
+              fontSize: size * 0.55,
               color: getColorFromName(task.projectColor),
               fontWeight: FontWeight.bold,
             ),
@@ -114,7 +120,7 @@ class TaskCard extends StatelessWidget {
       );
 
   Widget _buildTextColumn(double avatarSize, {required bool compact}) {
-    final fontSize = avatarSize * (compact ? 0.4 : 0.5);
+    final fontSize = avatarSize * (compact ? 0.6 : 0.8);
     final dotSize = avatarSize * (compact ? 0.19 : 0.2);
 
     return Column(
@@ -126,7 +132,6 @@ class TaskCard extends StatelessWidget {
           maxLines: compact ? 1 : 2,
           overflow: TextOverflow.ellipsis,
         ),
-        const SizedBox(height: 4),
         Row(
           children: [
             Container(
@@ -142,7 +147,7 @@ class TaskCard extends StatelessWidget {
               child: Text(
                 '${task.projectName} (${task.assignee})',
                 style: TextStyle(
-                    fontSize: fontSize * 0.75, color: Colors.grey[600]),
+                    fontSize: fontSize * 0.7, color: Colors.grey[600]),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),

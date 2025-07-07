@@ -55,7 +55,7 @@ class StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
             ),
             SizedBox(
               height: 60,
-              child: DateSelectorHorizontalSliver(
+              child: DateSelector(
                 selectedDate: selectedDate,
                 onDateSelected: onDateSelected,
                 totalTime: totalTime,

@@ -32,7 +32,8 @@ class _TaskPageState extends State<TaskPage>
     super.dispose();
   }
 
-  void _showAddTaskBottomSheet() {
+  void _showTaskBottomSheet({Task? taskToEdit}) {
+    final isEditing = taskToEdit != null;
     showModalBottomSheet(
       useRootNavigator: true,
       constraints: BoxConstraints(
@@ -41,27 +42,15 @@ class _TaskPageState extends State<TaskPage>
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => AddTaskBottomsheet(
+      builder: (ctx) => AddTaskBottomsheet(
+        selectedDate: taskToEdit?.startTime,
+        taskToEdit: taskToEdit,
         onAddTask: (task) {
-          context.read<TaskProvider>().addTask(task);
+          // This callback is used for both adding and updating
+          if (!isEditing) {
+            context.read<TaskProvider>().addTask(task);
+          }
         },
-      ),
-    );
-  }
-
-  void _showEditTaskBottomSheet(Task task) {
-    showModalBottomSheet(
-      useRootNavigator: true,
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.7,
-      ),
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => AddTaskBottomsheet(
-        selectedDate: task.startTime,
-        taskToEdit: task,
-        onAddTask: (_) {},
         onUpdateTask: (updatedTask) {
           context.read<TaskProvider>().updateTask(updatedTask);
         },
@@ -71,10 +60,8 @@ class _TaskPageState extends State<TaskPage>
 
   void _removeTagFromTask(String taskId, String tag) async {
     final taskProvider = context.read<TaskProvider>();
-    final task = taskProvider.allTasks.firstWhere((t) => t.id == taskId);
-    final updatedTags = List<String>.from(task.tags)..remove(tag);
-    final updatedTask = task.copyWith(tags: updatedTags);
-    await taskProvider.updateTask(updatedTask);
+    // Logic to find and update task can be moved to provider for cleaner code
+    taskProvider.removeTagFromTask(taskId, tag);
   }
 
   @override
@@ -120,7 +107,7 @@ class _TaskPageState extends State<TaskPage>
       children: [
         TaskPageHeader(
           taskCount: taskProvider.allTasks.length,
-          onAddTaskPressed: _showAddTaskBottomSheet,
+          onAddTaskPressed: () => _showTaskBottomSheet(),
         ),
         _buildTabBar(taskProvider),
         const SizedBox(height: 16),
@@ -188,81 +175,33 @@ class _TaskPageState extends State<TaskPage>
       );
     }
 
-    void toggleTask(String taskId) {
-      context.read<TaskProvider>().toggleTaskCompletion(taskId);
-    }
-
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final yesterday = today.subtract(const Duration(days: 1));
-
-    final todayTasks = taskProvider.todayTasksList;
-    final yesterdayTasks = taskProvider.yesterdayTasksList;
-
-    final upcomingTasks = taskProvider.tasksForActiveTab.where((task) {
-      final taskDay = DateTime(
-          task.startTime.year, task.startTime.month, task.startTime.day);
-      return taskDay.isAfter(today);
-    }).toList()
-      ..sort((a, b) => a.startTime.compareTo(b.startTime));
-
-    final olderTasks = taskProvider.tasksForActiveTab.where((task) {
-      final taskDay = DateTime(
-          task.startTime.year, task.startTime.month, task.startTime.day);
-      return taskDay.isBefore(yesterday);
-    }).toList()
-      ..sort((a, b) => b.startTime.compareTo(a.startTime));
-
     Duration sumTime(List<Task> tasks) => tasks.fold(
         Duration.zero, (sum, t) => sum + t.endTime.difference(t.startTime));
+
+    // Group tasks by sections for cleaner rendering
+    final sections = {
+      'Today': taskProvider.todayTasks,
+      'Yesterday': taskProvider.yesterdayTasks,
+      'Upcoming': taskProvider.upcomingTasks,
+      'Older': taskProvider.olderTasks,
+    };
 
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       children: [
-        if (todayTasks.isNotEmpty)
-          TaskListSection(
-            onTap: (task) => _showTaskDialog(task),
-            title: 'Today',
-            tasks: todayTasks,
-            totalTime: sumTime(todayTasks),
-            sectionKeyPrefix: 'active-today',
-            onToggleTaskCompletion: toggleTask,
-            onRemoveTag: _removeTagFromTask,
-            onEditTask: _showEditTaskBottomSheet,
-          ),
-        if (yesterdayTasks.isNotEmpty)
-          TaskListSection(
-            title: 'Yesterday',
-            tasks: yesterdayTasks,
-            totalTime: sumTime(yesterdayTasks),
-            sectionKeyPrefix: 'active-yesterday',
-            onToggleTaskCompletion: toggleTask,
-            onRemoveTag: _removeTagFromTask,
-            onEditTask: _showEditTaskBottomSheet,
-            onTap: _showTaskDialog,
-          ),
-        if (upcomingTasks.isNotEmpty)
-          TaskListSection(
-            title: 'Upcoming',
-            tasks: upcomingTasks,
-            totalTime: sumTime(upcomingTasks),
-            sectionKeyPrefix: 'active-upcoming',
-            onTap: _showTaskDialog,
-            onToggleTaskCompletion: toggleTask,
-            onRemoveTag: _removeTagFromTask,
-            onEditTask: _showEditTaskBottomSheet,
-          ),
-        if (olderTasks.isNotEmpty)
-          TaskListSection(
-            title: 'Older',
-            tasks: olderTasks,
-            totalTime: sumTime(olderTasks),
-            sectionKeyPrefix: 'active-older',
-            onTap: _showTaskDialog,
-            onToggleTaskCompletion: toggleTask,
-            onRemoveTag: _removeTagFromTask,
-            onEditTask: _showEditTaskBottomSheet,
-          ),
+        ...sections.entries.where((entry) => entry.value.isNotEmpty).map(
+              (entry) => TaskListSection(
+                onTap: (task) => _showTaskDialog(task),
+                title: entry.key,
+                tasks: entry.value,
+                totalTime: sumTime(entry.value),
+                sectionKeyPrefix: 'active-${entry.key.toLowerCase()}',
+                onToggleTaskCompletion: (taskId) =>
+                    context.read<TaskProvider>().toggleTaskCompletion(taskId),
+                onRemoveTag: _removeTagFromTask,
+                onEditTask: (task) => _showTaskBottomSheet(taskToEdit: task),
+              ),
+            ),
         const SizedBox(height: 20),
       ],
     );
@@ -282,12 +221,9 @@ class _TaskPageState extends State<TaskPage>
       );
     }
 
-    final sorted = List<Task>.from(taskProvider.archivedTasks)
-      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
-
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      children: sorted
+      children: taskProvider.archivedTasks
           .map((task) => TaskItem(
                 key: ValueKey('archive-${task.id}'),
                 task: task,
