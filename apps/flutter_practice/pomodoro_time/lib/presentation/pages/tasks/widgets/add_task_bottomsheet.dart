@@ -7,7 +7,7 @@ import 'package:task_management_app/presentation/pages/calendar/widgets/cancel_s
 import 'package:task_management_app/presentation/pages/calendar/widgets/date_time_picker_row.dart';
 import 'package:task_management_app/presentation/pages/calendar/widgets/music_picker_dropdown.dart';
 import 'package:task_management_app/presentation/pages/calendar/widgets/project_picker_dropdown.dart';
-import 'package:task_management_app/presentation/pages/calendar/widgets/tag_input_field.dart';
+import 'package:task_management_app/presentation/pages/tasks/widgets/tag_input_field.dart';
 import 'package:task_management_app/presentation/widgets/color_picker.dart';
 import 'package:task_management_app/presentation/widgets/text_field.dart';
 import 'package:uuid/uuid.dart';

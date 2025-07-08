@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:task_management_app/data/models/task.dart';
-import 'package:task_management_app/presentation/pages/calendar/widgets/task_card.dart';
+import 'package:task_management_app/presentation/pages/tasks/widgets/task_card.dart';
 import 'package:task_management_app/presentation/pages/tasks/widgets/task_detail_dialog.dart';
 
 const double hourHeight = 80.0;

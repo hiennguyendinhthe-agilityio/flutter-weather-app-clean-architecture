@@ -14,10 +14,6 @@ class CalendarPage extends StatefulWidget {
 }
 
 class _CalendarPageState extends State<CalendarPage> {
-  final GlobalKey _firstTaskSliverKey = GlobalKey();
-  final ScrollController _scrollController = ScrollController();
-
-  final Map<DateTime, double> _scrollOffsets = {};
   final Map<String, GlobalKey> _taskKeys = {};
 
   DateTime _normalizeDate(DateTime date) {
@@ -27,66 +23,14 @@ class _CalendarPageState extends State<CalendarPage> {
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_saveCurrentScrollOffset);
-
     final taskProvider = Provider.of<TaskProvider>(context, listen: false);
     final today = DateTime.now();
     final selected = _normalizeDate(taskProvider.selectedDate);
     final normalizedToday = _normalizeDate(today);
+
     if (selected != normalizedToday) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        taskProvider.setSelectedDate(normalizedToday);
-      });
+      WidgetsBinding.instance.addPostFrameCallback((_) {});
     }
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _scrollToFirstTask();
-    });
-  }
-
-  void _saveCurrentScrollOffset() {
-    final taskProvider = Provider.of<TaskProvider>(context, listen: false);
-    final currentDate = _normalizeDate(taskProvider.selectedDate);
-    if (_scrollController.hasClients) {
-      _scrollOffsets[currentDate] = _scrollController.offset;
-    }
-  }
-
-  void _scrollToFirstTask() {
-    final taskProvider = Provider.of<TaskProvider>(context, listen: false);
-    if (taskProvider.tasksForSelectedDate.isNotEmpty) {
-      final keyContext = _firstTaskSliverKey.currentContext;
-      if (keyContext != null) {
-        Scrollable.ensureVisible(
-          keyContext,
-          duration: const Duration(milliseconds: 500),
-          curve: Curves.easeInOut,
-          alignment: 0.0,
-        );
-      }
-    }
-  }
-
-  void _scrollToRecentlyAddedTask(String? taskId) {
-    if (taskId == null) return;
-    final key = _taskKeys[taskId];
-    if (key == null) return;
-    final context = key.currentContext;
-    if (context != null) {
-      Scrollable.ensureVisible(
-        context,
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.easeInOut,
-        alignment: 0.1,
-      );
-    }
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    _scrollController.removeListener(_saveCurrentScrollOffset);
-    super.dispose();
   }
 
   void _showAddTaskBottomSheet() {
@@ -102,7 +46,10 @@ class _CalendarPageState extends State<CalendarPage> {
       builder: (ctx) => AddTaskBottomsheet(
         onAddTask: (task) {
           final taskDate = DateTime(
-              task.startTime.year, task.startTime.month, task.startTime.day);
+            task.startTime.year,
+            task.startTime.month,
+            task.startTime.day,
+          );
           Provider.of<TaskProvider>(context, listen: false)
               .setSelectedDate(taskDate);
           taskProvider.addTask(task);
@@ -123,6 +70,7 @@ class _CalendarPageState extends State<CalendarPage> {
   @override
   Widget build(BuildContext context) {
     _clearHighlightAfterFrame(context);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 95, 219, 250),
@@ -159,13 +107,15 @@ class _CalendarPageState extends State<CalendarPage> {
 
             final tasksForSelectedDay = taskProvider.tasksForSelectedDate;
             final hasTasks = tasksForSelectedDay.isNotEmpty;
-            final slivers = <Widget>[_buildStickyHeader(taskProvider)];
             final highlightedTaskId = taskProvider.recentlyAddedTaskId;
 
             _taskKeys.clear();
             for (var task in tasksForSelectedDay) {
               _taskKeys[task.id] = GlobalKey();
             }
+
+            final slivers = <Widget>[_buildStickyHeader(taskProvider)];
+            Key? centerKey;
 
             if (!hasTasks) {
               slivers.add(
@@ -194,9 +144,15 @@ class _CalendarPageState extends State<CalendarPage> {
                 );
               }
 
+              final mainTimelineKey = GlobalKey();
+
+              if (highlightedTaskId != null) {
+                centerKey = mainTimelineKey;
+              }
+
               slivers.add(
                 SliverToBoxAdapter(
-                  key: _firstTaskSliverKey,
+                  key: mainTimelineKey,
                   child: TimelineHourItem(
                     highlightedTaskId: highlightedTaskId,
                     startHour: firstTaskHour,
@@ -208,14 +164,12 @@ class _CalendarPageState extends State<CalendarPage> {
               );
             }
 
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (highlightedTaskId != null) {
-                _scrollToRecentlyAddedTask(highlightedTaskId);
-              }
-            });
+            final pageStorageKey = PageStorageKey(
+                'calendar_scroll_${_normalizeDate(taskProvider.selectedDate).toIso8601String()}');
 
             return CustomScrollView(
-              controller: _scrollController,
+              key: pageStorageKey,
+              center: centerKey,
               physics: const BouncingScrollPhysics(),
               slivers: slivers,
             );
@@ -231,17 +185,7 @@ class _CalendarPageState extends State<CalendarPage> {
       delegate: StickyHeaderDelegate(
         selectedDate: provider.selectedDate,
         onDateSelected: (date) {
-          final normalizedDate = _normalizeDate(date);
-
           provider.setSelectedDate(date);
-
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (_scrollOffsets.containsKey(normalizedDate)) {
-              _scrollController.jumpTo(_scrollOffsets[normalizedDate]!);
-            } else {
-              _scrollToFirstTask();
-            }
-          });
         },
         totalTime: provider.activeTasks.fold(
           Duration.zero,

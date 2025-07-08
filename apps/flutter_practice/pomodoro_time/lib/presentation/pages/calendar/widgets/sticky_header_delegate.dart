@@ -75,6 +75,12 @@ class StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
   double get minExtent => 120;
 
   @override
-  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
-      true;
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
+    if (oldDelegate is! StickyHeaderDelegate) return true;
+
+    // Only rebuild if there are actual changes
+    return selectedDate != oldDelegate.selectedDate ||
+        totalTime != oldDelegate.totalTime ||
+        centerIndex != oldDelegate.centerIndex;
+  }
 }
