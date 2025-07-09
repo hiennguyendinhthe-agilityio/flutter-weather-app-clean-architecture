@@ -15,22 +15,30 @@ class CalendarPage extends StatefulWidget {
 
 class _CalendarPageState extends State<CalendarPage> {
   final Map<String, GlobalKey> _taskKeys = {};
+  final GlobalKey _mainTimelineKey = GlobalKey();
+
+  late final ScrollController _scrollController;
+
+  String? _visualHighlightId;
 
   DateTime _normalizeDate(DateTime date) {
     return DateTime(date.year, date.month, date.day);
   }
 
+  Object _getPageStorageIdentifier(DateTime date) {
+    return 'calendar_scroll_${_normalizeDate(date).toIso8601String()}';
+  }
+
   @override
   void initState() {
     super.initState();
-    final taskProvider = Provider.of<TaskProvider>(context, listen: false);
-    final today = DateTime.now();
-    final selected = _normalizeDate(taskProvider.selectedDate);
-    final normalizedToday = _normalizeDate(today);
+    _scrollController = ScrollController();
+  }
 
-    if (selected != normalizedToday) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {});
-    }
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   void _showAddTaskBottomSheet() {
@@ -58,19 +66,28 @@ class _CalendarPageState extends State<CalendarPage> {
     );
   }
 
-  void _clearHighlightAfterFrame(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final taskProvider = Provider.of<TaskProvider>(context, listen: false);
-      if (taskProvider.recentlyAddedTaskId != null) {
+  void _handleAutoScrollWithCenterKey(TaskProvider taskProvider) {
+    if (taskProvider.recentlyAddedTaskId != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+
+        final currentOffset = _scrollController.offset;
+
+        PageStorage.of(context).writeState(
+          context,
+          currentOffset,
+          identifier: _getPageStorageIdentifier(
+            taskProvider.selectedDate,
+          ),
+        );
+
         taskProvider.clearRecentlyAddedTask();
-      }
-    });
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    _clearHighlightAfterFrame(context);
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 95, 219, 250),
@@ -101,35 +118,51 @@ class _CalendarPageState extends State<CalendarPage> {
       body: CommonGradientBackground(
         child: Consumer<TaskProvider>(
           builder: (context, taskProvider, _) {
+            final newTaskId = taskProvider.recentlyAddedTaskId;
+            if (newTaskId != null && newTaskId != _visualHighlightId) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted) {
+                  setState(() {
+                    _visualHighlightId = newTaskId;
+                  });
+                }
+              });
+            }
+
+            _handleAutoScrollWithCenterKey(taskProvider);
+
             if (taskProvider.isLoading) {
               return const Center(child: CircularProgressIndicator());
             }
 
             final tasksForSelectedDay = taskProvider.tasksForSelectedDate;
             final hasTasks = tasksForSelectedDay.isNotEmpty;
-            final highlightedTaskId = taskProvider.recentlyAddedTaskId;
+            final highlightedTaskId = _visualHighlightId;
 
             _taskKeys.clear();
             for (var task in tasksForSelectedDay) {
               _taskKeys[task.id] = GlobalKey();
             }
 
-            final slivers = <Widget>[_buildStickyHeader(taskProvider)];
             Key? centerKey;
 
+            if (highlightedTaskId != null) {
+              centerKey = _mainTimelineKey;
+            }
+
+            if (newTaskId != null) {
+              centerKey = _mainTimelineKey;
+            }
+
+            final slivers = <Widget>[_buildStickyHeader(taskProvider)];
             if (!hasTasks) {
               slivers.add(
                 const SliverToBoxAdapter(
-                  child: TimelineHourItem(
-                    startHour: 0,
-                    endHour: 24,
-                    tasks: [],
-                  ),
+                  child: TimelineHourItem(startHour: 0, endHour: 24, tasks: []),
                 ),
               );
             } else {
               final firstTaskHour = tasksForSelectedDay.first.startTime.hour;
-
               if (firstTaskHour > 0) {
                 slivers.add(
                   SliverToBoxAdapter(
@@ -143,16 +176,9 @@ class _CalendarPageState extends State<CalendarPage> {
                   ),
                 );
               }
-
-              final mainTimelineKey = GlobalKey();
-
-              if (highlightedTaskId != null) {
-                centerKey = mainTimelineKey;
-              }
-
               slivers.add(
                 SliverToBoxAdapter(
-                  key: mainTimelineKey,
+                  key: _mainTimelineKey,
                   child: TimelineHourItem(
                     highlightedTaskId: highlightedTaskId,
                     startHour: firstTaskHour,
@@ -164,14 +190,16 @@ class _CalendarPageState extends State<CalendarPage> {
               );
             }
 
-            final pageStorageKey = PageStorageKey(
-                'calendar_scroll_${_normalizeDate(taskProvider.selectedDate).toIso8601String()}');
-
-            return CustomScrollView(
-              key: pageStorageKey,
-              center: centerKey,
-              physics: const BouncingScrollPhysics(),
-              slivers: slivers,
+            return PageStorage(
+              bucket: PageStorage.of(context),
+              child: CustomScrollView(
+                key: PageStorageKey(
+                    _getPageStorageIdentifier(taskProvider.selectedDate)),
+                controller: _scrollController,
+                center: centerKey,
+                physics: const BouncingScrollPhysics(),
+                slivers: slivers,
+              ),
             );
           },
         ),
@@ -185,6 +213,12 @@ class _CalendarPageState extends State<CalendarPage> {
       delegate: StickyHeaderDelegate(
         selectedDate: provider.selectedDate,
         onDateSelected: (date) {
+          if (_visualHighlightId != null) {
+            setState(() {
+              _visualHighlightId = null;
+            });
+          }
+
           provider.setSelectedDate(date);
         },
         totalTime: provider.activeTasks.fold(

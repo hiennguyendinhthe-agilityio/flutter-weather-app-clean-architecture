@@ -12,8 +12,8 @@ class DateSelector extends StatefulWidget {
     required this.onDateSelected,
     required this.totalTime,
     required this.centerIndex,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   DateSelectorState createState() => DateSelectorState();
@@ -23,11 +23,12 @@ class DateSelectorState extends State<DateSelector> {
   late final List<DateTime> _days;
   final ScrollController _scrollController = ScrollController();
 
-  // Animation state management
   bool _isAnimating = false;
   DateTime? _lastSelectedDate;
 
-  double get _totalItemWidth => 60.0 + 8.0;
+  static const double _itemWidth = 60.0;
+  static const double _itemPadding = 8.0;
+  double get _totalItemWidth => _itemWidth + _itemPadding;
 
   @override
   void initState() {
@@ -36,7 +37,9 @@ class DateSelectorState extends State<DateSelector> {
     _lastSelectedDate = widget.selectedDate;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _scrollToSelectedDate(animate: false);
+      if (mounted) {
+        _scrollToSelectedDate(animate: false);
+      }
     });
   }
 
@@ -44,10 +47,8 @@ class DateSelectorState extends State<DateSelector> {
   void didUpdateWidget(DateSelector oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    // Only animate if the date actually changed and we're not already animating
     if (!_isSameDay(widget.selectedDate, oldWidget.selectedDate) &&
         !_isAnimating) {
-      // Check if this is a user-initiated change or a programmatic change
       final isUserInitiated = _lastSelectedDate != null &&
           _isSameDay(_lastSelectedDate!, oldWidget.selectedDate);
 
@@ -55,11 +56,10 @@ class DateSelectorState extends State<DateSelector> {
         final selectedIndex =
             _days.indexWhere((day) => _isSameDay(day, widget.selectedDate));
         if (selectedIndex != -1) {
-          _scrollToIndex(selectedIndex, animate: false);
+          _scrollToIndex(selectedIndex, animate: true);
         }
       }
     }
-
     _lastSelectedDate = widget.selectedDate;
   }
 
@@ -85,13 +85,12 @@ class DateSelectorState extends State<DateSelector> {
   }
 
   Future<void> _scrollToIndex(int index, {bool animate = true}) async {
-    if (_isAnimating && animate) return; // Prevent concurrent animations
+    if (_isAnimating && animate) return;
 
     final screenWidth = MediaQuery.of(context).size.width;
     final targetOffset =
         (_totalItemWidth * index) - (screenWidth / 2) + (_totalItemWidth / 2);
 
-    // Clamp the offset to valid scroll range
     final maxScrollExtent = _scrollController.position.maxScrollExtent;
     final clampedOffset = targetOffset.clamp(0.0, maxScrollExtent);
 
@@ -114,24 +113,19 @@ class DateSelectorState extends State<DateSelector> {
   }
 
   void _onDateTap(DateTime day) {
-    // Update our tracking variable immediately
     _lastSelectedDate = day;
-
-    // Start animation for user-initiated selection
     final selectedIndex =
         _days.indexWhere((dayItem) => _isSameDay(dayItem, day));
     if (selectedIndex != -1) {
       _scrollToIndex(selectedIndex, animate: true);
     }
-
-    // Notify parent (this will trigger Provider update and rebuild)
     widget.onDateSelected(day);
   }
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 80, // item height + padding
+      height: 80,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         controller: _scrollController,
@@ -141,12 +135,12 @@ class DateSelectorState extends State<DateSelector> {
           final isSelected = _isSameDay(day, widget.selectedDate);
 
           return Padding(
-            padding: const EdgeInsets.only(right: 8),
+            padding: const EdgeInsets.only(right: _itemPadding),
             child: GestureDetector(
               onTap: () => _onDateTap(day),
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
-                width: 60.0,
+                width: _itemWidth,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(50),
@@ -155,10 +149,10 @@ class DateSelectorState extends State<DateSelector> {
                       : null,
                   boxShadow: isSelected
                       ? [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.1),
+                          const BoxShadow(
+                            color: Color.fromRGBO(0, 0, 0, 0.1),
                             blurRadius: 4,
-                            offset: const Offset(0, 2),
+                            offset: Offset(0, 2),
                           )
                         ]
                       : null,
