@@ -23,6 +23,13 @@ class ActivityScreen extends StatelessWidget {
       'Hosted a Flutter meetup.',
       'Fixed a critical bug.',
       'Mentored a junior developer.',
+      'Pushed a new commit to flutter/flutter.',
+      'Reviewed a pull request.',
+      'Published a new package on pub.dev.',
+      'Wrote an article about Advanced Slivers.',
+      'Hosted a Flutter meetup.',
+      'Fixed a critical bug.',
+      'Mentored a junior developer.',
     ];
 
     return SliverList(
@@ -30,7 +37,7 @@ class ActivityScreen extends StatelessWidget {
         return Material(
           color: Colors.transparent,
           child: ListTile(
-            leading: const Icon(CupertinoIcons.check_mark_circled),
+            leading: const Icon(CupertinoIcons.check_mark_circled_solid),
             title: Text(activities[index]),
             subtitle: Text('${index + 1} day(s) ago'),
           ),
