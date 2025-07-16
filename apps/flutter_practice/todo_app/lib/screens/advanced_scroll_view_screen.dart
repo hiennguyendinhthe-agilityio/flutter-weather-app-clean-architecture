@@ -1,99 +1,73 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shimmer_animation/shimmer_animation.dart';
-import 'package:todo_app/providers/photo_provider.dart';
-import 'package:todo_app/providers/theme_provider.dart';
-import 'package:todo_app/screens/photo_detail_screen.dart';
+import '../controllers/photo_scroll_controller.dart';
+import '../services/scroll_service.dart';
+import '../services/navigation_service.dart';
+import '../widgets/profile_header_widget.dart';
+import '../widgets/photo_grid_widget.dart';
+import '../widgets/shimmer_grid_widget.dart';
+import '../widgets/sliver_header_delegate.dart';
+import '../widgets/loading_indicator_widget.dart';
+import '../widgets/error_widget.dart' as custom;
+import '../constants/app_constants.dart';
+import '../config/theme_extensions.dart';
 
-class AdvancedScrollViewScreen extends StatefulWidget {
+class AdvancedScrollViewScreen extends StatelessWidget {
   const AdvancedScrollViewScreen({super.key});
 
   @override
-  State<AdvancedScrollViewScreen> createState() =>
-      _AdvancedScrollViewScreenState();
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        Provider<ScrollService>(create: (_) => ScrollService()),
+        Provider<NavigationService>(create: (_) => NavigationService()),
+        ChangeNotifierProvider<PhotoScrollController>(
+          create: (context) {
+            return PhotoScrollController(
+              context.read<ScrollService>(),
+            );
+          },
+        ),
+      ],
+      child: const _AdvancedScrollViewContent(),
+    );
+  }
 }
 
-class _AdvancedScrollViewScreenState extends State<AdvancedScrollViewScreen> {
-  final ScrollController _scrollController = ScrollController();
+class _AdvancedScrollViewContent extends StatefulWidget {
+  const _AdvancedScrollViewContent();
 
+  @override
+  State<_AdvancedScrollViewContent> createState() => _AdvancedScrollViewContentState();
+}
+
+class _AdvancedScrollViewContentState extends State<_AdvancedScrollViewContent> {
   @override
   void initState() {
     super.initState();
-    // Add a listener to the scroll controller to handle lazy loading.
-    _scrollController.addListener(_onScroll);
-
+    // Initialize controller after the widget is built
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<PhotoProvider>(context, listen: false).loadMoreImages();
+      context.read<PhotoScrollController>().initialize();
     });
   }
 
   @override
-  void dispose() {
-    _scrollController.removeListener(_onScroll);
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  // Callback for the scroll controller.
-  void _onScroll() {
-    final photoProvider = Provider.of<PhotoProvider>(context, listen: false);
-
-    // Trigger loading more images when the user scrolls near the end of the list.
-    if (!photoProvider.isLoading &&
-        photoProvider.hasMore &&
-        _scrollController.position.pixels >=
-            _scrollController.position.maxScrollExtent * 0.9) {
-      photoProvider.loadMoreImages();
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Consumer<PhotoProvider>(
-      builder: (context, photoProvider, child) {
+    return Consumer<PhotoScrollController>(
+      builder: (context, controller, child) {
         return CupertinoPageScaffold(
           child: CustomScrollView(
             physics: const AlwaysScrollableScrollPhysics(
               parent: BouncingScrollPhysics(),
             ),
-            controller: _scrollController,
+            controller: controller.scrollController,
             slivers: [
-              CupertinoSliverNavigationBar(
-                largeTitle: const Text('Profile'),
-                trailing: CupertinoSwitch(
-                  value: Provider.of<ThemeProvider>(context).isDarkMode,
-                  onChanged: (value) {
-                    Provider.of<ThemeProvider>(
-                      context,
-                      listen: false,
-                    ).toggleTheme();
-                  },
-                ),
-              ),
-
-              const SliverToBoxAdapter(child: _ProfileHeader()),
-
-              SliverPersistentHeader(
-                delegate: _SliverHeaderDelegate('My Photos'),
-                pinned: false,
-              ),
-
-              SliverPadding(
-                padding: const EdgeInsets.all(16.0),
-                sliver:
-                    photoProvider.imageUrls.isEmpty && photoProvider.isLoading
-                    ? _buildShimmerGrid()
-                    : _buildImageGrid(photoProvider.imageUrls),
-              ),
-
-              if (photoProvider.isLoading && photoProvider.imageUrls.isNotEmpty)
-                const SliverToBoxAdapter(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 32.0),
-                    child: Center(child: CupertinoActivityIndicator()),
-                  ),
-                ),
+              _buildNavigationBar(context),
+              const SliverToBoxAdapter(child: ProfileHeaderWidget()),
+              _buildPhotosHeader(),
+              _buildContent(context, controller),
+              _buildLoadingIndicator(controller),
+              _buildErrorWidget(context, controller),
             ],
           ),
         );
@@ -101,175 +75,77 @@ class _AdvancedScrollViewScreenState extends State<AdvancedScrollViewScreen> {
     );
   }
 
-  Widget _buildImageGrid(List<String> imageUrls) {
-    // A sliver version of GridView for displaying images.
-    return SliverGrid(
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3, // 3 items per row.
-        mainAxisSpacing: 10.0,
-        crossAxisSpacing: 10.0,
-        childAspectRatio: 1.0,
-      ),
-      // Builds grid items on demand as they scroll into view.
-      delegate: SliverChildBuilderDelegate(
-        (BuildContext context, int index) {
-          final imageUrl = imageUrls[index];
-          // The heroTag MUST match the one used in PhotoDetailScreen, which is the URL itself.
-          final heroTag = imageUrl;
-
-          // Handle taps to navigate to the detail screen.
-          return GestureDetector(
-            onTap: () {
-              // Use PageRouteBuilder for a custom transparent route transition.
-              // This is required for the swipe-to-dismiss effect to work correctly.
-              Navigator.of(context, rootNavigator: true).push(
-                PageRouteBuilder(
-                  opaque:
-                      false, // Important: Allows the underlying screen to be visible.
-                  barrierColor:
-                      Colors.transparent, // No default background color.
-                  pageBuilder: (context, animation, secondaryAnimation) {
-                    // Pass the full list of URLs and the index of the tapped image.
-                    return PhotoDetailScreen(
-                      imageUrls: imageUrls,
-                      initialIndex: index,
-                    );
-                  },
-                  // Add a fade effect for a smoother page transition.
-                  transitionsBuilder:
-                      (context, animation, secondaryAnimation, child) {
-                        return FadeTransition(opacity: animation, child: child);
-                      },
-                ),
-              );
-            },
-            // The Hero widget enables the shared element transition between screens.
-            child: Hero(
-              tag: heroTag, // The tag must be unique for each Hero.
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8.0),
-                child: Image.network(
-                  imageUrl,
-                  fit: BoxFit.cover,
-                  // Show a loading indicator for each individual image.
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return const Center(child: CupertinoActivityIndicator());
-                  },
-                ),
-              ),
-            ),
-          );
-        },
-        // Set the item count to the number of loaded images.
-        childCount: imageUrls.length,
-      ),
-    );
-  }
-
-  // Builds the shimmer loading placeholder grid.
-  Widget _buildShimmerGrid() {
-    return SliverGrid(
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        mainAxisSpacing: 10.0,
-        crossAxisSpacing: 10.0,
-        childAspectRatio: 1.0,
-      ),
-      // Build 9 placeholder items.
-      delegate: SliverChildBuilderDelegate((context, index) {
-        // Apply the shimmer effect to a simple container.
-        return Shimmer(
-          child: Container(
-            decoration: BoxDecoration(
-              color: CupertinoColors.systemGrey4,
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-          ),
-        );
-      }, childCount: 9),
-    );
-  }
-}
-
-// A dedicated stateless widget for the profile header.
-class _ProfileHeader extends StatelessWidget {
-  const _ProfileHeader();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(24.0),
-      color: CupertinoTheme.of(context).scaffoldBackgroundColor,
-      child: const Column(
-        children: [
-          SizedBox(height: 20),
-          CircleAvatar(
-            radius: 50,
-            // Use a reliable image URL for the avatar.
-            backgroundImage: NetworkImage(
-              'https://picsum.photos/seed/profile_avatar/200',
-            ),
-          ),
-          SizedBox(height: 16),
-          Text(
-            'Hien Nguyen',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: CupertinoColors.label,
-            ),
-          ),
-          SizedBox(height: 8),
-          Text(
-            'Flutter Developer | 12+ Years of Experience',
-            style: TextStyle(
-              fontSize: 16,
-              color: CupertinoColors.secondaryLabel,
-            ),
-          ),
-          SizedBox(height: 20),
-        ],
-      ),
-    );
-  }
-}
-
-// A custom delegate for creating persistent (sticky) headers.
-class _SliverHeaderDelegate extends SliverPersistentHeaderDelegate {
-  final String title;
-
-  _SliverHeaderDelegate(this.title);
-
-  @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
-    return Container(
-      color: CupertinoTheme.of(context).scaffoldBackgroundColor,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      alignment: Alignment.centerLeft,
-      child: Text(
-        title,
+  Widget _buildNavigationBar(BuildContext context) {
+    return CupertinoSliverNavigationBar(
+      largeTitle: ThemedText(
+        AppConstants.profileTitle,
         style: const TextStyle(
-          fontSize: 20,
+          fontSize: 34,
           fontWeight: FontWeight.bold,
-          color: CupertinoColors.label,
         ),
       ),
+      trailing: const ThemeToggleWidget(showLabel: false),
     );
   }
 
-  @override
-  double get maxExtent => 60.0;
+  Widget _buildPhotosHeader() {
+    return SliverPersistentHeader(
+      delegate: const SliverHeaderDelegate(title: AppConstants.photosTitle),
+      pinned: false,
+    );
+  }
 
-  @override
-  double get minExtent => 60.0;
+  Widget _buildContent(
+    BuildContext context,
+    PhotoScrollController controller,
+  ) {
+    return SliverPadding(
+      padding: const EdgeInsets.all(AppConstants.defaultPadding),
+      sliver: _getContentSliver(context, controller),
+    );
+  }
 
-  @override
-  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
-    return false;
+  Widget _getContentSliver(
+    BuildContext context,
+    PhotoScrollController controller,
+  ) {
+    if (controller.isInitialLoading) {
+      return const ShimmerGridWidget();
+    }
+
+    if (controller.imageUrls.isEmpty && controller.scrollState.error != null) {
+      return custom.ErrorWidget(
+        message: controller.scrollState.error!,
+        onRetry: controller.retryLoading,
+      );
+    }
+
+    return PhotoGridWidget(
+      imageUrls: controller.imageUrls,
+      navigationService: context.read<NavigationService>(),
+    );
+  }
+
+  Widget _buildLoadingIndicator(PhotoScrollController controller) {
+    if (!controller.isLoadingMore) {
+      return const SliverToBoxAdapter(child: SizedBox.shrink());
+    }
+
+    return const LoadingIndicatorWidget(message: 'Loading more photos...');
+  }
+
+  Widget _buildErrorWidget(
+    BuildContext context,
+    PhotoScrollController controller,
+  ) {
+    if (controller.scrollState.error == null || controller.imageUrls.isEmpty) {
+      return const SliverToBoxAdapter(child: SizedBox.shrink());
+    }
+
+    return custom.ErrorWidget(
+      message: controller.scrollState.error!,
+      onRetry: controller.retryLoading,
+      padding: const EdgeInsets.all(AppConstants.defaultPadding),
+    );
   }
 }
