@@ -1,38 +1,55 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_app/providers/theme_provider.dart';
-import 'package:todo_app/screens/main_tab_screen.dart';
+import 'package:todo_app/screens/material_main_screen.dart';
 
 void main() => runApp(
   MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (context) => ThemeProvider()),
-      // PhotoProvider merged into PhotoScrollController - no longer needed here
     ],
-    child: const MyApp(),
+    child: const MaterialTodoApp(),
   ),
 );
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MaterialTodoApp extends StatelessWidget {
+  const MaterialTodoApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Consumer<ThemeProvider>(
       builder: (context, themeProvider, child) {
-        return CupertinoApp(
-          title: 'Todo App',
+        return MaterialApp(
+          title: 'Todo App - Material Design',
           debugShowCheckedModeBanner: false,
-          theme: themeProvider.cupertinoTheme,
-          home: const MainTabScreen(),
-          builder: (context, child) {
-            // Listen to system brightness changes
-            final brightness = MediaQuery.of(context).platformBrightness;
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              themeProvider.updateSystemTheme(brightness);
-            });
-            return child!;
-          },
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+            useMaterial3: true,
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: Colors.blue,
+              brightness: themeProvider.isDarkMode ? Brightness.dark : Brightness.light,
+            ),
+            appBarTheme: const AppBarTheme(
+              centerTitle: true,
+              elevation: 0,
+            ),
+            cardTheme: CardThemeData(
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
+          darkTheme: ThemeData(
+            primarySwatch: Colors.blue,
+            useMaterial3: true,
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: Colors.blue,
+              brightness: Brightness.dark,
+            ),
+          ),
+          themeMode: themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+          home: const MaterialMainScreen(),
         );
       },
     );
