@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 
-// EXAMPLE: Problems without good State Management
 class StateProblemApp extends StatelessWidget {
   const StateProblemApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'State Management Problems',
-      home: MainScreen(),
-    );
+    return MaterialApp(title: 'State Management Problems', home: MainScreen());
   }
 }
 
@@ -24,11 +20,11 @@ class MainScreenState extends State<MainScreen> {
   int counter = 0;
   String userName = "Not logged in";
   List<String> cartItems = [];
-  
+
   @override
   Widget build(BuildContext context) {
     debugPrint("🔄 MainScreen build - Counter: $counter");
-    
+
     return Scaffold(
       appBar: AppBar(
         title: Text('State Management Problems'),
@@ -36,7 +32,6 @@ class MainScreenState extends State<MainScreen> {
       ),
       body: Column(
         children: [
-          // Header with user info
           Container(
             width: double.infinity,
             padding: EdgeInsets.all(16),
@@ -53,12 +48,10 @@ class MainScreenState extends State<MainScreen> {
               ],
             ),
           ),
-          
-          // Child screens
+
           Expanded(
             child: PageView(
               children: [
-                // Screen 1: Profile
                 ProfileWidget(
                   userName: userName,
                   onNameChanged: (newName) {
@@ -68,8 +61,7 @@ class MainScreenState extends State<MainScreen> {
                     debugPrint("👤 Name changed: $newName");
                   },
                 ),
-                
-                // Screen 2: Shopping
+
                 ShoppingWidget(
                   cartItems: cartItems,
                   onAddToCart: (item) {
@@ -85,8 +77,7 @@ class MainScreenState extends State<MainScreen> {
                     debugPrint("❌ Removed from cart: index $index");
                   },
                 ),
-                
-                // Screen 3: Counter
+
                 CounterWidget(
                   counter: counter,
                   onIncrement: () {
@@ -105,8 +96,7 @@ class MainScreenState extends State<MainScreen> {
               ],
             ),
           ),
-          
-          // Bottom navigation
+
           Container(
             height: 60,
             color: Colors.blue[100],
@@ -125,18 +115,21 @@ class MainScreenState extends State<MainScreen> {
   }
 }
 
-// Widget Profile - Cần truyền data qua props
 class ProfileWidget extends StatelessWidget {
   final String userName;
   final Function(String) onNameChanged;
-  
-  const ProfileWidget({super.key, required this.userName, required this.onNameChanged});
-  
+
+  const ProfileWidget({
+    super.key,
+    required this.userName,
+    required this.onNameChanged,
+  });
+
   @override
   Widget build(BuildContext context) {
     debugPrint("🏗️ ProfileWidget build");
     TextEditingController controller = TextEditingController(text: userName);
-    
+
     return Padding(
       padding: EdgeInsets.all(16),
       child: Column(
@@ -183,24 +176,24 @@ class ProfileWidget extends StatelessWidget {
   }
 }
 
-// Widget Shopping - Cũng cần truyền data qua props
 class ShoppingWidget extends StatelessWidget {
   final List<String> cartItems;
   final Function(String) onAddToCart;
   final Function(int) onRemoveFromCart;
-  
-  const ShoppingWidget({super.key, 
+
+  const ShoppingWidget({
+    super.key,
     required this.cartItems,
     required this.onAddToCart,
     required this.onRemoveFromCart,
   });
-  
+
   @override
   Widget build(BuildContext context) {
     debugPrint("🏗️ ShoppingWidget build - Items: ${cartItems.length}");
-    
+
     List<String> products = ['iPhone', 'Samsung', 'Laptop', 'Tablet'];
-    
+
     return Padding(
       padding: EdgeInsets.all(16),
       child: Column(
@@ -211,20 +204,20 @@ class ShoppingWidget extends StatelessWidget {
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 20),
-          
-          // Product list
+
           Text('Available Products:', style: TextStyle(fontSize: 18)),
-          ...products.map((product) => ListTile(
-            title: Text(product),
-            trailing: ElevatedButton(
-              onPressed: () => onAddToCart(product),
-              child: Text('Add'),
+          ...products.map(
+            (product) => ListTile(
+              title: Text(product),
+              trailing: ElevatedButton(
+                onPressed: () => onAddToCart(product),
+                child: Text('Add'),
+              ),
             ),
-          )),
-          
+          ),
+
           SizedBox(height: 20),
-          
-          // Shopping cart
+
           Text('Cart (${cartItems.length}):', style: TextStyle(fontSize: 18)),
           Expanded(
             child: ListView.builder(
@@ -238,7 +231,7 @@ class ShoppingWidget extends StatelessWidget {
               ),
             ),
           ),
-          
+
           Container(
             padding: EdgeInsets.all(12),
             decoration: BoxDecoration(
@@ -258,22 +251,22 @@ class ShoppingWidget extends StatelessWidget {
   }
 }
 
-// Widget Counter - Cũng vậy!
 class CounterWidget extends StatelessWidget {
   final int counter;
   final VoidCallback onIncrement;
   final VoidCallback onDecrement;
-  
-  const CounterWidget({super.key, 
+
+  const CounterWidget({
+    super.key,
     required this.counter,
     required this.onIncrement,
     required this.onDecrement,
   });
-  
+
   @override
   Widget build(BuildContext context) {
     debugPrint("🏗️ CounterWidget build - Counter: $counter");
-    
+
     return Padding(
       padding: EdgeInsets.all(16),
       child: Column(
