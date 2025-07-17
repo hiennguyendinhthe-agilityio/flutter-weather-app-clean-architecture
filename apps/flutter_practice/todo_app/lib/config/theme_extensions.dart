@@ -74,7 +74,7 @@ mixin ThemeAware {
       boxShadow: hasShadow && context.isLightMode
           ? [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: Colors.black.withValues(alpha: 0.1),
                 blurRadius: 4,
                 offset: const Offset(0, 2),
               ),
@@ -259,8 +259,8 @@ class ThemedDivider extends StatelessWidget {
       indent: indent,
       endIndent: endIndent,
       color: context.isDarkMode
-          ? Colors.white.withOpacity(0.2)
-          : Colors.black.withOpacity(0.1),
+          ? Colors.white.withValues(alpha: 0.2)
+          : Colors.black.withValues(alpha: 0.1),
     );
   }
 }

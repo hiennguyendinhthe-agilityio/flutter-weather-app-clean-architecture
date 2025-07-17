@@ -1,11 +1,13 @@
 import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class MaterialPainterDemoScreen extends StatefulWidget {
   const MaterialPainterDemoScreen({super.key});
 
   @override
-  State<MaterialPainterDemoScreen> createState() => _MaterialPainterDemoScreenState();
+  State<MaterialPainterDemoScreen> createState() =>
+      _MaterialPainterDemoScreenState();
 }
 
 class _MaterialPainterDemoScreenState extends State<MaterialPainterDemoScreen>
@@ -21,7 +23,7 @@ class _MaterialPainterDemoScreenState extends State<MaterialPainterDemoScreen>
       duration: const Duration(seconds: 3),
       vsync: this,
     );
-    
+
     if (_isAnimating) {
       _animationController.repeat();
     }
@@ -126,9 +128,9 @@ class _MaterialPainterDemoScreenState extends State<MaterialPainterDemoScreen>
           children: [
             Text(
               '🎯 Progress Indicators',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
             Row(
@@ -147,8 +149,12 @@ class _MaterialPainterDemoScreenState extends State<MaterialPainterDemoScreen>
                             painter: MaterialCircularProgressPainter(
                               progress: _progressValue,
                               animationValue: _animationController.value,
-                              primaryColor: Theme.of(context).colorScheme.primary,
-                              backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
+                              primaryColor: Theme.of(
+                                context,
+                              ).colorScheme.primary,
+                              backgroundColor: Theme.of(
+                                context,
+                              ).colorScheme.surfaceContainerHighest,
                             ),
                           ),
                         );
@@ -161,7 +167,7 @@ class _MaterialPainterDemoScreenState extends State<MaterialPainterDemoScreen>
                     ),
                   ],
                 ),
-                
+
                 // Linear Progress
                 Column(
                   children: [
@@ -173,13 +179,17 @@ class _MaterialPainterDemoScreenState extends State<MaterialPainterDemoScreen>
                           height: 20,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            color: Theme.of(context).colorScheme.surfaceVariant,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.surfaceContainerHighest,
                           ),
                           child: CustomPaint(
                             painter: MaterialLinearProgressPainter(
                               progress: _progressValue,
                               animationValue: _animationController.value,
-                              primaryColor: Theme.of(context).colorScheme.primary,
+                              primaryColor: Theme.of(
+                                context,
+                              ).colorScheme.primary,
                             ),
                           ),
                         );
@@ -209,9 +219,9 @@ class _MaterialPainterDemoScreenState extends State<MaterialPainterDemoScreen>
           children: [
             Text(
               '🌊 Wave Animation',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
             Center(
@@ -235,7 +245,9 @@ class _MaterialPainterDemoScreenState extends State<MaterialPainterDemoScreen>
                           progress: _progressValue,
                           animationValue: _animationController.value,
                           waveColor: Theme.of(context).colorScheme.primary,
-                          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                          backgroundColor: Theme.of(
+                            context,
+                          ).colorScheme.primaryContainer,
                         ),
                       );
                     },
@@ -258,9 +270,9 @@ class _MaterialPainterDemoScreenState extends State<MaterialPainterDemoScreen>
           children: [
             Text(
               '📊 Material Chart',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
             Center(
@@ -289,12 +301,12 @@ class _MaterialPainterDemoScreenState extends State<MaterialPainterDemoScreen>
           children: [
             Text(
               '🎛️ Controls',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
-            
+
             Text(
               'Progress Value: ${(_progressValue * 100).toInt()}%',
               style: Theme.of(context).textTheme.bodyLarge,
@@ -307,7 +319,7 @@ class _MaterialPainterDemoScreenState extends State<MaterialPainterDemoScreen>
                 });
               },
             ),
-            
+
             const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -360,10 +372,10 @@ class MaterialCircularProgressPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     if (size.width <= 0 || size.height <= 0) return;
-    
+
     final center = Offset(size.width / 2, size.height / 2);
     final radius = min(size.width, size.height) / 2 - 10;
-    
+
     if (radius <= 0) return;
 
     // Background circle
@@ -395,14 +407,14 @@ class MaterialCircularProgressPainter extends CustomPainter {
       final dotAngle = -pi / 2 + sweepAngle;
       final dotX = center.dx + radius * cos(dotAngle);
       final dotY = center.dy + radius * sin(dotAngle);
-      
+
       // Shadow for elevation
       final shadowPaint = Paint()
-        ..color = Colors.black.withOpacity(0.2)
+        ..color = Colors.black.withValues(alpha: 0.2)
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
-      
+
       canvas.drawCircle(Offset(dotX + 2, dotY + 2), 8, shadowPaint);
-      
+
       final dotPaint = Paint()
         ..color = Colors.white
         ..style = PaintingStyle.fill;
@@ -450,17 +462,14 @@ class MaterialLinearProgressPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     if (size.width <= 0 || size.height <= 0 || progress <= 0) return;
-    
+
     final progressWidth = size.width * progress;
     if (progressWidth <= 0) return;
 
     // Material Design gradient
     final progressPaint = Paint()
       ..shader = LinearGradient(
-        colors: [
-          primaryColor,
-          primaryColor.withOpacity(0.8),
-        ],
+        colors: [primaryColor, primaryColor.withValues(alpha: 0.8)],
       ).createShader(Rect.fromLTWH(0, 0, progressWidth, size.height))
       ..style = PaintingStyle.fill;
 
@@ -473,7 +482,7 @@ class MaterialLinearProgressPainter extends CustomPainter {
 
     // Material shimmer effect
     final shimmerPaint = Paint()
-      ..color = Colors.white.withOpacity(0.4)
+      ..color = Colors.white.withValues(alpha: 0.4)
       ..style = PaintingStyle.fill;
 
     final shimmerX = (progressWidth * animationValue) - 30;
@@ -511,8 +520,11 @@ class MaterialWavePainter extends CustomPainter {
     final backgroundPaint = Paint()
       ..color = backgroundColor
       ..style = PaintingStyle.fill;
-    
-    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), backgroundPaint);
+
+    canvas.drawRect(
+      Rect.fromLTWH(0, 0, size.width, size.height),
+      backgroundPaint,
+    );
 
     if (progress <= 0) return;
 
@@ -523,7 +535,8 @@ class MaterialWavePainter extends CustomPainter {
 
     for (double x = 0; x <= size.width; x += 2) {
       final normalizedX = x / size.width;
-      final y = waveHeight + 10 * sin(normalizedX * 4 * pi + animationValue * 2 * pi);
+      final y =
+          waveHeight + 10 * sin(normalizedX * 4 * pi + animationValue * 2 * pi);
       wavePath.lineTo(x, y);
     }
 
@@ -532,14 +545,14 @@ class MaterialWavePainter extends CustomPainter {
     wavePath.close();
 
     final wavePaint = Paint()
-      ..shader = LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [
-          waveColor.withOpacity(0.7),
-          waveColor,
-        ],
-      ).createShader(Rect.fromLTWH(0, waveHeight, size.width, size.height - waveHeight))
+      ..shader =
+          LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [waveColor.withValues(alpha: 0.7), waveColor],
+          ).createShader(
+            Rect.fromLTWH(0, waveHeight, size.width, size.height - waveHeight),
+          )
       ..style = PaintingStyle.fill;
 
     canvas.drawPath(wavePath, wavePaint);
@@ -578,10 +591,10 @@ class MaterialChartPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     if (size.width <= 0 || size.height <= 0) return;
-    
+
     final center = Offset(size.width / 2, size.height / 2);
     final radius = min(size.width, size.height) / 2 - 20;
-    
+
     if (radius <= 0) return;
 
     // Material Design color palette
@@ -593,7 +606,10 @@ class MaterialChartPainter extends CustomPainter {
     ];
 
     double startAngle = -pi / 2;
-    final total = data.fold(0.0, (sum, item) => sum + (item['value'] as double));
+    final total = data.fold(
+      0.0,
+      (sum, item) => sum + (item['value'] as double),
+    );
 
     for (var item in data) {
       final value = item['value'] as double;
@@ -602,11 +618,14 @@ class MaterialChartPainter extends CustomPainter {
 
       // Shadow for Material elevation
       final shadowPaint = Paint()
-        ..color = Colors.black.withOpacity(0.1)
+        ..color = Colors.black.withValues(alpha: 0.1)
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
 
       canvas.drawArc(
-        Rect.fromCircle(center: Offset(center.dx + 2, center.dy + 2), radius: radius),
+        Rect.fromCircle(
+          center: Offset(center.dx + 2, center.dy + 2),
+          radius: radius,
+        ),
         startAngle,
         sweepAngle,
         true,
@@ -644,10 +663,14 @@ class MaterialChartPainter extends CustomPainter {
 
     // Center circle with Material elevation
     final centerShadowPaint = Paint()
-      ..color = Colors.black.withOpacity(0.1)
+      ..color = Colors.black.withValues(alpha: 0.1)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
 
-    canvas.drawCircle(Offset(center.dx + 1, center.dy + 1), 25, centerShadowPaint);
+    canvas.drawCircle(
+      Offset(center.dx + 1, center.dy + 1),
+      25,
+      centerShadowPaint,
+    );
 
     final centerPaint = Paint()
       ..color = colorScheme.surface
