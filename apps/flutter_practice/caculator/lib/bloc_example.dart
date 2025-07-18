@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
+void main(List<String> args) {
+  runApp(BlocExampleApp());
+}
+
 // BLoC PATTERN - Business Logic Component
 // Suitable for large applications with complex logic
 
