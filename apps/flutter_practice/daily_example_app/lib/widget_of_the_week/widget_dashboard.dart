@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'widget_manager.dart';
 
-
 class WidgetDashboard extends StatefulWidget {
   const WidgetDashboard({super.key});
 
@@ -14,13 +13,13 @@ class _WidgetDashboardState extends State<WidgetDashboard> {
   final List<String> categories = [
     'All',
     'Foundation',
-    'Layout', 
+    'Layout',
     'Interactive',
     'Input',
     'Display',
     'Navigation',
     'Animation',
-    'Advanced'
+    'Advanced',
   ];
 
   @override
@@ -31,7 +30,7 @@ class _WidgetDashboardState extends State<WidgetDashboard> {
 
   @override
   Widget build(BuildContext context) {
-    final lessons = selectedCategory == 'All' 
+    final lessons = selectedCategory == 'All'
         ? WidgetManager.getAllLessons()
         : WidgetManager.getLessonsByCategory(selectedCategory);
 
@@ -67,7 +66,7 @@ class _WidgetDashboardState extends State<WidgetDashboard> {
               ],
             ),
           ),
-          
+
           // Category Filter
           Container(
             height: 50,
@@ -78,7 +77,7 @@ class _WidgetDashboardState extends State<WidgetDashboard> {
               itemBuilder: (context, index) {
                 final category = categories[index];
                 final isSelected = category == selectedCategory;
-                
+
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 4),
                   child: FilterChip(
@@ -95,7 +94,7 @@ class _WidgetDashboardState extends State<WidgetDashboard> {
               },
             ),
           ),
-          
+
           // Lessons List
           Expanded(
             child: lessons.isEmpty
@@ -138,11 +137,14 @@ class _WidgetDashboardState extends State<WidgetDashboard> {
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: lesson.isCompleted ? Colors.green : Colors.blue,
-          child: lesson.isCompleted 
+          child: lesson.isCompleted
               ? const Icon(Icons.check, color: Colors.white)
               : Text(
                   '${lesson.week}',
-                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
         ),
         title: Text(
@@ -179,9 +181,7 @@ class _WidgetDashboardState extends State<WidgetDashboard> {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => lesson.builder(),
-            ),
+            MaterialPageRoute(builder: (context) => lesson.builder()),
           ).then((_) {
             // Mark as completed when returning
             setState(() {

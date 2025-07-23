@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 
-import 'weeks/display_widgets/week_17_carousel_view.dart';
 import 'weeks/advanced_widgets/week_29_overlay_portal.dart';
+import 'weeks/display_widgets/week_17_carousel_view.dart';
 import 'weeks/foundation_widgets/week_01_container.dart';
 import 'weeks/foundation_widgets/week_02_row_column.dart';
 import 'weeks/foundation_widgets/week_03_stack.dart';
 import 'weeks/foundation_widgets/week_04_positioned.dart';
-import 'weeks/foundation_widgets/week_05_expanded_flexible.dart';
 import 'weeks/input_widgets/week_13_search_anchor.dart';
 import 'weeks/input_widgets/week_14_dropdown_menu.dart';
+import 'weeks/interactive_widgets/week_09_draggable.dart';
+import 'weeks/interactive_widgets/week_10_raw_magnifier.dart';
+import 'weeks/layout_widgets/week_05_expanded_flexible.dart';
+import 'weeks/layout_widgets/week_06_wrap.dart';
+import 'weeks/layout_widgets/week_07_listview.dart';
+import 'weeks/layout_widgets/week_08_gridview.dart';
 
 /// Model for each Widget lesson
 class WidgetLesson {
@@ -92,7 +97,7 @@ class WidgetManager {
 
     // Display Widgets (Week 17-20)
     _addDisplayWidgets();
-    
+
     // Advanced Widgets (Week 29-32)
     _addAdvancedWidgets();
   }
@@ -162,10 +167,71 @@ class WidgetManager {
         builder: () => const Week05ExpandedFlexible(),
       ),
     );
+
+    addLesson(
+      WidgetLesson(
+        id: 'week_06_wrap',
+        title: 'Wrap Widget',
+        description:
+            'Auto line-breaking layout for tags, chips, and flexible content',
+        week: 6,
+        category: 'Layout',
+        difficulty: 'Basic',
+        builder: () => const Week06Wrap(),
+      ),
+    );
+
+    addLesson(
+      WidgetLesson(
+        id: 'week_07_listview',
+        title: 'ListView Widget',
+        description:
+            'Scrollable list widget for displaying large amounts of data efficiently',
+        week: 7,
+        category: 'Layout',
+        difficulty: 'Intermediate',
+        builder: () => const Week07ListView(),
+      ),
+    );
+
+    addLesson(
+      WidgetLesson(
+        id: 'week_08_gridview',
+        title: 'GridView Widget',
+        description:
+            'Grid layout widget for galleries, dashboards, and product catalogs',
+        week: 8,
+        category: 'Layout',
+        difficulty: 'Intermediate',
+        builder: () => const Week08GridView(),
+      ),
+    );
   }
 
   static void _addInteractiveWidgets() {
-    // Will be implemented in separate files
+    addLesson(
+      WidgetLesson(
+        id: 'week_09_draggable',
+        title: 'Draggable Widget',
+        description: 'Draggable widget for reordering and repositioning items',
+        week: 9,
+        category: 'Interactive',
+        difficulty: 'Intermediate',
+        builder: () => const Week09Draggable(),
+      ),
+    );
+
+    addLesson(
+      WidgetLesson(
+        id: 'week_10_raw_magnifier',
+        title: 'RawMagnifier Widget',
+        description: 'Interactive magnifier widget for zooming in on content',
+        week: 10,
+        category: 'Interactive',
+        difficulty: 'Advanced',
+        builder: () => const Week10RawMagnifier(),
+      ),
+    );
   }
 
   static void _addInputWidgets() {
@@ -181,7 +247,7 @@ class WidgetManager {
         builder: () => const Week13SearchAnchor(),
       ),
     );
-    
+
     addLesson(
       WidgetLesson(
         id: 'week_14_dropdown_menu',
@@ -210,7 +276,7 @@ class WidgetManager {
       ),
     );
   }
-  
+
   static void _addAdvancedWidgets() {
     addLesson(
       WidgetLesson(
