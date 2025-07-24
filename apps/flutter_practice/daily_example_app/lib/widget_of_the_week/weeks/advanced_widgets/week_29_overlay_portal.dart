@@ -40,7 +40,7 @@ class _Week29OverlayPortalState extends State<Week29OverlayPortal> {
             const SizedBox(height: 24),
             _buildExamples(),
             const SizedBox(height: 24),
-            _buildExercises(),
+         
           ],
         ),
       ),
@@ -681,57 +681,4 @@ class _Week29OverlayPortalState extends State<Week29OverlayPortal> {
     );
   }
 
-  Widget _buildExercises() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '📝 Practice Exercises',
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Colors.red,
-              ),
-            ),
-            const SizedBox(height: 12),
-            const Text(
-              '1. Basic Overlay Implementation:\n'
-              '   • Create a simple tooltip overlay\n'
-              '   • Add show/hide functionality\n'
-              '   • Implement tap-to-dismiss behavior\n\n'
-              '2. Positioned Overlays:\n'
-              '   • Create overlays that position relative to trigger\n'
-              '   • Implement smart positioning (avoid screen edges)\n'
-              '   • Add arrow/pointer to overlay\n\n'
-              '3. Interactive Overlays:\n'
-              '   • Build a color picker overlay\n'
-              '   • Create a date picker overlay\n'
-              '   • Implement multi-step overlay flows\n\n'
-              '4. Advanced Overlay Features:\n'
-              '   • Add overlay animations (fade, slide, scale)\n'
-              '   • Implement overlay stacking and z-index\n'
-              '   • Create responsive overlays for different screen sizes\n'
-              '   • Add keyboard navigation and accessibility',
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                      'Great! You completed the OverlayPortal lesson!',
-                    ),
-                    backgroundColor: Colors.green,
-                  ),
-                );
-              },
-              child: const Text('Complete Lesson'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'widget_manager.dart';
 
 class WidgetDashboard extends StatefulWidget {
@@ -16,8 +17,9 @@ class _WidgetDashboardState extends State<WidgetDashboard> {
     'Layout',
     'Interactive',
     'Input',
-    'Display',
+    'Async',
     'Navigation',
+    'Display',
     'Animation',
     'Advanced',
   ];
@@ -179,6 +181,7 @@ class _WidgetDashboardState extends State<WidgetDashboard> {
         ),
         trailing: const Icon(Icons.arrow_forward_ios),
         onTap: () {
+          debugPrint('Lesson tapped: ${lesson.title}');
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => lesson.builder()),

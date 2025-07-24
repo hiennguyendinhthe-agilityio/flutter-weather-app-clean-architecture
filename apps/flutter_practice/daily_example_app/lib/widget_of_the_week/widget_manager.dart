@@ -1,6 +1,9 @@
+import 'package:daily_example_app/widget_of_the_week/weeks/interactive_widgets/week_11_hero.dart';
+import 'package:daily_example_app/widget_of_the_week/weeks/interactive_widgets/week_12_transform.dart';
 import 'package:flutter/material.dart';
 
 import 'weeks/advanced_widgets/week_29_overlay_portal.dart';
+import 'weeks/async_widgets/week_15_future_builder.dart';
 import 'weeks/display_widgets/week_17_carousel_view.dart';
 import 'weeks/foundation_widgets/week_01_container.dart';
 import 'weeks/foundation_widgets/week_02_row_column.dart';
@@ -14,6 +17,7 @@ import 'weeks/layout_widgets/week_05_expanded_flexible.dart';
 import 'weeks/layout_widgets/week_06_wrap.dart';
 import 'weeks/layout_widgets/week_07_listview.dart';
 import 'weeks/layout_widgets/week_08_gridview.dart';
+import 'weeks/navigation_widgets/week_16_navigation_bar.dart';
 
 /// Model for each Widget lesson
 class WidgetLesson {
@@ -92,8 +96,14 @@ class WidgetManager {
     // Interactive Widgets (Week 9-12)
     _addInteractiveWidgets();
 
-    // Input Widgets (Week 13-16)
+    // Input Widgets (Week 13-14)
     _addInputWidgets();
+
+    // Async Widgets (Week 15)
+    _addAsyncWidgets();
+
+    // Navigation Widgets (Week 16)
+    _addNavigationWidgets();
 
     // Display Widgets (Week 17-20)
     _addDisplayWidgets();
@@ -232,6 +242,31 @@ class WidgetManager {
         builder: () => const Week10RawMagnifier(),
       ),
     );
+
+    addLesson(
+      WidgetLesson(
+        id: 'week_11_hero',
+        title: 'Hero Widget',
+        description: 'reate hero animations between screens',
+        week: 11,
+        category: 'Interactive',
+        difficulty: 'Basic',
+        builder: () => const Week11Hero(),
+      ),
+    );
+
+    addLesson(
+      WidgetLesson(
+        id: 'week_12_transform',
+        title: 'Transform Widget',
+        description:
+            'Apply transformations like rotation, scaling, and translation',
+        week: 12,
+        category: 'Interactive',
+        difficulty: 'Intermediate',
+        builder: () => const Week12Transform(),
+      ),
+    );
   }
 
   static void _addInputWidgets() {
@@ -258,6 +293,36 @@ class WidgetManager {
         category: 'Input',
         difficulty: 'Basic',
         builder: () => const Week14DropdownMenu(),
+      ),
+    );
+  }
+
+  static void _addAsyncWidgets() {
+    addLesson(
+      WidgetLesson(
+        id: 'week_15_future_builder',
+        title: 'FutureBuilder Widget',
+        description:
+            'Handle async operations with Future objects, loading states, and error handling',
+        week: 15,
+        category: 'Async',
+        difficulty: 'Intermediate',
+        builder: () => const Week15FutureBuilder(),
+      ),
+    );
+  }
+
+  static void _addNavigationWidgets() {
+    addLesson(
+      WidgetLesson(
+        id: 'week_16_navigation_bar',
+        title: 'NavigationBar Widget',
+        description:
+            'Material 3 bottom navigation with modern design and responsive patterns',
+        week: 16,
+        category: 'Navigation',
+        difficulty: 'Basic',
+        builder: () => const Week16NavigationBar(),
       ),
     );
   }

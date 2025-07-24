@@ -71,7 +71,6 @@ class _Week17CarouselViewState extends State<Week17CarouselView> {
             const SizedBox(height: 24),
             _buildExamples(),
             const SizedBox(height: 24),
-            _buildExercises(),
           ],
         ),
       ),
@@ -486,60 +485,6 @@ class _Week17CarouselViewState extends State<Week17CarouselView> {
       ),
       child: const Center(
         child: Icon(Icons.image, color: Colors.white, size: 24),
-      ),
-    );
-  }
-
-  Widget _buildExercises() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '📝 Practice Exercises',
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Colors.red,
-              ),
-            ),
-            const SizedBox(height: 12),
-            const Text(
-              '1. Basic Carousel Implementation:\n'
-              '   • Create a simple image carousel\n'
-              '   • Add navigation dots indicator\n'
-              '   • Implement tap-to-view functionality\n\n'
-              '2. Product Carousel:\n'
-              '   • Build an e-commerce product carousel\n'
-              '   • Add product details overlay\n'
-              '   • Implement add-to-cart functionality\n\n'
-              '3. Auto-playing Carousel:\n'
-              '   • Create auto-advancing carousel\n'
-              '   • Add pause on user interaction\n'
-              '   • Implement infinite scrolling\n\n'
-              '4. Advanced Carousel Features:\n'
-              '   • Add zoom functionality on tap\n'
-              '   • Implement lazy loading for images\n'
-              '   • Add swipe gestures and animations\n'
-              '   • Create thumbnail navigation',
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                      'Great! You completed the CarouselView lesson!',
-                    ),
-                    backgroundColor: Colors.green,
-                  ),
-                );
-              },
-              child: const Text('Complete Lesson'),
-            ),
-          ],
-        ),
       ),
     );
   }
