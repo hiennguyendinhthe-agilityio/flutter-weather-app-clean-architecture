@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'core/di/injection.dart';
+import 'pages/api_demo_page.dart';
 import 'pages/di_demo_page.dart';
-import 'services/counter_service.dart';
+import 'pages/mockapi_demo_page.dart';
+import 'pages/provider_demo_page.dart';
+import 'providers/counter_provider.dart';
+import 'providers/user_provider.dart';
 import 'services/logger_service.dart';
 
 void main() {
@@ -15,13 +20,23 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'DI Learning App',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<CounterProvider>(
+          create: (_) => getIt<CounterProvider>(),
+        ),
+        ChangeNotifierProvider<UserProvider>(
+          create: (_) => getIt<UserProvider>(),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'Flutter Learning App',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        home: const MyHomePage(title: 'Flutter Learning Demo'),
       ),
-      home: const MyHomePage(title: 'Dependency Injection Demo'),
     );
   }
 }
@@ -36,38 +51,25 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late final CounterService _counterService;
   late final LoggerService _loggerService;
 
   @override
   void initState() {
     super.initState();
-
-    _counterService = getIt<CounterService>();
     _loggerService = getIt<LoggerService>();
-
-    _loggerService.logInfo('MyHomePage initialized');
+    _loggerService.logInfo('MyHomePage initialized with Provider');
   }
 
   void _incrementCounter() {
-    setState(() {
-      _counterService.increment();
-      _loggerService.log('Counter incremented to ${_counterService.count}');
-    });
+    context.read<CounterProvider>().increment();
   }
 
   void _decrementCounter() {
-    setState(() {
-      _counterService.decrement();
-      _loggerService.log('Counter decremented to ${_counterService.count}');
-    });
+    context.read<CounterProvider>().decrement();
   }
 
   void _resetCounter() {
-    setState(() {
-      _counterService.reset();
-      _loggerService.log('Counter reset to ${_counterService.count}');
-    });
+    context.read<CounterProvider>().reset();
   }
 
   @override
@@ -81,12 +83,39 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text('DI Counter Demo:', style: TextStyle(fontSize: 18)),
-            const SizedBox(height: 20),
-            Text(
-              '${_counterService.count}',
-              style: Theme.of(context).textTheme.headlineLarge,
+            const Text(
+              'Provider Counter Demo:',
+              style: TextStyle(fontSize: 18),
             ),
+            const SizedBox(height: 20),
+
+            Consumer<CounterProvider>(
+              builder: (context, counterProvider, child) {
+                return Column(
+                  children: [
+                    Text(
+                      '${counterProvider.count}',
+                      style: Theme.of(context).textTheme.headlineLarge,
+                    ),
+                    if (counterProvider.isLoading)
+                      const Padding(
+                        padding: EdgeInsets.only(top: 8.0),
+                        child: CircularProgressIndicator(),
+                      ),
+                    if (counterProvider.hasError)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Text(
+                          counterProvider.errorMessage!,
+                          style: const TextStyle(color: Colors.red),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                  ],
+                );
+              },
+            ),
+
             const SizedBox(height: 40),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -105,6 +134,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ],
             ),
+
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                context.read<CounterProvider>().loadCounterFromServer();
+              },
+              child: const Text('Load from Server'),
+            ),
+
             const SizedBox(height: 40),
             ElevatedButton(
               onPressed: () {
@@ -115,14 +153,61 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               child: const Text('DI Registration Types Demo'),
             ),
+
+            const SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ProviderDemoPage(),
+                  ),
+                );
+              },
+              child: const Text('Provider Patterns Demo'),
+            ),
+
+            const SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ApiDemoPage()),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('🚀 API Integration Demo'),
+            ),
+
+            const SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MockApiDemoPage(),
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green.shade700,
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('🌐 MockAPI CRUD Demo'),
+            ),
+
             const SizedBox(height: 20),
             const Text(
-              'Check the console for logs!',
+              'Provider Auto Change Detection Demo!',
               style: TextStyle(
                 fontSize: 14,
                 fontStyle: FontStyle.italic,
                 color: Colors.grey,
               ),
+              textAlign: TextAlign.center,
             ),
           ],
         ),
