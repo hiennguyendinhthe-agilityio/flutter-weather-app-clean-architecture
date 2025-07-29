@@ -1,0 +1,26 @@
+include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    # Strict linting rules for better code quality
+    prefer_single_quotes: true
+    require_trailing_commas: true
+    sort_constructors_first: true
+    sort_unnamed_constructors_first: true
+    always_declare_return_types: true
+    avoid_print: true
+    avoid_unnecessary_containers: true
+    prefer_const_constructors: true
+    prefer_const_literals_to_create_immutables: true
+    prefer_final_fields: true
+    prefer_final_in_for_each: true
+    prefer_final_locals: true
+    use_key_in_widget_constructors: true
+
+analyzer:
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+    - "**/*.config.dart"
+  errors:
+    invalid_annotation_target: ignore

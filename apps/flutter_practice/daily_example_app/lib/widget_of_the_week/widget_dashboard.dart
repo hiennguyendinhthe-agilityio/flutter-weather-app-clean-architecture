@@ -44,58 +44,8 @@ class _WidgetDashboardState extends State<WidgetDashboard> {
       ),
       body: Column(
         children: [
-          // Progress Bar
-          Container(
-            padding: const EdgeInsets.all(16),
-            color: Colors.blue.shade50,
-            child: Column(
-              children: [
-                Text(
-                  'Learning Progress',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                const SizedBox(height: 8),
-                LinearProgressIndicator(
-                  value: WidgetManager.getProgress(),
-                  backgroundColor: Colors.grey.shade300,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  '${(WidgetManager.getProgress() * 100).toInt()}% completed',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-              ],
-            ),
-          ),
-
-          // Category Filter
-          Container(
-            height: 50,
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: categories.length,
-              itemBuilder: (context, index) {
-                final category = categories[index];
-                final isSelected = category == selectedCategory;
-
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
-                  child: FilterChip(
-                    label: Text(category),
-                    selected: isSelected,
-                    onSelected: (selected) {
-                      setState(() {
-                        selectedCategory = category;
-                      });
-                    },
-                    selectedColor: Colors.blue.shade100,
-                  ),
-                );
-              },
-            ),
-          ),
+          _buildProgressBar(context),
+          _buildCategoryFilter(),
 
           // Lessons List
           Expanded(
@@ -128,6 +78,61 @@ class _WidgetDashboardState extends State<WidgetDashboard> {
                   ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildProgressBar(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      color: Colors.blue.shade50,
+      child: Column(
+        children: [
+          Text(
+            'Learning Progress',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          const SizedBox(height: 8),
+          LinearProgressIndicator(
+            value: WidgetManager.getProgress(),
+            backgroundColor: Colors.grey.shade300,
+            valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            '${(WidgetManager.getProgress() * 100).toInt()}% completed',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCategoryFilter() {
+    return Container(
+      height: 50,
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: categories.length,
+        itemBuilder: (context, index) {
+          final category = categories[index];
+          final isSelected = category == selectedCategory;
+
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: FilterChip(
+              label: Text(category),
+              selected: isSelected,
+              onSelected: (selected) {
+                setState(() {
+                  selectedCategory = category;
+                });
+              },
+              selectedColor: Colors.blue.shade100,
+            ),
+          );
+        },
       ),
     );
   }

@@ -38,6 +38,18 @@ dependencies:
   # Dependency Injection
   get_it: ^8.0.2
   injectable: ^2.5.0
+  
+  # State Management
+  provider: ^6.1.2
+  
+  # HTTP Client & API Integration
+  dio: ^5.7.0
+  json_annotation: ^4.9.0
+  
+  # Security & Encryption
+  crypto: ^3.0.5
+  flutter_secure_storage: ^9.2.2
+  patrol: ^3.18.0
 
 dev_dependencies:
   flutter_test:
@@ -53,6 +65,14 @@ dev_dependencies:
   # Code generation for injectable
   injectable_generator: ^2.6.2
   build_runner: ^2.4.13
+  
+  # JSON serialization
+  json_serializable: ^6.8.0
+  
+  # Testing
+  mocktail: ^1.0.4
+  integration_test:
+    sdk: flutter
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
