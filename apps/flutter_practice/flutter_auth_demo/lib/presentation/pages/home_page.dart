@@ -25,6 +25,7 @@ class HomePage extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
+      key: const Key('homePage'),
       backgroundColor: theme.colorScheme.surface,
       appBar: AppBar(
         title: const Text('Home'),
@@ -158,11 +159,11 @@ class HomePage extends StatelessWidget {
                         ),
                         const SizedBox(height: 12),
 
-                        // Created At
+                        // Created At (since createdAt is now nullable, show current date)
                         _buildInfoRow(
                           context,
                           'Member Since',
-                          _formatDate(user.createdAt),
+                          _formatDate(user.createdAt ?? DateTime.now()),
                           Icons.calendar_today_outlined,
                         ),
                       ],

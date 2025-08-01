@@ -6,7 +6,6 @@ import '../providers/user_provider.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/error_message.dart';
 import '../widgets/loading_button.dart';
-import 'login_page.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -64,18 +63,14 @@ class _SignUpPageState extends State<SignUpPage> {
       // Navigate to login page after a short delay
       Future.delayed(const Duration(seconds: 2), () {
         if (mounted) {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const LoginPage()),
-          );
+          Navigator.of(context).pushReplacementNamed('/login');
         }
       });
     }
   }
 
   void _navigateToLogin() {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => const LoginPage()),
-    );
+    Navigator.of(context).pushReplacementNamed('/login');
   }
 
   @override
@@ -83,6 +78,7 @@ class _SignUpPageState extends State<SignUpPage> {
     final theme = Theme.of(context);
     
     return Scaffold(
+      key: const Key('signupPage'),
       backgroundColor: theme.colorScheme.surface,
       body: SafeArea(
         child: SingleChildScrollView(
@@ -151,6 +147,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
                 // Name Field
                 CustomTextField(
+                  key: const Key('nameField'),
                   label: 'Full Name',
                   controller: _nameController,
                   validator: Validators.validateName,
@@ -161,6 +158,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
                 // Email Field
                 CustomTextField(
+                  key: const Key('emailField'),
                   label: 'Email',
                   controller: _emailController,
                   validator: Validators.validateEmail,
@@ -172,6 +170,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
                 // Password Field
                 CustomTextField(
+                  key: const Key('passwordField'),
                   label: 'Password',
                   controller: _passwordController,
                   validator: Validators.validatePassword,

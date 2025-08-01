@@ -4,22 +4,25 @@ part 'api_user.g.dart';
 
 @JsonSerializable()
 class ApiUser {
-  final String id;
-  @JsonKey(name: 'createdAt')
-  final DateTime createdAt;
-  final String name;
-  final String avatar;
-  final String email;
-
   const ApiUser({
     required this.id,
-    required this.createdAt,
     required this.name,
-    required this.avatar,
     required this.email,
+    this.avatar = '',
+    this.createdAt,
   });
 
-  factory ApiUser.fromJson(Map<String, dynamic> json) => _$ApiUserFromJson(json);
+  factory ApiUser.fromJson(Map<String, dynamic> json) =>
+      _$ApiUserFromJson(json);
+  final String id;
+  final String name;
+  final String email;
+  @JsonKey(defaultValue: '')
+  final String avatar;
+
+  // Optional fields from MockAPI that we don't need for auth
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  final DateTime? createdAt;
 
   Map<String, dynamic> toJson() => _$ApiUserToJson(this);
 

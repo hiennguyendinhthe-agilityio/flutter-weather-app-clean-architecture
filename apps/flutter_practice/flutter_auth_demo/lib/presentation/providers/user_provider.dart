@@ -9,6 +9,7 @@ import '../../data/services/auth_service.dart';
 @singleton
 class UserProvider extends ChangeNotifier {
   UserProvider(this._authService);
+
   final AuthService _authService;
 
   // State variables
@@ -43,6 +44,7 @@ class UserProvider extends ChangeNotifier {
 
   /// Logs in a user with email and password
   Future<bool> login(String email, String password) async {
+    debugPrint('🚀 UserProvider.login() called');
     try {
       _setAuthState(AuthState.loading);
       _clearError();
@@ -51,20 +53,27 @@ class UserProvider extends ChangeNotifier {
       _currentUser = user;
       _setAuthState(AuthState.authenticated);
 
+      debugPrint(
+        '✅ UserProvider: Login successful, state set to authenticated',
+      );
       return true;
     } on ValidationException catch (e) {
+      debugPrint('❌ UserProvider: ValidationException - ${e.message}');
       _setError(e.message);
       _setAuthState(AuthState.unauthenticated);
       return false;
     } on AuthException catch (e) {
+      debugPrint('❌ UserProvider: AuthException - ${e.message}');
       _setError(e.message);
       _setAuthState(AuthState.unauthenticated);
       return false;
     } on NetworkException catch (e) {
+      debugPrint('❌ UserProvider: NetworkException - ${e.message}');
       _setError(e.message);
       _setAuthState(AuthState.error);
       return false;
     } catch (e) {
+      debugPrint('❌ UserProvider: Unexpected error - $e');
       _setError('An unexpected error occurred during login');
       _setAuthState(AuthState.error);
       return false;

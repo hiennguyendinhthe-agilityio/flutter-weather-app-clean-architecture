@@ -6,7 +6,6 @@ import '../providers/user_provider.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/error_message.dart';
 import '../widgets/loading_button.dart';
-import 'signup_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -41,7 +40,7 @@ class _LoginPageState extends State<LoginPage> {
     }
 
     final userProvider = context.read<UserProvider>();
-    
+
     final success = await userProvider.login(
       _emailController.text.trim(),
       _passwordController.text,
@@ -54,16 +53,15 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _navigateToSignUp() {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => const SignUpPage()),
-    );
+    Navigator.of(context).pushReplacementNamed('/signup');
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Scaffold(
+      key: const Key('loginPage'),
       backgroundColor: theme.colorScheme.surface,
       body: SafeArea(
         child: SingleChildScrollView(
@@ -74,7 +72,7 @@ class _LoginPageState extends State<LoginPage> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const SizedBox(height: 60),
-                
+
                 // Header
                 Text(
                   'Welcome Back',
@@ -101,6 +99,7 @@ class _LoginPageState extends State<LoginPage> {
                       return Column(
                         children: [
                           ErrorMessage(
+                            key: const Key('errorMessage'),
                             message: userProvider.errorMessage!,
                             onDismiss: () {
                               userProvider.clearError();
@@ -116,6 +115,7 @@ class _LoginPageState extends State<LoginPage> {
 
                 // Email Field
                 CustomTextField(
+                  key: const Key('emailField'),
                   label: 'Email',
                   controller: _emailController,
                   validator: Validators.validateEmail,
@@ -127,6 +127,7 @@ class _LoginPageState extends State<LoginPage> {
 
                 // Password Field
                 CustomTextField(
+                  key: const Key('passwordField'),
                   label: 'Password',
                   controller: _passwordController,
                   validator: (value) {
@@ -139,7 +140,9 @@ class _LoginPageState extends State<LoginPage> {
                   prefixIcon: const Icon(Icons.lock_outline),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      _obscurePassword ? Icons.visibility : Icons.visibility_off,
+                      _obscurePassword
+                          ? Icons.visibility
+                          : Icons.visibility_off,
                     ),
                     onPressed: _togglePasswordVisibility,
                   ),
@@ -151,6 +154,7 @@ class _LoginPageState extends State<LoginPage> {
                 Consumer<UserProvider>(
                   builder: (context, userProvider, child) {
                     return LoadingButton(
+                      key: const Key('signInButton'),
                       text: 'Sign In',
                       onPressed: _handleLogin,
                       isLoading: userProvider.isLoading,
@@ -167,10 +171,13 @@ class _LoginPageState extends State<LoginPage> {
                     Text(
                       'Don\'t have an account? ',
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                        color: theme.colorScheme.onSurface.withValues(
+                          alpha: 0.7,
+                        ),
                       ),
                     ),
                     GestureDetector(
+                      key: const Key('signUpLink'),
                       onTap: _navigateToSignUp,
                       child: Text(
                         'Sign Up',

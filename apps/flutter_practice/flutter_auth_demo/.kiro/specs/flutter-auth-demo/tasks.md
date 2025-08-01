@@ -87,7 +87,7 @@
   - Implement authentication status checking on app startup
   - _Requirements: 5.1, 5.2_
 
-- [ ] 14. Write unit tests for UserProvider
+- [x] 14. Write unit tests for UserProvider
   - Create test file for UserProvider with mocktail setup
   - Mock AuthService and StorageService dependencies
   - Write tests for login success and failure scenarios
@@ -95,7 +95,7 @@
   - Test logout functionality and state changes
   - _Requirements: 6.1, 6.2_
 
-- [ ] 15. Implement integration tests for authentication flow
+- [x] 15. Implement integration tests for authentication flow
   - Set up patrol testing framework
   - Write end-to-end test for successful login flow
   - Test navigation between screens during authentication

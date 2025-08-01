@@ -29,6 +29,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Flutter Auth Demo',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
@@ -54,10 +55,15 @@ class AuthWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<UserProvider>(
       builder: (context, userProvider, child) {
+        debugPrint(
+          '🔄 AuthWrapper: Current auth state = ${userProvider.authState}',
+        );
+
         // Handle authentication status checking on app startup
         switch (userProvider.authState) {
           case AuthState.initial:
           case AuthState.loading:
+            debugPrint('⏳ AuthWrapper: Showing loading screen');
             // Show loading screen while checking authentication status
             return const Scaffold(
               body: Center(
@@ -73,11 +79,15 @@ class AuthWrapper extends StatelessWidget {
             );
 
           case AuthState.authenticated:
+            debugPrint('✅ AuthWrapper: User authenticated, showing HomePage');
             // User is authenticated, show home page
             return const HomePage();
 
           case AuthState.unauthenticated:
           case AuthState.error:
+            debugPrint(
+              '❌ AuthWrapper: User not authenticated, showing LoginPage',
+            );
             // User is not authenticated or error occurred, show login page
             return const LoginPage();
         }

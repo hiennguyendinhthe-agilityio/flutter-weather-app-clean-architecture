@@ -1,0 +1,46 @@
+# Patrol configuration file
+# This file configures Patrol testing framework for the Flutter Auth Demo app
+
+app_name: Flutter Auth Demo
+package_name: com.example.flutter_auth_demo
+
+# Android configuration
+android:
+  package_name: com.example.flutter_auth_demo
+  
+# iOS configuration  
+ios:
+  bundle_id: com.example.flutterAuthDemo
+
+# Test configuration
+test:
+  # Timeout for individual tests (in seconds)
+  timeout: 120
+  
+  # Whether to take screenshots on test failure
+  take_screenshots_on_failure: true
+  
+  # Directory to save screenshots
+  screenshots_dir: screenshots
+  
+  # Whether to record videos of test runs
+  record_video: false
+
+# Device configuration
+devices:
+  # Preferred device for testing
+  android:
+    - "Pixel_7_API_34"
+  ios:
+    - "iPhone 15 Pro"
+
+# Patrol specific settings
+patrol:
+  # Whether to use native automation (recommended for real device testing)
+  use_native_automation: true
+  
+  # Logging level (debug, info, warning, error)
+  log_level: info
+  
+  # Whether to clear app data before each test
+  clear_data_before_test: true
