@@ -46,9 +46,25 @@ dependencies:
 
   # Local Storage
   shared_preferences: ^2.2.3
+  flutter_secure_storage: ^9.2.2
+
+  
 
   # JSON Serialization
   json_annotation: ^4.9.0
+  android_intent_plus: ^5.3.0
+  
+  # Cross-platform URL launcher
+  url_launcher: ^6.3.1
+  
+  # Device info
+  device_info_plus: ^11.1.0
+  
+  # App settings
+  app_settings: ^5.1.1
+  
+  # Customer.io for marketing automation
+  customer_io: ^2.4.2
 
 dev_dependencies:
   flutter_test:

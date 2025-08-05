@@ -1,12 +1,6 @@
 import 'package:flutter/material.dart';
 
 class ErrorMessage extends StatelessWidget {
-  final String message;
-  final VoidCallback? onDismiss;
-  final bool showIcon;
-  final EdgeInsetsGeometry? margin;
-  final EdgeInsetsGeometry? padding;
-
   const ErrorMessage({
     super.key,
     required this.message,
@@ -15,6 +9,11 @@ class ErrorMessage extends StatelessWidget {
     this.margin,
     this.padding,
   });
+  final String message;
+  final VoidCallback? onDismiss;
+  final bool showIcon;
+  final EdgeInsetsGeometry? margin;
+  final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context) {
@@ -26,18 +25,12 @@ class ErrorMessage extends StatelessWidget {
       decoration: BoxDecoration(
         color: theme.colorScheme.errorContainer,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: theme.colorScheme.error.withOpacity(0.3),
-        ),
+        border: Border.all(color: theme.colorScheme.error.withOpacity(0.3)),
       ),
       child: Row(
         children: [
           if (showIcon) ...[
-            Icon(
-              Icons.error_outline,
-              color: theme.colorScheme.error,
-              size: 20,
-            ),
+            Icon(Icons.error_outline, color: theme.colorScheme.error, size: 20),
             const SizedBox(width: 12),
           ],
           Expanded(
@@ -66,12 +59,6 @@ class ErrorMessage extends StatelessWidget {
 }
 
 class SuccessMessage extends StatelessWidget {
-  final String message;
-  final VoidCallback? onDismiss;
-  final bool showIcon;
-  final EdgeInsetsGeometry? margin;
-  final EdgeInsetsGeometry? padding;
-
   const SuccessMessage({
     super.key,
     required this.message,
@@ -80,6 +67,11 @@ class SuccessMessage extends StatelessWidget {
     this.margin,
     this.padding,
   });
+  final String message;
+  final VoidCallback? onDismiss;
+  final bool showIcon;
+  final EdgeInsetsGeometry? margin;
+  final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context) {
@@ -91,9 +83,7 @@ class SuccessMessage extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.green.shade50,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: Colors.green.withOpacity(0.3),
-        ),
+        border: Border.all(color: Colors.green.withOpacity(0.3)),
       ),
       child: Row(
         children: [
@@ -117,11 +107,7 @@ class SuccessMessage extends StatelessWidget {
             const SizedBox(width: 8),
             GestureDetector(
               onTap: onDismiss,
-              child: Icon(
-                Icons.close,
-                color: Colors.green.shade700,
-                size: 18,
-              ),
+              child: Icon(Icons.close, color: Colors.green.shade700, size: 18),
             ),
           ],
         ],

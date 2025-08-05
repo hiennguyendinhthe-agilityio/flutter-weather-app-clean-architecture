@@ -1,9 +1,8 @@
 /// Base exception class for all application exceptions
 abstract class AppException implements Exception {
+  const AppException(this.message, [this.code]);
   final String message;
   final String? code;
-
-  const AppException(this.message, [this.code]);
 
   @override
   String toString() => 'AppException: $message';
@@ -19,9 +18,8 @@ class NetworkException extends AppException {
 
 /// Exception thrown when API operations fail
 class ApiException extends AppException {
-  final int? statusCode;
-
   const ApiException(super.message, [super.code, this.statusCode]);
+  final int? statusCode;
 
   @override
   String toString() => 'ApiException: $message (Status: $statusCode)';

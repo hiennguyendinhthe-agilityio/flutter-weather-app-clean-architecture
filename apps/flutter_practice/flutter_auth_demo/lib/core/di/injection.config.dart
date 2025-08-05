@@ -16,6 +16,14 @@ import 'package:flutter_auth_demo/data/services/auth_service.dart' as _i393;
 import 'package:flutter_auth_demo/data/services/storage_service.dart' as _i629;
 import 'package:flutter_auth_demo/presentation/providers/user_provider.dart'
     as _i302;
+import 'package:flutter_auth_demo/services/android_intent_service.dart'
+    as _i889;
+import 'package:flutter_auth_demo/services/cross_platform_integration_service.dart'
+    as _i426;
+import 'package:flutter_auth_demo/services/ios_integration_service.dart'
+    as _i128;
+import 'package:flutter_auth_demo/services/secure_storage_service.dart'
+    as _i534;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
@@ -33,10 +41,25 @@ extension GetItInjectableX on _i174.GetIt {
       preResolve: true,
     );
     gh.singleton<_i361.Dio>(() => registerModule.dio);
+    gh.singleton<_i889.AndroidIntentService>(
+      () => _i889.AndroidIntentService(),
+    );
+    gh.singleton<_i128.IOSIntegrationService>(
+      () => _i128.IOSIntegrationService(),
+    );
+    gh.singleton<_i534.SecureStorageService>(
+      () => _i534.SecureStorageService(),
+    );
     gh.singleton<_i629.StorageService>(
       () => _i629.StorageService(gh<_i460.SharedPreferences>()),
     );
     gh.singleton<_i868.ApiClient>(() => _i868.ApiClient(gh<_i361.Dio>()));
+    gh.singleton<_i426.CrossPlatformIntegrationService>(
+      () => _i426.CrossPlatformIntegrationService(
+        gh<_i889.AndroidIntentService>(),
+        gh<_i128.IOSIntegrationService>(),
+      ),
+    );
     gh.singleton<_i393.AuthService>(
       () =>
           _i393.AuthService(gh<_i868.ApiClient>(), gh<_i629.StorageService>()),

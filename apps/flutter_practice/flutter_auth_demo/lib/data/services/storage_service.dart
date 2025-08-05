@@ -8,12 +8,11 @@ import '../models/api_user.dart';
 
 @singleton
 class StorageService {
+  StorageService(this._prefs);
   final SharedPreferences _prefs;
 
   static const String _userKey = 'user_data';
   static const String _tokenKey = 'auth_token';
-
-  StorageService(this._prefs);
 
   Future<void> saveUser(ApiUser user) async {
     try {
@@ -28,7 +27,7 @@ class StorageService {
     try {
       final userJson = _prefs.getString(_userKey);
       if (userJson == null) return null;
-      
+
       final userMap = jsonDecode(userJson) as Map<String, dynamic>;
       return ApiUser.fromJson(userMap);
     } catch (e) {

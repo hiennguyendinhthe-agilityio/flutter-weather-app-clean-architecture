@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_auth_demo/screens/advanced_adroid_intent_demo_screen.dart';
+import 'package:flutter_auth_demo/screens/android_intent_demo_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'core/di/injection.dart';
@@ -7,6 +9,10 @@ import 'presentation/pages/home_page.dart';
 import 'presentation/pages/login_page.dart';
 import 'presentation/pages/signup_page.dart';
 import 'presentation/providers/user_provider.dart';
+import 'screens/advanced_security_demo_screen.dart';
+import 'screens/cross_platform_demo_screen.dart';
+import 'screens/ios_integration_demo_screen.dart';
+import 'screens/secure_storage_demo_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,6 +48,15 @@ class MyApp extends StatelessWidget {
           '/login': (context) => const LoginPage(),
           '/signup': (context) => const SignUpPage(),
           '/home': (context) => const HomePage(),
+          '/secure-storage-demo': (context) => const SecureStorageDemoScreen(),
+          '/advanced-security-demo': (context) =>
+              const AdvancedSecurityDemoScreen(),
+          '/android-intent-demo': (context) => const AndroidIntentDemoScreen(),
+          '/advanced-android-intent-demo': (context) =>
+              const AdvancedAndroidIntentDemoScreen(),
+          '/ios-integration-demo': (context) =>
+              const IOSIntegrationDemoScreen(),
+          '/cross-platform-demo': (context) => const CrossPlatformDemoScreen(),
         },
       ),
     );

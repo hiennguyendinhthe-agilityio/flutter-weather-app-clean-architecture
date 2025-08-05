@@ -1,17 +1,6 @@
 import 'package:flutter/material.dart';
 
 class LoadingButton extends StatelessWidget {
-  final String text;
-  final VoidCallback? onPressed;
-  final bool isLoading;
-  final bool isEnabled;
-  final Widget? icon;
-  final Color? backgroundColor;
-  final Color? foregroundColor;
-  final double? width;
-  final double height;
-  final EdgeInsetsGeometry? padding;
-
   const LoadingButton({
     super.key,
     required this.text,
@@ -25,6 +14,16 @@ class LoadingButton extends StatelessWidget {
     this.height = 56,
     this.padding,
   });
+  final String text;
+  final VoidCallback? onPressed;
+  final bool isLoading;
+  final bool isEnabled;
+  final Widget? icon;
+  final Color? backgroundColor;
+  final Color? foregroundColor;
+  final double? width;
+  final double height;
+  final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context) {
@@ -39,8 +38,12 @@ class LoadingButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor ?? theme.colorScheme.primary,
           foregroundColor: foregroundColor ?? theme.colorScheme.onPrimary,
-          disabledBackgroundColor: theme.colorScheme.onSurface.withOpacity(0.12),
-          disabledForegroundColor: theme.colorScheme.onSurface.withOpacity(0.38),
+          disabledBackgroundColor: theme.colorScheme.onSurface.withOpacity(
+            0.12,
+          ),
+          disabledForegroundColor: theme.colorScheme.onSurface.withOpacity(
+            0.38,
+          ),
           elevation: isButtonEnabled ? 2 : 0,
           shadowColor: theme.colorScheme.shadow,
           shape: RoundedRectangleBorder(
@@ -65,10 +68,7 @@ class LoadingButton extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    if (icon != null) ...[
-                      icon!,
-                      const SizedBox(width: 8),
-                    ],
+                    if (icon != null) ...[icon!, const SizedBox(width: 8)],
                     Text(
                       text,
                       style: theme.textTheme.labelLarge?.copyWith(
