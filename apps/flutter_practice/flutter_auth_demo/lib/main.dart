@@ -11,6 +11,8 @@ import 'presentation/pages/signup_page.dart';
 import 'presentation/providers/user_provider.dart';
 import 'screens/advanced_security_demo_screen.dart';
 import 'screens/cross_platform_demo_screen.dart';
+import 'screens/encryption_demo_screen.dart';
+import 'screens/file_package_demo_screen.dart';
 import 'screens/ios_integration_demo_screen.dart';
 import 'screens/secure_storage_demo_screen.dart';
 
@@ -57,6 +59,8 @@ class MyApp extends StatelessWidget {
           '/ios-integration-demo': (context) =>
               const IOSIntegrationDemoScreen(),
           '/cross-platform-demo': (context) => const CrossPlatformDemoScreen(),
+          '/encryption-demo': (context) => const EncryptionDemoScreen(),
+          '/file-package-demo': (context) => const FilePackageDemoScreen(),
         },
       ),
     );

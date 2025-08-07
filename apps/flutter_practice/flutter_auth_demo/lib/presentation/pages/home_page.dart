@@ -73,8 +73,9 @@ class HomePage extends StatelessWidget {
                         // Avatar
                         CircleAvatar(
                           radius: 40,
-                          backgroundColor: theme.colorScheme.primary
-                              .withOpacity(0.1),
+                          backgroundColor: theme.colorScheme.primary.withValues(
+                            alpha: 1,
+                          ),
                           backgroundImage: user.avatar.isNotEmpty
                               ? NetworkImage(user.avatar)
                               : null,
@@ -102,7 +103,9 @@ class HomePage extends StatelessWidget {
                         Text(
                           'You have successfully logged in',
                           style: theme.textTheme.bodyLarge?.copyWith(
-                            color: theme.colorScheme.onSurface.withOpacity(0.7),
+                            color: theme.colorScheme.onSurface.withValues(
+                              alpha: 7,
+                            ),
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -194,7 +197,9 @@ class HomePage extends StatelessWidget {
                         Text(
                           'Explore the features of flutter_secure_storage for securely storing sensitive data.',
                           style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.colorScheme.onSurface.withOpacity(0.7),
+                            color: theme.colorScheme.onSurface.withValues(
+                              alpha: 7,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 20),
@@ -246,6 +251,57 @@ class HomePage extends StatelessWidget {
                 ),
                 const SizedBox(height: 32),
 
+                // Encryption Demo Section
+                Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '🔐 Encryption Demo',
+                          style: theme.textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: theme.colorScheme.onSurface,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Learn how to use AES encryption to protect sensitive data like passwords before storing them locally.',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.onSurface.withValues(
+                              alpha: 7,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+
+                        // Encryption Demo Button
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton.icon(
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/encryption-demo');
+                            },
+                            icon: const Icon(Icons.enhanced_encryption),
+                            label: const Text('Encryption Demo'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.indigo,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 32),
+
                 // Android Intent Demo Section
                 Card(
                   elevation: 2,
@@ -268,7 +324,9 @@ class HomePage extends StatelessWidget {
                         Text(
                           'Discover how to use Android Intents to interact with the system and other applications.',
                           style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.colorScheme.onSurface.withOpacity(0.7),
+                            color: theme.colorScheme.onSurface.withValues(
+                              alpha: 7,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 20),
@@ -342,7 +400,9 @@ class HomePage extends StatelessWidget {
                         Text(
                           'Explore how to interact with the iOS system using URL Schemes and native integrations.',
                           style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.colorScheme.onSurface.withOpacity(0.7),
+                            color: theme.colorScheme.onSurface.withValues(
+                              alpha: 7,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 20),
@@ -394,7 +454,9 @@ class HomePage extends StatelessWidget {
                         Text(
                           'A demo of cross-platform integration with automatic platform detection and appropriate API usage.',
                           style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.colorScheme.onSurface.withOpacity(0.7),
+                            color: theme.colorScheme.onSurface.withValues(
+                              alpha: 7,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 20),
@@ -413,6 +475,76 @@ class HomePage extends StatelessWidget {
                             label: const Text('Cross-Platform Demo'),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.purple,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 32),
+
+                // File Demo Section
+                Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '📁 File System Demo',
+                          style: theme.textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: theme.colorScheme.onSurface,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Learn how to work with files in Flutter - read, write, append, and manage file operations.',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.onSurface.withValues(
+                              alpha: 7,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+
+                        // File Demo Button
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton.icon(
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/file-demo');
+                            },
+                            icon: const Icon(Icons.folder),
+                            label: const Text('Basic File Demo (dart:io)'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.orange,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(height: 12),
+
+                        // File Package Demo Button
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton.icon(
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/file-package-demo');
+                            },
+                            icon: const Icon(Icons.folder_special),
+                            label: const Text('Advanced File Demo (file: ^7.0.1)'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.deepOrange,
                               foregroundColor: Colors.white,
                               padding: const EdgeInsets.symmetric(vertical: 12),
                             ),
@@ -446,7 +578,9 @@ class HomePage extends StatelessWidget {
                         Text(
                           'Explore Customer.io integration for user analytics, event tracking, and marketing automation.',
                           style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.colorScheme.onSurface.withOpacity(0.7),
+                            color: theme.colorScheme.onSurface.withValues(
+                              alpha: 7,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 20),
@@ -456,10 +590,7 @@ class HomePage extends StatelessWidget {
                           width: double.infinity,
                           child: ElevatedButton.icon(
                             onPressed: () {
-                              Navigator.pushNamed(
-                                context,
-                                '/customer-io-demo',
-                              );
+                              Navigator.pushNamed(context, '/customer-io-demo');
                             },
                             icon: const Icon(Icons.analytics),
                             label: const Text('Customer.io Demo'),
@@ -513,7 +644,7 @@ class HomePage extends StatelessWidget {
               Text(
                 label,
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurface.withOpacity(0.6),
+                  color: theme.colorScheme.onSurface.withValues(alpha: 6),
                   fontWeight: FontWeight.w500,
                 ),
               ),
