@@ -14,7 +14,7 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.6
-  intl: ^0.19.0
+  intl: ^0.18.0
   
   talker: ^4.4.1 
   
@@ -27,10 +27,7 @@ dependencies:
   flutter_bloc: ^8.1.6
 
     # Sync form with BLoC
-  flutter_form_bloc:
-    git:
-      url: https://github.com/Cavin6080/form_bloc.git
-      path: packages/flutter_form_bloc
+  flutter_form_bloc: ^0.31.0
 
     # Navigation and routing
   go_router: 14.1.4
@@ -94,7 +91,7 @@ dev_dependencies:
   flutter_lints: ^3.0.0
 
   # intl_utils is a dart library that generates Dart localization code from ARB file. Generated code relies on Intl library.
-  intl_utils: 2.8.7
+  intl_utils: ^2.8.8
 
   google_fonts: ^5.0.0
 
