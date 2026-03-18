@@ -12,6 +12,7 @@ class LoadingSniper extends StatefulWidget {
 class _LoadingSniperState extends State<LoadingSniper>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
+  late Animation<double> animation;
 
   @override
   void initState() {
@@ -21,6 +22,13 @@ class _LoadingSniperState extends State<LoadingSniper>
       vsync: this,
       duration: const Duration(seconds: 2),
     )..repeat();
+
+    animation = Tween<double>(begin: 0, end: 300).animate(_controller)
+      ..addListener(() {
+        setState(() {
+          // The state that has changed here is the animation object's value.
+        });
+      });
   }
 
   @override
@@ -42,8 +50,8 @@ class _LoadingSniperState extends State<LoadingSniper>
             );
           },
           child: Container(
-            width: 100,
-            height: 100,
+            width: animation.value,
+            height: animation.value,
             decoration: BoxDecoration(
               border: Border.all(width: 10, color: Colors.purple),
               color: Colors.purple,
