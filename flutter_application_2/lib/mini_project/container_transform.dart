@@ -23,8 +23,7 @@ const List<Article> articles = [
     id: 'flutter',
     title: 'Flutter 3.0 Released',
     category: 'Technology',
-    content:
-        'Flutter 3.0 brings major improvements to performance, '
+    content: 'Flutter 3.0 brings major improvements to performance, '
         'adds support for all 6 platforms simultaneously, and introduces '
         'Material Design 3. The new release focuses on stability and '
         'developer experience with hundreds of bug fixes.\n\n'
@@ -37,8 +36,7 @@ const List<Article> articles = [
     id: 'animation',
     title: 'Animation Deep Dive',
     category: 'Tutorial',
-    content:
-        'Understanding Flutter animations from the ground up. '
+    content: 'Understanding Flutter animations from the ground up. '
         'This comprehensive guide covers implicit animations, explicit '
         'animations, physics-based motion, and custom painters.\n\n'
         'Learn how AnimationController, Tween, and CurvedAnimation '
@@ -50,8 +48,7 @@ const List<Article> articles = [
     id: 'performance',
     title: 'Performance Tips',
     category: 'Best Practices',
-    content:
-        'Top 10 performance tips every Flutter developer should know. '
+    content: 'Top 10 performance tips every Flutter developer should know. '
         'From const constructors to RepaintBoundary, these techniques '
         'will help you achieve 60fps on any device.\n\n'
         'Covers widget rebuilds, layout thrashing, image caching, '
@@ -85,57 +82,51 @@ class ContainerTransformDemo extends StatelessWidget {
 
           return Hero(
             tag: 'article-${article.id}',
+            flightShuttleBuilder: (
+              flightContext,
+              animation,
+              flightDirection,
+              fromHeroContext,
+              toHeroContext,
+            ) {
+              return AnimatedBuilder(
+                animation: animation,
+                builder: (context, child) {
+                  final borderRadius = BorderRadiusTween(
+                    begin: BorderRadius.circular(20),
+                    end: BorderRadius.zero,
+                  ).evaluate(animation);
 
-            flightShuttleBuilder:
-                (
-                  flightContext,
-                  animation,
-                  flightDirection,
-                  fromHeroContext,
-                  toHeroContext,
-                ) {
-                  return AnimatedBuilder(
-                    animation: animation,
-                    builder: (context, child) {
-                      final borderRadius = BorderRadiusTween(
-                        begin: BorderRadius.circular(20),
-                        end: BorderRadius.zero,
-                      ).evaluate(animation);
-
-                      return Material(
+                  return Material(
+                    borderRadius: borderRadius,
+                    clipBehavior: Clip.antiAlias,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: article.color,
                         borderRadius: borderRadius,
-                        clipBehavior: Clip.antiAlias,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: article.color,
-                            borderRadius: borderRadius,
+                      ),
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          Opacity(
+                            opacity: animation.value,
+                            child: _buildDetailContent(article),
                           ),
-
-                          child: Stack(
-                            fit: StackFit.expand,
-                            children: [
-                              Opacity(
-                                opacity: animation.value,
-                                child: _buildDetailContent(article),
-                              ),
-
-                              Opacity(
-                                opacity: 1 - animation.value,
-                                child: _buildCardContent(article),
-                              ),
-                            ],
+                          Opacity(
+                            opacity: 1 - animation.value,
+                            child: _buildCardContent(article),
                           ),
-                        ),
-                      );
-                    },
+                        ],
+                      ),
+                    ),
                   );
                 },
-
+              );
+            },
             child: GestureDetector(
               onTap: () {
                 Navigator.push(context, _containerTransformRoute(article));
               },
-
               child: Container(
                 margin: const EdgeInsets.only(bottom: 14),
                 height: 120,
@@ -310,7 +301,6 @@ class ArticleDetailScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-
                   Positioned(
                     top: 8,
                     left: 16,
@@ -346,7 +336,6 @@ Route _containerTransformRoute(Article article) {
     reverseTransitionDuration: const Duration(milliseconds: 450),
     pageBuilder: (context, animation, secondaryAnimation) =>
         ArticleDetailScreen(article: article),
-
     transitionsBuilder: (context, animation, secondaryAnimation, child) =>
         child,
   );

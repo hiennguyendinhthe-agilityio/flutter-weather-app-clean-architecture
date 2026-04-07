@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/mini_project/tinder_style_swipe_cards/card_data.dart';
+
+import 'card_data.dart';
 
 class TinderSwipeScreen extends StatefulWidget {
   const TinderSwipeScreen({super.key});
@@ -80,7 +81,6 @@ class _TinderSwipeScreenState extends State<TinderSwipeScreen> {
                     ),
                   ),
                   const Spacer(),
-
                   if (_history.isNotEmpty)
                     GestureDetector(
                       onTap: _onUndo,
@@ -102,7 +102,6 @@ class _TinderSwipeScreenState extends State<TinderSwipeScreen> {
                 ],
               ),
             ),
-
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Row(
@@ -114,13 +113,11 @@ class _TinderSwipeScreenState extends State<TinderSwipeScreen> {
                     icon: Icons.close,
                   ),
                   const Spacer(),
-
                   Text(
                     '${_cards.length} cards left',
                     style: TextStyle(color: Colors.grey.shade500, fontSize: 13),
                   ),
                   const Spacer(),
-
                   _buildCounter(
                     count: _likeCount,
                     label: 'Like',
@@ -130,13 +127,10 @@ class _TinderSwipeScreenState extends State<TinderSwipeScreen> {
                 ],
               ),
             ),
-
             const SizedBox(height: 20),
-
             Expanded(
               child: _cards.isEmpty ? _buildEmptyState() : _buildCardStack(),
             ),
-
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 24),
               child: Row(
@@ -150,14 +144,12 @@ class _TinderSwipeScreenState extends State<TinderSwipeScreen> {
                         ? null
                         : () => _onCardSwiped(_cards[0], false),
                   ),
-
                   _buildActionButton(
                     icon: Icons.refresh,
                     color: Colors.grey,
                     size: 44,
                     onTap: _onReset,
                   ),
-
                   _buildActionButton(
                     icon: Icons.favorite,
                     color: Colors.green,
@@ -180,7 +172,6 @@ class _TinderSwipeScreenState extends State<TinderSwipeScreen> {
 
     return Stack(
       alignment: Alignment.center,
-
       children: visibleCards
           .asMap()
           .entries
@@ -414,8 +405,7 @@ class _SwipeCardState extends State<SwipeCard>
   void _flyOut({required bool isRight}) {
     final endX = isRight ? _flyOutDistance : -_flyOutDistance;
 
-    final endY =
-        _position.dy +
+    final endY = _position.dy +
         (_velocity.dy / _velocity.dx.abs() * endX.abs()).clamp(-300.0, 300.0);
 
     _positionAnimation = Tween<Offset>(
@@ -459,7 +449,6 @@ class _SwipeCardState extends State<SwipeCard>
             clipBehavior: Clip.none,
             children: [
               _buildCardContent(opacity: 1.0),
-
               Positioned(
                 top: 30,
                 left: 20,
@@ -489,7 +478,6 @@ class _SwipeCardState extends State<SwipeCard>
                   ),
                 ),
               ),
-
               Positioned(
                 top: 30,
                 right: 20,
@@ -562,9 +550,7 @@ class _SwipeCardState extends State<SwipeCard>
               ),
               child: Icon(widget.cardData.icon, color: Colors.white, size: 52),
             ),
-
             const SizedBox(height: 24),
-
             Text(
               widget.cardData.name,
               style: const TextStyle(
@@ -573,9 +559,7 @@ class _SwipeCardState extends State<SwipeCard>
                 fontWeight: FontWeight.bold,
               ),
             ),
-
             const SizedBox(height: 8),
-
             Text(
               widget.cardData.role,
               style: TextStyle(
@@ -583,9 +567,7 @@ class _SwipeCardState extends State<SwipeCard>
                 fontSize: 16,
               ),
             ),
-
             const SizedBox(height: 24),
-
             Wrap(
               spacing: 8,
               runSpacing: 8,
@@ -612,9 +594,7 @@ class _SwipeCardState extends State<SwipeCard>
                 );
               }).toList(),
             ),
-
             const SizedBox(height: 30),
-
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
