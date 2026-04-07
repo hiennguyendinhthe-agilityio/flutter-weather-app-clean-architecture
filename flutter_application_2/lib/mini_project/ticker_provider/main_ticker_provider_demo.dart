@@ -1,0 +1,16 @@
+import 'package:flutter/material.dart';
+
+import 'ticker_provider_demo.dart';
+
+void main(List<String> args) {
+  runApp(MainTickerProviderDemo());
+}
+
+class MainTickerProviderDemo extends StatelessWidget {
+  const MainTickerProviderDemo({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(home: TickerProviderDemo());
+  }
+}

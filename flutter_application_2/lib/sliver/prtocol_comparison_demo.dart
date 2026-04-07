@@ -1,0 +1,647 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+
+void main() => runApp(const MyApp());
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: ProtocolComparisonScreen(),
+    );
+  }
+}
+
+// ════════════════════════════════════════════════
+// SCREEN: So sánh Box vs Sliver Protocol
+// ════════════════════════════════════════════════
+class ProtocolComparisonScreen extends StatefulWidget {
+  const ProtocolComparisonScreen({super.key});
+
+  @override
+  State<ProtocolComparisonScreen> createState() =>
+      _ProtocolComparisonScreenState();
+}
+
+class _ProtocolComparisonScreenState
+    extends State<ProtocolComparisonScreen> {
+
+  // Dùng ScrollController để đọc scroll position
+  final ScrollController _scrollController = ScrollController();
+  double _scrollOffset = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(() {
+      setState(() {
+        _scrollOffset = _scrollController.offset;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    // Tính toán giả lập SliverConstraints
+    // (Minh họa những gì Sliver nhận được)
+    const appBarExpandedHeight = 200.0;
+    const appBarPinnedHeight = 56.0;
+
+    final appBarScrolled = _scrollOffset
+        .clamp(0, appBarExpandedHeight - appBarPinnedHeight);
+    final currentAppBarHeight =
+        appBarExpandedHeight - appBarScrolled;
+
+    // paintExtent của AppBar
+    final appBarPaintExtent = currentAppBarHeight;
+
+    // layoutExtent của AppBar
+    // Khi pinned: layoutExtent = pinnedHeight
+    // Khi expanded: layoutExtent = expandedHeight
+    final appBarLayoutExtent = _scrollOffset > 0
+        ? appBarPinnedHeight
+        : appBarExpandedHeight;
+
+    // remainingPaintExtent cho SliverList
+    final remainingPaintExtent =
+        screenHeight - appBarPaintExtent;
+
+    // overlap = paintExtent - layoutExtent
+    final overlap = appBarPaintExtent - appBarLayoutExtent;
+
+    return Scaffold(
+      body: Stack(
+        children: [
+
+          // ── CustomScrollView ─────────────────
+          CustomScrollView(
+            controller: _scrollController,
+            slivers: [
+
+              // SliverAppBar
+              const SliverAppBar(
+                expandedHeight: appBarExpandedHeight,
+                pinned: true,
+                backgroundColor: Color(0xFF1A1A2E),
+                flexibleSpace: FlexibleSpaceBar(
+                  title: Text(
+                    'Protocol Inspector',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+                  ),
+                  background: _AppBarBackground(),
+                ),
+              ),
+
+              // Debug panel – hiện SliverConstraints giả lập
+              SliverToBoxAdapter(
+                child: _ConstraintsPanel(
+                  scrollOffset: _scrollOffset,
+                  remainingPaintExtent: remainingPaintExtent,
+                  crossAxisExtent: screenWidth,
+                  viewportMainAxisExtent: screenHeight,
+                  overlap: overlap,
+                  appBarPaintExtent: appBarPaintExtent,
+                  appBarLayoutExtent: appBarLayoutExtent,
+                ),
+              ),
+
+              // Custom Sliver để minh họa geometry
+              _GeometryVisualizerSliver(
+                scrollOffset: _scrollOffset,
+              ),
+
+              // List items để scroll
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) => _buildItem(index),
+                  childCount: 20,
+                ),
+              ),
+
+            ],
+          ),
+
+        ],
+      ),
+    );
+  }
+
+  Widget _buildItem(int index) {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 6,
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: const Color(0xFF6C63FF).withOpacity(0.1),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: const Icon(
+              Icons.layers,
+              color: Color(0xFF6C63FF),
+              size: 20,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Sliver Item ${index + 1}',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  'Scroll để thấy constraints thay đổi',
+                  style: TextStyle(
+                    color: Colors.grey.shade500,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ════════════════════════════════════════════════
+// WIDGET: Hiển thị SliverConstraints giả lập
+// ════════════════════════════════════════════════
+class _ConstraintsPanel extends StatelessWidget {
+  final double scrollOffset;
+  final double remainingPaintExtent;
+  final double crossAxisExtent;
+  final double viewportMainAxisExtent;
+  final double overlap;
+  final double appBarPaintExtent;
+  final double appBarLayoutExtent;
+
+  const _ConstraintsPanel({
+    required this.scrollOffset,
+    required this.remainingPaintExtent,
+    required this.crossAxisExtent,
+    required this.viewportMainAxisExtent,
+    required this.overlap,
+    required this.appBarPaintExtent,
+    required this.appBarLayoutExtent,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1A1A2E),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+
+          // Header
+          const Row(
+            children: [
+              Icon(Icons.bug_report,
+                  color: Colors.greenAccent, size: 18),
+              SizedBox(width: 8),
+              Text(
+                'SliverConstraints Inspector',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 4),
+          Text(
+            'Scroll để thấy values thay đổi real-time',
+            style: TextStyle(
+              color: Colors.white.withOpacity(0.4),
+              fontSize: 11,
+            ),
+          ),
+
+          const Divider(color: Colors.white12, height: 20),
+
+          // ── SliverConstraints ────────────────
+          _buildSection('📥 SliverConstraints (Input)', [
+            _buildRow('scrollOffset',
+                scrollOffset.toStringAsFixed(1),
+                Colors.orangeAccent,
+                'px đã scroll qua Sliver này'),
+            _buildRow('remainingPaintExtent',
+                remainingPaintExtent.toStringAsFixed(1),
+                Colors.lightBlueAccent,
+                'px còn lại để vẽ'),
+            _buildRow('crossAxisExtent',
+                crossAxisExtent.toStringAsFixed(1),
+                Colors.greenAccent,
+                'chiều rộng viewport'),
+            _buildRow('viewportMainAxisExtent',
+                viewportMainAxisExtent.toStringAsFixed(1),
+                Colors.purpleAccent,
+                'chiều cao viewport'),
+            _buildRow('overlap',
+                overlap.toStringAsFixed(1),
+                Colors.redAccent,
+                'px bị che bởi pinned header'),
+          ]),
+
+          const SizedBox(height: 12),
+
+          // ── SliverGeometry ───────────────────
+          _buildSection('📤 SliverGeometry (Output – AppBar)', [
+            _buildRow('paintExtent',
+                appBarPaintExtent.toStringAsFixed(1),
+                Colors.yellowAccent,
+                'px đang được vẽ'),
+            _buildRow('layoutExtent',
+                appBarLayoutExtent.toStringAsFixed(1),
+                Colors.cyanAccent,
+                'px chiếm trong layout'),
+            _buildRow('overlap (paint-layout)',
+                (appBarPaintExtent - appBarLayoutExtent)
+                    .toStringAsFixed(1),
+                Colors.pinkAccent,
+                'px tạo hiệu ứng overlap'),
+          ]),
+
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSection(String title, List<Widget> rows) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+            color: Colors.white70,
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 8),
+        ...rows,
+      ],
+    );
+  }
+
+  Widget _buildRow(
+    String name,
+    String value,
+    Color valueColor,
+    String description,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Row(
+        children: [
+          // Field name
+          SizedBox(
+            width: 130,
+            child: Text(
+              name,
+              style: const TextStyle(
+                color: Colors.white60,
+                fontSize: 12,
+                fontFamily: 'monospace',
+              ),
+            ),
+          ),
+          // Value
+          SizedBox(
+            width: 60,
+            child: Text(
+              value,
+              style: TextStyle(
+                color: valueColor,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'monospace',
+              ),
+            ),
+          ),
+          // Description
+          Expanded(
+            child: Text(
+              description,
+              style: TextStyle(
+                color: Colors.white.withOpacity(0.3),
+                fontSize: 10,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ════════════════════════════════════════════════
+// CUSTOM SLIVER: Minh họa Geometry trực quan
+// Đây là Widget wrapper, bên trong dùng RenderSliver
+// ════════════════════════════════════════════════
+class _GeometryVisualizerSliver extends StatelessWidget {
+  final double scrollOffset;
+
+  const _GeometryVisualizerSliver({
+    required this.scrollOffset,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // SliverToBoxAdapter bọc widget thường
+    // để hiển thị geometry visualizer
+    return SliverToBoxAdapter(
+      child: Container(
+        margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: const Color(0xFF6C63FF).withOpacity(0.2),
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+
+            // Title
+            Row(
+              children: [
+                const Icon(
+                  Icons.schema,
+                  color: Color(0xFF6C63FF),
+                  size: 18,
+                ),
+                const SizedBox(width: 8),
+                const Text(
+                  'Geometry Visualizer',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    color: Color(0xFF1A1A2E),
+                  ),
+                ),
+                const Spacer(),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 3,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF6C63FF)
+                        .withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    'scroll: ${scrollOffset.toStringAsFixed(0)}px',
+                    style: const TextStyle(
+                      color: Color(0xFF6C63FF),
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 16),
+
+            // Legend
+            _buildLegend(),
+
+            const SizedBox(height: 16),
+
+            // Explanation cards
+            _buildExplanationCard(
+              icon: Icons.brush,
+              color: Colors.orange,
+              title: 'paintExtent',
+              formula: 'min(scrollExtent - scrollOffset, remainingPaintExtent)',
+              explanation:
+                  'Phần Sliver đang thực sự được VẼ trên màn hình. '
+                  'Không thể vượt quá remainingPaintExtent.',
+            ),
+
+            const SizedBox(height: 8),
+
+            _buildExplanationCard(
+              icon: Icons.space_bar,
+              color: Colors.blue,
+              title: 'layoutExtent',
+              formula: 'Thường = paintExtent, trừ khi overlap',
+              explanation:
+                  'Phần Sliver CHIẾM KHÔNG GIAN trong layout. '
+                  'Sliver tiếp theo bắt đầu sau layoutExtent. '
+                  'Khi AppBar pinned: layoutExtent < paintExtent → overlap.',
+            ),
+
+            const SizedBox(height: 8),
+
+            _buildExplanationCard(
+              icon: Icons.height,
+              color: Colors.green,
+              title: 'scrollExtent',
+              formula: 'Tổng chiều cao nội dung của Sliver',
+              explanation:
+                  'Viewport dùng scrollExtent để tính tổng '
+                  'scroll range. SliverList 100 items × 60px '
+                  '= scrollExtent: 6000px.',
+            ),
+
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLegend() {
+    return Wrap(
+      spacing: 12,
+      runSpacing: 8,
+      children: [
+        _buildLegendItem(Colors.orange, 'paintExtent'),
+        _buildLegendItem(Colors.blue, 'layoutExtent'),
+        _buildLegendItem(Colors.green, 'scrollExtent'),
+        _buildLegendItem(Colors.red, 'overlap'),
+      ],
+    );
+  }
+
+  Widget _buildLegendItem(Color color, String label) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 12,
+          height: 12,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(3),
+          ),
+        ),
+        const SizedBox(width: 4),
+        Text(
+          label,
+          style: TextStyle(
+            color: Colors.grey.shade700,
+            fontSize: 12,
+            fontFamily: 'monospace',
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildExplanationCard({
+    required IconData icon,
+    required Color color,
+    required String title,
+    required String formula,
+    required String explanation,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.05),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: color.withOpacity(0.2)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Title row
+          Row(
+            children: [
+              Icon(icon, color: color, size: 16),
+              const SizedBox(width: 6),
+              Text(
+                title,
+                style: TextStyle(
+                  color: color,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                  fontFamily: 'monospace',
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          // Formula
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 8,
+              vertical: 4,
+            ),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.08),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Text(
+              formula,
+              style: TextStyle(
+                color: color.withOpacity(0.8),
+                fontSize: 11,
+                fontFamily: 'monospace',
+              ),
+            ),
+          ),
+          const SizedBox(height: 6),
+          // Explanation
+          Text(
+            explanation,
+            style: TextStyle(
+              color: Colors.grey.shade600,
+              fontSize: 12,
+              height: 1.5,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// AppBar background widget
+class _AppBarBackground extends StatelessWidget {
+  const _AppBarBackground();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFF1A1A2E), Color(0xFF6C63FF)],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ),
+      ),
+      child: const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(height: 30),
+            Icon(Icons.layers, color: Colors.white, size: 40),
+            SizedBox(height: 8),
+            Text(
+              'Box vs Sliver Protocol',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              'Scroll để xem constraints thay đổi',
+              style: TextStyle(
+                color: Colors.white60,
+                fontSize: 13,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
