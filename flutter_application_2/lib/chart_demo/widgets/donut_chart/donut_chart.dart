@@ -130,8 +130,12 @@ class _DonutChartState extends State<DonutChart> with TickerProviderStateMixin {
   }
 
   void _disposeSliceControllers() {
-    for (final c in _expansionControllers.values) c.dispose();
-    for (final c in _colorControllers.values) c.dispose();
+    for (final c in _expansionControllers.values) {
+      c.dispose();
+    }
+    for (final c in _colorControllers.values) {
+      c.dispose();
+    }
     _expansionControllers.clear();
     _expansionAnimations.clear();
     _colorControllers.clear();

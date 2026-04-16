@@ -6,13 +6,13 @@ import 'package:flutter_application_2/chart_demo/models/donut_slice_data.dart';
 
 const double _kOuterCornerDepthRatio = 0.20;
 const double _kInnerCornerDepthRatio = 0.218;
-const double _kCurveStrengthMultiplier = 0.8;
+const double _kCurveStrengthMultiplier = 0.9;
 const double _kTinySliceThresholdDeg = 12.0;
 const double _kTinySliceGapMultiplier = 0.6;
 const double _kTinyOuterCornerMul = 0.8;
 const double _kTinyInnerCornerMul = 0.6;
-const double _kOuterCornerAngleDeg = 4.0;
-const double _kInnerCornerAngleDeg = 6.8;
+const double _kOuterCornerAngleDeg = 5.0;
+const double _kInnerCornerAngleDeg = 8.0;
 
 const double _kStartAngle = -pi / 2;
 
@@ -154,7 +154,9 @@ class DonutGeometry {
     final inset = sliceInset * (1 - anim);
 
     return Path()
-      ..addOval(Rect.fromCircle(center: center, radius: outerRadius - inset));
+      ..addOval(Rect.fromCircle(center: center, radius: outerRadius - inset))
+      ..addOval(Rect.fromCircle(center: center, radius: innerRadius - inset))
+      ..fillType = PathFillType.evenOdd;
   }
 
   Path _buildRoundedSlicePath(int index) {
@@ -165,12 +167,23 @@ class DonutGeometry {
     final innerStartA = s.startAngle + s.innerCornerAngle;
     final innerEndA = s.endAngle - s.innerCornerAngle;
 
-    final outerCornerStart = _pt(s.outerRadius, s.startAngle);
+    final outerCornerStart = _pt(
+      s.outerRadius - outerCornerDepth,
+      s.startAngle,
+    );
+
+    final outerCornerEnd = _pt(s.outerRadius - outerCornerDepth, s.endAngle);
+
+    final innerCornerStart = _pt(
+      s.innerRadius + innerCornerDepth,
+      s.startAngle,
+    );
+
+    final innerCornerEnd = _pt(s.innerRadius + innerCornerDepth, s.endAngle);
+
     final outerArcStart = _pt(s.outerRadius, outerStartA);
-    final outerCornerEnd = _pt(s.outerRadius, s.endAngle);
-    final innerCornerEnd = _pt(s.innerRadius, s.endAngle);
+
     final innerArcEnd = _pt(s.innerRadius, innerEndA);
-    final innerCornerStart = _pt(s.innerRadius, s.startAngle);
 
     final path = Path()..moveTo(outerCornerStart.dx, outerCornerStart.dy);
 
@@ -180,12 +193,14 @@ class DonutGeometry {
       s.curveStrength,
       true,
     );
+
     final outerCtrl2 = _ctrl(
       s.outerRadius,
       outerStartA,
       s.curveStrength,
       false,
     );
+
     path.cubicTo(
       outerCtrl1[0],
       outerCtrl1[1],
@@ -203,7 +218,9 @@ class DonutGeometry {
     );
 
     final outerCtrl3 = _ctrl(s.outerRadius, outerEndA, s.curveStrength, true);
+
     final outerCtrl4 = _ctrl(s.outerRadius, s.endAngle, s.curveStrength, false);
+
     path.cubicTo(
       outerCtrl3[0],
       outerCtrl3[1],
@@ -212,10 +229,12 @@ class DonutGeometry {
       outerCornerEnd.dx,
       outerCornerEnd.dy,
     );
+
     path.lineTo(innerCornerEnd.dx, innerCornerEnd.dy);
 
     final innerCtrl1 = _ctrl(s.innerRadius, s.endAngle, s.curveStrength, false);
     final innerCtrl2 = _ctrl(s.innerRadius, innerEndA, s.curveStrength, true);
+
     path.cubicTo(
       innerCtrl1[0],
       innerCtrl1[1],
