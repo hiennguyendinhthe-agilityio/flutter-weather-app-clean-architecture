@@ -1,0 +1,178 @@
+import 'package:flutter/material.dart';
+
+import 'colors.dart';
+
+class FitnessTextStyles {
+  // App Bar Title
+  static const TextStyle titleLarge = TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.w600,
+    color: FitnessColors.textPrimary,
+  );
+
+  // Main Activity Ring Text
+  static const TextStyle ringPercentage = TextStyle(
+    fontSize: 42,
+    fontWeight: FontWeight.w700,
+    color: FitnessColors.textPrimary,
+    letterSpacing: -1.0,
+  );
+
+  static const TextStyle ringSubtitle = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    color: FitnessColors.textSecondary,
+  );
+
+  // Bottom Cards Values (e.g. 6 500, 82 BPM)
+  static const TextStyle cardTitle = TextStyle(
+    fontSize: 15,
+    fontWeight: FontWeight.w600,
+    color: FitnessColors.textPrimary,
+  );
+
+  static const TextStyle chartValue = TextStyle(
+    fontSize: 22,
+    fontWeight: FontWeight.w700,
+    color: FitnessColors.textPrimary,
+  );
+
+  static const TextStyle chartValueSubtitle = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    color: FitnessColors.textSecondary,
+  );
+
+  // Custom Weekly Calendar
+  static const TextStyle calendarDay = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    color: FitnessColors.textSecondary,
+  );
+
+  static const TextStyle calendarDate = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    color: FitnessColors.textSecondary,
+  );
+
+  static const TextStyle calendarDateActive = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w700,
+    color: Colors.black87,
+  );
+
+  // General legend inside chart
+  static const TextStyle legendText = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w600,
+  );
+
+  // =============================================
+  // Health Stats Screen - New Styles
+  // =============================================
+
+  // User Profile Header
+  static const TextStyle profileMonth = TextStyle(
+    fontSize: 24,
+    fontWeight: FontWeight.w700,
+    color: FitnessColors.textPrimary,
+  );
+
+  static const TextStyle profileSubtitle = TextStyle(
+    fontSize: 13,
+    fontWeight: FontWeight.w400,
+    color: FitnessColors.textSecondary,
+  );
+
+  // Total Index
+  static const TextStyle totalIndexValue = TextStyle(
+    fontSize: 38,
+    fontWeight: FontWeight.w800,
+    color: FitnessColors.textPrimary,
+    letterSpacing: -1.5,
+    height: 1.0,
+  );
+
+  static const TextStyle totalIndexLabel = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    color: FitnessColors.textSecondary,
+  );
+
+  // Section Header (e.g. "Activity levels")
+  static const TextStyle sectionHeader = TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.w700,
+    color: FitnessColors.textPrimary,
+  );
+
+  // Activity Level items
+  static const TextStyle activityName = TextStyle(
+    fontSize: 15,
+    fontWeight: FontWeight.w500,
+    color: FitnessColors.textPrimary,
+  );
+
+  static const TextStyle activityPercent = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    color: FitnessColors.textSecondary,
+  );
+
+  // Ring endpoint percentage label
+  static const TextStyle ringEndpointPercent = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w600,
+    color: FitnessColors.textSecondary,
+  );
+
+  // =============================================
+  // Projects Screen - New Styles
+  // =============================================
+  
+  static const TextStyle projectHeader = TextStyle(
+    fontSize: 32,
+    fontWeight: FontWeight.w700,
+    color: FitnessColors.textPrimary,
+  );
+
+  static const TextStyle projectDisplayHours = TextStyle(
+    fontSize: 32,
+    fontWeight: FontWeight.w500,
+    color: FitnessColors.textPrimary,
+    letterSpacing: -0.5,
+    height: 1.1,
+  );
+
+  static const TextStyle projectTimeRange = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+    color: FitnessColors.textSecondary,
+    height: 1.0,
+  );
+
+  static const TextStyle filterTabActive = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    color: FitnessColors.textPrimary,
+  );
+
+  static const TextStyle filterTabInactive = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+    color: FitnessColors.textMuted,
+  );
+
+  static const TextStyle projectNameBold = TextStyle(
+    fontSize: 15,
+    fontWeight: FontWeight.w500,
+    color: FitnessColors.textPrimary,
+  );
+
+  static const TextStyle projectHoursText = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+    color: FitnessColors.textPrimary,
+  );
+}

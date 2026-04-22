@@ -4,8 +4,6 @@ import '../../core/constants.dart';
 import '../../models/bar_item_data.dart';
 import 'bar_chart_painter.dart';
 
-/// Single animated bar column.
-/// Mỗi cột tự quản lý AnimationController riêng → stagger hoạt động độc lập.
 class BarColumn extends StatefulWidget {
   const BarColumn({
     super.key,
@@ -37,8 +35,8 @@ class BarColumn extends StatefulWidget {
 class _BarColumnState extends State<BarColumn>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  late Animation<double> _growAnimation; // 0→1: bottom-up reveal
-  late Tween<double> _primaryTween; // tween cho data update
+  late Animation<double> _growAnimation;
+  late Tween<double> _primaryTween;
   late Tween<double> _totalTween;
 
   @override
@@ -57,7 +55,6 @@ class _BarColumnState extends State<BarColumn>
     _primaryTween = Tween(begin: 0, end: widget.item.primaryRatio);
     _totalTween = Tween(begin: 0, end: widget.item.totalRatio);
 
-    // Stagger: delay rồi mới animate
     Future.delayed(widget.entryDelay, () {
       if (mounted) _controller.forward();
     });
@@ -73,7 +70,6 @@ class _BarColumnState extends State<BarColumn>
   void didUpdateWidget(covariant BarColumn old) {
     super.didUpdateWidget(old);
     if (old.item != widget.item) {
-      // Smooth update: tween từ giá trị hiện tại → giá trị mới
       _primaryTween = Tween(
         begin: _primaryTween.evaluate(_growAnimation),
         end: widget.item.primaryRatio,
@@ -100,7 +96,6 @@ class _BarColumnState extends State<BarColumn>
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // ── Bar ─────────────────────────────────────────────────────
         AnimatedBuilder(
           animation: _growAnimation,
           builder: (context, _) {
@@ -120,7 +115,6 @@ class _BarColumnState extends State<BarColumn>
           },
         ),
 
-        // ── Label dưới cột ──────────────────────────────────────────
         if (widget.showLabel) ...[
           const SizedBox(height: 6),
           Text(widget.item.label, style: effectiveLabelStyle),

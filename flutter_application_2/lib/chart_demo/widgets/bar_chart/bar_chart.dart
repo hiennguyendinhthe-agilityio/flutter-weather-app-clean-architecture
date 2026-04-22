@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
+
 import '../../core/constants.dart';
 import '../../models/bar_item_data.dart';
 import 'bar_column.dart';
 
-/// Public API widget — Multiple vertical bar chart với stagger animation.
 class BarChart extends StatelessWidget {
   const BarChart({
     super.key,
     required this.items,
-    this.maxHeight      = BarDefaults.maxHeight,
-    this.columnWidth    = BarDefaults.columnWidth,
-    this.columnSpacing  = BarDefaults.columnSpacing,
-    this.borderRadius   = BarDefaults.borderRadius,
-    this.showLabels     = true,
+    this.maxHeight = BarDefaults.maxHeight,
+    this.columnWidth = BarDefaults.columnWidth,
+    this.columnSpacing = BarDefaults.columnSpacing,
+    this.borderRadius = BarDefaults.borderRadius,
+    this.showLabels = true,
     this.labelStyle,
-    this.entryDuration  = AppDurations.entryAnimation,
-    this.staggerDelay   = AppDurations.staggerDelay,
-    this.entryCurve     = AppCurves.entry,
+    this.entryDuration = AppDurations.entryAnimation,
+    this.staggerDelay = AppDurations.staggerDelay,
+    this.entryCurve = AppCurves.entry,
   });
 
   final List<BarItemData> items;
@@ -39,19 +39,19 @@ class BarChart extends StatelessWidget {
         final (index, item) = record;
         return Padding(
           padding: EdgeInsets.only(
-            left:  index == 0 ? 0 : columnSpacing / 2,
+            left: index == 0 ? 0 : columnSpacing / 2,
             right: index == items.length - 1 ? 0 : columnSpacing / 2,
           ),
           child: BarColumn(
-            item:          item,
-            maxHeight:     maxHeight,
-            columnWidth:   columnWidth,
-            borderRadius:  borderRadius,
-            showLabel:     showLabels,
-            labelStyle:    labelStyle,
+            item: item,
+            maxHeight: maxHeight,
+            columnWidth: columnWidth,
+            borderRadius: borderRadius,
+            showLabel: showLabels,
+            labelStyle: labelStyle,
             entryDuration: entryDuration,
-            entryCurve:    entryCurve,
-            // ← STAGGER: mỗi cột delay thêm index * staggerDelay
+            entryCurve: entryCurve,
+
             entryDelay: staggerDelay * index,
           ),
         );

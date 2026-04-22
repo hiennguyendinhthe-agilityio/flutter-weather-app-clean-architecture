@@ -17,7 +17,7 @@ class DonutChart extends StatefulWidget {
     this.entryCurve = AppCurves.entry,
     this.toggleDuration = AppDurations.toggleAnimation,
     this.toggleCurve = AppCurves.toggle,
-    this.initialSelectedIndex,
+    this.selectedIndex,
     this.onSliceSelected,
     this.centerBuilder,
     this.enableHaptics = true,
@@ -31,7 +31,7 @@ class DonutChart extends StatefulWidget {
   final Curve entryCurve;
   final Duration toggleDuration;
   final Curve toggleCurve;
-  final int? initialSelectedIndex;
+  final int? selectedIndex;
   final ValueChanged<int?>? onSliceSelected;
 
   final Widget Function(int? selectedIndex)? centerBuilder;
@@ -73,7 +73,7 @@ class _DonutChartState extends State<DonutChart> with TickerProviderStateMixin {
 
     _initSliceControllers();
 
-    _selectedIndex = widget.initialSelectedIndex;
+    _selectedIndex = widget.selectedIndex;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) _entryController.forward();
@@ -97,14 +97,17 @@ class _DonutChartState extends State<DonutChart> with TickerProviderStateMixin {
 
       _entryController.forward(from: 0);
       setState(() => _selectedIndex = null);
+    } else if (old.selectedIndex != widget.selectedIndex &&
+        widget.selectedIndex != _selectedIndex) {
+      _updateSelection(widget.selectedIndex, triggerCallback: false);
     }
   }
 
   void _initSliceControllers() {
     for (var i = 0; i < _normalizedSlices.length; i++) {
       final slice = _normalizedSlices[i];
-      final isSelected = widget.initialSelectedIndex == i;
-      final allInactive = widget.initialSelectedIndex == null;
+      final isSelected = widget.selectedIndex == i;
+      final allInactive = widget.selectedIndex == null;
 
       final expCtrl = AnimationController(
         value: isSelected ? 1.0 : 0.0,
@@ -155,10 +158,15 @@ class _DonutChartState extends State<DonutChart> with TickerProviderStateMixin {
     }
   }
 
-  void _updateSelection(int? newIndex) {
+  void _updateSelection(int? newIndex, {bool triggerCallback = true}) {
+    if (_selectedIndex == newIndex) return;
+
     final oldIndex = _selectedIndex;
     setState(() => _selectedIndex = newIndex);
-    widget.onSliceSelected?.call(newIndex);
+    
+    if (triggerCallback) {
+      widget.onSliceSelected?.call(newIndex);
+    }
 
     if (oldIndex != null) _expansionControllers[oldIndex]?.reverse();
     if (newIndex != null) _expansionControllers[newIndex]?.forward();

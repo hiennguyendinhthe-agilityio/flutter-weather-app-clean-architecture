@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+void main() {
+  runApp(MaterialApp(home: FadeDemo()));
+}
+
 class FadeDemo extends StatefulWidget {
   const FadeDemo({super.key});
 
