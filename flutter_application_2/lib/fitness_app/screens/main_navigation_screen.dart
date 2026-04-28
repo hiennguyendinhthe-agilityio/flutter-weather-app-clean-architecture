@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/fitness_app/screens/expenses_dashboard_screen.dart';
+import 'package:flutter_application_2/fitness_app/screens/sales_kpis_screen.dart';
 
 import '../constants/colors.dart';
 import 'fitness_goals_screen.dart';
@@ -19,6 +21,8 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     const FitnessGoalsScreen(),
     const ProjectsScreen(),
     const HealthStatsScreen(),
+    const ExpensesDashboardScreen(),
+    const SalesKpisScreen(),
   ];
 
   @override
@@ -73,6 +77,20 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                 child: Icon(Icons.insert_chart_rounded),
               ),
               label: 'Stats',
+            ),
+            BottomNavigationBarItem(
+              icon: Padding(
+                padding: EdgeInsets.only(bottom: 4),
+                child: Icon(Icons.pie_chart_rounded),
+              ),
+              label: 'Expenses',
+            ),
+            BottomNavigationBarItem(
+              icon: Padding(
+                padding: EdgeInsets.only(bottom: 4),
+                child: Icon(Icons.analytics_rounded),
+              ),
+              label: 'Sales',
             ),
           ],
         ),

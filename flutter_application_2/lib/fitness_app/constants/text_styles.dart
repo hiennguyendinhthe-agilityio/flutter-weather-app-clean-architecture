@@ -175,4 +175,112 @@ class FitnessTextStyles {
     fontWeight: FontWeight.w400,
     color: FitnessColors.textPrimary,
   );
+
+  // =============================================
+  // Expenses Screen - New Styles
+  // =============================================
+  
+  static const TextStyle expenseMonth = TextStyle(
+    fontSize: 28,
+    fontWeight: FontWeight.w500,
+    color: FitnessColors.textPrimary,
+    letterSpacing: 0.5,
+  );
+  
+  static const TextStyle expenseTotal = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    color: FitnessColors.textSecondary,
+  );
+  
+  static const TextStyle expenseTotalGreen = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    color: FitnessColors.health, // Green up arrow and text
+  );
+  
+  static const TextStyle expenseCenterValue = TextStyle(
+    fontSize: 36,
+    fontWeight: FontWeight.w600,
+    color: FitnessColors.textPrimary,
+    letterSpacing: 0.5,
+  );
+  
+  static const TextStyle expenseCenterSubtitle = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+    color: FitnessColors.textSecondary,
+  );
+  
+  static const TextStyle expenseCategoryName = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    color: FitnessColors.textSecondary,
+  );
+  
+  static const TextStyle expenseCategoryAmount = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    color: FitnessColors.textPrimary,
+  );
+
+  // =============================================
+  // Sales KPIs Screen - New Styles
+  // =============================================
+
+  static const TextStyle salesHeaderTitle = TextStyle(
+    fontSize: 24,
+    fontWeight: FontWeight.w600,
+    color: FitnessColors.textPrimary,
+  );
+
+  static const TextStyle salesHeaderSubtitle = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+    color: FitnessColors.textSecondary,
+  );
+
+  static const TextStyle salesCenterPercentage = TextStyle(
+    fontSize: 48,
+    fontWeight: FontWeight.w700,
+    color: FitnessColors.textPrimary,
+    letterSpacing: -1.0,
+  );
+
+  static const TextStyle salesCenterValue = TextStyle(
+    fontSize: 13,
+    fontWeight: FontWeight.w500,
+    color: FitnessColors.textSecondary,
+  );
+
+  static const TextStyle salesCardTitle = TextStyle(
+    fontSize: 13,
+    fontWeight: FontWeight.w500,
+    color: FitnessColors.textSecondary,
+  );
+
+  static const TextStyle salesCardAmount = TextStyle(
+    fontSize: 22,
+    fontWeight: FontWeight.w700,
+    color: FitnessColors.textPrimary,
+    letterSpacing: 0.5,
+  );
+
+  static const TextStyle salesCardPercentage = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    color: FitnessColors.textSecondary,
+  );
+
+  static const TextStyle salesFilterText = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w600,
+    color: FitnessColors.textSecondary,
+  );
+
+  static const TextStyle salesFilterTextActive = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w600,
+    color: FitnessColors.textPrimary,
+  );
 }
