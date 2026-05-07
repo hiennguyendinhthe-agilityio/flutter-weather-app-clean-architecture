@@ -64,12 +64,9 @@ class _ProjectsScreenState extends State<ProjectsScreen>
           ),
         ],
       ),
-      body: AnimatedBuilder(
-        animation: _allDrawAnimation,
-        builder: (context, _) {
-          return SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Column(
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
@@ -117,7 +114,7 @@ class _ProjectsScreenState extends State<ProjectsScreen>
                     centerValue: '${_currentSummary.totalHours}h',
                     centerSubtitle: _currentSummary.dateRange,
                     segments: _currentSummary.projects,
-                    progress: _allDrawAnimation.value,
+                    animation: _allDrawAnimation,
                   ),
                 ),
                 const SizedBox(height: 40),
@@ -159,15 +156,13 @@ class _ProjectsScreenState extends State<ProjectsScreen>
                     valueText:
                         '${project.hours >= 100 ? project.hours.toInt() : project.hours}h',
                     color: project.color,
-                    progress: _allDrawAnimation.value,
+                    animation: _allDrawAnimation,
                   );
                 }),
                 const SizedBox(height: 32),
               ],
             ),
-          );
-        },
-      ),
+          ),
     );
   }
 }

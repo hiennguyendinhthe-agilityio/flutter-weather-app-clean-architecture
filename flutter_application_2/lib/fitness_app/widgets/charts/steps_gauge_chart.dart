@@ -92,22 +92,15 @@ class _StepsGaugeChartState extends State<StepsGaugeChart>
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  AnimatedBuilder(
-                    animation: _sweepAnimation,
-                    builder: (context, child) {
-                      final progress = (widget.currentSteps / widget.goalSteps)
-                          .clamp(0.0, 1.0);
-                      return CustomPaint(
-                        size: const Size.square(130.0),
-                        painter: _GaugePainter(
-                          progress: progress,
-                          fromProgress: _fromProgress,
-                          entranceProgress: _sweepAnimation.value,
-                          color: FitnessColors.sleep,
-                          trackColor: FitnessColors.sleepTrack,
-                        ),
-                      );
-                    },
+                  CustomPaint(
+                    size: const Size.square(130.0),
+                    painter: _GaugePainter(
+                      progress: (widget.currentSteps / widget.goalSteps).clamp(0.0, 1.0),
+                      fromProgress: _fromProgress,
+                      entranceAnimation: _sweepAnimation,
+                      color: FitnessColors.sleep,
+                      trackColor: FitnessColors.sleepTrack,
+                    ),
                   ),
 
                   TweenAnimationBuilder<int>(
@@ -153,7 +146,7 @@ class _GaugePainter extends BaseCircularPainter {
   _GaugePainter({
     required this.progress,
     required this.fromProgress,
-    required super.entranceProgress,
+    required super.entranceAnimation,
     required this.color,
     required this.trackColor,
     double strokeWidth = 10.0,

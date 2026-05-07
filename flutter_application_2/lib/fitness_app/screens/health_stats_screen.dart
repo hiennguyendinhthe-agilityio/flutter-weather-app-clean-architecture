@@ -4,8 +4,8 @@ import '../constants/colors.dart';
 import '../constants/text_styles.dart';
 import '../models/health_stats_data.dart';
 import '../repositories/fitness_repository.dart';
-import '../widgets/fitness/activity_levels_list.dart';
 import '../widgets/charts/fitness_activity_rings.dart';
+import '../widgets/fitness/activity_levels_list.dart';
 import '../widgets/fitness/user_profile_header.dart';
 
 class HealthStatsScreen extends StatefulWidget {
