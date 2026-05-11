@@ -1,5 +1,10 @@
 import 'dart:math' as math;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// AnimatedBarChart — Optimized (Stutter Fix)
+// ─────────────────────────────────────────────────────────────────────────────
 
 class AnimatedBarChart extends StatefulWidget {
   final List<double> dataPoints;
@@ -46,10 +51,10 @@ class _AnimatedBarChartState extends State<AnimatedBarChart>
   @override
   void didUpdateWidget(covariant AnimatedBarChart oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.dataPoints != widget.dataPoints) {
-      setState(() {
-        _oldDataPoints = List.from(oldWidget.dataPoints);
-      });
+    // WHY: widget.dataPoints is often a new List instance with same values.
+    // listEquals ensures we only restart animation when actual data changes.
+    if (!listEquals(oldWidget.dataPoints, widget.dataPoints)) {
+      _oldDataPoints = List.from(oldWidget.dataPoints);
       _controller.forward(from: 0.0);
     }
   }
@@ -83,6 +88,11 @@ class _AnimatedBarChartPainter extends CustomPainter {
   final double barWidth;
   final double spacing;
 
+  // ── Optimization: Reuse Paint ──
+  final Paint _barPaint = Paint()
+    ..style = PaintingStyle.stroke
+    ..strokeCap = StrokeCap.round;
+
   _AnimatedBarChartPainter({
     required this.oldDataPoints,
     required this.dataPoints,
@@ -98,8 +108,8 @@ class _AnimatedBarChartPainter extends CustomPainter {
 
     double actualBarWidth = barWidth;
     double actualSpacing = spacing;
-    double totalWidth = (dataPoints.length * actualBarWidth) +
-        ((dataPoints.length - 1) * actualSpacing);
+    double totalWidth =
+        (dataPoints.length * actualBarWidth) + ((dataPoints.length - 1) * actualSpacing);
 
     if (totalWidth > size.width) {
       final scaleFactor = size.width / totalWidth;
@@ -108,24 +118,21 @@ class _AnimatedBarChartPainter extends CustomPainter {
       totalWidth = size.width;
     }
 
-    final paint = Paint()
+    _barPaint
       ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = actualBarWidth
-      ..strokeCap = StrokeCap.round;
+      ..strokeWidth = actualBarWidth;
 
     final startX = (size.width - totalWidth) / 2;
     final centerY = size.height / 2;
 
     for (int i = 0; i < dataPoints.length; i++) {
       final oldVal = i < oldDataPoints.length ? oldDataPoints[i] : 0.0;
-      final newVal = dataPoints[i].clamp(0.0, 1.0); // Handle edge cases
+      final newVal = dataPoints[i].clamp(0.0, 1.0);
 
       double interpolatedVal = newVal;
       final isInitialLoad = oldDataPoints.every((e) => e == 0.0);
 
       if (isInitialLoad) {
-        // Staggered elastic-like entrance for initial load
         final delay = i * (0.2 / dataPoints.length);
         double scale = 0.0;
         if (animation.value > delay) {
@@ -133,7 +140,6 @@ class _AnimatedBarChartPainter extends CustomPainter {
         }
         interpolatedVal = newVal * scale;
       } else {
-        // Staggered morphing
         final delay = i * (0.2 / dataPoints.length);
         double morphProgress = 0.0;
         if (animation.value > delay) {
@@ -143,27 +149,25 @@ class _AnimatedBarChartPainter extends CustomPainter {
       }
 
       final desiredHeight = size.height * interpolatedVal;
-      final x = startX +
-          (i * (actualBarWidth + actualSpacing)) +
-          (actualBarWidth / 2);
+      final x =
+          startX + (i * (actualBarWidth + actualSpacing)) + (actualBarWidth / 2);
 
       final drawHeight = math.max(0.0, desiredHeight - actualBarWidth);
-
       final topY = centerY - (drawHeight / 2);
       final bottomY = centerY + (drawHeight / 2);
 
       if (desiredHeight > actualBarWidth) {
-        canvas.drawLine(Offset(x, topY), Offset(x, bottomY), paint);
+        canvas.drawLine(Offset(x, topY), Offset(x, bottomY), _barPaint);
       } else if (desiredHeight > 0) {
-        canvas.drawLine(Offset(x, centerY), Offset(x, centerY + 0.1), paint);
+        canvas.drawLine(Offset(x, centerY), Offset(x, centerY + 0.1), _barPaint);
       }
     }
   }
 
   @override
   bool shouldRepaint(covariant _AnimatedBarChartPainter oldDelegate) {
-    return oldDelegate.dataPoints != dataPoints ||
-        oldDelegate.oldDataPoints != oldDataPoints ||
+    return !listEquals(oldDelegate.dataPoints, dataPoints) ||
+        !listEquals(oldDelegate.oldDataPoints, oldDataPoints) ||
         oldDelegate.color != color;
   }
 }

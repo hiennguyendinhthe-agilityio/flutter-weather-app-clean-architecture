@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
-import '../constants/colors.dart';
-import '../constants/text_styles.dart';
+import '../theme/theme_context_ext.dart';
 import '../widgets/sales_kpi/sales_donut_chart.dart';
 import '../widgets/sales_kpi/sales_kpi_card.dart';
 import '../widgets/sales_kpi/sales_time_filter.dart';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SalesKpisScreen — Refactored (Theming + Performance)
+//
+// 1. THEME: Removed FitnessColors. Uses context.fitnessTheme.
+// 2. STATE: Replaced setState with ValueNotifier for filter selection.
+// 3. PERFORMANCE: Isolated rebuilds using ValueListenableBuilder.
+//    RepaintBoundary around animated donut chart.
+// ─────────────────────────────────────────────────────────────────────────────
 
 class SalesKpiData {
   final double percentage;
@@ -31,10 +39,10 @@ class SalesKpisScreen extends StatefulWidget {
 }
 
 class _SalesKpisScreenState extends State<SalesKpisScreen> {
-  String _selectedFilter = '30D';
+  late final ValueNotifier<String> _filterNotifier;
+
   final List<String> _filters = ['24H', '7D', '14D', '30D'];
 
-  // Mock data for different timeframes
   final Map<String, SalesKpiData> _data = {
     '30D': SalesKpiData(
       percentage: 0.76,
@@ -70,111 +78,143 @@ class _SalesKpisScreenState extends State<SalesKpisScreen> {
     ),
   };
 
+  @override
+  void initState() {
+    super.initState();
+    _filterNotifier = ValueNotifier<String>('30D');
+  }
+
+  @override
+  void dispose() {
+    _filterNotifier.dispose();
+    super.dispose();
+  }
+
   void _onFilterChanged(String filter) {
-    setState(() {
-      _selectedFilter = filter;
-    });
+    if (_filterNotifier.value != filter) {
+      _filterNotifier.value = filter;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final currentData = _data[_selectedFilter]!;
+    final ft = context.fitnessTheme;
 
     return Scaffold(
-      backgroundColor: FitnessColors.salesBackground,
+      backgroundColor: ft.scaffoldBackground,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
-          onPressed: () => Navigator.pop(context),
+          icon: const Icon(Icons.arrow_back_ios_new, size: 20),
+          onPressed: () => Navigator.maybePop(context),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.calendar_month, color: Colors.white, size: 22),
+            icon: const Icon(Icons.calendar_month, size: 22),
             onPressed: () {},
           ),
         ],
       ),
       body: SafeArea(
-        child: Column(
-          children: [
-            // Header Section
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
-                        'Sales KPIs',
-                        style: FitnessTextStyles.salesHeaderTitle,
+        child: ValueListenableBuilder<String>(
+          valueListenable: _filterNotifier,
+          builder: (context, selectedFilter, _) {
+            final currentData = _data[selectedFilter]!;
+
+            return Column(
+              children: [
+                // ── Header Section (Static) ───────────────────────────────
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Sales KPIs',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.w600,
+                              color: ft.textPrimary,
+                            ),
+                          ),
+                          const SizedBox(height: 4.0),
+                          Text(
+                            'Achievements of goals',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                              color: ft.textSecondary,
+                            ),
+                          ),
+                        ],
                       ),
-                      SizedBox(height: 4.0),
-                      Text(
-                        'Achievements of goals',
-                        style: FitnessTextStyles.salesHeaderSubtitle,
+                      Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: ft.cardBackground,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: ft.cardBorder),
+                        ),
+                        child: Icon(
+                          Icons.more_vert,
+                          color: ft.textPrimary,
+                          size: 20,
+                        ),
                       ),
                     ],
                   ),
-                  Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: FitnessColors.salesCardBackground,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.more_vert,
-                      color: Colors.white,
-                      size: 20,
-                    ),
+                ),
+
+                const SizedBox(height: 40.0),
+
+                // ── Donut Chart (Reactive + Optimized) ────────────────────
+                RepaintBoundary(
+                  child: SalesKpiDonutChart(
+                    percentage: currentData.percentage,
+                    amountString: currentData.amountString,
                   ),
-                ],
-              ),
-            ),
+                ),
 
-            const SizedBox(height: 40.0),
+                const Spacer(),
 
-            // Donut Chart
-            SalesKpiDonutChart(
-              percentage: currentData.percentage,
-              amountString: currentData.amountString,
-            ),
+                // ── Time Filter (Reactive) ────────────────────────────────
+                SalesTimeFilterBar(
+                  filters: _filters,
+                  selectedFilter: selectedFilter,
+                  onFilterSelected: _onFilterChanged,
+                ),
 
-            const Spacer(),
-
-            // Time Filter
-            SalesTimeFilterBar(
-              filters: _filters,
-              selectedFilter: _selectedFilter,
-              onFilterSelected: _onFilterChanged,
-            ),
-
-            // KPI Cards
-            Padding(
-              padding: const EdgeInsets.only(left: 24.0, right: 24.0, bottom: 24.0),
-              child: Row(
-                children: [
-                  SalesKpiCard(
-                    icon: Icons.storefront,
-                    title: 'Offline sales',
-                    amount: currentData.offlineAmount,
-                    percentage: currentData.offlinePercent,
+                // ── KPI Cards (Reactive) ──────────────────────────────────
+                Padding(
+                  padding: const EdgeInsets.only(left: 24.0, right: 24.0, bottom: 24.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: SalesKpiCard(
+                          icon: Icons.storefront,
+                          title: 'Offline sales',
+                          amount: currentData.offlineAmount,
+                          percentage: currentData.offlinePercent,
+                        ),
+                      ),
+                      const SizedBox(width: 16.0),
+                      Expanded(
+                        child: SalesKpiCard(
+                          icon: Icons.web,
+                          title: 'Online sales',
+                          amount: currentData.onlineAmount,
+                          percentage: currentData.onlinePercent,
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 16.0),
-                  SalesKpiCard(
-                    icon: Icons.web,
-                    title: 'Online sales',
-                    amount: currentData.onlineAmount,
-                    percentage: currentData.onlinePercent,
-                  ),
-                ],
-              ),
-            ),
-          ],
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
