@@ -1,137 +1,111 @@
 import 'package:flutter/material.dart';
 
-import 'fitness_theme_extension.dart';
+import 'component_themes/fitness_appbar_style.dart';
+import 'component_themes/fitness_button_styles.dart';
+import 'component_themes/fitness_card_style.dart';
+import 'extensions/fitness_semantic_extension.dart';
+import 'semantic/fitness_color_scheme.dart';
+import 'tokens/color_tokens.dart';
+import 'tokens/typography_tokens.dart';
 
+/// Layer 4: ThemeData Assembly.
+///
+/// This class is a PURE assembler. Its only job is to wire together
+/// the outputs of all lower layers:
+///   Layer 1 (Tokens) → Layer 2 (Semantic) → Layer 3 (Component) → ThemeData
+///
+/// Rules enforced here:
+///   - NO raw [Color] literals. All colors come from [FitnessColorScheme]
+///     (which reads [FitnessColorTokens]).
+///   - NO raw font sizes. All typography comes from [FitnessTypographyTokens].
+///   - NO business logic. This is configuration, not behavior.
 abstract final class AppTheme {
   AppTheme._();
 
-  static ThemeData dark() =>
-      _buildTheme(brightness: Brightness.dark, extension: _darkExtension);
+  static ThemeData dark() => _build(
+    colorScheme: FitnessColorScheme.dark(),
+    extension: const FitnessSemanticExtension.dark(),
+    scaffoldBg: FitnessColorTokens.neutral900,
+  );
 
-  static ThemeData light() =>
-      _buildTheme(brightness: Brightness.light, extension: _lightExtension);
+  static ThemeData light() => _build(
+    colorScheme: FitnessColorScheme.light(),
+    extension: const FitnessSemanticExtension.light(),
+    scaffoldBg: FitnessColorTokens.neutralL50,
+  );
 
-  static ThemeData _buildTheme({
-    required Brightness brightness,
-    required FitnessThemeExtension extension,
+  // ─────────────────────────────────────────────────────────────────────────
+  // Private assembly
+  // ─────────────────────────────────────────────────────────────────────────
+
+  static ThemeData _build({
+    required ColorScheme colorScheme,
+    required FitnessSemanticExtension extension,
+    required Color scaffoldBg,
   }) {
-    final colorScheme = ColorScheme(
-      brightness: brightness,
-      primary: extension.activityColor,
-      onPrimary: extension.scaffoldBackground,
-      secondary: extension.healthColor,
-      onSecondary: extension.scaffoldBackground,
-      error: const Color(0xFFFF5C5C),
-      onError: Colors.white,
-      surface: extension.cardBackground,
-      onSurface: extension.textPrimary,
-    );
+    final textTheme = FitnessTypographyTokens.buildTextTheme();
 
     return ThemeData(
       useMaterial3: true,
-      brightness: brightness,
       colorScheme: colorScheme,
-      scaffoldBackgroundColor: extension.scaffoldBackground,
-      fontFamily: 'Inter',
+      textTheme: textTheme,
+      scaffoldBackgroundColor: scaffoldBg,
+
+      // ── Semantic Extension (gradients only) ──
       extensions: [extension],
 
-      appBarTheme: AppBarTheme(
-        backgroundColor: extension.scaffoldBackground,
-        surfaceTintColor: Colors.transparent,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        centerTitle: true,
-        titleTextStyle: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
-          color: extension.textPrimary,
-          fontFamily: 'Inter',
-        ),
-        iconTheme: IconThemeData(color: extension.textPrimary, size: 24),
+      // ── Component Themes (Layer 3 factories) ──
+      appBarTheme: FitnessAppBarStyle.appBarTheme(colorScheme, textTheme),
+      cardTheme: FitnessCardStyle.cardTheme(colorScheme),
+      elevatedButtonTheme: FitnessButtonStyles.elevatedButtonTheme(colorScheme),
+      filledButtonTheme: FitnessButtonStyles.filledButtonTheme(colorScheme),
+      textButtonTheme: FitnessButtonStyles.textButtonTheme(colorScheme),
+
+      // ── Navigation Bar ──
+      navigationBarTheme: NavigationBarThemeData(
+        backgroundColor: colorScheme.surfaceContainer,
+        indicatorColor: colorScheme.primaryContainer,
+        iconTheme: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return IconThemeData(color: colorScheme.onPrimaryContainer);
+          }
+          return IconThemeData(color: colorScheme.onSurfaceVariant);
+        }),
+        labelTextStyle: WidgetStateProperty.resolveWith((states) {
+          final base = textTheme.labelMedium;
+          if (states.contains(WidgetState.selected)) {
+            return base?.copyWith(
+              color: colorScheme.onSurface,
+              fontWeight: FontWeight.w500,
+            );
+          }
+          return base?.copyWith(color: colorScheme.onSurfaceVariant);
+        }),
       ),
 
+      // ── Bottom Navigation Bar ──
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        backgroundColor: extension.scaffoldBackground,
-        selectedItemColor: extension.activityColor,
-        unselectedItemColor: extension.textSecondary.withValues(alpha: 0.5),
+        backgroundColor: colorScheme.surfaceContainer,
+        selectedItemColor: colorScheme.primary,
+        unselectedItemColor: colorScheme.onSurfaceVariant,
         type: BottomNavigationBarType.fixed,
         showSelectedLabels: true,
         showUnselectedLabels: true,
-        selectedLabelStyle: const TextStyle(
-          fontSize: 12,
-          fontFamily: 'Inter',
+        selectedLabelStyle: textTheme.labelMedium?.copyWith(
           fontWeight: FontWeight.w500,
         ),
-        unselectedLabelStyle: const TextStyle(
-          fontSize: 12,
-          fontFamily: 'Inter',
-        ),
+        unselectedLabelStyle: textTheme.labelMedium,
       ),
 
-      cardTheme: CardThemeData(
-        color: extension.cardBackground,
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
-          side: BorderSide(color: extension.cardBorder),
-        ),
+      // ── Icon ──
+      iconTheme: IconThemeData(color: colorScheme.onSurface),
+
+      // ── Divider ──
+      dividerTheme: DividerThemeData(
+        color: colorScheme.outlineVariant,
+        thickness: 1,
+        space: 1,
       ),
     );
   }
-
-  static const FitnessThemeExtension _darkExtension = FitnessThemeExtension(
-    scaffoldBackground: Color(0xFF14141E),
-    cardBackground: Color(0xFF1C1C26),
-    cardBorder: Color(0xFF282835),
-
-    activityColor: Color(0xFFFFE03E),
-    healthColor: Color(0xFF3AFF6E),
-    sleepColor: Color(0xFF4A7BD9),
-
-    chartTrackColor: Color(0xFF282835),
-
-    textPrimary: Colors.white,
-    textSecondary: Color(0xFF8B8B9B),
-    textMuted: Color(0xFF5D5D6E),
-
-    activityGradient: [Color(0xFF3AFF6E), Color(0xFFCBFF3E), Color(0xFFFFE03E)],
-    healthGradient: [Color(0xFF5A94FF), Color(0xFF1DE5C2), Color(0xFF6BFF8E)],
-    sleepGradient: [Color(0xFF1DE5C2), Color(0xFF5A94FF), Color(0xFF8B6AFF)],
-
-    activityCardBackground: Color(0xFF1E1E30),
-    activityCardBorder: Color(0xFF2A2A40),
-
-    accentCyan: Color(0xFF1DE5C2),
-    accentLime: Color(0xFFD6FF38),
-    accentPink: Color(0xFFFF5CFF),
-    accentBlue: Color(0xFF5A94FF),
-  );
-
-  static const FitnessThemeExtension _lightExtension = FitnessThemeExtension(
-    scaffoldBackground: Color(0xFFF5F5FA),
-    cardBackground: Color(0xFFFFFFFF),
-    cardBorder: Color(0xFFE0E0EC),
-
-    activityColor: Color(0xFFC9A500),
-    healthColor: Color(0xFF1A9E45),
-    sleepColor: Color(0xFF2E5BB5),
-
-    chartTrackColor: Color(0xFFE0E0EC),
-
-    textPrimary: Color(0xFF14141E),
-    textSecondary: Color(0xFF6B6B7B),
-    textMuted: Color(0xFFAAAAAA),
-
-    activityGradient: [Color(0xFF1A9E45), Color(0xFF8FB800), Color(0xFFC9A500)],
-    healthGradient: [Color(0xFF2E5BB5), Color(0xFF0DA89A), Color(0xFF1A9E45)],
-    sleepGradient: [Color(0xFF0DA89A), Color(0xFF2E5BB5), Color(0xFF6B45CC)],
-
-    activityCardBackground: Color(0xFFF0F0FF),
-    activityCardBorder: Color(0xFFD8D8F0),
-
-    accentCyan: Color(0xFF0DA89A),
-    accentLime: Color(0xFF8FB800),
-    accentPink: Color(0xFFCC3DCC),
-    accentBlue: Color(0xFF2E5BB5),
-  );
 }
