@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/chart_demo/screens/account_statistics_screen.dart';
 import 'package:flutter_application_2/fitness_app/screens/expenses_dashboard_screen.dart';
 import 'package:flutter_application_2/fitness_app/screens/sales_kpis_screen.dart';
 
-import '../constants/colors.dart';
 import 'fitness_goals_screen.dart';
 import 'health_stats_screen.dart';
 import 'projects_screen.dart';
@@ -23,39 +23,28 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     const HealthStatsScreen(),
     const ExpensesDashboardScreen(),
     const SalesKpisScreen(),
+    const AccountStatisticsScreen(),
   ];
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
-      backgroundColor: FitnessColors.background,
       body: IndexedStack(index: _currentIndex, children: _screens),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           border: Border(
             top: BorderSide(
-              color: FitnessColors.cardBorder.withValues(alpha: 0.5),
+              color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
               width: 1.0,
             ),
           ),
         ),
         child: BottomNavigationBar(
           currentIndex: _currentIndex,
-          onTap: (index) {
-            setState(() {
-              _currentIndex = index;
-            });
-          },
-          backgroundColor: FitnessColors.background,
-          selectedItemColor: FitnessColors.activity,
-          unselectedItemColor: FitnessColors.textSecondary.withValues(
-            alpha: 0.5,
-          ),
-          type: BottomNavigationBarType.fixed,
-          showSelectedLabels: true,
-          showUnselectedLabels: true,
-          selectedFontSize: 12,
-          unselectedFontSize: 12,
+          onTap: (index) => setState(() => _currentIndex = index),
+
           items: const [
             BottomNavigationBarItem(
               icon: Padding(
@@ -91,6 +80,13 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                 child: Icon(Icons.analytics_rounded),
               ),
               label: 'Sales',
+            ),
+            BottomNavigationBarItem(
+              icon: Padding(
+                padding: EdgeInsets.only(bottom: 4),
+                child: Icon(Icons.analytics_rounded),
+              ),
+              label: 'Account Stats',
             ),
           ],
         ),

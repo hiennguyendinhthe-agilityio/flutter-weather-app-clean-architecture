@@ -13,7 +13,7 @@ class SegmentedDonutChart extends StatelessWidget {
   final double size;
   final double strokeWidth;
   final double gapAngle;
-  final double progress;
+  final Animation<double> animation;
 
   const SegmentedDonutChart({
     super.key,
@@ -24,7 +24,7 @@ class SegmentedDonutChart extends StatelessWidget {
     this.size = 240,
     this.strokeWidth = 10,
     this.gapAngle = 0.104,
-    required this.progress,
+    required this.animation,
   });
 
   @override
@@ -41,7 +41,7 @@ class SegmentedDonutChart extends StatelessWidget {
               segments: segments,
               strokeWidth: strokeWidth,
               gapAngle: gapAngle,
-              progress: progress,
+              animation: animation,
             ),
           ),
           Column(
@@ -64,14 +64,14 @@ class _SegmentedDonutPainter extends CustomPainter {
   final List<ProjectData> segments;
   final double strokeWidth;
   final double gapAngle;
-  final double progress;
+  final Animation<double> animation;
 
   _SegmentedDonutPainter({
     required this.segments,
     required this.strokeWidth,
     required this.gapAngle,
-    required this.progress,
-  });
+    required this.animation,
+  }) : super(repaint: animation);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -85,6 +85,8 @@ class _SegmentedDonutPainter extends CustomPainter {
       ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.round;
     canvas.drawCircle(center, radius, trackPaint);
+
+    final progress = animation.value;
 
     if (segments.isEmpty || progress <= 0) return;
 
@@ -124,5 +126,5 @@ class _SegmentedDonutPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _SegmentedDonutPainter oldDelegate) =>
-      oldDelegate.progress != progress || oldDelegate.segments != segments;
+      oldDelegate.segments != segments;
 }

@@ -4,9 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../constants/colors.dart';
-import '../constants/text_styles.dart';
 import '../models/expense_model.dart';
+import '../theme/theme_context_ext.dart';
 import '../widgets/expense_category_list.dart';
 import '../widgets/expense_donut_chart.dart';
 
@@ -19,71 +18,87 @@ class ExpensesDashboardScreen extends StatefulWidget {
 }
 
 class _ExpensesDashboardScreenState extends State<ExpensesDashboardScreen> {
-  late DateTime _selectedDate;
-  late double _totalAmount;
-  late List<ExpenseCategory> _categories;
+  late final ValueNotifier<DateTime> _dateNotifier;
+  late final ValueNotifier<List<ExpenseCategory>> _categoriesNotifier;
+  late final ValueNotifier<double> _totalAmountNotifier;
 
   @override
   void initState() {
     super.initState();
-    _selectedDate = DateTime(2022, 6); // Default to June 2022 to match UI
-    _generateMockData(_selectedDate);
+    final initialDate = DateTime(2022, 6);
+    _dateNotifier = ValueNotifier<DateTime>(initialDate);
+    _categoriesNotifier = ValueNotifier<List<ExpenseCategory>>([]);
+    _totalAmountNotifier = ValueNotifier<double>(0);
   }
 
-  void _generateMockData(DateTime date) {
-    // Generate deterministic random data based on year and month
+  bool _initialized = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_initialized) {
+      final mockData = _generateMockData(_dateNotifier.value);
+      _categoriesNotifier.value = mockData.categories;
+      _totalAmountNotifier.value = mockData.total;
+      _initialized = true;
+    }
+  }
+
+  @override
+  void dispose() {
+    _dateNotifier.dispose();
+    _categoriesNotifier.dispose();
+    _totalAmountNotifier.dispose();
+    super.dispose();
+  }
+
+  ({List<ExpenseCategory> categories, double total}) _generateMockData(
+    DateTime date,
+  ) {
+    final ft = context.fitnessTheme;
     final random = Random(date.year * 100 + date.month);
+    final totalAmount = 1500.0 + random.nextInt(2000);
 
-    _totalAmount = 1500.0 + random.nextInt(2000); // Between 1500 and 3500
+    final double uW = 10 + random.nextDouble() * 30;
+    final double sW = 10 + random.nextDouble() * 30;
+    final double eW = 10 + random.nextDouble() * 40;
+    final double edW = 10 + random.nextDouble() * 20;
 
-    // Generate random weights
-    final double utilityWeight = 10 + random.nextDouble() * 30; // 10-40
-    final double supermarketWeight = 10 + random.nextDouble() * 30; // 10-40
-    final double entertainmentWeight = 10 + random.nextDouble() * 40; // 10-50
-    final double educationWeight = 10 + random.nextDouble() * 20; // 10-30
+    final double totalW = uW + sW + eW + edW;
 
-    final double totalWeight =
-        utilityWeight +
-        supermarketWeight +
-        entertainmentWeight +
-        educationWeight;
-
-    // Calculate percentages
-    final double pUtility = utilityWeight / totalWeight;
-    final double pSupermarket = supermarketWeight / totalWeight;
-    final double pEntertainment = entertainmentWeight / totalWeight;
-    final double pEducation = educationWeight / totalWeight;
-
-    _categories = [
-      ExpenseCategory(
-        name: 'Utility',
-        amount: _totalAmount * pUtility,
-        percentage: pUtility,
-        color: FitnessColors.expenseYellow,
-      ),
-      ExpenseCategory(
-        name: 'Supermarkets',
-        amount: _totalAmount * pSupermarket,
-        percentage: pSupermarket,
-        color: FitnessColors.expensePink,
-      ),
-      ExpenseCategory(
-        name: 'Entertainment',
-        amount: _totalAmount * pEntertainment,
-        percentage: pEntertainment,
-        color: FitnessColors.expenseBlue,
-      ),
-      ExpenseCategory(
-        name: 'Education',
-        amount: _totalAmount * pEducation,
-        percentage: pEducation,
-        color: FitnessColors.expenseCyan,
-      ),
-    ];
+    return (
+      categories: [
+        ExpenseCategory(
+          name: 'Utility',
+          amount: totalAmount * (uW / totalW),
+          percentage: uW / totalW,
+          color: ft.accentLime,
+        ),
+        ExpenseCategory(
+          name: 'Supermarkets',
+          amount: totalAmount * (sW / totalW),
+          percentage: sW / totalW,
+          color: ft.accentPink,
+        ),
+        ExpenseCategory(
+          name: 'Entertainment',
+          amount: totalAmount * (eW / totalW),
+          percentage: eW / totalW,
+          color: ft.accentBlue,
+        ),
+        ExpenseCategory(
+          name: 'Education',
+          amount: totalAmount * (edW / totalW),
+          percentage: edW / totalW,
+          color: ft.accentCyan,
+        ),
+      ],
+      total: totalAmount,
+    );
   }
 
   Future<void> _selectDate(BuildContext context) async {
-    DateTime tempDate = _selectedDate;
+    DateTime tempDate = _dateNotifier.value;
     await showCupertinoModalPopup(
       context: context,
       builder: (BuildContext context) {
@@ -102,11 +117,11 @@ class _ExpensesDashboardScreenState extends State<ExpensesDashboardScreen> {
                   CupertinoButton(
                     child: const Text('Done'),
                     onPressed: () {
-                      if (tempDate != _selectedDate) {
-                        setState(() {
-                          _selectedDate = tempDate;
-                          _generateMockData(_selectedDate);
-                        });
+                      if (tempDate != _dateNotifier.value) {
+                        _dateNotifier.value = tempDate;
+                        final newData = _generateMockData(tempDate);
+                        _categoriesNotifier.value = newData.categories;
+                        _totalAmountNotifier.value = newData.total;
                       }
                       Navigator.of(context).pop();
                     },
@@ -116,7 +131,7 @@ class _ExpensesDashboardScreenState extends State<ExpensesDashboardScreen> {
               Expanded(
                 child: CupertinoDatePicker(
                   mode: CupertinoDatePickerMode.date,
-                  initialDateTime: _selectedDate,
+                  initialDateTime: _dateNotifier.value,
                   minimumDate: DateTime(2020, 1),
                   maximumDate: DateTime(2030, 12),
                   onDateTimeChanged: (DateTime newDate) {
@@ -133,9 +148,21 @@ class _ExpensesDashboardScreenState extends State<ExpensesDashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final ft = context.fitnessTheme;
+
     return Scaffold(
-      backgroundColor: FitnessColors.background,
-      appBar: _buildAppBar(context),
+      backgroundColor: ft.scaffoldBackground,
+      appBar: AppBar(
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new, size: 20),
+          onPressed: () => Navigator.maybePop(context),
+        ),
+        title: const Text('Expenses'),
+        actions: [
+          IconButton(icon: const Icon(Icons.tune, size: 24), onPressed: () {}),
+        ],
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -143,115 +170,112 @@ class _ExpensesDashboardScreenState extends State<ExpensesDashboardScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 16),
-              _buildHeader(),
-              const SizedBox(height: 40),
-              ExpenseDonutChart(
-                categories: _categories,
-                totalAmount: _totalAmount,
+
+              ValueListenableBuilder<DateTime>(
+                valueListenable: _dateNotifier,
+                builder: (context, date, _) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            DateFormat('MMMM yyyy').format(date),
+                            style: TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.w500,
+                              color: ft.textPrimary,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          ValueListenableBuilder<double>(
+                            valueListenable: _totalAmountNotifier,
+                            builder: (context, total, _) {
+                              return TweenAnimationBuilder<double>(
+                                tween: Tween<double>(begin: 0, end: total),
+                                duration: const Duration(milliseconds: 1000),
+                                curve: Curves.easeOutCubic,
+                                builder: (context, value, child) {
+                                  return Row(
+                                    children: [
+                                      Text(
+                                        '\$ ${value.toInt()}',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                          color: ft.textSecondary,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        '(+5.65%)',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                          color: ft.healthColor,
+                                        ),
+                                      ),
+                                      Icon(
+                                        Icons.arrow_drop_up,
+                                        color: ft.healthColor,
+                                        size: 20,
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                      GestureDetector(
+                        onTap: () => _selectDate(context),
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: ft.cardBackground,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: ft.cardBorder),
+                          ),
+                          child: Icon(
+                            Icons.settings_outlined,
+                            color: ft.textPrimary,
+                            size: 24,
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
+
               const SizedBox(height: 40),
-              ExpenseCategoryList(categories: _categories),
+
+              ValueListenableBuilder<List<ExpenseCategory>>(
+                valueListenable: _categoriesNotifier,
+                builder: (context, categories, _) {
+                  return Column(
+                    children: [
+                      RepaintBoundary(
+                        child: ExpenseDonutChart(
+                          categories: categories,
+                          totalAmount: _totalAmountNotifier.value,
+                        ),
+                      ),
+                      const SizedBox(height: 40),
+                      ExpenseCategoryList(categories: categories),
+                    ],
+                  );
+                },
+              ),
+
               const SizedBox(height: 40),
             ],
           ),
         ),
       ),
-    );
-  }
-
-  AppBar _buildAppBar(BuildContext context) {
-    return AppBar(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      centerTitle: true,
-      leading: IconButton(
-        icon: const Icon(
-          Icons.arrow_back_ios_new,
-          color: Colors.white,
-          size: 20,
-        ),
-        onPressed: () {
-          if (Navigator.canPop(context)) {
-            Navigator.pop(context);
-          }
-        },
-      ),
-      title: const Text('Expenses', style: FitnessTextStyles.titleLarge),
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.tune, color: Colors.white, size: 24),
-          onPressed: () {},
-        ),
-      ],
-    );
-  }
-
-  Widget _buildHeader() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              DateFormat('MMMM yyyy').format(_selectedDate),
-              style: FitnessTextStyles.expenseMonth,
-            ),
-            const SizedBox(height: 4),
-            Row(
-              children: const [
-                // We will animate the total in the Donut Chart, this is just a static label if needed
-                // But in the original UI, the header had $2460. Let's keep it static or remove it?
-                // Actually the design has "$ 2460 (+5.65%)" in the header AND in the center of the chart.
-                // We'll update the total in the header dynamically but without animation for simplicity,
-                // or use a TweenAnimationBuilder here too. Let's use TweenAnimationBuilder.
-              ],
-            ),
-            TweenAnimationBuilder<double>(
-              tween: Tween<double>(begin: 0, end: _totalAmount),
-              duration: const Duration(milliseconds: 1000),
-              curve: Curves.easeOutCubic,
-              builder: (context, value, child) {
-                return Row(
-                  children: [
-                    Text(
-                      '\$ ${value.toInt()}',
-                      style: FitnessTextStyles.expenseTotal,
-                    ),
-                    const SizedBox(width: 6),
-                    const Text(
-                      '(+5.65%)',
-                      style: FitnessTextStyles.expenseTotalGreen,
-                    ),
-                    const Icon(
-                      Icons.arrow_drop_up,
-                      color: FitnessColors.health,
-                      size: 20,
-                    ),
-                  ],
-                );
-              },
-            ),
-          ],
-        ),
-        GestureDetector(
-          onTap: () => _selectDate(context),
-          child: Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: FitnessColors.cardBackground,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: FitnessColors.cardBorder),
-            ),
-            child: const Icon(
-              Icons.settings_outlined,
-              color: Colors.white,
-              size: 24,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

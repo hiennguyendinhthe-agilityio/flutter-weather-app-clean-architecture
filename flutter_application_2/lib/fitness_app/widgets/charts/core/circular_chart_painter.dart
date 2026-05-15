@@ -33,14 +33,18 @@ class CircularPainterUtils {
 }
 
 abstract class BaseCircularPainter extends CustomPainter {
-  final double entranceProgress;
+  final Animation<double>? entranceAnimation;
+  final Listenable? repaintListenable;
 
   final List<double> focusValues;
 
   const BaseCircularPainter({
-    required this.entranceProgress,
+    this.entranceAnimation,
+    this.repaintListenable,
     this.focusValues = const [],
-  });
+  }) : super(repaint: repaintListenable ?? entranceAnimation);
+
+  double get entranceProgress => entranceAnimation?.value ?? 1.0;
 
   Offset centerOf(Size size) => Offset(size.width / 2, size.height / 2);
 
@@ -48,7 +52,7 @@ abstract class BaseCircularPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant BaseCircularPainter oldDelegate) {
-    return oldDelegate.entranceProgress != entranceProgress ||
-        !CircularPainterUtils.listEquals(oldDelegate.focusValues, focusValues);
+    return !CircularPainterUtils.listEquals(oldDelegate.focusValues, focusValues) ||
+        oldDelegate.entranceAnimation != entranceAnimation;
   }
 }

@@ -7,7 +7,7 @@ class ProjectHorizontalBar extends StatelessWidget {
   final double percentage;
   final String valueText;
   final Color color;
-  final double progress;
+  final Animation<double> animation;
 
   const ProjectHorizontalBar({
     super.key,
@@ -15,7 +15,7 @@ class ProjectHorizontalBar extends StatelessWidget {
     required this.percentage,
     required this.valueText,
     required this.color,
-    this.progress = 1.0,
+    required this.animation,
   });
 
   @override
@@ -35,9 +35,15 @@ class ProjectHorizontalBar extends StatelessWidget {
                 color: Colors.white.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(4),
               ),
-              child: FractionallySizedBox(
-                alignment: Alignment.centerLeft,
-                widthFactor: (percentage * progress).clamp(0.0, 1.0),
+              child: AnimatedBuilder(
+                animation: animation,
+                builder: (context, child) {
+                  return FractionallySizedBox(
+                    alignment: Alignment.centerLeft,
+                    widthFactor: (percentage * animation.value).clamp(0.0, 1.0),
+                    child: child,
+                  );
+                },
                 child: Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(

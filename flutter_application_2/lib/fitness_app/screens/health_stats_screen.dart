@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../constants/colors.dart';
-import '../constants/text_styles.dart';
 import '../models/health_stats_data.dart';
 import '../repositories/fitness_repository.dart';
-import '../widgets/fitness/activity_levels_list.dart';
+import '../theme/theme_context_ext.dart';
 import '../widgets/charts/fitness_activity_rings.dart';
+import '../widgets/fitness/activity_levels_list.dart';
 import '../widgets/fitness/user_profile_header.dart';
 
 class HealthStatsScreen extends StatefulWidget {
@@ -26,91 +25,78 @@ class _HealthStatsScreenState extends State<HealthStatsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final ft = context.fitnessTheme;
+
     return Scaffold(
-      backgroundColor: FitnessColors.background,
+      backgroundColor: ft.scaffoldBackground,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: FitnessColors.textPrimary,
-            size: 24,
-          ),
-          onPressed: () => Navigator.maybePop(context),
-        ),
-        title: const Text('Health Stats', style: FitnessTextStyles.titleLarge),
-        centerTitle: true,
+        title: const Text('Health Stats'),
         actions: [
-          IconButton(
-            icon: const Icon(
-              Icons.calendar_month,
-              color: FitnessColors.textPrimary,
-              size: 24,
-            ),
-            onPressed: () {},
-          ),
+          IconButton(icon: const Icon(Icons.calendar_month), onPressed: () {}),
           const SizedBox(width: 8),
         ],
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
+        child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 12),
+          slivers: [
+            const SliverToBoxAdapter(child: SizedBox(height: 12)),
 
-              // ── 1. User Profile Header ──
-              UserProfileHeader(
+            SliverToBoxAdapter(
+              child: UserProfileHeader(
                 monthYear: 'June 2022',
                 subtitle: _currentData.motivationalText,
               ),
+            ),
 
-              const SizedBox(height: 32),
+            const SliverToBoxAdapter(child: SizedBox(height: 32)),
 
-              // ── 2. Gradient Rings Chart + Total Index ──
-              Padding(
+            SliverToBoxAdapter(
+              child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: ActivityRingsChart(
-                  size: 280.0,
-                  spacing: 14.0,
-                  totalIndex: _currentData.totalIndex,
-                  rings: [
-                    // Inner → Outer order (index 0 = innermost)
-                    ActivityRingsData(
-                      progress: _currentData.healthProgress,
-                      color: FitnessColors.health,
-                      label: 'Health',
-                      icon: Icons.favorite_rounded,
-                      strokeWidth: 16.0,
-                    ),
-                    ActivityRingsData(
-                      progress: _currentData.sleepProgress,
-                      color: FitnessColors.sleep,
-                      label: 'Sleep',
-                      icon: Icons.bedtime_rounded,
-                      strokeWidth: 16.0,
-                    ),
-                    ActivityRingsData(
-                      progress: _currentData.activityProgress,
-                      color: FitnessColors.activity,
-                      label: 'Activity',
-                      icon: Icons.bolt_rounded,
-                      strokeWidth: 16.0,
-                    ),
-                  ],
+                child: RepaintBoundary(
+                  child: ActivityRingsChart(
+                    size: 280.0,
+                    spacing: 14.0,
+                    totalIndex: _currentData.totalIndex,
+                    rings: [
+                      ActivityRingsData(
+                        progress: _currentData.healthProgress,
+                        color: ft.healthColor,
+                        label: 'Health',
+                        icon: Icons.favorite_rounded,
+                        strokeWidth: 16.0,
+                      ),
+                      ActivityRingsData(
+                        progress: _currentData.sleepProgress,
+                        color: ft.sleepColor,
+                        label: 'Sleep',
+                        icon: Icons.bedtime_rounded,
+                        strokeWidth: 16.0,
+                      ),
+                      ActivityRingsData(
+                        progress: _currentData.activityProgress,
+                        color: ft.activityColor,
+                        label: 'Activity',
+                        icon: Icons.bolt_rounded,
+                        strokeWidth: 16.0,
+                      ),
+                    ],
+                  ),
                 ),
               ),
+            ),
 
-              const SizedBox(height: 36),
+            const SliverToBoxAdapter(child: SizedBox(height: 36)),
 
-              // ── 3. Activity Levels List ──
-              ActivityLevelsList(activities: _currentData.activityLevels),
+            SliverToBoxAdapter(
+              child: ActivityLevelsList(
+                activities: _currentData.activityLevels,
+              ),
+            ),
 
-              const SizedBox(height: 30),
-            ],
-          ),
+            const SliverToBoxAdapter(child: SizedBox(height: 30)),
+          ],
         ),
       ),
     );

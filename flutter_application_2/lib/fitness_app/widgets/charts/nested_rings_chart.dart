@@ -104,25 +104,21 @@ class _NestedRingsChartState extends State<NestedRingsChart>
             children: [
               GestureDetector(
                 onTapUp: (details) => _onCanvasTapped(details.localPosition),
-                child: AnimatedBuilder(
-                  animation: Listenable.merge([
-                    sweepController,
-                    ...focusControllers,
-                  ]),
-                  builder: (context, child) {
-                    return CustomPaint(
-                      size: Size.square(widget.size),
-                      painter: _NestedRingsPainter(
-                        rings: widget.rings,
-                        fromProgress: _fromProgress,
-                        spacing: widget.spacing,
-                        entranceProgress: sweepAnimation.value,
-                        focusValues: focusControllers
-                            .map((c) => c.value)
-                            .toList(),
-                      ),
-                    );
-                  },
+                child: CustomPaint(
+                  size: Size.square(widget.size),
+                  painter: _NestedRingsPainter(
+                    rings: widget.rings,
+                    fromProgress: _fromProgress,
+                    spacing: widget.spacing,
+                    entranceAnimation: sweepAnimation,
+                    repaintListenable: Listenable.merge([
+                      sweepController,
+                      ...focusControllers,
+                    ]),
+                    focusValues: focusControllers
+                        .map((c) => c.value)
+                        .toList(),
+                  ),
                 ),
               ),
 
@@ -183,7 +179,8 @@ class _NestedRingsPainter extends BaseCircularPainter {
     required this.rings,
     required this.fromProgress,
     required this.spacing,
-    required super.entranceProgress,
+    required super.entranceAnimation,
+    required super.repaintListenable,
     required super.focusValues,
   });
 

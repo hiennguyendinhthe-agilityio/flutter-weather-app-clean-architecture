@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/fitness_app/screens/main_navigation_screen.dart';
+import 'package:flutter_application_2/fitness_app/theme/app_theme.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const FitnessApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class FitnessApp extends StatelessWidget {
+  const FitnessApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {   
     return MaterialApp(
       title: 'Fitness Goals App',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        brightness: Brightness.dark,
-        fontFamily: 'Inter',
-      ),
+      theme: AppTheme.light(),
+      darkTheme: AppTheme.dark(), 
+
+      themeMode: ThemeMode.dark,
       home: const MainNavigationScreen(),
     );
   }
