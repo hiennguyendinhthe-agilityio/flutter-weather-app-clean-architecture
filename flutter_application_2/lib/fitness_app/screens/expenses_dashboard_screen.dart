@@ -55,7 +55,9 @@ class _ExpensesDashboardScreenState extends State<ExpensesDashboardScreen> {
   ({List<ExpenseCategory> categories, double total}) _generateMockData(
     DateTime date,
   ) {
-    final ft = context.fitnessTheme;
+    // Accent colors from FitnessSemanticExtension — they are chart-series colors
+    // that change per brightness. Read them here via context.fitnessExt.
+    final ext = context.fitnessExt;
     final random = Random(date.year * 100 + date.month);
     final totalAmount = 1500.0 + random.nextInt(2000);
 
@@ -63,7 +65,6 @@ class _ExpensesDashboardScreenState extends State<ExpensesDashboardScreen> {
     final double sW = 10 + random.nextDouble() * 30;
     final double eW = 10 + random.nextDouble() * 40;
     final double edW = 10 + random.nextDouble() * 20;
-
     final double totalW = uW + sW + eW + edW;
 
     return (
@@ -72,25 +73,25 @@ class _ExpensesDashboardScreenState extends State<ExpensesDashboardScreen> {
           name: 'Utility',
           amount: totalAmount * (uW / totalW),
           percentage: uW / totalW,
-          color: ft.accentLime,
+          color: ext.accentLime,
         ),
         ExpenseCategory(
           name: 'Supermarkets',
           amount: totalAmount * (sW / totalW),
           percentage: sW / totalW,
-          color: ft.accentPink,
+          color: ext.accentPink,
         ),
         ExpenseCategory(
           name: 'Entertainment',
           amount: totalAmount * (eW / totalW),
           percentage: eW / totalW,
-          color: ft.accentBlue,
+          color: ext.accentBlue,
         ),
         ExpenseCategory(
           name: 'Education',
           amount: totalAmount * (edW / totalW),
           percentage: edW / totalW,
-          color: ft.accentCyan,
+          color: ext.accentCyan,
         ),
       ],
       total: totalAmount,
@@ -148,10 +149,10 @@ class _ExpensesDashboardScreenState extends State<ExpensesDashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final ft = context.fitnessTheme;
+    final cs = context.cs;
+    final tt = context.tt;
 
     return Scaffold(
-      backgroundColor: ft.scaffoldBackground,
       appBar: AppBar(
         centerTitle: true,
         leading: IconButton(
@@ -183,10 +184,9 @@ class _ExpensesDashboardScreenState extends State<ExpensesDashboardScreen> {
                         children: [
                           Text(
                             DateFormat('MMMM yyyy').format(date),
-                            style: TextStyle(
-                              fontSize: 28,
+                            style: tt.headlineSmall?.copyWith(
                               fontWeight: FontWeight.w500,
-                              color: ft.textPrimary,
+                              color: cs.onSurface,
                             ),
                           ),
                           const SizedBox(height: 4),
@@ -202,24 +202,22 @@ class _ExpensesDashboardScreenState extends State<ExpensesDashboardScreen> {
                                     children: [
                                       Text(
                                         '\$ ${value.toInt()}',
-                                        style: TextStyle(
-                                          fontSize: 14,
+                                        style: tt.bodyMedium?.copyWith(
                                           fontWeight: FontWeight.w500,
-                                          color: ft.textSecondary,
+                                          color: cs.onSurfaceVariant,
                                         ),
                                       ),
                                       const SizedBox(width: 6),
                                       Text(
                                         '(+5.65%)',
-                                        style: TextStyle(
-                                          fontSize: 14,
+                                        style: tt.bodyMedium?.copyWith(
                                           fontWeight: FontWeight.w600,
-                                          color: ft.healthColor,
+                                          color: cs.secondary,
                                         ),
                                       ),
                                       Icon(
                                         Icons.arrow_drop_up,
-                                        color: ft.healthColor,
+                                        color: cs.secondary,
                                         size: 20,
                                       ),
                                     ],
@@ -235,13 +233,13 @@ class _ExpensesDashboardScreenState extends State<ExpensesDashboardScreen> {
                         child: Container(
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            color: ft.cardBackground,
+                            color: cs.surface,
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: ft.cardBorder),
+                            border: Border.all(color: cs.outlineVariant),
                           ),
                           child: Icon(
                             Icons.settings_outlined,
-                            color: ft.textPrimary,
+                            color: cs.onSurface,
                             size: 24,
                           ),
                         ),

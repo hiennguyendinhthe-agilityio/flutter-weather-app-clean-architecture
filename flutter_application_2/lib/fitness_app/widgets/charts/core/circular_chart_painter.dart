@@ -36,12 +36,12 @@ abstract class BaseCircularPainter extends CustomPainter {
   final Animation<double>? entranceAnimation;
   final Listenable? repaintListenable;
 
-  final List<double> focusValues;
+  final List<Animation<double>> focusAnimations;
 
   const BaseCircularPainter({
     this.entranceAnimation,
     this.repaintListenable,
-    this.focusValues = const [],
+    this.focusAnimations = const [],
   }) : super(repaint: repaintListenable ?? entranceAnimation);
 
   double get entranceProgress => entranceAnimation?.value ?? 1.0;
@@ -52,7 +52,7 @@ abstract class BaseCircularPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant BaseCircularPainter oldDelegate) {
-    return !CircularPainterUtils.listEquals(oldDelegate.focusValues, focusValues) ||
-        oldDelegate.entranceAnimation != entranceAnimation;
+    return oldDelegate.entranceAnimation != entranceAnimation ||
+        oldDelegate.focusAnimations != focusAnimations;
   }
 }

@@ -3,7 +3,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
-import '../../constants/text_styles.dart';
+import '../../theme/theme_context_ext.dart';
 import '../common/ring_legend_item.dart';
 import '../mixins/ring_interaction_mixin.dart';
 import 'core/circular_chart_painter.dart';
@@ -89,6 +89,7 @@ class _ActivityRingsChartState extends State<ActivityRingsChart>
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.fitnessActivityRingsTheme;
     final targetValue = selectedIndex == null
         ? widget.totalIndex
         : (widget.rings[selectedIndex!].progress * 100).toInt();
@@ -119,9 +120,7 @@ class _ActivityRingsChartState extends State<ActivityRingsChart>
                           sweepController,
                           ...focusControllers,
                         ]),
-                        focusValues: focusControllers
-                            .map((c) => c.value)
-                            .toList(),
+                        focusAnimations: focusControllers,
                       ),
                     ),
                   ),
@@ -141,14 +140,14 @@ class _ActivityRingsChartState extends State<ActivityRingsChart>
                         builder: (context, value, _) {
                           return Text(
                             '$value',
-                            style: FitnessTextStyles.totalIndexValue,
+                            style: theme.titleStyle,
                             textAlign: TextAlign.center,
                           );
                         },
                       ),
                       Text(
                         currentLabel,
-                        style: FitnessTextStyles.totalIndexLabel,
+                        style: theme.subtitleStyle,
                       ),
                     ],
                   ),
@@ -195,7 +194,7 @@ class _ActivityRingsPainter extends BaseCircularPainter {
     required this.spacing,
     required super.entranceAnimation,
     required super.repaintListenable,
-    required super.focusValues,
+    required super.focusAnimations,
   });
 
   static const double _trackStartAngle = pi / 2;
@@ -216,7 +215,7 @@ class _ActivityRingsPainter extends BaseCircularPainter {
 
     for (int i = 0; i < rings.length; i++) {
       final ring = rings[i];
-      final fv = focusValues[i];
+      final fv = focusAnimations[i].value;
       final radius = radii[i];
 
       final opacityMultiplier = (fv * 0.8 + 0.2).clamp(0.2, 1.0);

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../constants/colors.dart';
-import '../../constants/text_styles.dart';
+import '../../theme/theme_context_ext.dart';
 
 class WeeklyCalendar extends StatelessWidget {
   final int selectedIndex;
@@ -28,6 +27,7 @@ class WeeklyCalendar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.weeklyCalendarTheme;
     final baseDate = startDate ?? DateTime(2024, 4, 15);
     final currentDates = List.generate(
       7,
@@ -54,7 +54,7 @@ class WeeklyCalendar extends StatelessWidget {
               ),
               decoration: BoxDecoration(
                 color: isSelected
-                    ? Colors.white.withValues(alpha: 0.1)
+                    ? theme.selectedBackgroundColor ?? Colors.white.withValues(alpha: 0.1)
                     : Colors.transparent,
                 borderRadius: BorderRadius.circular(16),
               ),
@@ -63,20 +63,20 @@ class WeeklyCalendar extends StatelessWidget {
                 children: [
                   Text(
                     currentDayLabel,
-                    style: FitnessTextStyles.calendarDay.copyWith(
+                    style: theme.dayTextStyle?.copyWith(
                       color: isSelected
-                          ? FitnessColors.textPrimary
-                          : FitnessColors.textSecondary,
+                          ? theme.todayIndicatorColor
+                          : theme.dayTextStyle?.color,
+                    ) ?? TextStyle(
+                      color: isSelected ? Colors.white : Colors.white54,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     currentDateNum,
                     style: isSelected
-                        ? FitnessTextStyles.calendarDate.copyWith(
-                            color: FitnessColors.textPrimary,
-                          )
-                        : FitnessTextStyles.calendarDate,
+                        ? theme.selectedDateTextStyle
+                        : theme.dateTextStyle,
                   ),
                 ],
               ),

@@ -1,9 +1,10 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/fitness_app/theme/extensions/segmented_donut_chart_theme.dart';
 
-import '../../constants/text_styles.dart';
 import '../../models/project_data.dart';
+import '../../theme/theme_context_ext.dart';
 
 class SegmentedDonutChart extends StatelessWidget {
   final List<ProjectData> segments;
@@ -29,6 +30,7 @@ class SegmentedDonutChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.segmentedDonutChartTheme;
     return SizedBox(
       width: size,
       height: size,
@@ -42,16 +44,17 @@ class SegmentedDonutChart extends StatelessWidget {
               strokeWidth: strokeWidth,
               gapAngle: gapAngle,
               animation: animation,
+              theme: theme,
             ),
           ),
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(centerTitle, style: FitnessTextStyles.projectTimeRange),
+              Text(centerTitle, style: theme.centerSubtitleStyle),
               const SizedBox(height: 8),
-              Text(centerValue, style: FitnessTextStyles.projectDisplayHours),
+              Text(centerValue, style: theme.centerValueStyle),
               const SizedBox(height: 8),
-              Text(centerSubtitle, style: FitnessTextStyles.projectTimeRange),
+              Text(centerSubtitle, style: theme.centerSubtitleStyle),
             ],
           ),
         ],
@@ -65,12 +68,14 @@ class _SegmentedDonutPainter extends CustomPainter {
   final double strokeWidth;
   final double gapAngle;
   final Animation<double> animation;
+  final SegmentedDonutChartTheme theme;
 
   _SegmentedDonutPainter({
     required this.segments,
     required this.strokeWidth,
     required this.gapAngle,
     required this.animation,
+    required this.theme,
   }) : super(repaint: animation);
 
   @override
@@ -80,7 +85,7 @@ class _SegmentedDonutPainter extends CustomPainter {
     final rect = Rect.fromCircle(center: center, radius: radius);
 
     final trackPaint = Paint()
-      ..color = const Color(0xFF1E1E28)
+      ..color = theme.trackColor ?? const Color(0xFF1E1E28)
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.round;
@@ -126,5 +131,5 @@ class _SegmentedDonutPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _SegmentedDonutPainter oldDelegate) =>
-      oldDelegate.segments != segments;
+      oldDelegate.segments != segments || oldDelegate.theme != theme;
 }

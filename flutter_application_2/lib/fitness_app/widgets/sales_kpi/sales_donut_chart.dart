@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import '../../constants/colors.dart';
-import '../../constants/text_styles.dart';
+import 'package:flutter_application_2/fitness_app/theme/extensions/sales_donut_chart_theme.dart';
+import '../../theme/theme_context_ext.dart';
 
 class SalesKpiDonutChart extends StatefulWidget {
   final double percentage; // 0.0 to 1.0
@@ -57,6 +57,7 @@ class _SalesKpiDonutChartState extends State<SalesKpiDonutChart>
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.salesDonutChartTheme;
     return AnimatedBuilder(
       animation: _animation,
       builder: (context, child) {
@@ -68,6 +69,7 @@ class _SalesKpiDonutChartState extends State<SalesKpiDonutChart>
           painter: _SalesDonutPainter(
             percentage: displayPercentage,
             amountString: widget.amountString,
+            theme: theme,
           ),
         );
       },
@@ -78,10 +80,12 @@ class _SalesKpiDonutChartState extends State<SalesKpiDonutChart>
 class _SalesDonutPainter extends CustomPainter {
   final double percentage;
   final String amountString;
+  final SalesDonutChartTheme theme;
 
   _SalesDonutPainter({
     required this.percentage,
     required this.amountString,
+    required this.theme,
   });
 
   // Start angle at 12 o'clock position (top)
@@ -99,7 +103,7 @@ class _SalesDonutPainter extends CustomPainter {
 
     // 1. Draw Background Track (Dark grey, full circle)
     final trackPaint = Paint()
-      ..color = FitnessColors.salesTrack
+      ..color = theme.trackColor ?? Colors.black12
       ..style = PaintingStyle.stroke
       ..strokeWidth = _strokeWidth;
     canvas.drawCircle(center, radius, trackPaint);
@@ -118,7 +122,7 @@ class _SalesDonutPainter extends CustomPainter {
       );
 
       final progressPaint = Paint()
-        ..color = FitnessColors.salesBlueNeon
+        ..color = theme.progressColor ?? Colors.blue
         ..style = PaintingStyle.fill;
       canvas.drawPath(path, progressPaint);
     }
@@ -139,7 +143,7 @@ class _SalesDonutPainter extends CustomPainter {
 
     // Background circle for the icon (slightly larger than stroke width or matching it)
     final bgPaint = Paint()
-      ..color = FitnessColors.salesBlueNeon
+      ..color = theme.iconBackgroundColor ?? Colors.blue
       ..style = PaintingStyle.fill;
     
     // Draw a shadow to make it float
@@ -154,7 +158,7 @@ class _SalesDonutPainter extends CustomPainter {
 
     // Inner dark circle to match design
     final innerPaint = Paint()
-      ..color = FitnessColors.salesBackground
+      ..color = theme.iconInnerColor ?? Colors.black
       ..style = PaintingStyle.fill;
     canvas.drawCircle(iconCenter, 14.0, innerPaint);
 
@@ -168,7 +172,7 @@ class _SalesDonutPainter extends CustomPainter {
           fontSize: 16.0,
           fontFamily: iconData.fontFamily,
           package: iconData.fontPackage,
-          color: FitnessColors.salesBlueNeon,
+          color: theme.iconColor ?? Colors.white,
         ),
       ),
     );
@@ -188,14 +192,14 @@ class _SalesDonutPainter extends CustomPainter {
     // Percentage Text (e.g., "76%")
     final pctString = '${(percentage * 100).round()}%';
     final pctPainter = TextPainter(
-      text: TextSpan(text: pctString, style: FitnessTextStyles.salesCenterPercentage),
+      text: TextSpan(text: pctString, style: theme.percentageStyle),
       textDirection: TextDirection.ltr,
     );
     pctPainter.layout();
 
     // Subtitle Text (e.g., "$ 12 245 / 15 400")
     final subPainter = TextPainter(
-      text: TextSpan(text: amountString, style: FitnessTextStyles.salesCenterValue),
+      text: TextSpan(text: amountString, style: theme.valueStyle),
       textDirection: TextDirection.ltr,
     );
     subPainter.layout();
@@ -327,6 +331,7 @@ class _SalesDonutPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _SalesDonutPainter oldDelegate) {
     return oldDelegate.percentage != percentage ||
-           oldDelegate.amountString != amountString;
+           oldDelegate.amountString != amountString ||
+           oldDelegate.theme != theme;
   }
 }

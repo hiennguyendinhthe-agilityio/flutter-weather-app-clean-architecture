@@ -2,9 +2,12 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import '../../constants/colors.dart';
-import '../../constants/text_styles.dart';
+import '../../theme/theme_context_ext.dart';
 import 'core/circular_chart_painter.dart';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// StepsGaugeChart — Optimized (Theming + Stutter Fix)
+// ─────────────────────────────────────────────────────────────────────────────
 
 class StepsGaugeChart extends StatefulWidget {
   final int currentSteps;
@@ -75,16 +78,29 @@ class _StepsGaugeChartState extends State<StepsGaugeChart>
 
   @override
   Widget build(BuildContext context) {
+    final cs = context.cs;
+    final theme = context.stepsGaugeChartTheme;
+
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: FitnessColors.cardBackground,
+        color: cs.surface,
         borderRadius: BorderRadius.circular(24.0),
+        border: Border.all(color: cs.outlineVariant),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Steps', style: FitnessTextStyles.cardTitle),
+          Text(
+            'Steps',
+            style:
+                theme.titleStyle ??
+                TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  color: cs.onSurface,
+                ),
+          ),
           const Spacer(),
           Center(
             child: SizedBox.square(
@@ -95,14 +111,16 @@ class _StepsGaugeChartState extends State<StepsGaugeChart>
                   CustomPaint(
                     size: const Size.square(130.0),
                     painter: _GaugePainter(
-                      progress: (widget.currentSteps / widget.goalSteps).clamp(0.0, 1.0),
+                      progress: (widget.currentSteps / widget.goalSteps).clamp(
+                        0.0,
+                        1.0,
+                      ),
                       fromProgress: _fromProgress,
                       entranceAnimation: _sweepAnimation,
-                      color: FitnessColors.sleep,
-                      trackColor: FitnessColors.sleepTrack,
+                      color: theme.progressColor ?? cs.tertiary,
+                      trackColor: theme.trackColor ?? cs.surface,
                     ),
                   ),
-
                   TweenAnimationBuilder<int>(
                     tween: IntTween(begin: 0, end: widget.currentSteps),
                     duration: const Duration(milliseconds: 1200),
@@ -113,16 +131,34 @@ class _StepsGaugeChartState extends State<StepsGaugeChart>
                         children: [
                           Text(
                             _formatNumber(value),
-                            style: FitnessTextStyles.chartValue,
+                            style:
+                                theme.valueStyle ??
+                                TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w700,
+                                  color: cs.onSurface,
+                                ),
                           ),
-                          const SizedBox(height: 2),
-                          Text(
-                            'Goal: ${_formatNumber(widget.goalSteps)}',
-                            style: FitnessTextStyles.chartValueSubtitle,
-                          ),
+                          ?child,
                         ],
                       );
                     },
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(height: 2),
+                        Text(
+                          'Goal: ${_formatNumber(widget.goalSteps)}',
+                          style:
+                              theme.goalStyle ??
+                              TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                color: cs.onSurfaceVariant,
+                              ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -137,11 +173,13 @@ class _StepsGaugeChartState extends State<StepsGaugeChart>
 
 class _GaugePainter extends BaseCircularPainter {
   final double progress;
-
   final double fromProgress;
   final Color color;
   final Color trackColor;
   final double _strokeWidth;
+
+  // ── Optimization: Reuse Paint ──
+  final Paint _paint = Paint()..style = PaintingStyle.stroke;
 
   _GaugePainter({
     required this.progress,
@@ -160,31 +198,30 @@ class _GaugePainter extends BaseCircularPainter {
     const startAngle = -pi / 2;
     const fullSweep = 2 * pi;
 
-    final trackPaint = Paint()
+    _paint
       ..color = trackColor
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = _strokeWidth;
-    canvas.drawCircle(center, radius, trackPaint);
+      ..strokeWidth = _strokeWidth
+      ..strokeCap = StrokeCap.butt;
+    canvas.drawCircle(center, radius, _paint);
 
     if (entranceProgress > 0) {
-      final progressPaint = Paint()
-        ..color = color
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = _strokeWidth
-        ..strokeCap = StrokeCap.round;
-
       final displayProgress = CircularPainterUtils.lerp(
         fromProgress,
         progress,
         entranceProgress,
       );
       final currentSweep = fullSweep * displayProgress;
+
+      _paint
+        ..color = color
+        ..strokeCap = StrokeCap.round;
+
       canvas.drawArc(
         Rect.fromCircle(center: center, radius: radius),
         startAngle,
         currentSweep,
         false,
-        progressPaint,
+        _paint,
       );
     }
   }
@@ -193,6 +230,8 @@ class _GaugePainter extends BaseCircularPainter {
   bool shouldRepaint(covariant _GaugePainter oldDelegate) {
     return super.shouldRepaint(oldDelegate) ||
         oldDelegate.progress != progress ||
-        oldDelegate.fromProgress != fromProgress;
+        oldDelegate.fromProgress != fromProgress ||
+        oldDelegate.color != color ||
+        oldDelegate.trackColor != trackColor;
   }
 }

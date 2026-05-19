@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../constants/colors.dart';
-import '../../constants/text_styles.dart';
+import '../../theme/theme_context_ext.dart';
 
 class SalesTimeFilterBar extends StatelessWidget {
   final List<String> filters;
@@ -16,10 +15,11 @@ class SalesTimeFilterBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.salesTimeFilterTheme;
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
       decoration: BoxDecoration(
-        color: FitnessColors.salesBackground,
+        color: theme.backgroundColor,
         borderRadius: BorderRadius.circular(16.0),
       ),
       child: Row(
@@ -33,14 +33,14 @@ class SalesTimeFilterBar extends StatelessWidget {
               duration: const Duration(milliseconds: 200),
               padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
               decoration: BoxDecoration(
-                color: isSelected ? FitnessColors.salesCardBackground : Colors.transparent,
+                color: isSelected ? theme.activeBackgroundColor : Colors.transparent,
                 borderRadius: BorderRadius.circular(12.0),
               ),
               child: Text(
                 filter,
                 style: isSelected
-                    ? FitnessTextStyles.salesFilterTextActive
-                    : FitnessTextStyles.salesFilterText,
+                    ? theme.activeTextStyle
+                    : theme.textStyle,
               ),
             ),
           );

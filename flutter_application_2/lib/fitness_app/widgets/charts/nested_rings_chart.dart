@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import '../../constants/text_styles.dart';
+import '../../theme/theme_context_ext.dart';
 import '../common/ring_legend_item.dart';
 import '../mixins/ring_interaction_mixin.dart';
 import 'core/circular_chart_painter.dart';
@@ -87,6 +87,7 @@ class _NestedRingsChartState extends State<NestedRingsChart>
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.nestedRingsChartTheme;
     final currentLabel = selectedIndex == null
         ? 'Daily Goals'
         : widget.rings[selectedIndex!].label;
@@ -115,9 +116,7 @@ class _NestedRingsChartState extends State<NestedRingsChart>
                       sweepController,
                       ...focusControllers,
                     ]),
-                    focusValues: focusControllers
-                        .map((c) => c.value)
-                        .toList(),
+                    focusAnimations: focusControllers,
                   ),
                 ),
               ),
@@ -132,11 +131,11 @@ class _NestedRingsChartState extends State<NestedRingsChart>
                     builder: (context, value, child) {
                       return Text(
                         '$value%',
-                        style: FitnessTextStyles.ringPercentage,
+                        style: theme.percentageStyle,
                       );
                     },
                   ),
-                  Text(currentLabel, style: FitnessTextStyles.ringSubtitle),
+                  Text(currentLabel, style: theme.subtitleStyle),
                 ],
               ),
             ],
@@ -175,13 +174,18 @@ class _NestedRingsPainter extends BaseCircularPainter {
   final List<double> fromProgress;
   final double spacing;
 
+  final Paint _trackPaint = Paint()..style = PaintingStyle.stroke;
+  final Paint _progressPaint = Paint()
+    ..style = PaintingStyle.stroke
+    ..strokeCap = StrokeCap.round;
+
   _NestedRingsPainter({
     required this.rings,
     required this.fromProgress,
     required this.spacing,
     required super.entranceAnimation,
     required super.repaintListenable,
-    required super.focusValues,
+    required super.focusAnimations,
   });
 
   @override
@@ -196,25 +200,22 @@ class _NestedRingsPainter extends BaseCircularPainter {
 
     for (int i = 0; i < rings.length; i++) {
       final ring = rings[i];
-      final fv = focusValues[i];
+      final fv = focusAnimations[i].value;
       final radius = radii[i];
 
       final opacityMultiplier = (fv * 0.8 + 0.2).clamp(0.2, 1.0);
       final dynamicStrokeWidth = ring.strokeWidth + (fv - 1.0) * 8.0;
       final safeStrokeWidth = max(2.0, dynamicStrokeWidth);
 
-      final trackPaint = Paint()
+      _trackPaint
         ..color = ring.color.withValues(alpha: 0.05 * opacityMultiplier)
-        ..style = PaintingStyle.stroke
         ..strokeWidth = safeStrokeWidth;
-      canvas.drawCircle(center, radius, trackPaint);
+      canvas.drawCircle(center, radius, _trackPaint);
 
       if (entranceProgress > 0) {
-        final progressPaint = Paint()
+        _progressPaint
           ..color = ring.color.withValues(alpha: opacityMultiplier)
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = safeStrokeWidth
-          ..strokeCap = StrokeCap.round;
+          ..strokeWidth = safeStrokeWidth;
 
         final displayProgress = CircularPainterUtils.lerp(
           fromProgress[i],
@@ -228,7 +229,7 @@ class _NestedRingsPainter extends BaseCircularPainter {
           -pi / 2,
           currentSweepAngle,
           false,
-          progressPaint,
+          _progressPaint,
         );
       }
     }

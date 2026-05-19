@@ -2,6 +2,23 @@ import 'package:flutter/material.dart';
 
 import 'extensions/fitness_semantic_extension.dart';
 
+import 'extensions/activity_levels_list_theme.dart';
+import 'extensions/expense_category_list_theme.dart';
+import 'extensions/expense_donut_chart_theme.dart';
+import 'extensions/fitness_activity_rings_theme.dart';
+import 'extensions/heart_rate_chart_theme.dart';
+import 'extensions/nested_rings_chart_theme.dart';
+import 'extensions/project_horizontal_bar_theme.dart';
+import 'extensions/ring_legend_item_theme.dart';
+import 'extensions/sales_donut_chart_theme.dart';
+import 'extensions/sales_time_filter_theme.dart';
+import 'extensions/segmented_donut_chart_theme.dart';
+import 'extensions/sliding_toggle_theme.dart';
+import 'extensions/steps_gauge_chart_theme.dart';
+import 'extensions/user_profile_header_theme.dart';
+import 'extensions/weekly_calendar_theme.dart';
+
+
 /// Ergonomic accessors for the Fitness app's theme layers.
 ///
 /// Usage in widgets:
@@ -19,4 +36,20 @@ extension FitnessThemeContext on BuildContext {
   /// Only access this when you need data not expressible by [ColorScheme].
   FitnessSemanticExtension get fitnessExt =>
       Theme.of(this).extension<FitnessSemanticExtension>()!;
+
+  HeartRateChartTheme get heartRateChartTheme => Theme.of(this).extension<HeartRateChartTheme>()!;
+  ExpenseDonutChartTheme get expenseDonutChartTheme => Theme.of(this).extension<ExpenseDonutChartTheme>()!;
+  NestedRingsChartTheme get nestedRingsChartTheme => Theme.of(this).extension<NestedRingsChartTheme>()!;
+  StepsGaugeChartTheme get stepsGaugeChartTheme => Theme.of(this).extension<StepsGaugeChartTheme>()!;
+  SalesTimeFilterTheme get salesTimeFilterTheme => Theme.of(this).extension<SalesTimeFilterTheme>()!;
+  SalesDonutChartTheme get salesDonutChartTheme => Theme.of(this).extension<SalesDonutChartTheme>()!;
+  ExpenseCategoryListTheme get expenseCategoryListTheme => Theme.of(this).extension<ExpenseCategoryListTheme>()!;
+  UserProfileHeaderTheme get userProfileHeaderTheme => Theme.of(this).extension<UserProfileHeaderTheme>()!;
+  WeeklyCalendarTheme get weeklyCalendarTheme => Theme.of(this).extension<WeeklyCalendarTheme>()!;
+  ProjectHorizontalBarTheme get projectHorizontalBarTheme => Theme.of(this).extension<ProjectHorizontalBarTheme>()!;
+  SegmentedDonutChartTheme get segmentedDonutChartTheme => Theme.of(this).extension<SegmentedDonutChartTheme>()!;
+  FitnessActivityRingsTheme get fitnessActivityRingsTheme => Theme.of(this).extension<FitnessActivityRingsTheme>()!;
+  SlidingToggleTheme get slidingToggleTheme => Theme.of(this).extension<SlidingToggleTheme>()!;
+  ActivityLevelsListTheme get activityLevelsListTheme => Theme.of(this).extension<ActivityLevelsListTheme>()!;
+  RingLegendItemTheme get ringLegendItemTheme => Theme.of(this).extension<RingLegendItemTheme>()!;
 }

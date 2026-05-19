@@ -4,15 +4,6 @@ import '../widgets/sales_kpi/sales_donut_chart.dart';
 import '../widgets/sales_kpi/sales_kpi_card.dart';
 import '../widgets/sales_kpi/sales_time_filter.dart';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// SalesKpisScreen — Refactored (Theming + Performance)
-//
-// 1. THEME: Removed FitnessColors. Uses context.fitnessTheme.
-// 2. STATE: Replaced setState with ValueNotifier for filter selection.
-// 3. PERFORMANCE: Isolated rebuilds using ValueListenableBuilder.
-//    RepaintBoundary around animated donut chart.
-// ─────────────────────────────────────────────────────────────────────────────
-
 class SalesKpiData {
   final double percentage;
   final String amountString;
@@ -98,10 +89,10 @@ class _SalesKpisScreenState extends State<SalesKpisScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final ft = context.fitnessTheme;
+    final cs = context.cs;
+    final tt = context.tt;
 
     return Scaffold(
-      backgroundColor: ft.scaffoldBackground,
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
@@ -122,7 +113,7 @@ class _SalesKpisScreenState extends State<SalesKpisScreen> {
 
             return Column(
               children: [
-                // ── Header Section (Static) ───────────────────────────────
+                // ── Header Section ────────────────────────────────────────
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24.0),
                   child: Row(
@@ -133,19 +124,16 @@ class _SalesKpisScreenState extends State<SalesKpisScreen> {
                         children: [
                           Text(
                             'Sales KPIs',
-                            style: TextStyle(
+                            style: tt.titleLarge?.copyWith(
                               fontSize: 24,
-                              fontWeight: FontWeight.w600,
-                              color: ft.textPrimary,
+                              color: cs.onSurface,
                             ),
                           ),
                           const SizedBox(height: 4.0),
                           Text(
                             'Achievements of goals',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w400,
-                              color: ft.textSecondary,
+                            style: tt.bodySmall?.copyWith(
+                              color: cs.onSurfaceVariant,
                             ),
                           ),
                         ],
@@ -154,13 +142,13 @@ class _SalesKpisScreenState extends State<SalesKpisScreen> {
                         width: 40,
                         height: 40,
                         decoration: BoxDecoration(
-                          color: ft.cardBackground,
+                          color: cs.surface,
                           shape: BoxShape.circle,
-                          border: Border.all(color: ft.cardBorder),
+                          border: Border.all(color: cs.outlineVariant),
                         ),
                         child: Icon(
                           Icons.more_vert,
-                          color: ft.textPrimary,
+                          color: cs.onSurface,
                           size: 20,
                         ),
                       ),
@@ -170,7 +158,7 @@ class _SalesKpisScreenState extends State<SalesKpisScreen> {
 
                 const SizedBox(height: 40.0),
 
-                // ── Donut Chart (Reactive + Optimized) ────────────────────
+                // ── Donut Chart ───────────────────────────────────────────
                 RepaintBoundary(
                   child: SalesKpiDonutChart(
                     percentage: currentData.percentage,
@@ -180,16 +168,20 @@ class _SalesKpisScreenState extends State<SalesKpisScreen> {
 
                 const Spacer(),
 
-                // ── Time Filter (Reactive) ────────────────────────────────
+                // ── Time Filter ───────────────────────────────────────────
                 SalesTimeFilterBar(
                   filters: _filters,
                   selectedFilter: selectedFilter,
                   onFilterSelected: _onFilterChanged,
                 ),
 
-                // ── KPI Cards (Reactive) ──────────────────────────────────
+                // ── KPI Cards ─────────────────────────────────────────────
                 Padding(
-                  padding: const EdgeInsets.only(left: 24.0, right: 24.0, bottom: 24.0),
+                  padding: const EdgeInsets.only(
+                    left: 24.0,
+                    right: 24.0,
+                    bottom: 24.0,
+                  ),
                   child: Row(
                     children: [
                       Expanded(

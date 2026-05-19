@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../constants/text_styles.dart';
+import '../../theme/theme_context_ext.dart';
 
 class RingLegendItem extends StatelessWidget {
   final Color color;
@@ -22,6 +22,7 @@ class RingLegendItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.ringLegendItemTheme;
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
@@ -41,7 +42,9 @@ class RingLegendItem extends StatelessWidget {
               const SizedBox(width: 6),
               Text(
                 label,
-                style: FitnessTextStyles.legendText.copyWith(color: color),
+                style:
+                    theme.labelStyle?.copyWith(color: color) ??
+                    TextStyle(color: color),
               ),
             ],
           ),
