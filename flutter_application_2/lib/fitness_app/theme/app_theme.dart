@@ -3,7 +3,23 @@ import 'package:flutter/material.dart';
 import 'component_themes/fitness_appbar_style.dart';
 import 'component_themes/fitness_button_styles.dart';
 import 'component_themes/fitness_card_style.dart';
+import 'extensions/expense_donut_chart_theme.dart';
 import 'extensions/fitness_semantic_extension.dart';
+import 'extensions/heart_rate_chart_theme.dart';
+import 'extensions/activity_levels_list_theme.dart';
+import 'extensions/expense_category_list_theme.dart';
+import 'extensions/fitness_activity_rings_theme.dart';
+import 'extensions/nested_rings_chart_theme.dart';
+import 'extensions/project_horizontal_bar_theme.dart';
+import 'extensions/ring_legend_item_theme.dart';
+import 'extensions/sales_donut_chart_theme.dart';
+import 'extensions/sales_time_filter_theme.dart';
+import 'extensions/segmented_donut_chart_theme.dart';
+import 'extensions/sliding_toggle_theme.dart';
+import 'extensions/steps_gauge_chart_theme.dart';
+import 'extensions/user_profile_header_theme.dart';
+import 'extensions/weekly_calendar_theme.dart';
+
 import 'semantic/fitness_color_scheme.dart';
 import 'tokens/color_tokens.dart';
 import 'tokens/typography_tokens.dart';
@@ -51,8 +67,100 @@ abstract final class AppTheme {
       textTheme: textTheme,
       scaffoldBackgroundColor: scaffoldBg,
 
-      // ── Semantic Extension (gradients only) ──
-      extensions: [extension],
+      // ── Component Theme Extensions ──
+      extensions: [
+        extension,
+        HeartRateChartTheme(
+          backgroundColor: colorScheme.surface,
+          barColor: extension.accentPink,
+          titleStyle: textTheme.titleMedium,
+          valueStyle: textTheme.displayLarge,
+          unitStyle: textTheme.titleMedium,
+        ),
+        ExpenseDonutChartTheme(
+          trackColor: colorScheme.outlineVariant.withValues(alpha: 0.5),
+          centerValueStyle: textTheme.headlineLarge?.copyWith(fontWeight: FontWeight.w700),
+          centerSubtitleStyle: textTheme.bodyMedium,
+          badgeBackgroundColor: colorScheme.primaryContainer,
+          badgeIconColor: colorScheme.onPrimaryContainer,
+          radialTextColor: colorScheme.onSurfaceVariant,
+        ),
+        NestedRingsChartTheme(
+          percentageStyle: textTheme.titleMedium,
+          subtitleStyle: textTheme.bodySmall,
+        ),
+        StepsGaugeChartTheme(
+          trackColor: colorScheme.outlineVariant.withValues(alpha: 0.2),
+          progressColor: extension.accentLime,
+          titleStyle: textTheme.titleSmall,
+          valueStyle: textTheme.headlineMedium,
+          goalStyle: textTheme.bodySmall,
+        ),
+        SalesTimeFilterTheme(
+          backgroundColor: colorScheme.surfaceContainerHighest,
+          activeBackgroundColor: colorScheme.primaryContainer,
+          textStyle: textTheme.bodyMedium,
+          activeTextStyle: textTheme.bodyMedium?.copyWith(color: colorScheme.onPrimaryContainer),
+        ),
+        SalesDonutChartTheme(
+          trackColor: colorScheme.outlineVariant.withValues(alpha: 0.2),
+          progressColor: extension.accentBlue,
+          iconBackgroundColor: colorScheme.primaryContainer,
+          iconInnerColor: colorScheme.surface,
+          iconColor: colorScheme.onPrimaryContainer,
+          percentageStyle: textTheme.headlineMedium,
+          valueStyle: textTheme.bodySmall,
+        ),
+        ExpenseCategoryListTheme(
+          categoryNameStyle: textTheme.bodyMedium,
+          categoryAmountStyle: textTheme.titleMedium,
+        ),
+        UserProfileHeaderTheme(
+          greetingStyle: textTheme.bodyMedium,
+          nameStyle: textTheme.titleLarge,
+          badgeBackgroundColor: colorScheme.secondaryContainer,
+          badgeTextStyle: textTheme.labelSmall,
+        ),
+        WeeklyCalendarTheme(
+          monthTextStyle: textTheme.titleMedium,
+          dayTextStyle: textTheme.bodySmall,
+          dateTextStyle: textTheme.titleMedium,
+          selectedDateTextStyle: textTheme.titleMedium?.copyWith(color: colorScheme.onPrimary),
+          selectedBackgroundColor: colorScheme.primary,
+          todayIndicatorColor: colorScheme.secondary,
+        ),
+        ProjectHorizontalBarTheme(
+          titleStyle: textTheme.titleSmall,
+          valueStyle: textTheme.bodySmall,
+          trackColor: colorScheme.outlineVariant.withValues(alpha: 0.3),
+        ),
+        SegmentedDonutChartTheme(
+          trackColor: colorScheme.outlineVariant.withValues(alpha: 0.2),
+          centerValueStyle: textTheme.headlineMedium,
+          centerSubtitleStyle: textTheme.bodySmall,
+          dividerColor: colorScheme.surface,
+        ),
+        FitnessActivityRingsTheme(
+          titleStyle: textTheme.headlineMedium,
+          subtitleStyle: textTheme.bodySmall,
+        ),
+        SlidingToggleTheme(
+          backgroundColor: colorScheme.surfaceContainerHighest,
+          thumbColor: colorScheme.surface,
+          textStyle: textTheme.bodyMedium,
+          selectedTextStyle: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+        ),
+        ActivityLevelsListTheme(
+          titleStyle: textTheme.titleMedium,
+          durationStyle: textTheme.bodySmall,
+          iconBackgroundColor: colorScheme.primaryContainer,
+          iconColor: colorScheme.onPrimaryContainer,
+        ),
+        RingLegendItemTheme(
+          labelStyle: textTheme.bodySmall,
+        ),
+
+      ],
 
       // ── Component Themes (Layer 3 factories) ──
       appBarTheme: FitnessAppBarStyle.appBarTheme(colorScheme, textTheme),
@@ -99,6 +207,7 @@ abstract final class AppTheme {
 
       // ── Icon ──
       iconTheme: IconThemeData(color: colorScheme.onSurface),
+      
 
       // ── Divider ──
       dividerTheme: DividerThemeData(

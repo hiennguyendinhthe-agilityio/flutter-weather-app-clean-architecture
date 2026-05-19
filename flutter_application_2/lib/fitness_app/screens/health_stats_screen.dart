@@ -25,10 +25,9 @@ class _HealthStatsScreenState extends State<HealthStatsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final ft = context.fitnessTheme;
+    final cs = context.cs;
 
     return Scaffold(
-      backgroundColor: ft.scaffoldBackground,
       appBar: AppBar(
         title: const Text('Health Stats'),
         actions: [
@@ -62,21 +61,21 @@ class _HealthStatsScreenState extends State<HealthStatsScreen> {
                     rings: [
                       ActivityRingsData(
                         progress: _currentData.healthProgress,
-                        color: ft.healthColor,
+                        color: cs.secondary,
                         label: 'Health',
                         icon: Icons.favorite_rounded,
                         strokeWidth: 16.0,
                       ),
                       ActivityRingsData(
                         progress: _currentData.sleepProgress,
-                        color: ft.sleepColor,
+                        color: cs.tertiary,
                         label: 'Sleep',
                         icon: Icons.bedtime_rounded,
                         strokeWidth: 16.0,
                       ),
                       ActivityRingsData(
                         progress: _currentData.activityProgress,
-                        color: ft.activityColor,
+                        color: cs.primary,
                         label: 'Activity',
                         icon: Icons.bolt_rounded,
                         strokeWidth: 16.0,

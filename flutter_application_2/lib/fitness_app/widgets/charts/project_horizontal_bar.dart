@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../constants/text_styles.dart';
+import '../../theme/theme_context_ext.dart';
 
 class ProjectHorizontalBar extends StatelessWidget {
   final String label;
@@ -20,19 +20,20 @@ class ProjectHorizontalBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.projectHorizontalBarTheme;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 14.0),
       child: Row(
         children: [
           SizedBox(
             width: 100,
-            child: Text(label, style: FitnessTextStyles.projectNameBold),
+            child: Text(label, style: theme.titleStyle),
           ),
           Expanded(
             child: Container(
               height: 8,
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.05),
+                color: theme.trackColor ?? Colors.black12,
                 borderRadius: BorderRadius.circular(4),
               ),
               child: AnimatedBuilder(
@@ -69,7 +70,7 @@ class ProjectHorizontalBar extends StatelessWidget {
             width: 50,
             child: Text(
               valueText,
-              style: FitnessTextStyles.projectHoursText,
+              style: theme.valueStyle,
               textAlign: TextAlign.right,
             ),
           ),

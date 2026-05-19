@@ -130,7 +130,7 @@ class FitnessTextStyles {
   // =============================================
   // Projects Screen - New Styles
   // =============================================
-  
+
   static const TextStyle projectHeader = TextStyle(
     fontSize: 32,
     fontWeight: FontWeight.w700,
@@ -179,45 +179,45 @@ class FitnessTextStyles {
   // =============================================
   // Expenses Screen - New Styles
   // =============================================
-  
+
   static const TextStyle expenseMonth = TextStyle(
     fontSize: 28,
     fontWeight: FontWeight.w500,
     color: FitnessColors.textPrimary,
     letterSpacing: 0.5,
   );
-  
+
   static const TextStyle expenseTotal = TextStyle(
     fontSize: 14,
     fontWeight: FontWeight.w500,
     color: FitnessColors.textSecondary,
   );
-  
+
   static const TextStyle expenseTotalGreen = TextStyle(
     fontSize: 14,
     fontWeight: FontWeight.w600,
     color: FitnessColors.health, // Green up arrow and text
   );
-  
+
   static const TextStyle expenseCenterValue = TextStyle(
     fontSize: 36,
     fontWeight: FontWeight.w600,
     color: FitnessColors.textPrimary,
     letterSpacing: 0.5,
   );
-  
+
   static const TextStyle expenseCenterSubtitle = TextStyle(
     fontSize: 14,
     fontWeight: FontWeight.w400,
     color: FitnessColors.textSecondary,
   );
-  
+
   static const TextStyle expenseCategoryName = TextStyle(
     fontSize: 14,
     fontWeight: FontWeight.w500,
     color: FitnessColors.textSecondary,
   );
-  
+
   static const TextStyle expenseCategoryAmount = TextStyle(
     fontSize: 14,
     fontWeight: FontWeight.w600,
@@ -282,5 +282,70 @@ class FitnessTextStyles {
     fontSize: 12,
     fontWeight: FontWeight.w600,
     color: FitnessColors.textPrimary,
+  );
+
+  // =============================================
+  // Activity Detail Screen - New Styles
+  // =============================================
+
+  // Custom Title
+  static const TextStyle activityDetailTitle = TextStyle(
+    fontSize: 28,
+    fontWeight: FontWeight.w700,
+    color: FitnessColors.textPrimary,
+    letterSpacing: -0.5,
+  );
+
+  // Ring Values
+  static const TextStyle activityDetailRingValue = TextStyle(
+    fontSize: 32,
+    fontWeight: FontWeight.w700,
+    color: FitnessColors.textPrimary,
+    letterSpacing: -0.5,
+  );
+
+  static const TextStyle activityDetailRingSubtitle = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    color: FitnessColors.textSecondary,
+  );
+
+  // Activity Log Stats
+  static const TextStyle logItemValue = TextStyle(
+    fontSize: 15,
+    fontWeight: FontWeight.w700,
+    color: FitnessColors.textPrimary,
+  );
+
+  static const TextStyle logItemLabel = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    color: FitnessColors.textSecondary,
+  );
+
+  // Stats Cards
+  static const TextStyle statsCardValue = TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.w600,
+    color: FitnessColors.textPrimary,
+  );
+
+  static const TextStyle statsCardLabel = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+    color: FitnessColors.textSecondary,
+  );
+
+  static const TextStyle activityDetailValue = TextStyle(
+    fontSize: 24,
+    fontWeight: FontWeight.w600,
+    color: FitnessColors.textPrimary,
+    letterSpacing: -0.3,
+  );
+
+  static const TextStyle activityDetailLabel = TextStyle(
+    fontSize: 11,
+    fontWeight: FontWeight.w500,
+    color: FitnessColors.textSecondary,
   );
 }

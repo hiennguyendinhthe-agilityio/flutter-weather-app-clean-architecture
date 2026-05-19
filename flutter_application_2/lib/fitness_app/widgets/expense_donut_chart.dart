@@ -3,9 +3,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-import '../constants/colors.dart';
-import '../constants/text_styles.dart';
 import '../models/expense_model.dart';
+import '../theme/extensions/expense_donut_chart_theme.dart';
 
 class ExpenseDonutChart extends StatefulWidget {
   final List<ExpenseCategory> categories;
@@ -67,6 +66,8 @@ class _ExpenseDonutChartState extends State<ExpenseDonutChart>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context).extension<ExpenseDonutChartTheme>();
+    
     return SizedBox(
       height: 300,
       width: double.infinity,
@@ -110,6 +111,7 @@ class _ExpenseDonutChartState extends State<ExpenseDonutChart>
                       categories: currentLerped,
                       progress: _animation.value,
                       textOpacity: _animation.value,
+                      theme: theme,
                     ),
                   ),
                   Column(
@@ -117,12 +119,12 @@ class _ExpenseDonutChartState extends State<ExpenseDonutChart>
                     children: [
                       Text(
                         '\$ ${currentTotal.toInt()}',
-                        style: FitnessTextStyles.expenseCenterValue,
+                        style: theme?.centerValueStyle,
                       ),
                       const SizedBox(height: 4),
-                      const Text(
+                      Text(
                         'total per month',
-                        style: FitnessTextStyles.expenseCenterSubtitle,
+                        style: theme?.centerSubtitleStyle,
                       ),
                     ],
                   ),
@@ -137,20 +139,20 @@ class _ExpenseDonutChartState extends State<ExpenseDonutChart>
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: FitnessColors.expenseBadgeBg,
+                color: theme?.badgeBackgroundColor,
                 borderRadius: BorderRadius.circular(14),
                 boxShadow: [
                   BoxShadow(
-                    color: FitnessColors.expenseBadgeBg.withValues(alpha: 0.3),
+                    color: theme?.badgeBackgroundColor?.withValues(alpha: 0.3) ?? Colors.black12,
                     blurRadius: 12,
                     spreadRadius: 2,
                     offset: const Offset(0, 4),
                   ),
                 ],
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.credit_card_rounded,
-                color: FitnessColors.expenseBadgeIcon,
+                color: theme?.badgeIconColor,
                 size: 26,
               ),
             ),
@@ -165,11 +167,13 @@ class _DonutChartPainter extends CustomPainter {
   final List<ExpenseCategory> categories;
   final double progress;
   final double textOpacity;
+  final ExpenseDonutChartTheme? theme;
 
   _DonutChartPainter({
     required this.categories,
     required this.progress,
     required this.textOpacity,
+    required this.theme,
   });
 
   static const double _kCornerRadius = 2.5;
@@ -210,7 +214,7 @@ class _DonutChartPainter extends CustomPainter {
         sweepAngle: trackSweep,
       ),
       Paint()
-        ..color = FitnessColors.cardBorder.withValues(alpha: 0.5)
+        ..color = theme?.trackColor ?? Colors.black12
         ..style = PaintingStyle.fill,
     );
 
@@ -368,7 +372,7 @@ class _DonutChartPainter extends CustomPainter {
     double opacity,
   ) {
     final textStyle = TextStyle(
-      color: FitnessColors.textSecondary.withValues(alpha: opacity),
+      color: theme?.radialTextColor?.withValues(alpha: opacity) ?? Colors.grey.withValues(alpha: opacity),
       fontSize: 12,
       fontWeight: FontWeight.w600,
     );
@@ -396,6 +400,7 @@ class _DonutChartPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _DonutChartPainter oldDelegate) {
     return oldDelegate.progress != progress ||
+        oldDelegate.theme != theme ||
         oldDelegate.categories != categories;
   }
 }

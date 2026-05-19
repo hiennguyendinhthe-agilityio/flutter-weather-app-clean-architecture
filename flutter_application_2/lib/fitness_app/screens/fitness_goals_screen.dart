@@ -35,10 +35,10 @@ class _FitnessGoalsScreenState extends State<FitnessGoalsScreen> {
   }
 
   Widget _buildFlexibleSpace(BuildContext context) {
-    final ft = context.fitnessTheme;
+    final cs = context.cs;
     return FlexibleSpaceBar(
       background: Container(
-        color: ft.scaffoldBackground,
+        color: cs.surfaceContainerLowest,
         padding: const EdgeInsets.only(
           top: 56.0,
           left: 20.0,
@@ -56,7 +56,7 @@ class _FitnessGoalsScreenState extends State<FitnessGoalsScreen> {
                   width: 52,
                   height: 52,
                   decoration: BoxDecoration(
-                    color: ft.activityColor,
+                    color: cs.primary,
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: ClipRRect(
@@ -66,7 +66,7 @@ class _FitnessGoalsScreenState extends State<FitnessGoalsScreen> {
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) => Icon(
                         Icons.person,
-                        color: ft.scaffoldBackground,
+                        color: cs.onPrimary,
                         size: 28,
                       ),
                     ),
@@ -85,7 +85,7 @@ class _FitnessGoalsScreenState extends State<FitnessGoalsScreen> {
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w400,
-                          color: ft.textSecondary,
+                          color: cs.onSurfaceVariant,
                         ),
                       ),
                       const SizedBox(height: 2),
@@ -94,7 +94,7 @@ class _FitnessGoalsScreenState extends State<FitnessGoalsScreen> {
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w700,
-                          color: ft.textPrimary,
+                          color: cs.onSurface,
                         ),
                       ),
                     ],
@@ -106,12 +106,12 @@ class _FitnessGoalsScreenState extends State<FitnessGoalsScreen> {
                   height: 40,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: ft.cardBackground,
-                    border: Border.all(color: ft.cardBorder, width: 1.0),
+                    color: cs.surface,
+                    border: Border.all(color: cs.outlineVariant, width: 1.0),
                   ),
                   child: Icon(
                     Icons.settings_outlined,
-                    color: ft.textSecondary,
+                    color: cs.onSurfaceVariant,
                     size: 20,
                   ),
                 ),
@@ -122,10 +122,10 @@ class _FitnessGoalsScreenState extends State<FitnessGoalsScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               decoration: BoxDecoration(
-                color: ft.activityColor.withValues(alpha: 0.12),
+                color: cs.primary.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: ft.activityColor.withValues(alpha: 0.25),
+                  color: cs.primary.withValues(alpha: 0.25),
                 ),
               ),
               child: Text(
@@ -133,7 +133,7 @@ class _FitnessGoalsScreenState extends State<FitnessGoalsScreen> {
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
-                  color: ft.activityColor,
+                  color: cs.primary,
                 ),
               ),
             ),
@@ -145,10 +145,9 @@ class _FitnessGoalsScreenState extends State<FitnessGoalsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final ft = context.fitnessTheme;
+    final cs = context.cs;
 
     return Scaffold(
-      backgroundColor: ft.scaffoldBackground,
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
@@ -157,7 +156,7 @@ class _FitnessGoalsScreenState extends State<FitnessGoalsScreen> {
             snap: false,
             floating: false,
             expandedHeight: _kExpandedHeight,
-
+            backgroundColor: cs.surfaceContainer,
             automaticallyImplyLeading: false,
             actions: [
               IconButton(
@@ -199,24 +198,24 @@ class _FitnessGoalsScreenState extends State<FitnessGoalsScreen> {
                         rings: [
                           NestedRingData(
                             progress: dayData.activityProgress,
-                            color: ft.activityColor,
-                            trackColor: ft.activityColor,
+                            color: cs.primary,
+                            trackColor: cs.primary,
                             label: 'Activity',
                             icon: Icons.bolt_rounded,
                             strokeWidth: 8.0,
                           ),
                           NestedRingData(
                             progress: dayData.healthProgress,
-                            color: ft.healthColor,
-                            trackColor: ft.healthColor,
+                            color: cs.secondary,
+                            trackColor: cs.secondary,
                             label: 'Health',
                             icon: Icons.favorite_rounded,
                             strokeWidth: 12.0,
                           ),
                           NestedRingData(
                             progress: dayData.sleepProgress,
-                            color: ft.sleepColor,
-                            trackColor: ft.sleepColor,
+                            color: cs.tertiary,
+                            trackColor: cs.tertiary,
                             label: 'Sleep',
                             icon: Icons.bedtime_rounded,
                             strokeWidth: 16.0,

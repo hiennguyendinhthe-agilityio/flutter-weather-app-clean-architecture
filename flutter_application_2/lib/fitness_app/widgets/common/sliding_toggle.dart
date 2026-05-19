@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../constants/text_styles.dart';
+import '../../theme/theme_context_ext.dart';
 
 class SlidingToggle extends StatefulWidget {
   final List<String> options;
@@ -21,13 +21,14 @@ class _SlidingToggleState extends State<SlidingToggle> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.slidingToggleTheme;
     return Align(
       alignment: Alignment.center,
       child: Container(
         height: 48,
         padding: const EdgeInsets.all(4),
         decoration: BoxDecoration(
-          color: const Color(0xFF1A1B1E),
+          color: theme.backgroundColor ?? const Color(0xFF1A1B1E),
           borderRadius: BorderRadius.circular(20),
         ),
         child: LayoutBuilder(
@@ -44,7 +45,7 @@ class _SlidingToggleState extends State<SlidingToggle> {
                   height: constraints.maxHeight,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: const Color(0xFF2A2B30),
+                      color: theme.thumbColor ?? const Color(0xFF2A2B30),
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
@@ -74,8 +75,8 @@ class _SlidingToggleState extends State<SlidingToggle> {
                           child: Text(
                             label,
                             style: isSelected
-                                ? FitnessTextStyles.filterTabActive
-                                : FitnessTextStyles.filterTabInactive,
+                                ? theme.selectedTextStyle
+                                : theme.textStyle,
                           ),
                         ),
                       ),

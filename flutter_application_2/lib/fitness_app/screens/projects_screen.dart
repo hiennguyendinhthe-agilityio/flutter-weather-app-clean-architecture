@@ -61,10 +61,10 @@ class _ProjectsScreenState extends State<ProjectsScreen>
 
   @override
   Widget build(BuildContext context) {
-    final ft = context.fitnessTheme;
+    final cs = context.cs;
+    final tt = context.tt;
 
     return Scaffold(
-      backgroundColor: ft.scaffoldBackground,
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -82,33 +82,21 @@ class _ProjectsScreenState extends State<ProjectsScreen>
               children: [
                 Text(
                   'Projects',
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: ft.textPrimary,
-                  ),
+                  style: tt.headlineLarge?.copyWith(color: cs.onSurface),
                 ),
                 Row(
                   children: [
                     IconButton(
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
-                      icon: Icon(
-                        Icons.blur_on,
-                        color: ft.textPrimary,
-                        size: 24,
-                      ),
+                      icon: Icon(Icons.blur_on, color: cs.onSurface, size: 24),
                       onPressed: () {},
                     ),
                     const SizedBox(width: 16),
                     IconButton(
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
-                      icon: Icon(
-                        Icons.bar_chart,
-                        color: ft.textPrimary,
-                        size: 24,
-                      ),
+                      icon: Icon(Icons.bar_chart, color: cs.onSurface, size: 24),
                       onPressed: () {},
                     ),
                   ],
@@ -158,14 +146,13 @@ class _ProjectsScreenState extends State<ProjectsScreen>
                                 ),
                                 child: Text(
                                   period,
-                                  style: TextStyle(
-                                    fontSize: 14,
+                                  style: tt.bodyMedium?.copyWith(
                                     fontWeight: isActive
                                         ? FontWeight.w600
                                         : FontWeight.w400,
                                     color: isActive
-                                        ? ft.textPrimary
-                                        : ft.textMuted,
+                                        ? cs.onSurface
+                                        : cs.onSurfaceVariant,
                                   ),
                                 ),
                               ),

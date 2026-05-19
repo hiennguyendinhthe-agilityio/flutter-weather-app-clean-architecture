@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../constants/colors.dart';
-import '../../constants/text_styles.dart';
 import '../../models/health_stats_data.dart';
+import '../../theme/theme_context_ext.dart';
+import '../../screens/activity_detail_screen.dart';
 
 class ActivityLevelsList extends StatelessWidget {
   final List<ActivityLevelData> activities;
@@ -11,20 +11,22 @@ class ActivityLevelsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.activityLevelsListTheme;
+    final cs = context.cs;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: Column(
         children: [
           Row(
             children: [
-              const Text(
+              Text(
                 'Activity levels',
-                style: FitnessTextStyles.sectionHeader,
+                style: theme.titleStyle,
               ),
               const Spacer(),
-              const Icon(
+              Icon(
                 Icons.play_arrow_rounded,
-                color: FitnessColors.textPrimary,
+                color: cs.onSurface,
                 size: 24,
               ),
             ],
@@ -61,61 +63,82 @@ class _ActivityLevelTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12.0),
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
-      decoration: BoxDecoration(
-        color: FitnessColors.activityCardBg,
-        borderRadius: BorderRadius.circular(16.0),
-        border: Border.all(color: FitnessColors.activityCardBorder, width: 0.5),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 42,
-            height: 42,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              color: FitnessColors.activity,
-            ),
-            child: Center(
-              child: Icon(
-                activity.icon,
-                color: FitnessColors.activityCardBg,
-                size: 22,
-              ),
-            ),
+    final theme = context.activityLevelsListTheme;
+    final cs = context.cs;
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          PageRouteBuilder(
+            transitionDuration: const Duration(milliseconds: 600),
+            reverseTransitionDuration: const Duration(milliseconds: 600),
+            pageBuilder: (context, animation, secondaryAnimation) {
+              return FadeTransition(
+                opacity: animation,
+                child: ActivityDetailScreen(activity: activity),
+              );
+            },
           ),
-
-          const SizedBox(width: 14),
-
-          Expanded(
-            child: Text(activity.name, style: FitnessTextStyles.activityName),
-          ),
-
-          SizedBox(
-            width: 40,
-            height: 40,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                CircularProgressIndicator(
-                  value: activity.percentage / 100,
-                  backgroundColor: FitnessColors.cardBorder,
-                  color: FitnessColors.textPrimary,
-                  strokeWidth: 2.0,
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+        decoration: BoxDecoration(
+          color: theme.iconBackgroundColor ?? cs.surface,
+          borderRadius: BorderRadius.circular(16.0),
+          border: Border.all(color: cs.outlineVariant, width: 0.5),
+        ),
+        child: Row(
+          children: [
+            Hero(
+              tag: 'activity_icon_${activity.name}',
+              child: Container(
+                width: 42,
+                height: 42,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: theme.iconBackgroundColor ?? cs.primary,
                 ),
-                Text(
-                  '${activity.percentage.toInt()}%',
-                  style: FitnessTextStyles.activityPercent.copyWith(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
+                child: Center(
+                  child: Icon(
+                    activity.icon,
+                    color: theme.iconColor ?? cs.onPrimary,
+                    size: 22,
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
-        ],
+
+            const SizedBox(width: 14),
+
+            Expanded(
+              child: Text(activity.name, style: theme.titleStyle),
+            ),
+
+            SizedBox(
+              width: 40,
+              height: 40,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  CircularProgressIndicator(
+                    value: activity.percentage / 100,
+                    backgroundColor: cs.outlineVariant,
+                    color: cs.onSurface,
+                    strokeWidth: 2.0,
+                  ),
+                  Text(
+                    '${activity.percentage.toInt()}%',
+                    style: theme.durationStyle?.copyWith(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

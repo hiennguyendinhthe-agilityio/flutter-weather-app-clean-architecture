@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../constants/colors.dart';
-import '../../constants/text_styles.dart';
+import '../../theme/extensions/heart_rate_chart_theme.dart';
 import 'animated_bar_chart.dart';
 
 class HeartRateChart extends StatelessWidget {
@@ -16,16 +15,18 @@ class HeartRateChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context).extension<HeartRateChartTheme>();
+
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: FitnessColors.cardBackground,
+        color: theme?.backgroundColor,
         borderRadius: BorderRadius.circular(24.0),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Heart Rate', style: FitnessTextStyles.cardTitle),
+          Text('Heart Rate', style: theme?.titleStyle),
           const Spacer(),
           Center(
             child: SizedBox(
@@ -33,7 +34,7 @@ class HeartRateChart extends StatelessWidget {
               width: double.infinity,
               child: AnimatedBarChart(
                 dataPoints: dataPoints,
-                color: FitnessColors.sleep,
+                color: theme?.barColor ?? Theme.of(context).colorScheme.primary,
               ),
             ),
           ),
@@ -47,11 +48,11 @@ class HeartRateChart extends StatelessWidget {
                 duration: const Duration(milliseconds: 1400),
                 curve: Curves.easeOutCubic,
                 builder: (context, value, child) {
-                  return Text('$value', style: FitnessTextStyles.chartValue);
+                  return Text('$value', style: theme?.valueStyle);
                 },
               ),
               const SizedBox(width: 4),
-              const Text('BPM', style: FitnessTextStyles.cardTitle),
+              Text('BPM', style: theme?.unitStyle),
             ],
           ),
         ],

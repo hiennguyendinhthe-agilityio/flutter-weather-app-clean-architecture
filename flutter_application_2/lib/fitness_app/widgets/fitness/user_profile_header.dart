@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../constants/colors.dart';
-import '../../constants/text_styles.dart';
+import '../../theme/theme_context_ext.dart';
 
 class UserProfileHeader extends StatelessWidget {
   final String monthYear;
@@ -15,6 +14,8 @@ class UserProfileHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.userProfileHeaderTheme;
+    final cs = context.cs;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: Row(
@@ -43,9 +44,9 @@ class UserProfileHeader extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(monthYear, style: FitnessTextStyles.profileMonth),
+                Text(monthYear, style: theme.greetingStyle),
                 const SizedBox(height: 2),
-                Text(subtitle, style: FitnessTextStyles.profileSubtitle),
+                Text(subtitle, style: theme.nameStyle),
               ],
             ),
           ),
@@ -55,13 +56,13 @@ class UserProfileHeader extends StatelessWidget {
             height: 40,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: FitnessColors.cardBackground,
-              border: Border.all(color: FitnessColors.cardBorder, width: 1.0),
+              color: theme.badgeBackgroundColor ?? cs.surface,
+              border: Border.all(color: cs.outlineVariant, width: 1.0),
             ),
-            child: const Center(
+            child: Center(
               child: Icon(
                 Icons.settings_outlined,
-                color: FitnessColors.textSecondary,
+                color: cs.onSurfaceVariant,
                 size: 20,
               ),
             ),

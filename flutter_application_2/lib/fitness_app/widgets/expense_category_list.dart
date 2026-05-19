@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../constants/text_styles.dart';
 import '../models/expense_model.dart';
+import '../theme/theme_context_ext.dart';
 
 class ExpenseCategoryList extends StatelessWidget {
   final List<ExpenseCategory> categories;
@@ -24,7 +24,7 @@ class ExpenseCategoryList extends StatelessWidget {
         Expanded(
           child: Column(
             children: leftColumn
-                .map((category) => _buildCategoryItem(category))
+                .map((category) => _buildCategoryItem(context, category))
                 .toList(),
           ),
         ),
@@ -32,7 +32,7 @@ class ExpenseCategoryList extends StatelessWidget {
         Expanded(
           child: Column(
             children: rightColumn
-                .map((category) => _buildCategoryItem(category))
+                .map((category) => _buildCategoryItem(context, category))
                 .toList(),
           ),
         ),
@@ -40,7 +40,8 @@ class ExpenseCategoryList extends StatelessWidget {
     );
   }
 
-  Widget _buildCategoryItem(ExpenseCategory category) {
+  Widget _buildCategoryItem(BuildContext context, ExpenseCategory category) {
+    final theme = context.expenseCategoryListTheme;
     // Assuming max amount is around 800 for scaling the progress bar
     const maxAmount = 800.0;
     final progress = (category.amount / maxAmount).clamp(0.0, 1.0);
@@ -53,7 +54,7 @@ class ExpenseCategoryList extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(category.name, style: FitnessTextStyles.expenseCategoryName),
+              Text(category.name, style: theme.categoryNameStyle),
               TweenAnimationBuilder<double>(
                 tween: Tween<double>(begin: 0, end: category.amount),
                 duration: const Duration(milliseconds: 1500),
@@ -61,7 +62,7 @@ class ExpenseCategoryList extends StatelessWidget {
                 builder: (context, value, child) {
                   return Text(
                     '\$ ${value.toInt()}',
-                    style: FitnessTextStyles.expenseCategoryAmount,
+                    style: theme.categoryAmountStyle,
                   );
                 },
               ),

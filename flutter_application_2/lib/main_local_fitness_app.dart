@@ -10,12 +10,12 @@ class FitnessApp extends StatelessWidget {
   const FitnessApp({super.key});
 
   @override
-  Widget build(BuildContext context) {   
+  Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Fitness Goals App',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
-      darkTheme: AppTheme.dark(), 
+      darkTheme: AppTheme.dark(),
 
       themeMode: ThemeMode.dark,
       home: const MainNavigationScreen(),
