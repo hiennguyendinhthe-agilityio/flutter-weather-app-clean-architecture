@@ -36,44 +36,30 @@ class MainNavigationScreen extends StatelessWidget {
             BottomNavigationBarItem(
               icon: Padding(
                 padding: EdgeInsets.only(bottom: 4),
-                child: Icon(Icons.grid_view_rounded),
+                child: Icon(Icons.dashboard_rounded),
               ),
-              label: 'Goals',
+              label: 'Dashboard',
             ),
             BottomNavigationBarItem(
               icon: Padding(
                 padding: EdgeInsets.only(bottom: 4),
-                child: Icon(Icons.widgets_rounded),
+                child: Icon(Icons.directions_run_rounded),
               ),
-              label: 'Projects',
+              label: 'Workouts',
             ),
             BottomNavigationBarItem(
               icon: Padding(
                 padding: EdgeInsets.only(bottom: 4),
-                child: Icon(Icons.insert_chart_rounded),
+                child: Icon(Icons.insights_rounded),
               ),
-              label: 'Stats',
+              label: 'Health',
             ),
             BottomNavigationBarItem(
               icon: Padding(
                 padding: EdgeInsets.only(bottom: 4),
-                child: Icon(Icons.pie_chart_rounded),
+                child: Icon(Icons.person_rounded),
               ),
-              label: 'Expenses',
-            ),
-            BottomNavigationBarItem(
-              icon: Padding(
-                padding: EdgeInsets.only(bottom: 4),
-                child: Icon(Icons.analytics_rounded),
-              ),
-              label: 'Sales',
-            ),
-            BottomNavigationBarItem(
-              icon: Padding(
-                padding: EdgeInsets.only(bottom: 4),
-                child: Icon(Icons.analytics_rounded),
-              ),
-              label: 'Account Stats',
+              label: 'Profile',
             ),
           ],
         ),

@@ -1,27 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_application_2/fitness_app/core/router/app_router.dart';
 import 'package:flutter_application_2/fitness_app/core/theme/app_theme.dart';
+import 'package:flutter_application_2/fitness_app/core/theme/providers/theme_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() {
-  runApp(
-    const ProviderScope(
-      child: FitnessApp(),
-    ),
-  );
+  runApp(const ProviderScope(child: FitnessApp()));
 }
 
-class FitnessApp extends StatelessWidget {
+class FitnessApp extends ConsumerWidget {
   const FitnessApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeModeProvider);
+
     return MaterialApp.router(
       title: 'Fitness Goals App',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
-      themeMode: ThemeMode.dark,
+      themeMode: themeMode,
       routerConfig: appRouter,
     );
   }
