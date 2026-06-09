@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 void main() => runApp(const MyApp());
 
@@ -14,9 +13,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// ════════════════════════════════════════════════
-// SCREEN: So sánh Box vs Sliver Protocol
-// ════════════════════════════════════════════════
 class ProtocolComparisonScreen extends StatefulWidget {
   const ProtocolComparisonScreen({super.key});
 
@@ -25,10 +21,7 @@ class ProtocolComparisonScreen extends StatefulWidget {
       _ProtocolComparisonScreenState();
 }
 
-class _ProtocolComparisonScreenState
-    extends State<ProtocolComparisonScreen> {
-
-  // Dùng ScrollController để đọc scroll position
+class _ProtocolComparisonScreenState extends State<ProtocolComparisonScreen> {
   final ScrollController _scrollController = ScrollController();
   double _scrollOffset = 0;
 
@@ -53,43 +46,31 @@ class _ProtocolComparisonScreenState
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
-    // Tính toán giả lập SliverConstraints
-    // (Minh họa những gì Sliver nhận được)
     const appBarExpandedHeight = 200.0;
     const appBarPinnedHeight = 56.0;
 
-    final appBarScrolled = _scrollOffset
-        .clamp(0, appBarExpandedHeight - appBarPinnedHeight);
-    final currentAppBarHeight =
-        appBarExpandedHeight - appBarScrolled;
+    final appBarScrolled = _scrollOffset.clamp(
+      0,
+      appBarExpandedHeight - appBarPinnedHeight,
+    );
+    final currentAppBarHeight = appBarExpandedHeight - appBarScrolled;
 
-    // paintExtent của AppBar
     final appBarPaintExtent = currentAppBarHeight;
 
-    // layoutExtent của AppBar
-    // Khi pinned: layoutExtent = pinnedHeight
-    // Khi expanded: layoutExtent = expandedHeight
     final appBarLayoutExtent = _scrollOffset > 0
         ? appBarPinnedHeight
         : appBarExpandedHeight;
 
-    // remainingPaintExtent cho SliverList
-    final remainingPaintExtent =
-        screenHeight - appBarPaintExtent;
+    final remainingPaintExtent = screenHeight - appBarPaintExtent;
 
-    // overlap = paintExtent - layoutExtent
     final overlap = appBarPaintExtent - appBarLayoutExtent;
 
     return Scaffold(
       body: Stack(
         children: [
-
-          // ── CustomScrollView ─────────────────
           CustomScrollView(
             controller: _scrollController,
             slivers: [
-
-              // SliverAppBar
               const SliverAppBar(
                 expandedHeight: appBarExpandedHeight,
                 pinned: true,
@@ -97,16 +78,12 @@ class _ProtocolComparisonScreenState
                 flexibleSpace: FlexibleSpaceBar(
                   title: Text(
                     'Protocol Inspector',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                    ),
+                    style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
                   background: _AppBarBackground(),
                 ),
               ),
 
-              // Debug panel – hiện SliverConstraints giả lập
               SliverToBoxAdapter(
                 child: _ConstraintsPanel(
                   scrollOffset: _scrollOffset,
@@ -119,22 +96,16 @@ class _ProtocolComparisonScreenState
                 ),
               ),
 
-              // Custom Sliver để minh họa geometry
-              _GeometryVisualizerSliver(
-                scrollOffset: _scrollOffset,
-              ),
+              _GeometryVisualizerSliver(scrollOffset: _scrollOffset),
 
-              // List items để scroll
               SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, index) => _buildItem(index),
                   childCount: 20,
                 ),
               ),
-
             ],
           ),
-
         ],
       ),
     );
@@ -148,10 +119,7 @@ class _ProtocolComparisonScreenState
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 6,
-          ),
+          BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 6),
         ],
       ),
       child: Row(
@@ -163,11 +131,7 @@ class _ProtocolComparisonScreenState
               color: const Color(0xFF6C63FF).withOpacity(0.1),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const Icon(
-              Icons.layers,
-              color: Color(0xFF6C63FF),
-              size: 20,
-            ),
+            child: const Icon(Icons.layers, color: Color(0xFF6C63FF), size: 20),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -176,16 +140,11 @@ class _ProtocolComparisonScreenState
               children: [
                 Text(
                   'Sliver Item ${index + 1}',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  'Scroll để thấy constraints thay đổi',
-                  style: TextStyle(
-                    color: Colors.grey.shade500,
-                    fontSize: 12,
-                  ),
+                  'Scroll to see constraints change',
+                  style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
                 ),
               ],
             ),
@@ -196,9 +155,6 @@ class _ProtocolComparisonScreenState
   }
 }
 
-// ════════════════════════════════════════════════
-// WIDGET: Hiển thị SliverConstraints giả lập
-// ════════════════════════════════════════════════
 class _ConstraintsPanel extends StatelessWidget {
   final double scrollOffset;
   final double remainingPaintExtent;
@@ -230,12 +186,9 @@ class _ConstraintsPanel extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
-          // Header
           const Row(
             children: [
-              Icon(Icons.bug_report,
-                  color: Colors.greenAccent, size: 18),
+              Icon(Icons.bug_report, color: Colors.greenAccent, size: 18),
               SizedBox(width: 8),
               Text(
                 'SliverConstraints Inspector',
@@ -250,7 +203,7 @@ class _ConstraintsPanel extends StatelessWidget {
 
           const SizedBox(height: 4),
           Text(
-            'Scroll để thấy values thay đổi real-time',
+            'Scroll to see values change in real-time',
             style: TextStyle(
               color: Colors.white.withOpacity(0.4),
               fontSize: 11,
@@ -259,49 +212,61 @@ class _ConstraintsPanel extends StatelessWidget {
 
           const Divider(color: Colors.white12, height: 20),
 
-          // ── SliverConstraints ────────────────
           _buildSection('📥 SliverConstraints (Input)', [
-            _buildRow('scrollOffset',
-                scrollOffset.toStringAsFixed(1),
-                Colors.orangeAccent,
-                'px đã scroll qua Sliver này'),
-            _buildRow('remainingPaintExtent',
-                remainingPaintExtent.toStringAsFixed(1),
-                Colors.lightBlueAccent,
-                'px còn lại để vẽ'),
-            _buildRow('crossAxisExtent',
-                crossAxisExtent.toStringAsFixed(1),
-                Colors.greenAccent,
-                'chiều rộng viewport'),
-            _buildRow('viewportMainAxisExtent',
-                viewportMainAxisExtent.toStringAsFixed(1),
-                Colors.purpleAccent,
-                'chiều cao viewport'),
-            _buildRow('overlap',
-                overlap.toStringAsFixed(1),
-                Colors.redAccent,
-                'px bị che bởi pinned header'),
+            _buildRow(
+              'scrollOffset',
+              scrollOffset.toStringAsFixed(1),
+              Colors.orangeAccent,
+              'px scrolled past this Sliver',
+            ),
+            _buildRow(
+              'remainingPaintExtent',
+              remainingPaintExtent.toStringAsFixed(1),
+              Colors.lightBlueAccent,
+              'px left to paint',
+            ),
+            _buildRow(
+              'crossAxisExtent',
+              crossAxisExtent.toStringAsFixed(1),
+              Colors.greenAccent,
+              'viewport width',
+            ),
+            _buildRow(
+              'viewportMainAxisExtent',
+              viewportMainAxisExtent.toStringAsFixed(1),
+              Colors.purpleAccent,
+              'viewport height',
+            ),
+            _buildRow(
+              'overlap',
+              overlap.toStringAsFixed(1),
+              Colors.redAccent,
+              'px overlap',
+            ),
           ]),
 
           const SizedBox(height: 12),
 
-          // ── SliverGeometry ───────────────────
           _buildSection('📤 SliverGeometry (Output – AppBar)', [
-            _buildRow('paintExtent',
-                appBarPaintExtent.toStringAsFixed(1),
-                Colors.yellowAccent,
-                'px đang được vẽ'),
-            _buildRow('layoutExtent',
-                appBarLayoutExtent.toStringAsFixed(1),
-                Colors.cyanAccent,
-                'px chiếm trong layout'),
-            _buildRow('overlap (paint-layout)',
-                (appBarPaintExtent - appBarLayoutExtent)
-                    .toStringAsFixed(1),
-                Colors.pinkAccent,
-                'px tạo hiệu ứng overlap'),
+            _buildRow(
+              'paintExtent',
+              appBarPaintExtent.toStringAsFixed(1),
+              Colors.yellowAccent,
+              'px actually painted',
+            ),
+            _buildRow(
+              'layoutExtent',
+              appBarLayoutExtent.toStringAsFixed(1),
+              Colors.cyanAccent,
+              'px occupies space in layout',
+            ),
+            _buildRow(
+              'overlap (paint-layout)',
+              (appBarPaintExtent - appBarLayoutExtent).toStringAsFixed(1),
+              Colors.pinkAccent,
+              'px overlap',
+            ),
           ]),
-
         ],
       ),
     );
@@ -335,7 +300,6 @@ class _ConstraintsPanel extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 6),
       child: Row(
         children: [
-          // Field name
           SizedBox(
             width: 130,
             child: Text(
@@ -347,7 +311,7 @@ class _ConstraintsPanel extends StatelessWidget {
               ),
             ),
           ),
-          // Value
+
           SizedBox(
             width: 60,
             child: Text(
@@ -360,7 +324,7 @@ class _ConstraintsPanel extends StatelessWidget {
               ),
             ),
           ),
-          // Description
+
           Expanded(
             child: Text(
               description,
@@ -376,21 +340,13 @@ class _ConstraintsPanel extends StatelessWidget {
   }
 }
 
-// ════════════════════════════════════════════════
-// CUSTOM SLIVER: Minh họa Geometry trực quan
-// Đây là Widget wrapper, bên trong dùng RenderSliver
-// ════════════════════════════════════════════════
 class _GeometryVisualizerSliver extends StatelessWidget {
   final double scrollOffset;
 
-  const _GeometryVisualizerSliver({
-    required this.scrollOffset,
-  });
+  const _GeometryVisualizerSliver({required this.scrollOffset});
 
   @override
   Widget build(BuildContext context) {
-    // SliverToBoxAdapter bọc widget thường
-    // để hiển thị geometry visualizer
     return SliverToBoxAdapter(
       child: Container(
         margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
@@ -398,22 +354,14 @@ class _GeometryVisualizerSliver extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: const Color(0xFF6C63FF).withOpacity(0.2),
-          ),
+          border: Border.all(color: const Color(0xFF6C63FF).withOpacity(0.2)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
-            // Title
             Row(
               children: [
-                const Icon(
-                  Icons.schema,
-                  color: Color(0xFF6C63FF),
-                  size: 18,
-                ),
+                const Icon(Icons.schema, color: Color(0xFF6C63FF), size: 18),
                 const SizedBox(width: 8),
                 const Text(
                   'Geometry Visualizer',
@@ -430,8 +378,7 @@ class _GeometryVisualizerSliver extends StatelessWidget {
                     vertical: 3,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF6C63FF)
-                        .withOpacity(0.1),
+                    color: const Color(0xFF6C63FF).withOpacity(0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
@@ -448,20 +395,18 @@ class _GeometryVisualizerSliver extends StatelessWidget {
 
             const SizedBox(height: 16),
 
-            // Legend
             _buildLegend(),
 
             const SizedBox(height: 16),
 
-            // Explanation cards
             _buildExplanationCard(
               icon: Icons.brush,
               color: Colors.orange,
               title: 'paintExtent',
               formula: 'min(scrollExtent - scrollOffset, remainingPaintExtent)',
               explanation:
-                  'Phần Sliver đang thực sự được VẼ trên màn hình. '
-                  'Không thể vượt quá remainingPaintExtent.',
+                  'The actual painted area of the sliver on the screen. '
+                  'Cannot exceed remainingPaintExtent.',
             ),
 
             const SizedBox(height: 8),
@@ -470,11 +415,11 @@ class _GeometryVisualizerSliver extends StatelessWidget {
               icon: Icons.space_bar,
               color: Colors.blue,
               title: 'layoutExtent',
-              formula: 'Thường = paintExtent, trừ khi overlap',
+              formula: 'Usually = paintExtent, unless overlap',
               explanation:
-                  'Phần Sliver CHIẾM KHÔNG GIAN trong layout. '
-                  'Sliver tiếp theo bắt đầu sau layoutExtent. '
-                  'Khi AppBar pinned: layoutExtent < paintExtent → overlap.',
+                  'The area of the Sliver that occupies space in the layout. '
+                  'The next sliver starts after layoutExtent. '
+                  'When AppBar pinned: layoutExtent < paintExtent → overlap.',
             ),
 
             const SizedBox(height: 8),
@@ -483,13 +428,12 @@ class _GeometryVisualizerSliver extends StatelessWidget {
               icon: Icons.height,
               color: Colors.green,
               title: 'scrollExtent',
-              formula: 'Tổng chiều cao nội dung của Sliver',
+              formula: 'Total height of Sliver content',
               explanation:
-                  'Viewport dùng scrollExtent để tính tổng '
+                  'Viewport uses scrollExtent to calculate the total '
                   'scroll range. SliverList 100 items × 60px '
                   '= scrollExtent: 6000px.',
             ),
-
           ],
         ),
       ),
@@ -551,7 +495,6 @@ class _GeometryVisualizerSliver extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Title row
           Row(
             children: [
               Icon(icon, color: color, size: 16),
@@ -568,12 +511,9 @@ class _GeometryVisualizerSliver extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 6),
-          // Formula
+
           Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 8,
-              vertical: 4,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
               color: color.withOpacity(0.08),
               borderRadius: BorderRadius.circular(6),
@@ -588,7 +528,7 @@ class _GeometryVisualizerSliver extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 6),
-          // Explanation
+
           Text(
             explanation,
             style: TextStyle(
@@ -603,7 +543,6 @@ class _GeometryVisualizerSliver extends StatelessWidget {
   }
 }
 
-// AppBar background widget
 class _AppBarBackground extends StatelessWidget {
   const _AppBarBackground();
 
@@ -633,11 +572,8 @@ class _AppBarBackground extends StatelessWidget {
               ),
             ),
             Text(
-              'Scroll để xem constraints thay đổi',
-              style: TextStyle(
-                color: Colors.white60,
-                fontSize: 13,
-              ),
+              'Scroll to see constraints changes',
+              style: TextStyle(color: Colors.white60, fontSize: 13),
             ),
           ],
         ),

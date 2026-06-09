@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
-import '../../../features/fitness/models/health_stats_data.dart';
+import '../../../features/stats/models/health_stats_data.dart';
 import '../../theme/theme_context_ext.dart';
-import '../../../features/fitness/screens/activity_detail_screen.dart';
 
 class ActivityLevelsList extends StatelessWidget {
   final List<ActivityLevelData> activities;
@@ -60,18 +60,7 @@ class _ActivityLevelTile extends StatelessWidget {
     final cs = context.cs;
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(
-          PageRouteBuilder(
-            transitionDuration: const Duration(milliseconds: 600),
-            reverseTransitionDuration: const Duration(milliseconds: 600),
-            pageBuilder: (context, animation, secondaryAnimation) {
-              return FadeTransition(
-                opacity: animation,
-                child: ActivityDetailScreen(activity: activity),
-              );
-            },
-          ),
-        );
+        context.push('/analytics/activity', extra: activity);
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 12.0),

@@ -2,9 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/fitness_app/core/theme/extensions/segmented_donut_chart_theme.dart';
-
-import 'package:flutter_application_2/fitness_app/features/projects/models/project_data.dart';
 import 'package:flutter_application_2/fitness_app/core/theme/theme_context_ext.dart';
+import 'package:flutter_application_2/fitness_app/features/sandbox/projects/models/project_data.dart';
 
 class SegmentedDonutChart extends StatelessWidget {
   final List<ProjectData> segments;

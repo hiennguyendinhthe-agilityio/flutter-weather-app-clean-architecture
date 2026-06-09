@@ -44,21 +44,19 @@ class _ColumnDemo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Đếm số lần build
     int buildCount = 0;
 
     return SingleChildScrollView(
       child: Column(
         children: [
-          // Warning banner
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(12),
             color: Colors.red.shade50,
             child: const Text(
-              '⚠️ Column + SingleChildScrollView\n'
-              'Tất cả 50 items được BUILD NGAY LẬP TỨC\n'
-              'Dù bạn chưa scroll đến!',
+              'Column + SingleChildScrollView\n'
+              'All 50 items are BUILT IMMEDIATELY\n'
+              'Even if you haven\'t scrolled to them!',
               style: TextStyle(
                 color: Colors.red,
                 fontSize: 12,
@@ -67,7 +65,7 @@ class _ColumnDemo extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           ),
-          // 50 items được tạo NGAY LẬP TỨC
+
           ...List.generate(50, (index) {
             buildCount++;
             return _buildItem(
@@ -89,15 +87,14 @@ class _ListViewDemo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // Info banner
         Container(
           width: double.infinity,
           padding: const EdgeInsets.all(12),
           color: Colors.green.shade50,
           child: const Text(
             '✅ ListView.builder\n'
-            'Items chỉ được BUILD khi gần viewport\n'
-            'Lazy rendering hoạt động!',
+            'Items are BUILT only when near viewport\n'
+            'Lazy rendering works!',
             style: TextStyle(
               color: Colors.green,
               fontSize: 12,
@@ -110,7 +107,6 @@ class _ListViewDemo extends StatelessWidget {
           child: ListView.builder(
             itemCount: 50,
             itemBuilder: (context, index) {
-              // Chỉ gọi khi item này sắp hiện
               debugPrint('ListView.builder: Building item $index');
               return _buildItem(
                 index: index,
@@ -132,13 +128,12 @@ class _SliverDemo extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomScrollView(
       slivers: [
-        // Info banner
         SliverToBoxAdapter(
           child: Container(
             padding: const EdgeInsets.all(12),
             color: const Color(0xFF6C63FF).withOpacity(0.1),
             child: const Text(
-              '🚀 CustomScrollView + Sliver\n'
+              'CustomScrollView + Sliver\n'
               'Lazy rendering + Collapsible AppBar\n'
               '+ Sticky Header + Mix content!',
               style: TextStyle(
@@ -151,7 +146,6 @@ class _SliverDemo extends StatelessWidget {
           ),
         ),
 
-        // Lazy list
         SliverList(
           delegate: SliverChildBuilderDelegate((context, index) {
             debugPrint('SliverList: Building item $index');

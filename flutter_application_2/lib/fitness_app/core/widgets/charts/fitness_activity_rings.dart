@@ -115,6 +115,9 @@ class _ActivityRingsChartState extends State<ActivityRingsChart>
                         rings: widget.rings,
                         fromProgress: _fromProgress,
                         spacing: widget.spacing,
+                        trackColor:
+                            theme.trackColor ??
+                            Colors.grey.withValues(alpha: 0.2),
                         entranceAnimation: sweepAnimation,
                         repaintListenable: Listenable.merge([
                           sweepController,
@@ -184,11 +187,13 @@ class _ActivityRingsPainter extends BaseCircularPainter {
   final List<ActivityRingsData> rings;
   final List<double> fromProgress;
   final double spacing;
+  final Color trackColor;
 
   _ActivityRingsPainter({
     required this.rings,
     required this.fromProgress,
     required this.spacing,
+    required this.trackColor,
     required super.entranceAnimation,
     required super.repaintListenable,
     required super.focusAnimations,
@@ -197,8 +202,6 @@ class _ActivityRingsPainter extends BaseCircularPainter {
   static const double _trackStartAngle = pi / 2;
   static const double _trackSweepFraction = 0.8;
   static const double _trackSweepAngle = 2 * pi * _trackSweepFraction;
-
-  static const Color _trackColor = Color(0xFF1E1E28);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -221,7 +224,7 @@ class _ActivityRingsPainter extends BaseCircularPainter {
       final arcRect = Rect.fromCircle(center: center, radius: radius);
 
       final trackPaint = Paint()
-        ..color = _trackColor
+        ..color = trackColor
         ..style = PaintingStyle.stroke
         ..strokeWidth = safeStroke
         ..strokeCap = StrokeCap.round;

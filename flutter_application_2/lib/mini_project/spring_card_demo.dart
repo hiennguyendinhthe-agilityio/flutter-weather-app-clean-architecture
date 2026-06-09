@@ -99,7 +99,6 @@ class _SpringCardDemoState extends State<SpringCardDemo>
               child: const Icon(Icons.add, color: Colors.deepPurple, size: 20),
             ),
           ),
-
           Positioned(
             left: screenW / 2 - 80 + _position.dx,
             top: screenH / 2 - 60 + _position.dy,
@@ -110,7 +109,6 @@ class _SpringCardDemoState extends State<SpringCardDemo>
                   _position += details.delta;
                 });
               },
-
               onPanEnd: (details) {
                 _velocity = details.velocity.pixelsPerSecond;
 
@@ -123,11 +121,9 @@ class _SpringCardDemoState extends State<SpringCardDemo>
                   const SpringDescription(mass: 1, stiffness: 200, damping: 15),
                 );
               },
-
               child: _buildDraggableCard(),
             ),
           ),
-
           Positioned(
             bottom: 40,
             left: 0,
@@ -135,7 +131,7 @@ class _SpringCardDemoState extends State<SpringCardDemo>
             child: Column(
               children: [
                 const Text(
-                  'Kéo card rồi thả → Tự bật về giữa',
+                  'Push card then drop',
                   textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.grey),
                 ),
@@ -193,7 +189,7 @@ class _SpringCardDemoState extends State<SpringCardDemo>
             Icon(Icons.drag_indicator, color: Colors.white, size: 32),
             SizedBox(height: 8),
             Text(
-              'Kéo & thả tôi!',
+              'Push card then drop',
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
@@ -292,9 +288,7 @@ class _SwipeDismissDemoState extends State<SwipeDismissDemo> {
 
                 return Dismissible(
                   key: Key(item.id),
-
                   direction: DismissDirection.horizontal,
-
                   onDismissed: (direction) {
                     setState(() {
                       _items.removeAt(index);
@@ -315,21 +309,18 @@ class _SwipeDismissDemoState extends State<SwipeDismissDemo> {
                       ),
                     );
                   },
-
                   background: _buildDismissBackground(
                     alignment: Alignment.centerLeft,
                     color: Colors.green,
                     icon: Icons.archive,
                     label: 'Archive',
                   ),
-
                   secondaryBackground: _buildDismissBackground(
                     alignment: Alignment.centerRight,
                     color: Colors.red,
                     icon: Icons.delete,
                     label: 'Delete',
                   ),
-
                   confirmDismiss: (direction) async {
                     if (direction == DismissDirection.endToStart) {
                       return await showDialog<bool>(
@@ -356,7 +347,6 @@ class _SwipeDismissDemoState extends State<SwipeDismissDemo> {
 
                     return true;
                   },
-
                   child: _buildNotificationCard(item),
                 );
               },

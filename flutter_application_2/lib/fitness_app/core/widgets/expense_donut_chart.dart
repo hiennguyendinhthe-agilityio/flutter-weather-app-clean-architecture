@@ -3,7 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-import '../../features/expenses/models/expense_model.dart';
+import '../../features/sandbox/expenses/models/expense_model.dart';
 import '../theme/extensions/expense_donut_chart_theme.dart';
 
 class ExpenseDonutChart extends StatefulWidget {

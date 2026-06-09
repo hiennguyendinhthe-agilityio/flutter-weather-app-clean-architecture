@@ -140,7 +140,7 @@ class UserDetailsWidget extends ConsumerWidget {
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Text(
-                '💡 Tip: Open Debug Console. \nClick from User 1 to 2, then back to 1. \nYou will see User 1 is not loaded again (not printed "Đang tải...") because Riverpod has automatically CACHED (stored) the data!',
+                '💡 Tip: Open Debug Console. \nClick from User 1 to 2, then back to 1. \nYou will see User 1 is not loaded again (not printed "Loading...") because Riverpod has automatically CACHED (stored) the data!',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontStyle: FontStyle.italic,

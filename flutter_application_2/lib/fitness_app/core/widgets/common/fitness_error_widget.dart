@@ -37,7 +37,7 @@ class FitnessErrorWidget extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'Đã xảy ra lỗi',
+              'An error occurred',
               style: TextStyle(
                 color: cs.onSurface,
                 fontSize: 16,
@@ -57,7 +57,7 @@ class FitnessErrorWidget extends StatelessWidget {
             ElevatedButton.icon(
               onPressed: onRetry,
               icon: const Icon(Icons.refresh_rounded),
-              label: const Text('Thử lại'),
+              label: const Text('Retry'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: cs.primary,
                 foregroundColor: cs.onPrimary,

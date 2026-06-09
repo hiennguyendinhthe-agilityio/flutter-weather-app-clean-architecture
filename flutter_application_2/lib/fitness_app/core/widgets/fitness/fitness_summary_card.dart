@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../fitness_app/features/fitness/models/fitness_insight.dart';
+import '../../../../fitness_app/features/stats/models/fitness_insight.dart';
 import '../../theme/theme_context_ext.dart';
 
 class FitnessSummaryCard extends StatelessWidget {

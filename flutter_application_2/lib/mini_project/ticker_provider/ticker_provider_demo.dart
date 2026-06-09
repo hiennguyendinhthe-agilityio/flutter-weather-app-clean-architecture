@@ -65,25 +65,15 @@ class _TickerProviderDemoState extends State<TickerProviderDemo>
           child: Column(
             children: [
               _buildHeader(),
-
               const SizedBox(height: 16),
-
               _buildTickerExplanation(),
-
               const SizedBox(height: 16),
-
               _buildSingleTickerDemo(),
-
               const SizedBox(height: 16),
-
               _buildWhileLoopComparison(),
-
               const SizedBox(height: 16),
-
               _buildLiveDemo(),
-
               const SizedBox(height: 16),
-
               _buildCustomTickerDemo(),
             ],
           ),
@@ -123,7 +113,7 @@ class _TickerProviderDemoState extends State<TickerProviderDemo>
           ),
           const SizedBox(height: 8),
           Text(
-            'Hiểu cách Flutter sync animation với màn hình 60Hz/120Hz',
+            'Understand how Flutter sync animation with 60Hz/120Hz screen',
             style: TextStyle(
               color: Colors.white.withOpacity(0.7),
               fontSize: 13,
@@ -144,30 +134,27 @@ class _TickerProviderDemoState extends State<TickerProviderDemo>
           _buildInfoRow(
             icon: Icons.timer_outlined,
             title: 'Ticker._tick(Duration timeStamp)',
-            description:
-                'Được SchedulerBinding gọi mỗi frame.\n'
-                'Tính elapsed = timeStamp - startTime\n'
-                'Gọi _onTick(elapsed) → AnimationController cập nhật',
+            description: 'Called by SchedulerBinding each frame.\n'
+                'Calculate elapsed = timeStamp - startTime\n'
+                'Call _onTick(elapsed) → AnimationController update',
             color: const Color(0xFF6C63FF),
           ),
           const SizedBox(height: 12),
           _buildInfoRow(
             icon: Icons.schedule,
             title: 'SchedulerBinding.scheduleFrameCallback()',
-            description:
-                'Đăng ký callback để chạy vào frame tiếp theo.\n'
-                'Engine (C++) gọi _handleBeginFrame() khi GPU sẵn sàng.\n'
-                'Tất cả Ticker callbacks chạy trong phase transientCallbacks.',
+            description: 'Register callback to run in next frame.\n'
+                'Engine (C++) calls _handleBeginFrame() when GPU ready.\n'
+                'All Ticker callbacks run in phase transientCallbacks.',
             color: const Color(0xFFFF6B6B),
           ),
           const SizedBox(height: 12),
           _buildInfoRow(
             icon: Icons.screen_rotation,
             title: 'Frame Rate (60Hz vs 120Hz)',
-            description:
-                '60Hz: Frame mỗi 16.67ms\n'
-                '120Hz: Frame mỗi 8.33ms\n'
-                'Ticker tự động thích nghi → Animation vẫn smooth',
+            description: '60Hz: Frame each 16.67ms\n'
+                '120Hz: Frame each 8.33ms\n'
+                'Ticker auto adapt → Animation still smooth',
             color: const Color(0xFF00BFA5),
           ),
         ],
@@ -185,29 +172,26 @@ class _TickerProviderDemoState extends State<TickerProviderDemo>
           _buildInfoRow(
             icon: Icons.build,
             title: 'createTicker(onTick) → Ticker',
-            description:
-                'AnimationController gọi vsync.createTicker().\n'
-                'SingleTickerProviderStateMixin tạo Ticker mới.\n'
-                'Ticker được gắn với lifecycle của State.',
+            description: 'AnimationController call vsync.createTicker().\n'
+                'SingleTickerProviderStateMixin creates Ticker.\n'
+                'Ticker attach to lifecycle of State.',
             color: const Color(0xFF00BFA5),
           ),
           const SizedBox(height: 12),
           _buildInfoRow(
             icon: Icons.battery_saver,
-            title: 'Ticker.muted khi app background',
-            description:
-                'TickerMode.of(context) = false khi background.\n'
-                'didChangeDependencies() cập nhật Ticker.muted.\n'
-                '→ Ticker dừng → Tiết kiệm pin/CPU.',
+            title: 'Ticker.muted when app background',
+            description: 'TickerMode.of(context) = false when background.\n'
+                'didChangeDependencies() update Ticker.muted.\n'
+                '→ Ticker stop → Save battery/CPU.',
             color: const Color(0xFFFFB300),
           ),
           const SizedBox(height: 12),
           _buildInfoRow(
             icon: Icons.warning_amber,
-            title: 'dispose() dọn dẹp Ticker',
-            description:
-                'Nếu quên dispose AnimationController:\n'
-                '→ SingleTickerProviderStateMixin cảnh báo trong debug\n'
+            title: 'dispose() clesans up Ticker',
+            description: 'If AnimationController is not disposed:\n'
+                '→ SingleTickerProviderStateMixin warns in debug\n'
                 '→ "AnimationController was not disposed"',
             color: const Color(0xFFFF6B6B),
           ),
@@ -258,8 +242,8 @@ class _TickerProviderDemoState extends State<TickerProviderDemo>
                   child: const Text(
                     'while (value < 1.0) {\n'
                     '  value += 0.01;\n'
-                    '  // UI KHÔNG CẬP NHẬT!\n'
-                    '  // Thread bị block!\n'
+                    '  // UI không update!\n'
+                    '  // Thread block!\n'
                     '}',
                     style: TextStyle(
                       color: Colors.greenAccent,
@@ -270,10 +254,10 @@ class _TickerProviderDemoState extends State<TickerProviderDemo>
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  '❌ Main thread bị chiếm 100%\n'
-                  '❌ Không có frame nào render\n'
-                  '❌ User tap không được xử lý\n'
-                  '❌ App đóng băng hoàn toàn',
+                  '❌ Main thread block\n'
+                  '❌ No frame render\n'
+                  '❌ User tap no handle\n'
+                  '❌ App freeze completely',
                   style: TextStyle(
                     color: Colors.red.shade700,
                     fontSize: 12,
@@ -324,9 +308,9 @@ class _TickerProviderDemoState extends State<TickerProviderDemo>
                   ),
                   child: const Text(
                     '_controller.forward();\n'
-                    '// RETURN NGAY LẬP TỨC!\n'
-                    '// Ticker đăng ký frame callback\n'
-                    '// Thread được giải phóng',
+                    '// RETURN now!\n'
+                    '// Ticker register frame callback\n'
+                    '// Thread released',
                     style: TextStyle(
                       color: Colors.greenAccent,
                       fontSize: 12,
@@ -336,10 +320,10 @@ class _TickerProviderDemoState extends State<TickerProviderDemo>
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  '✅ Main thread free ngay lập tức\n'
-                  '✅ 60 frames/giây render mượt mà\n'
-                  '✅ User tap được xử lý bình thường\n'
-                  '✅ Cooperative multitasking hoạt động',
+                  '✅ Main thread free immediately\n'
+                  '✅ 60 frames/second render smoothly\n'
+                  '✅ User tap processed normally\n'
+                  '✅ Cooperative multitasking works',
                   style: TextStyle(
                     color: Colors.green.shade700,
                     fontSize: 12,
@@ -464,13 +448,13 @@ class _TickerProviderDemoState extends State<TickerProviderDemo>
   // ── Custom Ticker Demo ───────────────────────
   Widget _buildCustomTickerDemo() {
     return _buildCard(
-      title: 'Custom Ticker – Minh họa AC1',
+      title: 'Custom Ticker',
       color: const Color(0xFF26C6DA),
       child: Column(
         children: [
           Text(
-            'Ticker callback được gọi mỗi frame.\n'
-            'Bấm Start để thấy tick count tăng lên.',
+            'Ticker callback called every frame.\n'
+            'Click button to start ticker',
             style: TextStyle(
               color: Colors.grey.shade600,
               fontSize: 13,
@@ -496,7 +480,7 @@ class _TickerProviderDemoState extends State<TickerProviderDemo>
                 'fps (est)',
                 _customElapsed.inMilliseconds > 0
                     ? (_customTickCount / _customElapsed.inMilliseconds * 1000)
-                          .toStringAsFixed(0)
+                        .toStringAsFixed(0)
                     : '0',
                 const Color(0xFF00BFA5),
               ),
@@ -538,10 +522,10 @@ class _TickerProviderDemoState extends State<TickerProviderDemo>
               borderRadius: BorderRadius.circular(8),
             ),
             child: const Text(
-              '// Custom Ticker được tạo bằng:\n'
+              '// Custom Ticker created using:\n'
               '_customTicker = createTicker((elapsed) {\n'
-              '  // elapsed = Duration từ lúc start()\n'
-              '  // Được gọi mỗi frame (60/120 lần/giây)\n'
+              '  // elapsed = Duration from start()\n'
+              '  // Called each frame (60/120 times/second)\n'
               '  setState(() {\n'
               '    _customTickCount++;\n'
               '    _customElapsed = elapsed;\n'
@@ -729,9 +713,9 @@ class FrameInfo {
   });
 
   factory FrameInfo.empty() => const FrameInfo(
-    value: 0,
-    status: 'dismissed',
-    isAnimating: false,
-    velocity: 0,
-  );
+        value: 0,
+        status: 'dismissed',
+        isAnimating: false,
+        velocity: 0,
+      );
 }

@@ -3,7 +3,7 @@ import 'package:flutter_application_2/fitness_app/core/theme/providers/theme_pro
 import 'package:flutter_application_2/fitness_app/core/theme/theme_context_ext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// Section "App settings" với 2 switch: Dark mode + Daily notifications.
+/// Section "App settings" with 2 switches: Dark mode + Daily notifications.
 class ProfileSettingsSection extends ConsumerStatefulWidget {
   const ProfileSettingsSection({super.key});
 

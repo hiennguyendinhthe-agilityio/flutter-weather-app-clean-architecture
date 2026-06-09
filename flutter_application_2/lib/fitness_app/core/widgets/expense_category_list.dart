@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../features/expenses/models/expense_model.dart';
+import '../../features/sandbox/expenses/models/expense_model.dart';
 import '../theme/theme_context_ext.dart';
 
 class ExpenseCategoryList extends StatelessWidget {

@@ -73,7 +73,7 @@ abstract final class AppTheme {
           backgroundColor: colorScheme.surface,
           barColor: extension.accentPink,
           titleStyle: textTheme.titleSmall,
-          valueStyle: textTheme.displayLarge,
+          valueStyle: textTheme.headlineMedium,
           unitStyle: textTheme.titleMedium,
         ),
         ExpenseDonutChartTheme(
@@ -148,6 +148,7 @@ abstract final class AppTheme {
         FitnessActivityRingsTheme(
           titleStyle: textTheme.headlineMedium,
           subtitleStyle: textTheme.bodySmall,
+          trackColor: colorScheme.outlineVariant.withValues(alpha: 0.2),
         ),
         SlidingToggleTheme(
           backgroundColor: colorScheme.surfaceContainerHighest,

@@ -47,7 +47,7 @@ class Lesson1Screen extends ConsumerWidget {
             ),
             const SizedBox(height: 10),
             Text(
-              'Phiên bản: $version',
+              'Version: $version',
               style: const TextStyle(fontSize: 18, color: Colors.grey),
             ),
             const SizedBox(height: 40),

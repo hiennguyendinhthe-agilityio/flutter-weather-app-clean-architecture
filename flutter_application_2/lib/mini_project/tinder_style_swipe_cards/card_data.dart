@@ -24,7 +24,6 @@ final List<CardData> cardsDataList = [
     icon: Icons.person,
     tags: ['Flutter', 'Dart', 'Mobile', 'Web'],
   ),
-
   CardData(
     name: 'Jane Doe',
     role: 'UI/UX Designer',
@@ -69,7 +68,6 @@ final List<CardData> cardsDataList = [
   ),
 ];
 
-// Danh sách cards mẫu
 final List<CardData> cardDataList = [
   CardData(
     name: 'Flutter',
