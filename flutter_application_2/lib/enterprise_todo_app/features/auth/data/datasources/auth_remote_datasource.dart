@@ -2,6 +2,7 @@ import 'package:flutter_application_2/enterprise_todo_app/features/auth/domain/e
 
 abstract class AuthRemoteDataSource {
   Future<UserModel> login(String username, String password);
+  Future<UserModel> refreshToken(String refreshToken);
 }
 
 class MockAuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -15,9 +16,28 @@ class MockAuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         username: 'admin',
         email: 'admin@enterprise.com',
         token: 'mock_jwt_token_for_admin_user_12345',
-      avatarUrl: 'https://api.dicebear.com/7.x/adventurer/svg?seed=admin');
+        refreshToken: 'mock_refresh_token_for_admin_user_12345',
+        avatarUrl: 'https://api.dicebear.com/7.x/adventurer/svg?seed=admin',
+      );
     } else {
       throw Exception('Invalid username or password');
     }
+  }
+
+  @override
+  Future<UserModel> refreshToken(String refreshToken) async {
+    await Future.delayed(const Duration(milliseconds: 1000));
+
+    if (refreshToken == 'mock_refresh_token_admin_user_12345') {
+      return const UserModel(
+        id: 1,
+        username: 'admin',
+        email: 'admin@enterprise.com',
+        token: 'new_jwt_token_123456',
+        refreshToken: 'mock_refresh_token_admin_user_12345',
+        avatarUrl: 'https://api.dicebear.com/7.x/adventurer/svg?seed=admin',
+      );
+    }
+    throw Exception('Invalid refresh token');
   }
 }

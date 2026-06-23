@@ -5,6 +5,7 @@ class User extends Equatable {
   final String username;
   final String email;
   final String token;
+  final String? refreshToken;
   final String? avatarUrl;
 
   const User({
@@ -12,11 +13,19 @@ class User extends Equatable {
     required this.username,
     required this.email,
     required this.token,
+    required this.refreshToken,
     this.avatarUrl,
   });
 
   @override
-  List<Object?> get props => [id, username, email, token, avatarUrl];
+  List<Object?> get props => [
+    id,
+    username,
+    email,
+    token,
+    refreshToken,
+    avatarUrl,
+  ];
 }
 
 class UserModel extends User {
@@ -25,6 +34,7 @@ class UserModel extends User {
     required super.username,
     required super.email,
     required super.token,
+    required super.refreshToken,
     super.avatarUrl,
   });
 
@@ -34,6 +44,7 @@ class UserModel extends User {
       username: json['username'] as String,
       email: json['email'] as String,
       token: json['token'] as String,
+      refreshToken: json['refreshToken'] as String,
       avatarUrl: json['avatarUrl'] as String?,
     );
   }
@@ -44,6 +55,7 @@ class UserModel extends User {
       'username': username,
       'email': email,
       'token': token,
+      'refreshToken': refreshToken,
       'avatarUrl': avatarUrl,
     };
   }
@@ -53,6 +65,7 @@ class UserModel extends User {
     String? username,
     String? email,
     String? token,
+    String? refreshToken,
     String? avatarUrl,
   }) {
     return UserModel(
@@ -60,6 +73,7 @@ class UserModel extends User {
       username: username ?? this.username,
       email: email ?? this.email,
       token: token ?? this.token,
+      refreshToken: refreshToken ?? this.refreshToken,
       avatarUrl: avatarUrl ?? this.avatarUrl,
     );
   }
