@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_application_2/enterprise_todo_app/features/todo/domain/usecases/get_paginated_todos_usecase.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/network/connectivity_service.dart';
@@ -14,7 +15,7 @@ import '../../domain/usecases/toggle_todo_usecase.dart';
 import '../../domain/usecases/update_todo_usecase.dart';
 
 final dioProvider = Provider<Dio>((ref) {
-  return DioClient.create();
+  return DioClient.create(ref);
 });
 
 final connectivityProvider = Provider<ConnectivityService>((ref) {
@@ -40,6 +41,10 @@ final todoRepositoryProvider = Provider<TodoRepository>((ref) {
 
 final getTodosUseCaseProvider = Provider<GetTodosUseCase>((ref) {
   return GetTodosUseCase(ref.watch(todoRepositoryProvider));
+});
+
+final getPaginatedTodosUseCaseProvider = Provider<GetPaginatedTodosUsecase>((ref) {
+  return GetPaginatedTodosUsecase(ref.watch(todoRepositoryProvider));
 });
 
 final addTodoUseCaseProvider = Provider<AddTodoUseCase>((ref) {

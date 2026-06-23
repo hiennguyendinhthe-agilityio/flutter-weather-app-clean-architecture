@@ -58,7 +58,9 @@ class TodoStats extends Equatable {
 
 final todoStatsProvider = Provider<TodoStats>((ref) {
   final todos = ref.watch(
-    todoListNotifierProvider.select((state) => state.value ?? <TodoEntity>[]),
+    todoListNotifierProvider.select(
+      (state) => state.value?.items ?? <TodoEntity>[],
+    ),
   );
   return TodoStats.fromList(todos);
 });

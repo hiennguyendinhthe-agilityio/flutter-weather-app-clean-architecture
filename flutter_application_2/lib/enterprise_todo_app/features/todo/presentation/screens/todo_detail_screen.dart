@@ -18,8 +18,7 @@ class TodoDetailScreen extends ConsumerStatefulWidget {
 class _TodoDetailScreenState extends ConsumerState<TodoDetailScreen> {
   late TextEditingController _titleController;
   late TextEditingController _noteController;
-  Priority _selectedPriority = Priority.medium;
-  bool _hasChanges = false;
+  Priority? _selectedPriority;
 
   @override
   void initState() {
@@ -27,12 +26,8 @@ class _TodoDetailScreenState extends ConsumerState<TodoDetailScreen> {
     _titleController = TextEditingController();
     _noteController = TextEditingController();
 
-    _titleController.addListener(_onChanged);
-    _noteController.addListener(_onChanged);
-  }
-
-  void _onChanged() {
-    if (!_hasChanges) setState(() => _hasChanges = true);
+    _titleController.addListener(() => setState(() {}));
+    _noteController.addListener(() => setState(() {}));
   }
 
   @override
@@ -43,11 +38,22 @@ class _TodoDetailScreenState extends ConsumerState<TodoDetailScreen> {
   }
 
   void _initFormFrom(TodoEntity todo) {
-    if (_titleController.text.isEmpty) {
+    if (_selectedPriority == null) {
       _titleController.text = todo.title;
       _noteController.text = todo.note ?? '';
       _selectedPriority = todo.priority;
     }
+  }
+
+  bool _checkHasChanges(TodoEntity original) {
+    if (_selectedPriority == null) return false;
+
+    final currentTitle = _titleController.text.trim();
+    final currentNote = _noteController.text.trim();
+
+    return currentTitle != original.title ||
+        currentNote != (original.note ?? '') ||
+        _selectedPriority != original.priority;
   }
 
   Future<void> _save(TodoEntity original) async {
@@ -56,12 +62,11 @@ class _TodoDetailScreenState extends ConsumerState<TodoDetailScreen> {
       note: _noteController.text.trim().isEmpty
           ? null
           : _noteController.text.trim(),
-      priority: _selectedPriority,
+      priority: _selectedPriority ?? Priority.medium,
     );
 
     try {
       await ref.read(todoListNotifierProvider.notifier).updateTodo(updated);
-      setState(() => _hasChanges = false);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -92,15 +97,13 @@ class _TodoDetailScreenState extends ConsumerState<TodoDetailScreen> {
       appBar: AppBar(
         title: const Text('Task Detail'),
         actions: [
-          if (_hasChanges)
+          if (todoAsync.value != null && _checkHasChanges(todoAsync.value!))
             Padding(
               padding: const EdgeInsets.only(right: 8),
               child: FilledButton.icon(
                 icon: const Icon(Icons.save_rounded, size: 18),
                 label: const Text('Save'),
-                onPressed: todoAsync.value != null
-                    ? () => _save(todoAsync.value!)
-                    : null,
+                onPressed: () => _save(todoAsync.value!),
               ),
             ),
         ],
@@ -120,6 +123,7 @@ class _TodoDetailScreenState extends ConsumerState<TodoDetailScreen> {
 
                 Text('Title', style: theme.textTheme.labelLarge),
                 const SizedBox(height: 8),
+
                 TextField(
                   controller: _titleController,
                   maxLines: 2,
@@ -141,11 +145,10 @@ class _TodoDetailScreenState extends ConsumerState<TodoDetailScreen> {
                 Text('Priority', style: theme.textTheme.labelLarge),
                 const SizedBox(height: 12),
                 _PrioritySelector(
-                  selected: _selectedPriority,
+                  selected: _selectedPriority ?? Priority.medium,
                   onChanged: (p) {
                     setState(() {
                       _selectedPriority = p;
-                      _hasChanges = true;
                     });
                   },
                 ),

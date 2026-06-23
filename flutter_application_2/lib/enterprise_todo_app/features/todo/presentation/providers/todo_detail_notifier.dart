@@ -10,7 +10,7 @@ final todoDetailProvider = FutureProvider.autoDispose.family<TodoEntity, int>((
 ) async {
   final listState = ref.watch(todoListNotifierProvider);
 
-  final found = listState.value?.where((t) => t.id == id).firstOrNull;
+  final found = listState.value?.items.where((t) => t.id == id).firstOrNull;
   if (found != null) {
     return found;
   }

@@ -14,11 +14,26 @@ class TodoListScreen extends ConsumerStatefulWidget {
 
 class _TodoListScreenState extends ConsumerState<TodoListScreen> {
   final _addController = TextEditingController();
+  final _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
 
   @override
   void dispose() {
     _addController.dispose();
+    _scrollController.dispose();
     super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
+      ref.read(todoListNotifierProvider.notifier).fetchNextPage();
+    }
   }
 
   @override
@@ -32,6 +47,7 @@ class _TodoListScreenState extends ConsumerState<TodoListScreen> {
       body: RefreshIndicator(
         onRefresh: () => ref.read(todoListNotifierProvider.notifier).refresh(),
         child: CustomScrollView(
+          controller: _scrollController,
           slivers: [
             SliverAppBar(
               title: const Text('Todo Hub'),
@@ -106,24 +122,64 @@ class _TodoListScreenState extends ConsumerState<TodoListScreen> {
                 ),
               ),
 
-              data: (_) => filtered.isEmpty
-                  ? const SliverFillRemaining(
-                      child: Center(
-                        child: Text(
-                          'No Todo found',
-                          style: TextStyle(color: Colors.grey),
-                        ),
+              data: (paginatedState) {
+                if (filtered.isEmpty) {
+                  return const SliverFillRemaining(
+                    child: Center(
+                      child: Text(
+                        'No Todo found',
+                        style: TextStyle(color: Colors.grey),
                       ),
-                    )
-                  : SliverPadding(
-                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
-                      sliver: SliverList.separated(
-                        itemCount: filtered.length,
-                        separatorBuilder: (context, index) =>
-                            const SizedBox(height: 8),
-                        itemBuilder: (context, index) {
-                          final todo = filtered[index];
-                          return TodoCard(
+                    ),
+                  );
+                }
+
+                return SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        if (index == filtered.length) {
+                          if (paginatedState.isLoadingMore) {
+                            return const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 16),
+                              child: Center(child: CircularProgressIndicator()),
+                            );
+                          }
+
+                          if (paginatedState.errorMessage != null) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    paginatedState.errorMessage!,
+                                    style: TextStyle(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.error,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  TextButton.icon(
+                                    onPressed: () => ref
+                                        .read(todoListNotifierProvider.notifier)
+                                        .fetchNextPage(),
+                                    icon: const Icon(Icons.refresh),
+                                    label: const Text('Thử lại'),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+
+                          return const SizedBox.shrink();
+                        }
+
+                        final todo = filtered[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: TodoCard(
                             key: ValueKey(todo.id),
                             todo: todo,
                             onToggle: () => ref
@@ -134,10 +190,20 @@ class _TodoListScreenState extends ConsumerState<TodoListScreen> {
                             onTap: () => Navigator.of(
                               context,
                             ).pushNamed('/detail', arguments: todo.id),
-                          );
-                        },
-                      ),
+                          ),
+                        );
+                      },
+                      childCount:
+                          filtered.length +
+                          (paginatedState.hasMore ||
+                                  paginatedState.isLoadingMore ||
+                                  paginatedState.errorMessage != null
+                              ? 1
+                              : 0),
                     ),
+                  ),
+                );
+              },
             ),
           ],
         ),

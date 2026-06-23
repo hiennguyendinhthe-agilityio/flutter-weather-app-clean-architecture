@@ -12,4 +12,9 @@ abstract interface class TodoRepository {
   Future<TodoEntity> updateTodo(TodoEntity todo);
 
   Future<void> deleteTodo(int id);
+
+  Future<List<TodoEntity>> getTodosPaginated({
+    required int page,
+    required int limit,
+  });
 }

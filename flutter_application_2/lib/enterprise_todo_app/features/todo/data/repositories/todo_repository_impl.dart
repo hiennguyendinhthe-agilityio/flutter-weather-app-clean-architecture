@@ -147,4 +147,44 @@ class TodoRepositoryImpl implements TodoRepository {
       _ => const UnknownFailure(),
     };
   }
+
+  @override
+  Future<List<TodoEntity>> getTodosPaginated({
+    required int page,
+    required int limit,
+  }) async {
+    try {
+      final isOnline = await _connectivity.isConnected;
+
+      if (isOnline) {
+        AppLogger.info(
+          'Repo: online -> fetch paginated from API (page: $page, limit: $limit)',
+        );
+        final remoteTodos = await _remote.getTodosPaginated(
+          page: page,
+          limit: limit,
+        );
+
+        await _local.saveAll(remoteTodos);
+        return remoteTodos;
+      } else {
+        AppLogger.warning('Repo: offline -> load paginated from cache');
+        final cached = await _local.getAll();
+
+        final startIndex = (page - 1) * limit;
+        if (startIndex >= cached.length) return [];
+        final endIndex = (startIndex + limit) > cached.length
+            ? cached.length
+            : (startIndex + limit);
+        return cached.sublist(startIndex, endIndex);
+      }
+    } on Failure {
+      rethrow;
+    } on AppException catch (e) {
+      throw _mapException(e);
+    } catch (e, st) {
+      AppLogger.error('Repo: unexpected error in getTodosPaginated', e, st);
+      throw const UnknownFailure();
+    }
+  }
 }

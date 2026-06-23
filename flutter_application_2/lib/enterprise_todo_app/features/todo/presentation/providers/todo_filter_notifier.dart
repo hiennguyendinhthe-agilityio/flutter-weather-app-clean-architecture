@@ -21,10 +21,12 @@ final filteredTodosProvider = Provider<List<TodoEntity>>((ref) {
   final filter = ref.watch(todoFilterProvider);
 
   return todosAsync.when(
-    data: (todos) => switch (filter) {
-      TodoFilter.all => todos,
-      TodoFilter.active => todos.where((t) => !t.isCompleted).toList(),
-      TodoFilter.completed => todos.where((t) => t.isCompleted).toList(),
+    data: (paginatedState) => switch (filter) {
+      TodoFilter.all => paginatedState.items,
+      TodoFilter.active =>
+        paginatedState.items.where((t) => !t.isCompleted).toList(),
+      TodoFilter.completed =>
+        paginatedState.items.where((t) => t.isCompleted).toList(),
     },
     loading: () => [],
     error: (error, stackTrace) => [],
@@ -34,7 +36,7 @@ final filteredTodosProvider = Provider<List<TodoEntity>>((ref) {
 final activeCountProvider = Provider<int>((ref) {
   return ref.watch(
     todoListNotifierProvider.select(
-      (state) => state.value?.where((t) => !t.isCompleted).length ?? 0,
+      (state) => state.value?.items.where((t) => !t.isCompleted).length ?? 0,
     ),
   );
 });

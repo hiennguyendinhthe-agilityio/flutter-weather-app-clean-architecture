@@ -43,6 +43,33 @@ class TodoRemoteDatasource {
     }
   }
 
+  Future<List<TodoModel>> getTodosPaginated({
+    required int page,
+    required int limit,
+  }) async {
+    try {
+      AppLogger.debug(
+        'Remote: fetching todos paginated (page: $page, limit: $limit)',
+      );
+      final response = await _dio.get(
+        ApiEndpoints.todos,
+        queryParameters: {'_page': page, '_limit': limit},
+      );
+
+      final list = response.data as List<dynamic>;
+      final todos = list
+          .map((item) => TodoModel.fromJson(item as Map<String, dynamic>))
+          .toList();
+
+      AppLogger.info('Remote: fetched ${todos.length} todos paginated');
+      return todos;
+    } on DioException catch (e) {
+      final appException = e.error;
+      if (appException is AppException) throw appException;
+      throw NetworkException(originalError: e);
+    }
+  }
+
   Future<TodoModel> createTodo(Map<String, dynamic> data) async {
     try {
       final response = await _dio.post(ApiEndpoints.todos, data: data);
