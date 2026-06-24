@@ -2,6 +2,8 @@ import '../../../../core/error/app_exception.dart';
 import '../../../../core/error/failure.dart';
 import '../../../../core/logger/app_logger.dart';
 import '../../../../core/network/connectivity_service.dart';
+import '../../../../core/sync/pending_action.dart';
+import '../../../../core/sync/sync_queue_datasource.dart';
 import '../../domain/entities/todo_entity.dart';
 import '../../domain/repositories/todo_repository.dart';
 import '../datasources/todo_local_datasource.dart';
@@ -12,14 +14,17 @@ class TodoRepositoryImpl implements TodoRepository {
   final TodoRemoteDatasource _remote;
   final TodoLocalDatasource _local;
   final ConnectivityService _connectivity;
+  final SyncQueueDatasource _syncQueue;
 
   const TodoRepositoryImpl({
     required TodoRemoteDatasource remote,
     required TodoLocalDatasource local,
     required ConnectivityService connectivity,
+    required SyncQueueDatasource syncQueue,
   }) : _remote = remote,
        _local = local,
-       _connectivity = connectivity;
+       _connectivity = connectivity,
+       _syncQueue = syncQueue;
 
   @override
   Future<List<TodoEntity>> getTodos() async {
@@ -29,7 +34,6 @@ class TodoRepositoryImpl implements TodoRepository {
       if (isOnline) {
         AppLogger.info('Repo: online → fetch from API');
         final remoteTodos = await _remote.getTodos();
-
         await _local.saveAll(remoteTodos);
         return remoteTodos;
       } else {
@@ -68,15 +72,43 @@ class TodoRepositoryImpl implements TodoRepository {
   @override
   Future<TodoEntity> addTodo(String title, {String? note}) async {
     try {
-      final created = await _remote.createTodo({
-        'title': title,
-        'completed': false,
-        'userId': 1,
-      });
+      final isOnline = await _connectivity.isConnected;
 
-      final enriched = created.copyWith(note: note);
-      await _local.save(enriched);
-      return enriched;
+      if (isOnline) {
+        final created = await _remote.createTodo({
+          'title': title,
+          'completed': false,
+          'userId': 1,
+        });
+        final enriched = created.copyWith(note: note);
+        await _local.save(enriched);
+        return enriched;
+      } else {
+        final tempId = -DateTime.now().millisecondsSinceEpoch;
+        final tempTodo = TodoModel(
+          id: tempId,
+          title: title,
+          isCompleted: false,
+          note: note,
+          createdAt: DateTime.now(),
+        );
+        await _local.save(tempTodo);
+
+        await _syncQueue.enqueue(
+          PendingAction.create(
+            type: ActionType.create,
+            todoId: tempId,
+            payload: {
+              'title': title,
+              'completed': false,
+              'userId': 1,
+              'note': note,
+            },
+          ),
+        );
+        AppLogger.info('Repo: offline → queued CREATE for "$title"');
+        return tempTodo;
+      }
     } on AppException catch (e) {
       throw _mapException(e);
     }
@@ -92,13 +124,31 @@ class TodoRepositoryImpl implements TodoRepository {
       }
 
       final toggled = current.copyWith(isCompleted: !current.isCompleted);
-
       await _local.save(toggled);
 
-      _remote.updateTodo(id, toggled.toJson()).catchError((e) {
-        AppLogger.warning('Sync toggle failed: $e');
-        throw e;
-      });
+      final isOnline = await _connectivity.isConnected;
+
+      if (isOnline) {
+        _remote.updateTodo(id, toggled.toJson()).catchError((e) {
+          AppLogger.warning('Repo: sync toggle failed online, queuing: $e');
+          _syncQueue.enqueue(
+            PendingAction.create(
+              type: ActionType.toggle,
+              todoId: id,
+              payload: toggled.toJson(),
+            ),
+          );
+        });
+      } else {
+        await _syncQueue.enqueue(
+          PendingAction.create(
+            type: ActionType.toggle,
+            todoId: id,
+            payload: toggled.toJson(),
+          ),
+        );
+        AppLogger.info('Repo: offline → queued TOGGLE for todo #$id');
+      }
 
       return toggled;
     } on AppException catch (e) {
@@ -110,13 +160,31 @@ class TodoRepositoryImpl implements TodoRepository {
   Future<TodoEntity> updateTodo(TodoEntity todo) async {
     try {
       final model = TodoModel.fromEntity(todo);
-
       await _local.save(model);
 
-      _remote.updateTodo(todo.id, model.toJson()).catchError((e) {
-        AppLogger.warning('Sync update failed: $e');
-        throw e;
-      });
+      final isOnline = await _connectivity.isConnected;
+
+      if (isOnline) {
+        _remote.updateTodo(todo.id, model.toJson()).catchError((e) {
+          AppLogger.warning('Repo: sync update failed online, queuing: $e');
+          _syncQueue.enqueue(
+            PendingAction.create(
+              type: ActionType.update,
+              todoId: todo.id,
+              payload: model.toJson(),
+            ),
+          );
+        });
+      } else {
+        await _syncQueue.enqueue(
+          PendingAction.create(
+            type: ActionType.update,
+            todoId: todo.id,
+            payload: model.toJson(),
+          ),
+        );
+        AppLogger.info('Repo: offline → queued UPDATE for todo #${todo.id}');
+      }
 
       return model;
     } on AppException catch (e) {
@@ -129,23 +197,24 @@ class TodoRepositoryImpl implements TodoRepository {
     try {
       await _local.delete(id);
 
-      _remote.deleteTodo(id).catchError((e) {
-        AppLogger.warning('Sync delete failed: $e');
-      });
+      final isOnline = await _connectivity.isConnected;
+
+      if (isOnline) {
+        _remote.deleteTodo(id).catchError((e) {
+          AppLogger.warning('Repo: sync delete failed online, queuing: $e');
+          _syncQueue.enqueue(
+            PendingAction.create(type: ActionType.delete, todoId: id),
+          );
+        });
+      } else {
+        await _syncQueue.enqueue(
+          PendingAction.create(type: ActionType.delete, todoId: id),
+        );
+        AppLogger.info('Repo: offline → queued DELETE for todo #$id');
+      }
     } on AppException catch (e) {
       throw _mapException(e);
     }
-  }
-
-  Failure _mapException(AppException e) {
-    return switch (e) {
-      NetworkException() => const NetworkFailure(),
-      UnauthorizedException() => const AuthFailure(),
-      NotFoundException(:final message) => NotFoundFailure(message: message),
-      ServerException(:final message) => ServerFailure(message: message),
-      CacheException() => const CacheFailure(),
-      _ => const UnknownFailure(),
-    };
   }
 
   @override
@@ -158,17 +227,16 @@ class TodoRepositoryImpl implements TodoRepository {
 
       if (isOnline) {
         AppLogger.info(
-          'Repo: online -> fetch paginated from API (page: $page, limit: $limit)',
+          'Repo: online → fetch paginated from API (page: $page, limit: $limit)',
         );
         final remoteTodos = await _remote.getTodosPaginated(
           page: page,
           limit: limit,
         );
-
         await _local.saveAll(remoteTodos);
         return remoteTodos;
       } else {
-        AppLogger.warning('Repo: offline -> load paginated from cache');
+        AppLogger.warning('Repo: offline → load paginated from cache');
         final cached = await _local.getAll();
 
         final startIndex = (page - 1) * limit;
@@ -186,5 +254,16 @@ class TodoRepositoryImpl implements TodoRepository {
       AppLogger.error('Repo: unexpected error in getTodosPaginated', e, st);
       throw const UnknownFailure();
     }
+  }
+
+  Failure _mapException(AppException e) {
+    return switch (e) {
+      NetworkException() => const NetworkFailure(),
+      UnauthorizedException() => const AuthFailure(),
+      NotFoundException(:final message) => NotFoundFailure(message: message),
+      ServerException(:final message) => ServerFailure(message: message),
+      CacheException() => const CacheFailure(),
+      _ => const UnknownFailure(),
+    };
   }
 }

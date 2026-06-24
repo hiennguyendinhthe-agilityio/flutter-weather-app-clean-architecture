@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_application_2/enterprise_todo_app/core/network/retry_interceptor.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../error/app_exception.dart';
 import '../logger/app_logger.dart';
@@ -7,7 +9,7 @@ import 'endpoints.dart';
 class DioClient {
   DioClient._();
 
-  static Dio create() {
+  static Dio create(Ref ref) {
     final dio = Dio(
       BaseOptions(
         baseUrl: ApiEndpoints.baseUrl,
@@ -20,7 +22,21 @@ class DioClient {
       ),
     );
 
-    dio.interceptors.addAll([_LoggingInterceptor(), _ErrorInterceptor()]);
+    final refeshDio = Dio(
+      BaseOptions(
+        baseUrl: ApiEndpoints.baseUrl,
+        connectTimeout: ApiEndpoints.connectTimeout,
+        receiveTimeout: ApiEndpoints.receiveTimeout,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      ),
+    );
+
+    refeshDio.interceptors.add(_LoggingInterceptor());
+
+    dio.interceptors.addAll([_LoggingInterceptor(), _ErrorInterceptor(),RetryInterceptor(ref)]);
 
     return dio;
   }

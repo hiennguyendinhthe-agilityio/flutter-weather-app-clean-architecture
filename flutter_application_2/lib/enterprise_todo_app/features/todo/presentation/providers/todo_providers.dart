@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_application_2/enterprise_todo_app/core/sync/sync_queue_datasource.dart';
 import 'package:flutter_application_2/enterprise_todo_app/features/todo/domain/usecases/get_paginated_todos_usecase.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -22,6 +23,10 @@ final connectivityProvider = Provider<ConnectivityService>((ref) {
   return ConnectivityService();
 });
 
+final syncQueueDatasourceProvider = Provider<SyncQueueDatasource>((ref) {
+  return SyncQueueDatasource();
+});
+
 final todoRemoteDatasourceProvider = Provider<TodoRemoteDatasource>((ref) {
   final dio = ref.watch(dioProvider);
   return TodoRemoteDatasource(dio);
@@ -36,6 +41,7 @@ final todoRepositoryProvider = Provider<TodoRepository>((ref) {
     remote: ref.watch(todoRemoteDatasourceProvider),
     local: ref.watch(todoLocalDatasourceProvider),
     connectivity: ref.watch(connectivityProvider),
+    syncQueue: ref.watch(syncQueueDatasourceProvider),
   );
 });
 
@@ -43,7 +49,9 @@ final getTodosUseCaseProvider = Provider<GetTodosUseCase>((ref) {
   return GetTodosUseCase(ref.watch(todoRepositoryProvider));
 });
 
-final getPaginatedTodosUseCaseProvider = Provider<GetPaginatedTodosUsecase>((ref) {
+final getPaginatedTodosUseCaseProvider = Provider<GetPaginatedTodosUsecase>((
+  ref,
+) {
   return GetPaginatedTodosUsecase(ref.watch(todoRepositoryProvider));
 });
 
