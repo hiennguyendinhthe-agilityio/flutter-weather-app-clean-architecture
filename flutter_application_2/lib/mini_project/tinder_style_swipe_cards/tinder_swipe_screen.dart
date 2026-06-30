@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// ignore: always_use_package_imports
 import 'card_data.dart';
 
 class TinderSwipeScreen extends StatefulWidget {

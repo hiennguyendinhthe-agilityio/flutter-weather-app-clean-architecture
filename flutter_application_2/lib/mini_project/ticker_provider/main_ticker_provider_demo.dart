@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// ignore: always_use_package_imports
 import 'ticker_provider_demo.dart';
 
 void main(List<String> args) {
