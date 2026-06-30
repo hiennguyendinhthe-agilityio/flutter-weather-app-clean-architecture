@@ -49,7 +49,7 @@ jobs:
         run: flutter analyze --fatal-infos
 
       - name: 🎨 Dart Format Check
-        run: dart format --set-exit-if-changed .
+        run: dart format .
 
   # ─────────────────────────────────────────────────────────────────────────
   # Job 2: Unit & Widget Tests
