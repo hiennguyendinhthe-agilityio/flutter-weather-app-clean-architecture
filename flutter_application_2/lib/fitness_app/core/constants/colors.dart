@@ -55,7 +55,9 @@ class FitnessColors {
   static const Color expenseYellow = Color(0xFFD6FF38);
   static const Color expensePink = Color(0xFFFF5CFF);
   static const Color expenseBlue = Color(0xFF5A94FF);
-  static const Color expenseBadgeBg = Color(0xFFDBFF4B); // Glowing yellow for the card icon badge
+  static const Color expenseBadgeBg = Color(
+    0xFFDBFF4B,
+  ); // Glowing yellow for the card icon badge
   static const Color expenseBadgeIcon = Color(0xFF14141E);
   // =============================================
   // Sales KPIs Screen - New Colors

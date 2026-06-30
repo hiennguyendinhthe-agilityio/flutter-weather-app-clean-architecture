@@ -53,9 +53,9 @@ class PostCard extends StatelessWidget {
                   child: Text(
                     post.authorName,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: cs.onSurface.withValues(alpha: 0.7),
-                          fontWeight: FontWeight.w500,
-                        ),
+                      color: cs.onSurface.withValues(alpha: 0.7),
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
                 // 🎓 KEY: Only this tiny widget subscribes to BookmarkNotifier
@@ -68,9 +68,9 @@ class PostCard extends StatelessWidget {
             // Title
             Text(
               post.title,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
             ),
 
             const SizedBox(height: 6),
@@ -81,9 +81,9 @@ class PostCard extends StatelessWidget {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: cs.onSurface.withValues(alpha: 0.6),
-                    height: 1.5,
-                  ),
+                color: cs.onSurface.withValues(alpha: 0.6),
+                height: 1.5,
+              ),
             ),
 
             const SizedBox(height: 12),
@@ -100,24 +100,30 @@ class PostCard extends StatelessWidget {
             // Stats row
             Row(
               children: [
-                Icon(Icons.favorite_outline_rounded,
-                    size: 16, color: cs.onSurface.withValues(alpha: 0.5)),
+                Icon(
+                  Icons.favorite_outline_rounded,
+                  size: 16,
+                  color: cs.onSurface.withValues(alpha: 0.5),
+                ),
                 const SizedBox(width: 4),
                 Text(
                   '${post.likesCount}',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: cs.onSurface.withValues(alpha: 0.5),
-                      ),
+                    color: cs.onSurface.withValues(alpha: 0.5),
+                  ),
                 ),
                 const SizedBox(width: 16),
-                Icon(Icons.chat_bubble_outline_rounded,
-                    size: 16, color: cs.onSurface.withValues(alpha: 0.5)),
+                Icon(
+                  Icons.chat_bubble_outline_rounded,
+                  size: 16,
+                  color: cs.onSurface.withValues(alpha: 0.5),
+                ),
                 const SizedBox(width: 4),
                 Text(
                   '${post.commentsCount}',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: cs.onSurface.withValues(alpha: 0.5),
-                      ),
+                    color: cs.onSurface.withValues(alpha: 0.5),
+                  ),
                 ),
               ],
             ),
@@ -146,11 +152,15 @@ class _BookmarkButton extends StatelessWidget {
         return IconButton(
           visualDensity: VisualDensity.compact,
           icon: Icon(
-            isBookmarked ? Icons.bookmark_rounded : Icons.bookmark_border_rounded,
+            isBookmarked
+                ? Icons.bookmark_rounded
+                : Icons.bookmark_border_rounded,
             size: 20,
             color: isBookmarked
                 ? Theme.of(context).colorScheme.primary
-                : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+                : Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withValues(alpha: 0.4),
           ),
           // 🎓 context.read() in onPressed — correct! We don't need to watch here.
           onPressed: () => context.read<BookmarkNotifier>().toggle(postId),
@@ -188,7 +198,11 @@ class _TagChip extends StatelessWidget {
       ),
       child: Text(
         tag,
-        style: TextStyle(fontSize: 11, color: color, fontWeight: FontWeight.w600),
+        style: TextStyle(
+          fontSize: 11,
+          color: color,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     );
   }

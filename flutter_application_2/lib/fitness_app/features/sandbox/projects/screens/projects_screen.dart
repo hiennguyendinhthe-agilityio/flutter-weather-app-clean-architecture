@@ -86,7 +86,11 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen>
                     IconButton(
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
-                      icon: Icon(Icons.bar_chart, color: cs.onSurface, size: 24),
+                      icon: Icon(
+                        Icons.bar_chart,
+                        color: cs.onSurface,
+                        size: 24,
+                      ),
                       onPressed: () {},
                     ),
                   ],
@@ -106,7 +110,7 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen>
               builder: (context) {
                 final summary = ref.watch(projectSummaryProvider);
                 final selectedPeriod = ref.watch(selectedProjectPeriodProvider);
-                
+
                 return Column(
                   children: [
                     Center(
@@ -123,9 +127,7 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen>
 
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: ['Day', 'Week', 'Month', 'Year'].map((
-                        period,
-                      ) {
+                      children: ['Day', 'Week', 'Month', 'Year'].map((period) {
                         final isActive = selectedPeriod == period;
                         return GestureDetector(
                           onTap: () => _onPeriodChanged(period),

@@ -16,5 +16,5 @@ class FrameInfo {
         status: 'dismissed',
         isAnimating: false,
         velocity: 0,
-  );
+      );
 }

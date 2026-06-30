@@ -16,26 +16,29 @@ class LoggingInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     logger.i(
-        '🌐 REQUEST[${options.method}] => PATH: ${options.baseUrl}${options.path}\n'
-        'Headers: ${options.headers}\n'
-        'Data: ${options.data}');
+      '🌐 REQUEST[${options.method}] => PATH: ${options.baseUrl}${options.path}\n'
+      'Headers: ${options.headers}\n'
+      'Data: ${options.data}',
+    );
     super.onRequest(options, handler);
   }
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     logger.i(
-        '✅ RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions.path}\n'
-        'Data: ${response.data}');
+      '✅ RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions.path}\n'
+      'Data: ${response.data}',
+    );
     super.onResponse(response, handler);
   }
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
     logger.e(
-        '❌ ERROR[${err.response?.statusCode}] => PATH: ${err.requestOptions.path}\n'
-        'Message: ${err.message}\n'
-        'Data: ${err.response?.data}');
+      '❌ ERROR[${err.response?.statusCode}] => PATH: ${err.requestOptions.path}\n'
+      'Message: ${err.message}\n'
+      'Data: ${err.response?.data}',
+    );
     super.onError(err, handler);
   }
 }

@@ -54,9 +54,9 @@ class _LoginScreenState extends State<LoginScreen> {
       // 🎓 context.read() — correct in callbacks/event handlers
       // We don't want to subscribe here; we just want to call a method ONCE.
       await context.read<AuthNotifier>().login(
-            _emailController.text.trim(),
-            _passwordController.text,
-          );
+        _emailController.text.trim(),
+        _passwordController.text,
+      );
       // After login succeeds, AuthNotifier calls notifyListeners().
       // DevHubApp (which watches isLoggedIn) will rebuild and show MainShell.
       // This screen doesn't need to navigate — the state change handles routing.
@@ -91,22 +91,26 @@ class _LoginScreenState extends State<LoginScreen> {
                       color: cs.primary,
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: const Icon(Icons.hub_rounded, color: Colors.white, size: 40),
+                    child: const Icon(
+                      Icons.hub_rounded,
+                      color: Colors.white,
+                      size: 40,
+                    ),
                   ),
                   const SizedBox(height: 32),
 
                   Text(
                     'Welcome to DevHub',
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     'Sign in to continue',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: cs.onSurface.withValues(alpha: 0.6),
-                        ),
+                      color: cs.onSurface.withValues(alpha: 0.6),
+                    ),
                   ),
                   const SizedBox(height: 40),
 
@@ -116,11 +120,17 @@ class _LoginScreenState extends State<LoginScreen> {
                     decoration: BoxDecoration(
                       color: cs.primaryContainer.withValues(alpha: 0.4),
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: cs.primary.withValues(alpha: 0.3)),
+                      border: Border.all(
+                        color: cs.primary.withValues(alpha: 0.3),
+                      ),
                     ),
                     child: Row(
                       children: [
-                        Icon(Icons.info_outline_rounded, color: cs.primary, size: 18),
+                        Icon(
+                          Icons.info_outline_rounded,
+                          color: cs.primary,
+                          size: 18,
+                        ),
                         const SizedBox(width: 10),
                         Expanded(
                           child: Text(

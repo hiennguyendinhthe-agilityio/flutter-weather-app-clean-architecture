@@ -26,18 +26,18 @@ class UserModel extends Equatable {
   String get firstName => fullName.split(' ').first;
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'email': email,
-        'full_name': fullName,
-        'createdAt': createdAt.toIso8601String(),
-      };
+    'id': id,
+    'email': email,
+    'full_name': fullName,
+    'createdAt': createdAt.toIso8601String(),
+  };
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
-        id: json['id'] as String,
-        email: json['email'] as String,
-        fullName: json['full_name'] as String,
-        createdAt: DateTime.parse(json['createdAt'] as String),
-      );
+    id: json['id'] as String,
+    email: json['email'] as String,
+    fullName: json['full_name'] as String,
+    createdAt: DateTime.parse(json['createdAt'] as String),
+  );
 
   String toJsonString() => jsonEncode(toJson());
 

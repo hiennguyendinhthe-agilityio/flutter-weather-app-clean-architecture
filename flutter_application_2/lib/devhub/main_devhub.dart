@@ -45,30 +45,21 @@ void main() {
       providers: [
         // ── Layer 1: Root Providers (no dependencies) ─────────────────────
         // These can be declared in any order relative to each other.
-
-        ChangeNotifierProvider<AuthNotifier>(
-          create: (_) => AuthNotifier(),
-        ),
+        ChangeNotifierProvider<AuthNotifier>(create: (_) => AuthNotifier()),
         ChangeNotifierProvider<SettingsNotifier>(
           create: (_) => SettingsNotifier(),
         ),
-        ChangeNotifierProvider<FilterNotifier>(
-          create: (_) => FilterNotifier(),
-        ),
-        ChangeNotifierProvider<SearchNotifier>(
-          create: (_) => SearchNotifier(),
-        ),
+        ChangeNotifierProvider<FilterNotifier>(create: (_) => FilterNotifier()),
+        ChangeNotifierProvider<SearchNotifier>(create: (_) => SearchNotifier()),
 
         // ── Layer 2: Derived Providers (depend on Layer 1) ─────────────────
         // These MUST come after their dependencies in the list.
         // 🎓 This ordering requirement is one of Provider's pain points.
         //    In Riverpod, order doesn't matter — the graph is auto-resolved.
-
         ChangeNotifierProxyProvider<AuthNotifier, FeedNotifier>(
           // create: runs once when the provider is first accessed
-          create: (ctx) => FeedNotifier(
-            userId: ctx.read<AuthNotifier>().currentUser?.id,
-          ),
+          create: (ctx) =>
+              FeedNotifier(userId: ctx.read<AuthNotifier>().currentUser?.id),
           // update: runs every time AuthNotifier calls notifyListeners()
           update: (ctx, auth, previous) {
             final newUserId = auth.currentUser?.id;

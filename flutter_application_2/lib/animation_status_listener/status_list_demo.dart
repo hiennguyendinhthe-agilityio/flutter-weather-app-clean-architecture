@@ -106,7 +106,7 @@ class _StatusListDemoState extends State<StatusListDemo>
                 }
               },
               child: const Text('Play'),
-            )
+            ),
           ],
         ),
       ),

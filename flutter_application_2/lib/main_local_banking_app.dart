@@ -10,11 +10,7 @@ import 'package:flutter_application_2/banking_app/features/portfolio/providers/t
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(
-    const ProviderScope(
-      child: BankingApp(),
-    ),
-  );
+  runApp(const ProviderScope(child: BankingApp()));
 }
 
 class BankingApp extends StatelessWidget {
@@ -24,7 +20,9 @@ class BankingApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return legacy.MultiProvider(
       providers: [
-        legacy.ChangeNotifierProvider(create: (_) => AuthProvider()..checkStatus()),
+        legacy.ChangeNotifierProvider(
+          create: (_) => AuthProvider()..checkStatus(),
+        ),
         legacy.ChangeNotifierProvider(create: (_) => HomeProvider()),
         legacy.ChangeNotifierProvider(create: (_) => TransactionProvider()),
       ],

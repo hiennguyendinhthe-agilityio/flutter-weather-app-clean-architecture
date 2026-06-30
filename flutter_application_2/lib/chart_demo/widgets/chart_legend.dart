@@ -56,7 +56,7 @@ class ChartLegend extends StatelessWidget {
 class _LegendItem extends StatelessWidget {
   const _LegendItem({required this.color, required this.label});
 
-  final Color  color;
+  final Color color;
   final String label;
 
   @override
@@ -65,20 +65,17 @@ class _LegendItem extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          width:  AccountStatsTheme.legendDotSize,
+          width: AccountStatsTheme.legendDotSize,
           height: AccountStatsTheme.legendDotSize,
-          decoration: BoxDecoration(
-            color: color,
-            shape: BoxShape.circle,
-          ),
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
         const SizedBox(width: 6),
         Text(
           label,
           style: const TextStyle(
-            fontSize:   12,
+            fontSize: 12,
             fontWeight: FontWeight.w500,
-            color:      AccountStatsTheme.secondaryText,
+            color: AccountStatsTheme.secondaryText,
             fontFamily: 'SF Pro Display',
           ),
         ),

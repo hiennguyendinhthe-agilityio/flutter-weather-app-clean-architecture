@@ -16,118 +16,127 @@ void main() {
 
     const boundaryKey = Key('painter_boundary');
 
-    testWidgets('BarColumnPainter renders correctly at 100% growProgress - Golden Test', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          debugShowCheckedModeBanner: false,
-          home: Scaffold(
-            backgroundColor: Colors.white,
-            body: Center(
-              child: RepaintBoundary(
-                key: boundaryKey,
-                child: SizedBox(
-                  width: 50,
-                  height: 200,
-                  child: CustomPaint(
-                    painter: BarColumnPainter(
-                      item: defaultItem,
-                      growProgress: 1.0,
-                      primaryRatio: defaultItem.primaryRatio,
-                      totalRatio: defaultItem.totalRatio,
+    testWidgets(
+      'BarColumnPainter renders correctly at 100% growProgress - Golden Test',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            debugShowCheckedModeBanner: false,
+            home: Scaffold(
+              backgroundColor: Colors.white,
+              body: Center(
+                child: RepaintBoundary(
+                  key: boundaryKey,
+                  child: SizedBox(
+                    width: 50,
+                    height: 200,
+                    child: CustomPaint(
+                      painter: BarColumnPainter(
+                        item: defaultItem,
+                        growProgress: 1.0,
+                        primaryRatio: defaultItem.primaryRatio,
+                        totalRatio: defaultItem.totalRatio,
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
           ),
-        ),
-      );
+        );
 
-      await tester.pumpAndSettle();
+        await tester.pumpAndSettle();
 
-      await expectLater(
-        find.byKey(boundaryKey),
-        matchesGoldenFile('goldens/bar_column_painter_100_percent.png'),
-      );
-    });
+        await expectLater(
+          find.byKey(boundaryKey),
+          matchesGoldenFile('goldens/bar_column_painter_100_percent.png'),
+        );
+      },
+    );
 
-    testWidgets('BarColumnPainter renders correctly at 50% growProgress - Golden Test', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          debugShowCheckedModeBanner: false,
-          home: Scaffold(
-            backgroundColor: Colors.white,
-            body: Center(
-              child: RepaintBoundary(
-                key: boundaryKey,
-                child: SizedBox(
-                  width: 50,
-                  height: 200,
-                  child: CustomPaint(
-                    painter: BarColumnPainter(
-                      item: defaultItem,
-                      growProgress: 0.5,
-                      primaryRatio: defaultItem.primaryRatio,
-                      totalRatio: defaultItem.totalRatio,
+    testWidgets(
+      'BarColumnPainter renders correctly at 50% growProgress - Golden Test',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            debugShowCheckedModeBanner: false,
+            home: Scaffold(
+              backgroundColor: Colors.white,
+              body: Center(
+                child: RepaintBoundary(
+                  key: boundaryKey,
+                  child: SizedBox(
+                    width: 50,
+                    height: 200,
+                    child: CustomPaint(
+                      painter: BarColumnPainter(
+                        item: defaultItem,
+                        growProgress: 0.5,
+                        primaryRatio: defaultItem.primaryRatio,
+                        totalRatio: defaultItem.totalRatio,
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
           ),
-        ),
-      );
+        );
 
-      await tester.pumpAndSettle();
+        await tester.pumpAndSettle();
 
-      await expectLater(
-        find.byKey(boundaryKey),
-        matchesGoldenFile('goldens/bar_column_painter_50_percent.png'),
-      );
-    });
+        await expectLater(
+          find.byKey(boundaryKey),
+          matchesGoldenFile('goldens/bar_column_painter_50_percent.png'),
+        );
+      },
+    );
 
-    testWidgets('BarColumnPainter renders correctly with no secondary value - Golden Test', (WidgetTester tester) async {
-      const itemNoSecondary = BarItemData(
-        label: 'T2',
-        value: 80,
-        maxValue: 100,
-        color: Colors.red,
-        valueLabel: '80%',
-      );
+    testWidgets(
+      'BarColumnPainter renders correctly with no secondary value - Golden Test',
+      (WidgetTester tester) async {
+        const itemNoSecondary = BarItemData(
+          label: 'T2',
+          value: 80,
+          maxValue: 100,
+          color: Colors.red,
+          valueLabel: '80%',
+        );
 
-      await tester.pumpWidget(
-        MaterialApp(
-          debugShowCheckedModeBanner: false,
-          home: Scaffold(
-            backgroundColor: Colors.white,
-            body: Center(
-              child: RepaintBoundary(
-                key: boundaryKey,
-                child: SizedBox(
-                  width: 50,
-                  height: 200,
-                  child: CustomPaint(
-                    painter: BarColumnPainter(
-                      item: itemNoSecondary,
-                      growProgress: 1.0,
-                      primaryRatio: itemNoSecondary.primaryRatio,
-                      totalRatio: itemNoSecondary.totalRatio,
+        await tester.pumpWidget(
+          MaterialApp(
+            debugShowCheckedModeBanner: false,
+            home: Scaffold(
+              backgroundColor: Colors.white,
+              body: Center(
+                child: RepaintBoundary(
+                  key: boundaryKey,
+                  child: SizedBox(
+                    width: 50,
+                    height: 200,
+                    child: CustomPaint(
+                      painter: BarColumnPainter(
+                        item: itemNoSecondary,
+                        growProgress: 1.0,
+                        primaryRatio: itemNoSecondary.primaryRatio,
+                        totalRatio: itemNoSecondary.totalRatio,
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
           ),
-        ),
-      );
+        );
 
-      await tester.pumpAndSettle();
+        await tester.pumpAndSettle();
 
-      await expectLater(
-        find.byKey(boundaryKey),
-        matchesGoldenFile('goldens/bar_column_painter_no_secondary.png'),
-      );
-    });
+        await expectLater(
+          find.byKey(boundaryKey),
+          matchesGoldenFile('goldens/bar_column_painter_no_secondary.png'),
+        );
+      },
+    );
 
     group('CustomPainter shouldRepaint logic', () {
       test('returns true when growProgress changes', () {

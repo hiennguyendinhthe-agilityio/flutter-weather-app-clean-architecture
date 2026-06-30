@@ -51,8 +51,12 @@ void main() {
     String title = 'Test todo',
     bool isCompleted = false,
     Priority priority = Priority.medium,
-  }) =>
-      TodoEntity(id: id, title: title, isCompleted: isCompleted, priority: priority);
+  }) => TodoEntity(
+    id: id,
+    title: title,
+    isCompleted: isCompleted,
+    priority: priority,
+  );
 
   group('GetTodosUseCase', () {
     test('should return sorted todos (high priority first)', () async {
@@ -63,17 +67,18 @@ void main() {
         makeTodo(id: 3, priority: Priority.medium),
       ];
       // Mocktail: khi gọi getTodos() → trả về unsortedTodos
-      when(() => mockRepository.getTodos())
-          .thenAnswer((_) async => unsortedTodos);
+      when(
+        () => mockRepository.getTodos(),
+      ).thenAnswer((_) async => unsortedTodos);
 
       // ACT
       final result = await sut();
 
       // ASSERT
       expect(result.length, 3);
-      expect(result[0].priority, Priority.high);   // high trước
-      expect(result[1].priority, Priority.medium);  // medium giữa
-      expect(result[2].priority, Priority.low);     // low sau
+      expect(result[0].priority, Priority.high); // high trước
+      expect(result[1].priority, Priority.medium); // medium giữa
+      expect(result[2].priority, Priority.low); // low sau
     });
 
     test('should call repository.getTodos() exactly once', () async {
@@ -100,8 +105,9 @@ void main() {
 
     test('should propagate exception from repository', () async {
       // ARRANGE
-      when(() => mockRepository.getTodos())
-          .thenThrow(Exception('Network error'));
+      when(
+        () => mockRepository.getTodos(),
+      ).thenThrow(Exception('Network error'));
 
       // ASSERT — expect exception khi ACT
       expect(() => sut(), throwsException);

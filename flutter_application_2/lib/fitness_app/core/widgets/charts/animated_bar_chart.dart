@@ -109,7 +109,8 @@ class _AnimatedBarChartPainter extends CustomPainter {
     double actualBarWidth = barWidth;
     double actualSpacing = spacing;
     double totalWidth =
-        (dataPoints.length * actualBarWidth) + ((dataPoints.length - 1) * actualSpacing);
+        (dataPoints.length * actualBarWidth) +
+        ((dataPoints.length - 1) * actualSpacing);
 
     if (totalWidth > size.width) {
       final scaleFactor = size.width / totalWidth;
@@ -150,7 +151,9 @@ class _AnimatedBarChartPainter extends CustomPainter {
 
       final desiredHeight = size.height * interpolatedVal;
       final x =
-          startX + (i * (actualBarWidth + actualSpacing)) + (actualBarWidth / 2);
+          startX +
+          (i * (actualBarWidth + actualSpacing)) +
+          (actualBarWidth / 2);
 
       final drawHeight = math.max(0.0, desiredHeight - actualBarWidth);
       final topY = centerY - (drawHeight / 2);
@@ -159,7 +162,11 @@ class _AnimatedBarChartPainter extends CustomPainter {
       if (desiredHeight > actualBarWidth) {
         canvas.drawLine(Offset(x, topY), Offset(x, bottomY), _barPaint);
       } else if (desiredHeight > 0) {
-        canvas.drawLine(Offset(x, centerY), Offset(x, centerY + 0.1), _barPaint);
+        canvas.drawLine(
+          Offset(x, centerY),
+          Offset(x, centerY + 0.1),
+          _barPaint,
+        );
       }
     }
   }

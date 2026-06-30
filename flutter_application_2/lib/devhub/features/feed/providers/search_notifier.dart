@@ -19,7 +19,8 @@ class SearchNotifier extends ChangeNotifier {
   void setQuery(String value) {
     _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 300), () {
-      if (_query == value) return; // 🎓 Avoid notify if value didn't actually change
+      if (_query == value)
+        return; // 🎓 Avoid notify if value didn't actually change
       _query = value;
       notifyListeners();
     });
@@ -34,7 +35,8 @@ class SearchNotifier extends ChangeNotifier {
 
   @override
   void dispose() {
-    _debounce?.cancel(); // 🎓 Always cancel timers in dispose() to avoid memory leaks
+    _debounce
+        ?.cancel(); // 🎓 Always cancel timers in dispose() to avoid memory leaks
     super.dispose();
   }
 }

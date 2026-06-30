@@ -25,10 +25,9 @@ class AppButton extends StatelessWidget {
                 child: CircularProgressIndicator(
                   strokeWidth: 2.5,
                   color: Colors.white,
-                ))
-            : Text(
-                label,
-              ),
+                ),
+              )
+            : Text(label),
       ),
     );
   }

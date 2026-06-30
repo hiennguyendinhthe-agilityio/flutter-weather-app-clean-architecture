@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/fitness_app/core/theme/theme_context_ext.dart';
@@ -33,7 +32,9 @@ class ExpensesDashboardScreen extends ConsumerWidget {
                     child: const Text('Done'),
                     onPressed: () {
                       if (tempDate != selectedDate) {
-                        ref.read(selectedExpenseDateProvider.notifier).setDate(tempDate);
+                        ref
+                            .read(selectedExpenseDateProvider.notifier)
+                            .setDate(tempDate);
                       }
                       Navigator.of(context).pop();
                     },
@@ -60,8 +61,6 @@ class ExpensesDashboardScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
-
     final cs = context.cs;
     final tt = context.tt;
 
@@ -161,9 +160,9 @@ class ExpensesDashboardScreen extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      
+
                       const SizedBox(height: 40),
-                      
+
                       RepaintBoundary(
                         child: ExpenseDonutChart(
                           categories: categories,

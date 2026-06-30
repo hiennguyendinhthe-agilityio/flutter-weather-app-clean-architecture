@@ -19,11 +19,11 @@ class AccountModel {
   bool get isPositive => netFlow >= 0;
 
   static AccountModel mock() => const AccountModel(
-        id: 'acc_001',
-        accountNumber: '**** **** **** 4582',
-        balance: 24_850.75,
-        income: 8_500.00,
-        expenses: 3_240.50,
-        savingsRate: 0.618,
-      );
+    id: 'acc_001',
+    accountNumber: '**** **** **** 4582',
+    balance: 24_850.75,
+    income: 8_500.00,
+    expenses: 3_240.50,
+    savingsRate: 0.618,
+  );
 }

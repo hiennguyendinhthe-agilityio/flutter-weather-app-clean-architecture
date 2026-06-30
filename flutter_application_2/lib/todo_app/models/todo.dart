@@ -11,11 +11,7 @@ class Todo extends Equatable {
     this.isCompleted = false,
   });
 
-  Todo copyWith({
-    String? id,
-    String? description,
-    bool? isCompleted,
-  }) {
+  Todo copyWith({String? id, String? description, bool? isCompleted}) {
     return Todo(
       id: id ?? this.id,
       description: description ?? this.description,

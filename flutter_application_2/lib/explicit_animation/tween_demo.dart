@@ -28,9 +28,11 @@ class _TweenDemoState extends State<TweenDemo>
       parent: _controller,
       curve: Curves.elasticOut,
     );
-    
 
-    _sizeAnimation = Tween<double>(begin: 50, end: 200).animate(curvedAnimation);
+    _sizeAnimation = Tween<double>(
+      begin: 50,
+      end: 200,
+    ).animate(curvedAnimation);
 
     _colorAnimation = ColorTween(
       begin: Colors.red,

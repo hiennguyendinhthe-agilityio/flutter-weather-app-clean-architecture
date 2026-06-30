@@ -15,9 +15,9 @@ class FitnessInsight extends Equatable {
 
   @override
   List<Object?> get props => [
-        streakDays,
-        isAboveWeeklyAverage,
-        motivationalMessage,
-        weeklyAvgSteps,
-      ];
+    streakDays,
+    isAboveWeeklyAverage,
+    motivationalMessage,
+    weeklyAvgSteps,
+  ];
 }

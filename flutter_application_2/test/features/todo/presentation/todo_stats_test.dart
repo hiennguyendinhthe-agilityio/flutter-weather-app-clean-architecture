@@ -47,9 +47,24 @@ void main() {
 
     test('counts by priority correctly', () {
       final todos = [
-        const TodoEntity(id: 1, title: 'A', isCompleted: false, priority: Priority.high),
-        const TodoEntity(id: 2, title: 'B', isCompleted: false, priority: Priority.high),
-        const TodoEntity(id: 3, title: 'C', isCompleted: false, priority: Priority.low),
+        const TodoEntity(
+          id: 1,
+          title: 'A',
+          isCompleted: false,
+          priority: Priority.high,
+        ),
+        const TodoEntity(
+          id: 2,
+          title: 'B',
+          isCompleted: false,
+          priority: Priority.high,
+        ),
+        const TodoEntity(
+          id: 3,
+          title: 'C',
+          isCompleted: false,
+          priority: Priority.low,
+        ),
       ];
 
       final stats = TodoStats.fromList(todos);
@@ -59,24 +74,27 @@ void main() {
       expect(stats.byPriority[Priority.low], 1);
     });
 
-    test('Equatable: same data = same stats (enables .select optimization)', () {
-      // Đây là test quan trọng nhất để chứng minh .select() hoạt động
-      // Nếu 2 stats giống nhau → Riverpod không rebuild widget
+    test(
+      'Equatable: same data = same stats (enables .select optimization)',
+      () {
+        // Đây là test quan trọng nhất để chứng minh .select() hoạt động
+        // Nếu 2 stats giống nhau → Riverpod không rebuild widget
 
-      final todos = [
-        const TodoEntity(id: 1, title: 'Original title', isCompleted: false),
-      ];
-      final stats1 = TodoStats.fromList(todos);
+        final todos = [
+          const TodoEntity(id: 1, title: 'Original title', isCompleted: false),
+        ];
+        final stats1 = TodoStats.fromList(todos);
 
-      // Đổi title nhưng giữ nguyên count
-      final todosWithNewTitle = [
-        const TodoEntity(id: 1, title: 'CHANGED TITLE', isCompleted: false),
-      ];
-      final stats2 = TodoStats.fromList(todosWithNewTitle);
+        // Đổi title nhưng giữ nguyên count
+        final todosWithNewTitle = [
+          const TodoEntity(id: 1, title: 'CHANGED TITLE', isCompleted: false),
+        ];
+        final stats2 = TodoStats.fromList(todosWithNewTitle);
 
-      // Stats phải giống nhau → .select() sẽ skip rebuild!
-      expect(stats1, equals(stats2));
-    });
+        // Stats phải giống nhau → .select() sẽ skip rebuild!
+        expect(stats1, equals(stats2));
+      },
+    );
 
     test('Equatable: different count = different stats (triggers rebuild)', () {
       final todosSmall = [

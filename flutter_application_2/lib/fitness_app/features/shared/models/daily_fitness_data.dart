@@ -23,12 +23,12 @@ class DailyFitnessData extends Equatable {
 
   @override
   List<Object?> get props => [
-        activityProgress,
-        healthProgress,
-        sleepProgress,
-        currentSteps,
-        goalSteps,
-        bpm,
-        heartRateDataPoints,
-      ];
+    activityProgress,
+    healthProgress,
+    sleepProgress,
+    currentSteps,
+    goalSteps,
+    bpm,
+    heartRateDataPoints,
+  ];
 }
