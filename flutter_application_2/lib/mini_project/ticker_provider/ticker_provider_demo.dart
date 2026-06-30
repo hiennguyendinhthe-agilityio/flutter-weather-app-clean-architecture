@@ -61,7 +61,7 @@ class _TickerProviderDemoState extends State<TickerProviderDemo>
       backgroundColor: const Color(0xFFE5E5E5),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(15),
           child: Column(
             children: [
               _buildHeader(),
