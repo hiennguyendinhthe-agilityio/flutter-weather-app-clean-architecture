@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_application_2/chart_demo/widgets/bar_chart/bar_chart_painter.dart';
@@ -52,6 +53,7 @@ void main() {
           matchesGoldenFile('goldens/bar_column_painter_100_percent.png'),
         );
       },
+      skip: !Platform.isMacOS,
     );
 
     testWidgets(
@@ -90,6 +92,7 @@ void main() {
           matchesGoldenFile('goldens/bar_column_painter_50_percent.png'),
         );
       },
+      skip: !Platform.isMacOS,
     );
 
     testWidgets(
@@ -136,6 +139,7 @@ void main() {
           matchesGoldenFile('goldens/bar_column_painter_no_secondary.png'),
         );
       },
+      skip: !Platform.isMacOS,
     );
 
     group('CustomPainter shouldRepaint logic', () {
