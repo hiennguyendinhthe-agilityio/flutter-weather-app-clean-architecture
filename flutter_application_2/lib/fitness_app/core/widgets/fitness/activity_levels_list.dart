@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/fitness_app/core/theme/theme_context_ext.dart';
+import 'package:flutter_application_2/fitness_app/features/stats/models/health_stats_data.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../features/stats/models/health_stats_data.dart';
-import '../../theme/theme_context_ext.dart';
 
 class ActivityLevelsList extends StatelessWidget {
   final List<ActivityLevelData> activities;

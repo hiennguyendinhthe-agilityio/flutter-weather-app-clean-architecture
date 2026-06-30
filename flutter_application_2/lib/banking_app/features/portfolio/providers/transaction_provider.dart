@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
-
-import '../../../core/utils/formatters.dart';
-import '../models/transaction_model.dart';
+import 'package:flutter_application_2/banking_app/core/utils/formatters.dart';
+import 'package:flutter_application_2/banking_app/features/portfolio/models/transaction_model.dart';
 
 enum TxStatus { initial, loading, loaded, error }
 
@@ -13,12 +12,7 @@ class TransactionProvider extends ChangeNotifier {
   TxStatus get status => _status;
   bool get isLoading => _status == TxStatus.loading;
 
-  final List<String> filters = [
-    'All',
-    'Income',
-    'Expense',
-    'Transfer',
-  ];
+  final List<String> filters = ['All', 'Income', 'Expense', 'Transfer'];
 
   String get selectedFilter => _filter;
 

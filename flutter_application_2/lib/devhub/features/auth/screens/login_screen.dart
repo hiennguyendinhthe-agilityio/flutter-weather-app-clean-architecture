@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/devhub/features/auth/providers/auth_notifier.dart';
 import 'package:provider/provider.dart';
-import '../providers/auth_notifier.dart';
 
 // 🎓 LESSON — Local State vs Global State
 // This screen is a perfect boundary example:

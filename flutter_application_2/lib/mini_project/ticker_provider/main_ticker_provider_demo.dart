@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'ticker_provider_demo.dart';
 
 void main(List<String> args) {
-  runApp(MainTickerProviderDemo());
+  runApp(const MainTickerProviderDemo());
 }
 
 class MainTickerProviderDemo extends StatelessWidget {

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/fitness_app/core/constants/text_styles.dart';
 import 'package:flutter_application_2/fitness_app/core/theme/theme_context_ext.dart';
-
-import '../../../core/constants/text_styles.dart';
-import '../models/health_stats_data.dart';
+import 'package:flutter_application_2/fitness_app/features/stats/models/health_stats_data.dart';
 
 class ActivityDetailScreen extends StatefulWidget {
   final ActivityLevelData activity;
@@ -79,7 +78,7 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
 
                 // ── Hero Animation Container ──
                 Hero(

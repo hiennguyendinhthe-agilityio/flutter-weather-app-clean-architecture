@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/devhub/core/navigation/main_shell.dart';
+import 'package:flutter_application_2/devhub/features/auth/providers/auth_notifier.dart';
+import 'package:flutter_application_2/devhub/features/auth/screens/login_screen.dart';
+import 'package:flutter_application_2/devhub/features/bookmarks/providers/bookmark_notifier.dart';
+import 'package:flutter_application_2/devhub/features/feed/providers/feed_notifier.dart';
+import 'package:flutter_application_2/devhub/features/feed/providers/filter_notifier.dart';
+import 'package:flutter_application_2/devhub/features/feed/providers/search_notifier.dart';
+import 'package:flutter_application_2/devhub/features/settings/providers/settings_notifier.dart';
 import 'package:provider/provider.dart';
-
-import 'core/navigation/main_shell.dart';
-import 'features/auth/providers/auth_notifier.dart';
-import 'features/auth/screens/login_screen.dart';
-import 'features/bookmarks/providers/bookmark_notifier.dart';
-import 'features/feed/providers/feed_notifier.dart';
-import 'features/feed/providers/filter_notifier.dart';
-import 'features/feed/providers/search_notifier.dart';
-import 'features/settings/providers/settings_notifier.dart';
 
 // ════════════════════════════════════════════════════════════════════════════
 // 🎓 LESSON — THE PROVIDER DEPENDENCY GRAPH (read this first!)

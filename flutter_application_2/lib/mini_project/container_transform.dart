@@ -135,7 +135,7 @@ class ContainerTransformDemo extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: article.color.withOpacity(0.3),
+                      color: article.color.withValues(alpha: 0.3),
                       blurRadius: 16,
                       offset: const Offset(0, 6),
                     ),
@@ -159,7 +159,7 @@ class ContainerTransformDemo extends StatelessWidget {
             width: 56,
             height: 56,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
+              color: Colors.white.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(14),
             ),
             child: Icon(article.icon, color: Colors.white, size: 28),
@@ -173,7 +173,7 @@ class ContainerTransformDemo extends StatelessWidget {
                 Text(
                   article.category,
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.7),
+                    color: Colors.white.withValues(alpha: 0.7),
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
                   ),
@@ -207,7 +207,7 @@ class ContainerTransformDemo extends StatelessWidget {
           Text(
             article.category.toUpperCase(),
             style: TextStyle(
-              color: Colors.white.withOpacity(0.7),
+              color: Colors.white.withValues(alpha: 0.7),
               fontSize: 12,
               letterSpacing: 1.5,
               fontWeight: FontWeight.w600,
@@ -227,7 +227,7 @@ class ContainerTransformDemo extends StatelessWidget {
           Text(
             article.content,
             style: TextStyle(
-              color: Colors.white.withOpacity(0.85),
+              color: Colors.white.withValues(alpha: 0.85),
               fontSize: 15,
               height: 1.7,
             ),
@@ -267,7 +267,7 @@ class ArticleDetailScreen extends StatelessWidget {
                         Text(
                           article.category.toUpperCase(),
                           style: TextStyle(
-                            color: Colors.white.withOpacity(0.7),
+                            color: Colors.white.withValues(alpha: 0.7),
                             fontSize: 12,
                             letterSpacing: 1.5,
                             fontWeight: FontWeight.w600,
@@ -286,13 +286,13 @@ class ArticleDetailScreen extends StatelessWidget {
                         const SizedBox(height: 24),
                         Container(
                           height: 2,
-                          color: Colors.white.withOpacity(0.2),
+                          color: Colors.white.withValues(alpha: 0.2),
                         ),
                         const SizedBox(height: 24),
                         Text(
                           article.content,
                           style: TextStyle(
-                            color: Colors.white.withOpacity(0.85),
+                            color: Colors.white.withValues(alpha: 0.85),
                             fontSize: 16,
                             height: 1.8,
                           ),
@@ -309,7 +309,7 @@ class ArticleDetailScreen extends StatelessWidget {
                       child: Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
+                          color: Colors.white.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: const Icon(

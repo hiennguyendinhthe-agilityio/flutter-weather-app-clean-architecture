@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../tokens/color_tokens.dart';
+import 'package:flutter_application_2/fitness_app/core/theme/tokens/color_tokens.dart';
 
 /// Layer 2: Semantic Extension — App-specific values not covered by ColorScheme.
 ///

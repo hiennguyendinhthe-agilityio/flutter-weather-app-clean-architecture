@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/banking_app/core/constants/app_colors.dart';
+import 'package:flutter_application_2/banking_app/features/portfolio/models/transaction_model.dart';
+import 'package:flutter_application_2/banking_app/features/portfolio/providers/transaction_provider.dart';
 import 'package:provider/provider.dart';
-
-import '../../../core/constants/app_colors.dart';
-import '../models/transaction_model.dart';
-import '../providers/transaction_provider.dart';
 
 class TransactionsScreen extends StatefulWidget {
   const TransactionsScreen({super.key});
@@ -89,66 +88,42 @@ class _TransactionsScreenState extends State<TransactionsScreen>
         if (provider.isLoading)
           SliverList(
             delegate: SliverChildBuilderDelegate(
-              (_, __) => const Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 4,
-                ),
+              (_, _) => const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 child: _TxSkeleton(),
               ),
               childCount: 5,
             ),
           )
-
         // Empty state
         else if (provider.transactions.isEmpty)
-          const SliverFillRemaining(
-            child: _EmptyState(),
-          )
-
+          const SliverFillRemaining(child: _EmptyState())
         // Grouped sections
         else
-          ...sections.asMap().entries.expand(
-            (entry) {
-              final sectionName = entry.value.key;
-              final txList = entry.value.value;
+          ...sections.asMap().entries.expand((entry) {
+            final sectionName = entry.value.key;
+            final txList = entry.value.value;
 
-              return [
-                // Date group header
-                SliverToBoxAdapter(
-                  child: _DateHeader(label: sectionName),
-                ),
+            return [
+              // Date group header
+              SliverToBoxAdapter(child: _DateHeader(label: sectionName)),
 
-                // Transactions in this group
-                SliverPadding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                  ),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (ctx, i) {
-                        final tx = txList[i];
-                        final animIdx = i.clamp(
-                          0,
-                          _anims.length - 1,
-                        );
-                        return _TxTile(
-                          tx: tx,
-                          anim: _anims[animIdx],
-                        );
-                      },
-                      childCount: txList.length,
-                    ),
-                  ),
+              // Transactions in this group
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate((ctx, i) {
+                    final tx = txList[i];
+                    final animIdx = i.clamp(0, _anims.length - 1);
+                    return _TxTile(tx: tx, anim: _anims[animIdx]);
+                  }, childCount: txList.length),
                 ),
-              ];
-            },
-          ),
+              ),
+            ];
+          }),
 
         // Bottom padding
-        const SliverToBoxAdapter(
-          child: SizedBox(height: 80),
-        ),
+        const SliverToBoxAdapter(child: SizedBox(height: 80)),
       ],
     );
   }
@@ -202,7 +177,7 @@ class _TxTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(14),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.04),
+              color: Colors.black.withValues(alpha: 0.04),
               blurRadius: 8,
             ),
           ],
@@ -216,12 +191,13 @@ class _TxTile extends StatelessWidget {
                 width: 44,
                 height: 44,
                 decoration: BoxDecoration(
-                  color: (tx.isExpense
-                          ? AppColors.expense
-                          : tx.isIncome
+                  color:
+                      (tx.isExpense
+                              ? AppColors.expense
+                              : tx.isIncome
                               ? AppColors.income
                               : AppColors.primary)
-                      .withOpacity(0.1),
+                          .withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
@@ -229,8 +205,8 @@ class _TxTile extends StatelessWidget {
                   color: tx.isExpense
                       ? AppColors.expense
                       : tx.isIncome
-                          ? AppColors.income
-                          : AppColors.primary,
+                      ? AppColors.income
+                      : AppColors.primary,
                   size: 20,
                 ),
               ),
@@ -262,10 +238,12 @@ class _TxTile extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(tx.isExpense
-                    ? '-'
-                    : '+}'
-                        '\$${tx.amount.toStringAsFixed(2)}'),
+                Text(
+                  tx.isExpense
+                      ? '-'
+                      : '+}'
+                            '\$${tx.amount.toStringAsFixed(2)}',
+                ),
                 const SizedBox(height: 2),
                 Text(
                   '${tx.date.hour}:${tx.date.minute.toString().padLeft(2, '0')}',
@@ -313,10 +291,7 @@ class _EmptyState extends StatelessWidget {
           SizedBox(height: 12),
           Text(
             'No transactions found',
-            style: TextStyle(
-              color: AppColors.grey600,
-              fontSize: 15,
-            ),
+            style: TextStyle(color: AppColors.grey600, fontSize: 15),
           ),
         ],
       ),
@@ -354,7 +329,7 @@ class _FilterDelegate extends SliverPersistentHeaderDelegate {
           boxShadow: overlapsContent
               ? [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.07),
+                    color: Colors.black.withValues(alpha: 0.07),
                     blurRadius: 6,
                     offset: const Offset(0, 2),
                   ),
@@ -363,10 +338,7 @@ class _FilterDelegate extends SliverPersistentHeaderDelegate {
         ),
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 10,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           itemCount: filters.length,
           itemBuilder: (_, i) {
             final f = filters[i];
@@ -383,7 +355,7 @@ class _FilterDelegate extends SliverPersistentHeaderDelegate {
                 decoration: BoxDecoration(
                   color: isSelected
                       ? AppColors.primary
-                      : AppColors.primary.withOpacity(0.08),
+                      : AppColors.primary.withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(

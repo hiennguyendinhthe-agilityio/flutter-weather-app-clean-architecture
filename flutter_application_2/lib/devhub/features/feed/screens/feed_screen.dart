@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/devhub/features/auth/providers/auth_notifier.dart';
+import 'package:flutter_application_2/devhub/features/feed/providers/feed_notifier.dart';
+import 'package:flutter_application_2/devhub/features/feed/providers/filter_notifier.dart';
+import 'package:flutter_application_2/devhub/features/feed/providers/search_notifier.dart';
+import 'package:flutter_application_2/devhub/features/feed/widgets/post_card.dart';
 import 'package:provider/provider.dart';
-import '../providers/feed_notifier.dart';
-import '../providers/filter_notifier.dart';
-import '../providers/search_notifier.dart';
-import '../widgets/post_card.dart';
-import '../../auth/providers/auth_notifier.dart';
 
 // ════════════════════════════════════════════════════════════════════════════
 // 🎓 THE MOST IMPORTANT LESSON IN THIS PROJECT — REBUILD ISOLATION
@@ -40,11 +40,12 @@ class FeedScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            _AppBarSection(),       // Watches: AuthNotifier (username only)
-            _SearchSection(),       // Watches: SearchNotifier
-            _FilterSection(),       // Watches: FilterNotifier
+            _AppBarSection(), // Watches: AuthNotifier (username only)
+            _SearchSection(), // Watches: SearchNotifier
+            _FilterSection(), // Watches: FilterNotifier
             Expanded(
-              child: _PostListSection(), // Watches: FeedNotifier + FilterNotifier + SearchNotifier
+              child:
+                  _PostListSection(), // Watches: FeedNotifier + FilterNotifier + SearchNotifier
             ),
           ],
         ),
@@ -76,15 +77,17 @@ class _AppBarSection extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Welcome back 👋',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: cs.onSurface.withValues(alpha: 0.5),
-                      )),
+              Text(
+                'Welcome back 👋',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: cs.onSurface.withValues(alpha: 0.5),
+                ),
+              ),
               Text(
                 username,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
               ),
             ],
           ),
@@ -181,7 +184,7 @@ class _FilterSection extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16),
         itemCount: FilterNotifier.allTags.length + 1,
-        separatorBuilder: (_, __) => const SizedBox(width: 8),
+        separatorBuilder: (_, _) => const SizedBox(width: 8),
         itemBuilder: (context, index) {
           if (index == 0) {
             // "All" chip
@@ -245,8 +248,11 @@ class _PostListSection extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.search_off_rounded,
-                size: 56, color: Theme.of(context).colorScheme.outlineVariant),
+            Icon(
+              Icons.search_off_rounded,
+              size: 56,
+              color: Theme.of(context).colorScheme.outlineVariant,
+            ),
             const SizedBox(height: 12),
             const Text('No posts found'),
           ],

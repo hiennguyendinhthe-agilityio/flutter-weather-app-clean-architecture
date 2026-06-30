@@ -82,9 +82,9 @@ void main() {
     testWidgets('Displays "No Todo found" when list is empty', (
       WidgetTester tester,
     ) async {
-      final state = AsyncData<PaginatedState<TodoEntity>>(
+      final state = const AsyncData<PaginatedState<TodoEntity>>(
         PaginatedState<TodoEntity>(
-          items: const [],
+          items: [],
           page: 1,
           hasMore: false,
           isLoadingMore: false,
@@ -100,7 +100,7 @@ void main() {
     testWidgets('Displays error widget when state is error', (
       WidgetTester tester,
     ) async {
-      final state = AsyncError<PaginatedState<TodoEntity>>(
+      final state = const AsyncError<PaginatedState<TodoEntity>>(
         'Failed to fetch',
         StackTrace.empty,
       );
@@ -136,9 +136,9 @@ void main() {
     testWidgets('Add new todo text field is displayed', (
       WidgetTester tester,
     ) async {
-      final state = AsyncData<PaginatedState<TodoEntity>>(
+      final state = const AsyncData<PaginatedState<TodoEntity>>(
         PaginatedState<TodoEntity>(
-          items: const [],
+          items: [],
           page: 1,
           hasMore: false,
           isLoadingMore: false,
@@ -155,9 +155,9 @@ void main() {
     testWidgets('Tapping Add button calls add() on notifier', (
       WidgetTester tester,
     ) async {
-      final state = AsyncData<PaginatedState<TodoEntity>>(
+      final state = const AsyncData<PaginatedState<TodoEntity>>(
         PaginatedState<TodoEntity>(
-          items: const [],
+          items: [],
           page: 1,
           hasMore: false,
           isLoadingMore: false,

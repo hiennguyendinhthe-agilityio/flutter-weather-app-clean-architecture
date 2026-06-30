@@ -12,4 +12,8 @@ class Counter extends _$Counter {
   void increment() {
     state++;
   }
+
+  void decrement() {
+    state--;
+  }
 }

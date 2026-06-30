@@ -1,9 +1,8 @@
+import 'package:flutter_application_2/enterprise_todo_app/core/error/app_exception.dart';
+import 'package:flutter_application_2/enterprise_todo_app/core/logger/app_logger.dart';
+import 'package:flutter_application_2/enterprise_todo_app/core/storage/hive_client.dart';
+import 'package:flutter_application_2/enterprise_todo_app/features/todo/data/models/todo_model.dart';
 import 'package:hive/hive.dart';
-
-import '../../../../core/error/app_exception.dart';
-import '../../../../core/logger/app_logger.dart';
-import '../../../../core/storage/hive_client.dart';
-import '../models/todo_model.dart';
 
 class TodoLocalDatasource {
   Future<Box<Map>> get _box => HiveClient.openTodosBox();

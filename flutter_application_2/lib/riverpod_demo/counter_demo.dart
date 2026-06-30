@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/riverpod_demo/counter_notifier.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'counter_notifier.dart';
-
 void main() {
-  runApp(ProviderScope(child: MyApp()));
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -22,6 +21,7 @@ class CounterDemoScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final count = ref.watch(counterProvider);
+    final counterNotifier = ref.read(counterProvider.notifier);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Riverpod Core Concepts')),
@@ -34,11 +34,22 @@ class CounterDemoScreen extends ConsumerWidget {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          ref.read(counterProvider.notifier).increment();
-        },
-        child: const Icon(Icons.add),
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          FloatingActionButton(
+            onPressed: () {
+              counterNotifier.decrement();
+            },
+            child: const Icon(Icons.remove),
+          ),
+          FloatingActionButton(
+            onPressed: () {
+              counterNotifier.increment();
+            },
+            child: const Icon(Icons.add),
+          ),
+        ],
       ),
     );
   }

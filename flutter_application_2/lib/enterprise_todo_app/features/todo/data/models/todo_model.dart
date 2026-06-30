@@ -1,5 +1,5 @@
-import '../../domain/entities/priority.dart';
-import '../../domain/entities/todo_entity.dart';
+import 'package:flutter_application_2/enterprise_todo_app/features/todo/domain/entities/priority.dart';
+import 'package:flutter_application_2/enterprise_todo_app/features/todo/domain/entities/todo_entity.dart';
 
 class TodoModel extends TodoEntity {
   final int? userId;

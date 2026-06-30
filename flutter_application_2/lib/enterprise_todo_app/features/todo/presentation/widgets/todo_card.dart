@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-
-import '../../domain/entities/todo_entity.dart';
-import 'priority_badge.dart';
+import 'package:flutter_application_2/enterprise_todo_app/features/todo/domain/entities/todo_entity.dart';
+import 'package:flutter_application_2/enterprise_todo_app/features/todo/presentation/widgets/priority_badge.dart';
 
 class TodoCard extends StatelessWidget {
   final TodoEntity todo;

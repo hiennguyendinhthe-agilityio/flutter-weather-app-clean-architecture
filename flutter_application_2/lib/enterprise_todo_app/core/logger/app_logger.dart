@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter_application_2/enterprise_todo_app/core/config/app_config.dart';
 import 'package:logger/logger.dart';
 
 class AppLogger {
@@ -14,7 +14,7 @@ class AppLogger {
       dateTimeFormat: DateTimeFormat.onlyTimeAndSinceStart,
     ),
 
-    level: kDebugMode ? Level.trace : Level.off,
+    level: AppConfig.fromEnv().enableLogging ? Level.trace : Level.off,
   );
 
   static void verbose(String message, [Object? error, StackTrace? stackTrace]) {

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-
-import '../../features/sandbox/expenses/models/expense_model.dart';
-import '../theme/theme_context_ext.dart';
+import 'package:flutter_application_2/fitness_app/core/theme/theme_context_ext.dart';
+import 'package:flutter_application_2/fitness_app/features/sandbox/expenses/models/expense_model.dart';
 
 class ExpenseCategoryList extends StatelessWidget {
   final List<ExpenseCategory> categories;

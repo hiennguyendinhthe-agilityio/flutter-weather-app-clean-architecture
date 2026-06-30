@@ -1,14 +1,16 @@
-import '../../../../core/error/app_exception.dart';
-import '../../../../core/error/failure.dart';
-import '../../../../core/logger/app_logger.dart';
-import '../../../../core/network/connectivity_service.dart';
-import '../../../../core/sync/pending_action.dart';
-import '../../../../core/sync/sync_queue_datasource.dart';
-import '../../domain/entities/todo_entity.dart';
-import '../../domain/repositories/todo_repository.dart';
-import '../datasources/todo_local_datasource.dart';
-import '../datasources/todo_remote_datasource.dart';
-import '../models/todo_model.dart';
+// ignore_for_file: body_might_complete_normally_catch_error
+
+import 'package:flutter_application_2/enterprise_todo_app/core/error/app_exception.dart';
+import 'package:flutter_application_2/enterprise_todo_app/core/error/failure.dart';
+import 'package:flutter_application_2/enterprise_todo_app/core/logger/app_logger.dart';
+import 'package:flutter_application_2/enterprise_todo_app/core/network/connectivity_service.dart';
+import 'package:flutter_application_2/enterprise_todo_app/core/sync/pending_action.dart';
+import 'package:flutter_application_2/enterprise_todo_app/core/sync/sync_queue_datasource.dart';
+import 'package:flutter_application_2/enterprise_todo_app/features/todo/data/datasources/todo_local_datasource.dart';
+import 'package:flutter_application_2/enterprise_todo_app/features/todo/data/datasources/todo_remote_datasource.dart';
+import 'package:flutter_application_2/enterprise_todo_app/features/todo/data/models/todo_model.dart';
+import 'package:flutter_application_2/enterprise_todo_app/features/todo/domain/entities/todo_entity.dart';
+import 'package:flutter_application_2/enterprise_todo_app/features/todo/domain/repositories/todo_repository.dart';
 
 class TodoRepositoryImpl implements TodoRepository {
   final TodoRemoteDatasource _remote;
@@ -129,7 +131,7 @@ class TodoRepositoryImpl implements TodoRepository {
       final isOnline = await _connectivity.isConnected;
 
       if (isOnline) {
-        _remote.updateTodo(id, toggled.toJson()).catchError((e) {
+        await _remote.updateTodo(id, toggled.toJson()).catchError((e) {
           AppLogger.warning('Repo: sync toggle failed online, queuing: $e');
           _syncQueue.enqueue(
             PendingAction.create(
@@ -165,7 +167,7 @@ class TodoRepositoryImpl implements TodoRepository {
       final isOnline = await _connectivity.isConnected;
 
       if (isOnline) {
-        _remote.updateTodo(todo.id, model.toJson()).catchError((e) {
+        await _remote.updateTodo(todo.id, model.toJson()).catchError((e) {
           AppLogger.warning('Repo: sync update failed online, queuing: $e');
           _syncQueue.enqueue(
             PendingAction.create(
@@ -200,7 +202,7 @@ class TodoRepositoryImpl implements TodoRepository {
       final isOnline = await _connectivity.isConnected;
 
       if (isOnline) {
-        _remote.deleteTodo(id).catchError((e) {
+        await _remote.deleteTodo(id).catchError((e) {
           AppLogger.warning('Repo: sync delete failed online, queuing: $e');
           _syncQueue.enqueue(
             PendingAction.create(type: ActionType.delete, todoId: id),

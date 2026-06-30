@@ -88,8 +88,7 @@ class _TransitionHomeScreenState extends State<TransitionHomeScreen>
       destinationBuilder: () => const DemoScreen(
         title: 'Slide Up',
         color: Color(0xFF00BFA5),
-        description:
-            'This screen slides from the bottom to the top.\n\n'
+        description: 'This screen slides from the bottom to the top.\n\n'
             'Use cases:\n• Opening modal screens\n• Full-screen bottom sheets\n• Action sheets',
       ),
     ),
@@ -133,8 +132,7 @@ class _TransitionHomeScreenState extends State<TransitionHomeScreen>
       destinationBuilder: () => const DemoScreen(
         title: 'Fade Through',
         color: Color(0xFF26C6DA),
-        description:
-            'Screen A: fade out + scale 1.0 → 0.92\n'
+        description: 'Screen A: fade out + scale 1.0 → 0.92\n'
             'Screen B: fade in + scale 0.92 → 1.0\n\n'
             'Use cases:\n• Bottom navigation bars\n• Drawer navigation\n• Tab switching',
       ),
@@ -228,7 +226,7 @@ class _TransitionHomeScreenState extends State<TransitionHomeScreen>
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: item.color.withOpacity(0.1),
+              color: item.color.withValues(alpha: 0.1),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -240,7 +238,7 @@ class _TransitionHomeScreenState extends State<TransitionHomeScreen>
               width: 52,
               height: 52,
               decoration: BoxDecoration(
-                color: item.color.withOpacity(0.1),
+                color: item.color.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Icon(item.icon, color: item.color, size: 26),
@@ -392,8 +390,8 @@ Route _sharedAxisRoute(Widget page) {
 
       final exitSlide =
           Tween<Offset>(begin: Offset.zero, end: const Offset(-0.3, 0)).animate(
-            CurvedAnimation(parent: secondaryAnimation, curve: Curves.easeIn),
-          );
+        CurvedAnimation(parent: secondaryAnimation, curve: Curves.easeIn),
+      );
 
       return Stack(
         children: [
@@ -495,7 +493,7 @@ class DemoScreen extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: const Icon(
@@ -518,7 +516,7 @@ class DemoScreen extends StatelessWidget {
                   Text(
                     'Destination Screen',
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.7),
+                      color: Colors.white.withValues(alpha: 0.7),
                       fontSize: 14,
                     ),
                   ),
@@ -536,7 +534,7 @@ class DemoScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: color.withOpacity(0.1),
+                      color: color.withValues(alpha: 0.1),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
@@ -551,7 +549,7 @@ class DemoScreen extends StatelessWidget {
                           width: 36,
                           height: 36,
                           decoration: BoxDecoration(
-                            color: color.withOpacity(0.1),
+                            color: color.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Icon(

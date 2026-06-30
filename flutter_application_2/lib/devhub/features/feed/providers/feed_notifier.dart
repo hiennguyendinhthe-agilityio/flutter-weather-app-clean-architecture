@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import '../../feed/models/post_model.dart';
+import 'package:flutter_application_2/devhub/features/feed/models/post_model.dart';
 
 // 🎓 LESSON — ProxyProvider & Async State
 // FeedNotifier DEPENDS on Auth (needs userId to know whose feed to load).

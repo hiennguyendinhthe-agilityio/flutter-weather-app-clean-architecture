@@ -1,27 +1,26 @@
 import 'package:flutter/material.dart';
-
-import 'component_themes/fitness_appbar_style.dart';
-import 'component_themes/fitness_button_styles.dart';
-import 'component_themes/fitness_card_style.dart';
-import 'extensions/activity_levels_list_theme.dart';
-import 'extensions/expense_category_list_theme.dart';
-import 'extensions/expense_donut_chart_theme.dart';
-import 'extensions/fitness_activity_rings_theme.dart';
-import 'extensions/fitness_semantic_extension.dart';
-import 'extensions/heart_rate_chart_theme.dart';
-import 'extensions/nested_rings_chart_theme.dart';
-import 'extensions/project_horizontal_bar_theme.dart';
-import 'extensions/ring_legend_item_theme.dart';
-import 'extensions/sales_donut_chart_theme.dart';
-import 'extensions/sales_time_filter_theme.dart';
-import 'extensions/segmented_donut_chart_theme.dart';
-import 'extensions/sliding_toggle_theme.dart';
-import 'extensions/steps_gauge_chart_theme.dart';
-import 'extensions/user_profile_header_theme.dart';
-import 'extensions/weekly_calendar_theme.dart';
-import 'semantic/fitness_color_scheme.dart';
-import 'tokens/color_tokens.dart';
-import 'tokens/typography_tokens.dart';
+import 'package:flutter_application_2/fitness_app/core/theme/component_themes/fitness_appbar_style.dart';
+import 'package:flutter_application_2/fitness_app/core/theme/component_themes/fitness_button_styles.dart';
+import 'package:flutter_application_2/fitness_app/core/theme/component_themes/fitness_card_style.dart';
+import 'package:flutter_application_2/fitness_app/core/theme/extensions/activity_levels_list_theme.dart';
+import 'package:flutter_application_2/fitness_app/core/theme/extensions/expense_category_list_theme.dart';
+import 'package:flutter_application_2/fitness_app/core/theme/extensions/expense_donut_chart_theme.dart';
+import 'package:flutter_application_2/fitness_app/core/theme/extensions/fitness_activity_rings_theme.dart';
+import 'package:flutter_application_2/fitness_app/core/theme/extensions/fitness_semantic_extension.dart';
+import 'package:flutter_application_2/fitness_app/core/theme/extensions/heart_rate_chart_theme.dart';
+import 'package:flutter_application_2/fitness_app/core/theme/extensions/nested_rings_chart_theme.dart';
+import 'package:flutter_application_2/fitness_app/core/theme/extensions/project_horizontal_bar_theme.dart';
+import 'package:flutter_application_2/fitness_app/core/theme/extensions/ring_legend_item_theme.dart';
+import 'package:flutter_application_2/fitness_app/core/theme/extensions/sales_donut_chart_theme.dart';
+import 'package:flutter_application_2/fitness_app/core/theme/extensions/sales_time_filter_theme.dart';
+import 'package:flutter_application_2/fitness_app/core/theme/extensions/segmented_donut_chart_theme.dart';
+import 'package:flutter_application_2/fitness_app/core/theme/extensions/sliding_toggle_theme.dart';
+import 'package:flutter_application_2/fitness_app/core/theme/extensions/steps_gauge_chart_theme.dart';
+import 'package:flutter_application_2/fitness_app/core/theme/extensions/user_profile_header_theme.dart';
+import 'package:flutter_application_2/fitness_app/core/theme/extensions/weekly_calendar_theme.dart';
+import 'package:flutter_application_2/fitness_app/core/theme/semantic/fitness_color_scheme.dart';
+import 'package:flutter_application_2/fitness_app/core/theme/tokens/color_tokens.dart';
+import 'package:flutter_application_2/fitness_app/core/theme/tokens/typography_tokens.dart';
 
 /// Layer 4: ThemeData Assembly.
 ///

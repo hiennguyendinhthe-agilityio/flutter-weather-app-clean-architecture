@@ -1,5 +1,5 @@
+import 'package:flutter_application_2/fitness_app/features/shared/data/fitness_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import '../data/fitness_repository.dart';
 
 part 'fitness_repository_provider.g.dart';
 

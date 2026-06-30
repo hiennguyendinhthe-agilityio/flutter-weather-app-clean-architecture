@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
-
-import 'priority.dart';
+import 'package:flutter_application_2/enterprise_todo_app/features/todo/domain/entities/priority.dart';
 
 class TodoEntity extends Equatable {
   final int id;

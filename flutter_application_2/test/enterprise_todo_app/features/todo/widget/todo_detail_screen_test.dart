@@ -36,7 +36,7 @@ class MockTodoRepository extends Mock implements TodoRepository {}
 void main() {
   late MockTodoRepository mockRepository;
 
-  final mockTodoCompleted = TodoEntity(
+  final mockTodoCompleted = const TodoEntity(
     id: 1,
     title: 'Test Completed Todo',
     note: 'Test note',
@@ -44,7 +44,7 @@ void main() {
     priority: Priority.high,
   );
 
-  final mockTodoInProgress = TodoEntity(
+  final mockTodoInProgress = const TodoEntity(
     id: 2,
     title: 'Test In Progress Todo',
     isCompleted: false,
@@ -80,21 +80,23 @@ void main() {
           () => listNotifier ?? defaultListNotifier,
         ),
       ],
-      child: MaterialApp(
-        home: TodoDetailScreen(todoId: todoId),
-      ),
+      child: MaterialApp(home: TodoDetailScreen(todoId: todoId)),
     );
   }
 
   group('TodoDetailScreen Widget Tests', () {
-    testWidgets('Displays CircularProgressIndicator when loading', (WidgetTester tester) async {
+    testWidgets('Displays CircularProgressIndicator when loading', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(createWidgetUnderTest(1, delayFetch: true));
-      
+
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
       await tester.pumpAndSettle(); // Finish the loading
     });
 
-    testWidgets('Displays title and note in TextFields', (WidgetTester tester) async {
+    testWidgets('Displays title and note in TextFields', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(createWidgetUnderTest(1));
       await tester.pumpAndSettle();
 
@@ -102,7 +104,9 @@ void main() {
       expect(find.text('Test note'), findsOneWidget);
     });
 
-    testWidgets('Displays "Completed" banner when isCompleted is true', (WidgetTester tester) async {
+    testWidgets('Displays "Completed" banner when isCompleted is true', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(createWidgetUnderTest(1));
       await tester.pumpAndSettle();
 
@@ -110,7 +114,9 @@ void main() {
       expect(find.byIcon(Icons.check_circle_rounded), findsOneWidget);
     });
 
-    testWidgets('Displays "In progress" banner when isCompleted is false', (WidgetTester tester) async {
+    testWidgets('Displays "In progress" banner when isCompleted is false', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(createWidgetUnderTest(2));
       await tester.pumpAndSettle();
 
@@ -118,14 +124,18 @@ void main() {
       expect(find.byIcon(Icons.pending_rounded), findsOneWidget);
     });
 
-    testWidgets('Save button is hidden when there are no changes', (WidgetTester tester) async {
+    testWidgets('Save button is hidden when there are no changes', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(createWidgetUnderTest(1));
       await tester.pumpAndSettle();
 
       expect(find.text('Save'), findsNothing);
     });
 
-    testWidgets('Save button appears after editing title', (WidgetTester tester) async {
+    testWidgets('Save button appears after editing title', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(createWidgetUnderTest(1));
       await tester.pumpAndSettle();
 
@@ -136,7 +146,9 @@ void main() {
       expect(find.text('Save'), findsOneWidget);
     });
 
-    testWidgets('Priority selector displays 3 options', (WidgetTester tester) async {
+    testWidgets('Priority selector displays 3 options', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(createWidgetUnderTest(1));
       await tester.pumpAndSettle();
 
@@ -145,13 +157,17 @@ void main() {
       expect(find.text('High'), findsWidgets);
     });
 
-    testWidgets('Tapping Save button calls updateTodo on notifier', (WidgetTester tester) async {
+    testWidgets('Tapping Save button calls updateTodo on notifier', (
+      WidgetTester tester,
+    ) async {
       final mockNotifier = MockTodoListNotifier(
         AsyncData(PaginatedState.initial()),
       );
       when(() => mockNotifier.updateTodo(any())).thenAnswer((_) async {});
 
-      await tester.pumpWidget(createWidgetUnderTest(1, listNotifier: mockNotifier));
+      await tester.pumpWidget(
+        createWidgetUnderTest(1, listNotifier: mockNotifier),
+      );
       await tester.pumpAndSettle();
 
       // Edit title to reveal the Save button
@@ -163,7 +179,9 @@ void main() {
       await tester.pump();
 
       // Verify that updateTodo was called with the updated entity
-      final captured = verify(() => mockNotifier.updateTodo(captureAny())).captured;
+      final captured = verify(
+        () => mockNotifier.updateTodo(captureAny()),
+      ).captured;
       expect(captured.length, 1);
       final updatedTodo = captured.first as TodoEntity;
       expect(updatedTodo.title, 'Updated Title');

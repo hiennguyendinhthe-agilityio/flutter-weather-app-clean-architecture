@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import '../../core/constants.dart';
-import '../../models/donut_slice_data.dart';
-import 'donut_chart_painter.dart';
-import 'donut_geometry.dart';
+import 'package:flutter_application_2/chart_demo/core/constants.dart';
+import 'package:flutter_application_2/chart_demo/models/donut_slice_data.dart';
+import 'package:flutter_application_2/chart_demo/widgets/donut_chart/donut_chart_painter.dart';
+import 'package:flutter_application_2/chart_demo/widgets/donut_chart/donut_geometry.dart';
 
 class DonutChart extends StatefulWidget {
   const DonutChart({
@@ -163,7 +162,7 @@ class _DonutChartState extends State<DonutChart> with TickerProviderStateMixin {
 
     final oldIndex = _selectedIndex;
     setState(() => _selectedIndex = newIndex);
-    
+
     if (triggerCallback) {
       widget.onSliceSelected?.call(newIndex);
     }

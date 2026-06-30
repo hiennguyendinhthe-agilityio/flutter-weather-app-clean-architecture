@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/todo_app/screens/todo_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'todo_app/screens/todo_screen.dart';
 
 void main() {
   runApp(const ProviderScope(child: TodoApp()));

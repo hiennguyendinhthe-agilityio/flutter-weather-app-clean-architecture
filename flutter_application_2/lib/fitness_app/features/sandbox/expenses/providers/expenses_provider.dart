@@ -1,8 +1,8 @@
 import 'dart:math';
-import 'package:flutter/material.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../models/expense_model.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_application_2/fitness_app/features/sandbox/expenses/models/expense_model.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'expenses_provider.g.dart';
 
@@ -26,11 +26,11 @@ class SelectedExpenseDate extends _$SelectedExpenseDate {
 @riverpod
 ExpenseDataPayload expenseData(Ref ref) {
   final date = ref.watch(selectedExpenseDateProvider);
-  
+
   // Note: we need context to access fitnessExt colors, but provider doesn't have it natively.
   // In a real app, theme colors shouldn't be in the model, or they should come from a ThemeProvider.
   // We'll return mock colors if context isn't available, but we expect the UI to pass it or we hardcode for now.
-  
+
   final random = Random(date.year * 100 + date.month);
   final totalAmount = 1500.0 + random.nextInt(2000);
 

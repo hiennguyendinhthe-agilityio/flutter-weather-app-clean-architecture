@@ -4,22 +4,28 @@ import 'package:flutter_application_2/enterprise_todo_app/features/auth/data/rep
 import 'package:flutter_application_2/enterprise_todo_app/features/auth/domain/entities/user_entity.dart';
 import 'package:flutter_application_2/enterprise_todo_app/features/auth/domain/repositories/auth_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'auth_providers.g.dart';
 
 final authLocalDataSourceProvider = Provider<AuthLocalDataSource>((ref) {
-  throw UnimplementedError('authLocalDataSourceProvider is not implemented');
+  throw UnimplementedError(
+    'Override this in main() with AuthLocalDatasourceImpl',
+  );
 });
 
-final authRemoteDataSourceProvider = Provider<AuthRemoteDataSource>((ref) {
+@riverpod
+AuthRemoteDataSource authRemoteDataSource(Ref ref) {
   return MockAuthRemoteDataSourceImpl();
-});
+}
 
-final authRepositoryProvider = Provider<AuthRepository>((ref) {
+@riverpod
+AuthRepository authRepository(Ref ref) {
   return AuthRepositoryImpl(
     localDataSource: ref.watch(authLocalDataSourceProvider),
     remoteDataSource: ref.watch(authRemoteDataSourceProvider),
   );
-});
+}
 
 class AuthState {
   final bool isLoading;
@@ -37,27 +43,26 @@ class AuthState {
   }
 }
 
-class AuthNotifier extends StateNotifier<AuthState> {
-  final AuthRepository _repository;
-
-  AuthNotifier(this._repository) : super(const AuthState()) {
+@Riverpod(keepAlive: true)
+class AuthNotifier extends _$AuthNotifier {
+  @override
+  AuthState build() {
     _checkInitialAuth();
+    return const AuthState(isLoading: true);
   }
 
   Future<void> _checkInitialAuth() async {
-    state = state.copyWith(isLoading: true);
-    final user = await _repository.getAuthenticatedUser();
-    if (user != null) {
-      state = AuthState(user: user);
-    } else {
-      state = const AuthState();
-    }
+    final user = await ref.read(authRepositoryProvider).getAuthenticatedUser();
+
+    state = user != null ? AuthState(user: user) : const AuthState();
   }
 
   Future<bool> login(String username, String password) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
     try {
-      final user = await _repository.login(username, password);
+      final user = await ref
+          .read(authRepositoryProvider)
+          .login(username, password);
       state = AuthState(user: user);
       return true;
     } catch (e) {
@@ -70,7 +75,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   Future<void> logout() async {
     state = state.copyWith(isLoading: true);
-    await _repository.logout();
+    await ref.read(authRepositoryProvider).logout();
     state = const AuthState();
   }
 
@@ -79,11 +84,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   void forceLogout() {
-    _repository.logout();
+    ref.read(authRepositoryProvider).logout();
     state = const AuthState();
   }
 }
-
-final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
-  return AuthNotifier(ref.watch(authRepositoryProvider));
-});

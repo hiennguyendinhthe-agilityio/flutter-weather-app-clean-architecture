@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'colors.dart';
+import 'package:flutter_application_2/fitness_app/core/constants/colors.dart';
 
 class FitnessTextStyles {
   // App Bar Title

@@ -92,7 +92,7 @@ class _SpringCardDemoState extends State<SpringCardDemo>
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: Colors.deepPurple.withOpacity(0.3),
+                  color: Colors.deepPurple.withValues(alpha: 0.3),
                   width: 2,
                 ),
               ),
@@ -177,7 +177,7 @@ class _SpringCardDemoState extends State<SpringCardDemo>
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF6C63FF).withOpacity(0.4),
+              color: const Color(0xFF6C63FF).withValues(alpha: 0.4),
               blurRadius: 20,
               offset: const Offset(0, 8),
             ),
@@ -218,33 +218,33 @@ class SwipeDismissDemo extends StatefulWidget {
 
 class _SwipeDismissDemoState extends State<SwipeDismissDemo> {
   final List<_NotificationItem> _items = [
-    _NotificationItem(
+    const _NotificationItem(
       id: '1',
       title: 'New message',
       body: 'Hien sent you a message',
       icon: Icons.message,
-      color: const Color(0xFF6C63FF),
+      color: Color(0xFF6C63FF),
     ),
-    _NotificationItem(
+    const _NotificationItem(
       id: '2',
       title: 'Build successful',
       body: 'Flutter app compiled without errors',
       icon: Icons.check_circle,
-      color: const Color(0xFF00BFA5),
+      color: Color(0xFF00BFA5),
     ),
-    _NotificationItem(
+    const _NotificationItem(
       id: '3',
       title: 'Meeting reminder',
       body: 'Daily standup in 10 minutes',
       icon: Icons.calendar_today,
-      color: const Color(0xFFFFB300),
+      color: Color(0xFFFFB300),
     ),
-    _NotificationItem(
+    const _NotificationItem(
       id: '4',
       title: 'New follower',
       body: 'Someone started following you',
       icon: Icons.person_add,
-      color: const Color(0xFFFF6B6B),
+      color: Color(0xFFFF6B6B),
     ),
   ];
 
@@ -394,7 +394,7 @@ class _SwipeDismissDemoState extends State<SwipeDismissDemo> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: item.color.withOpacity(0.1),
+            color: item.color.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -406,7 +406,7 @@ class _SwipeDismissDemoState extends State<SwipeDismissDemo> {
           width: 48,
           height: 48,
           decoration: BoxDecoration(
-            color: item.color.withOpacity(0.12),
+            color: item.color.withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(14),
           ),
           child: Icon(item.icon, color: item.color, size: 24),

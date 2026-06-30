@@ -1,8 +1,7 @@
+import 'package:flutter_application_2/enterprise_todo_app/core/sync/sync_queue_datasource.dart';
+import 'package:flutter_application_2/enterprise_todo_app/core/sync/sync_service.dart';
+import 'package:flutter_application_2/enterprise_todo_app/features/todo/presentation/providers/todo_providers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../../features/todo/presentation/providers/todo_providers.dart';
-import 'sync_queue_datasource.dart';
-import 'sync_service.dart';
 
 part 'sync_provider.g.dart';
 

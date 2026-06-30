@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/enterprise_todo_app/features/todo/domain/entities/priority.dart';
+import 'package:flutter_application_2/enterprise_todo_app/features/todo/domain/entities/todo_entity.dart';
+import 'package:flutter_application_2/enterprise_todo_app/features/todo/presentation/providers/todo_detail_notifier.dart';
+import 'package:flutter_application_2/enterprise_todo_app/features/todo/presentation/providers/todo_list_notifier.dart';
+import 'package:flutter_application_2/enterprise_todo_app/features/todo/presentation/widgets/priority_badge.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../domain/entities/priority.dart';
-import '../../domain/entities/todo_entity.dart';
-import '../providers/todo_detail_notifier.dart';
-import '../providers/todo_list_notifier.dart';
-import '../widgets/priority_badge.dart';
 
 class TodoDetailScreen extends ConsumerStatefulWidget {
   final int todoId;

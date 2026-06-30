@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/fitness_app/core/theme/theme_context_ext.dart';
-
-import '../models/workout_item.dart';
+import 'package:flutter_application_2/fitness_app/features/workouts/models/workout_item.dart';
 
 class WorkoutCard extends StatelessWidget {
   final WorkoutItem item;

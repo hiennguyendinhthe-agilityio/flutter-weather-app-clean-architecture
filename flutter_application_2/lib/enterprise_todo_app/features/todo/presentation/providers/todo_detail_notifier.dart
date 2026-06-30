@@ -1,8 +1,7 @@
+import 'package:flutter_application_2/enterprise_todo_app/features/todo/domain/entities/todo_entity.dart';
+import 'package:flutter_application_2/enterprise_todo_app/features/todo/presentation/providers/todo_list_notifier.dart';
+import 'package:flutter_application_2/enterprise_todo_app/features/todo/presentation/providers/todo_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../domain/entities/todo_entity.dart';
-import 'todo_list_notifier.dart';
-import 'todo_providers.dart';
 
 final todoDetailProvider = FutureProvider.autoDispose.family<TodoEntity, int>((
   ref,

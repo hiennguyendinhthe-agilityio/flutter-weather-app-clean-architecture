@@ -17,7 +17,7 @@ class _ControllerDemoState extends State<ControllerDemo>
 
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 2),
+      duration: const Duration(seconds: 2),
     );
 
     _controller.addListener(() {

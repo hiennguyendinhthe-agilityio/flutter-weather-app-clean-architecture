@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-
-import '../tokens/radius_tokens.dart';
-import '../tokens/spacing_tokens.dart';
+import 'package:flutter_application_2/fitness_app/core/theme/tokens/radius_tokens.dart';
+import 'package:flutter_application_2/fitness_app/core/theme/tokens/spacing_tokens.dart';
 
 /// Layer 3: Component Theme — Button styles.
 ///
@@ -102,7 +101,7 @@ abstract final class FitnessButtonStyles {
         ),
       ),
 
-      textStyle: WidgetStatePropertyAll(
+      textStyle: const WidgetStatePropertyAll(
         TextStyle(
           fontFamily: 'Inter',
           fontSize: 16,
@@ -152,7 +151,7 @@ abstract final class FitnessButtonStyles {
         ),
       ),
 
-      textStyle: WidgetStatePropertyAll(
+      textStyle: const WidgetStatePropertyAll(
         TextStyle(
           fontFamily: 'Inter',
           fontSize: 15,
@@ -185,7 +184,7 @@ abstract final class FitnessButtonStyles {
         ),
       ),
 
-      textStyle: WidgetStatePropertyAll(
+      textStyle: const WidgetStatePropertyAll(
         TextStyle(
           fontFamily: 'Inter',
           fontSize: 14,

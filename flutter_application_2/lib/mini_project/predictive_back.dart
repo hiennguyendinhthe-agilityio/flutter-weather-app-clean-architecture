@@ -24,7 +24,7 @@ class PredictiveBackHomeScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.deepPurple.withOpacity(0.1),
+                    color: Colors.deepPurple.withValues(alpha: 0.1),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
@@ -55,9 +55,7 @@ class PredictiveBackHomeScreen extends StatelessWidget {
                 ],
               ),
             ),
-
             const SizedBox(height: 32),
-
             ElevatedButton.icon(
               onPressed: () {
                 Navigator.push(
@@ -147,14 +145,12 @@ class _PredictiveBackDetailScreenState extends State<PredictiveBackDetailScreen>
               setState(() => _isBackGesturing = true);
             }
           },
-
           onHorizontalDragUpdate: (details) {
             if (!_isBackGesturing) return;
             setState(() {
               _backProgress = (details.globalPosition.dx / 200).clamp(0.0, 1.0);
             });
           },
-
           onHorizontalDragEnd: (details) {
             if (!_isBackGesturing) return;
 
@@ -167,7 +163,6 @@ class _PredictiveBackDetailScreenState extends State<PredictiveBackDetailScreen>
               });
             }
           },
-
           child: Scaffold(
             backgroundColor: Colors.deepPurple,
             body: SafeArea(
@@ -182,7 +177,7 @@ class _PredictiveBackDetailScreenState extends State<PredictiveBackDetailScreen>
                           child: Container(
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.2),
+                              color: Colors.white.withValues(alpha: 0.2),
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: const Icon(
@@ -204,21 +199,18 @@ class _PredictiveBackDetailScreenState extends State<PredictiveBackDetailScreen>
                       ],
                     ),
                   ),
-
-                  Expanded(
+                  const Expanded(
                     child: Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(
+                          Icon(
                             Icons.touch_app,
                             size: 64,
                             color: Colors.white,
                           ),
-
-                          const SizedBox(height: 20),
-
-                          const Text(
+                          SizedBox(height: 20),
+                          Text(
                             'Swipe left to go back',
                             textAlign: TextAlign.center,
                             style: TextStyle(
@@ -228,8 +220,7 @@ class _PredictiveBackDetailScreenState extends State<PredictiveBackDetailScreen>
                               height: 1.4,
                             ),
                           ),
-
-                          const SizedBox(height: 20),
+                          SizedBox(height: 20),
                         ],
                       ),
                     ),

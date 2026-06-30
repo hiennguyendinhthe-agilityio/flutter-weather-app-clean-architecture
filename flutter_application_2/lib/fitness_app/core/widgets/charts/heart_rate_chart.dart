@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/fitness_app/core/theme/theme_context_ext.dart';
-
-import 'animated_bar_chart.dart';
+import 'package:flutter_application_2/fitness_app/core/widgets/charts/animated_bar_chart.dart';
 
 class HeartRateChart extends StatelessWidget {
   final int bpm;

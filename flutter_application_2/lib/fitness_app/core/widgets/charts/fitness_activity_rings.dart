@@ -2,11 +2,10 @@ import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-
-import '../../theme/theme_context_ext.dart';
-import '../common/ring_legend_item.dart';
-import '../mixins/ring_interaction_mixin.dart';
-import 'core/circular_chart_painter.dart';
+import 'package:flutter_application_2/fitness_app/core/theme/theme_context_ext.dart';
+import 'package:flutter_application_2/fitness_app/core/widgets/charts/core/circular_chart_painter.dart';
+import 'package:flutter_application_2/fitness_app/core/widgets/common/ring_legend_item.dart';
+import 'package:flutter_application_2/fitness_app/core/widgets/mixins/ring_interaction_mixin.dart';
 
 class ActivityRingsData {
   final double progress;

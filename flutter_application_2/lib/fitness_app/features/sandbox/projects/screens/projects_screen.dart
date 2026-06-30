@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../providers/project_provider.dart';
-
 import 'package:flutter_application_2/fitness_app/core/theme/theme_context_ext.dart';
 import 'package:flutter_application_2/fitness_app/core/widgets/charts/project_horizontal_bar.dart';
 import 'package:flutter_application_2/fitness_app/core/widgets/charts/segmented_donut_chart.dart';
 import 'package:flutter_application_2/fitness_app/core/widgets/common/sliding_toggle.dart';
+import 'package:flutter_application_2/fitness_app/features/sandbox/projects/providers/project_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ProjectsScreen extends ConsumerStatefulWidget {
   const ProjectsScreen({super.key});

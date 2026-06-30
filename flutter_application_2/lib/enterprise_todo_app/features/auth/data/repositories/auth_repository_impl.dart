@@ -31,12 +31,6 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<bool> isAuthenticated() async {
-    final token = await localDataSource.getToken();
-    return token != null;
-  }
-
-  @override
   Future<User> refreshToken() async {
     final token = await localDataSource.getRefreshToken();
     if (token == null) {

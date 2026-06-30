@@ -2,9 +2,8 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-
-import '../../features/sandbox/expenses/models/expense_model.dart';
-import '../theme/extensions/expense_donut_chart_theme.dart';
+import 'package:flutter_application_2/fitness_app/core/theme/extensions/expense_donut_chart_theme.dart';
+import 'package:flutter_application_2/fitness_app/features/sandbox/expenses/models/expense_model.dart';
 
 class ExpenseDonutChart extends StatefulWidget {
   final List<ExpenseCategory> categories;
@@ -77,7 +76,7 @@ class _ExpenseDonutChartState extends State<ExpenseDonutChart>
           AnimatedBuilder(
             animation: _animation,
             builder: (context, child) {
-              List<ExpenseCategory> currentLerped = [];
+              final List<ExpenseCategory> currentLerped = [];
               for (int i = 0; i < widget.categories.length; i++) {
                 final oldCat = _oldCategories[i];
                 final newCat = widget.categories[i];

@@ -78,7 +78,7 @@ class _PhysicsBasedAnimationState extends State<PhysicsBasedAnimation>
                   child: Container(
                     width: 60,
                     height: 60,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: Colors.deepOrange,
                       shape: BoxShape.circle,
                     ),
@@ -148,7 +148,7 @@ class _PhysicsBasedAnimationState extends State<PhysicsBasedAnimation>
             const SizedBox(height: 20),
 
             Container(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.purple,
                 borderRadius: BorderRadius.circular(10),

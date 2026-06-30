@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/banking_app/core/constants/app_colors.dart';
+import 'package:flutter_application_2/banking_app/core/router/app_router.dart';
+import 'package:flutter_application_2/banking_app/features/auth/providers/auth_provider.dart';
+import 'package:flutter_application_2/banking_app/shared/animations/stagger_animation.dart';
+import 'package:flutter_application_2/banking_app/shared/widgets/app_button.dart';
+import 'package:flutter_application_2/banking_app/shared/widgets/app_text_field.dart';
 import 'package:provider/provider.dart';
-
-import '../../../core/constants/app_colors.dart';
-import '../../../core/router/app_router.dart';
-import '../../../shared/animations/stagger_animation.dart';
-import '../../../shared/widgets/app_button.dart';
-import '../../../shared/widgets/app_text_field.dart';
-import '../providers/auth_provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -32,7 +31,9 @@ class _LoginScreenState extends State<LoginScreen>
 
   void _setupAnimations() {
     _animCtrl = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 1000));
+      vsync: this,
+      duration: const Duration(milliseconds: 1000),
+    );
 
     _animCtrl.addListener(() => setState(() {}));
   }
@@ -53,7 +54,7 @@ class _LoginScreenState extends State<LoginScreen>
     final ok = await auth.login(_emailCtrl.text.trim(), _passwordCtrl.text);
 
     if (ok && mounted) {
-      Navigator.pushReplacementNamed(context, AppRoutes.home);
+      await Navigator.pushReplacementNamed(context, AppRoutes.home);
     }
   }
 
@@ -75,9 +76,7 @@ class _LoginScreenState extends State<LoginScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(
-                  height: size.height * 0.04,
-                ),
+                SizedBox(height: size.height * 0.04),
                 StaggerGroup(
                   config: const StaggerConfig(
                     intervalMs: 120,
@@ -93,17 +92,14 @@ class _LoginScreenState extends State<LoginScreen>
                         height: 72,
                         decoration: BoxDecoration(
                           gradient: const LinearGradient(
-                            colors: [
-                              AppColors.primary,
-                              AppColors.primaryDark,
-                            ],
+                            colors: [AppColors.primary, AppColors.primaryDark],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.primary.withOpacity(0.35),
+                              color: AppColors.primary.withValues(alpha: 0.35),
                               blurRadius: 20,
                               offset: const Offset(0, 8),
                             ),
@@ -159,29 +155,31 @@ class _LoginScreenState extends State<LoginScreen>
                     ),
 
                     // Password field + spacing
-                    Column(children: [
-                      const SizedBox(height: 16),
-                      AppTextField(
-                        label: 'Password',
-                        hint: 'Enter your password',
-                        controller: _passwordCtrl,
-                        isPassword: true,
-                        prefixIcon: Icons.lock_outlined,
-                        validator: (v) {
-                          if (v == null || v.isEmpty) {
-                            return 'Password is required';
-                          }
-                          if (v.length < 6) {
-                            return 'Minimum 6 characters';
-                          }
-                          return null;
-                        },
-                      )
-                    ]),
+                    Column(
+                      children: [
+                        const SizedBox(height: 16),
+                        AppTextField(
+                          label: 'Password',
+                          hint: 'Enter your password',
+                          controller: _passwordCtrl,
+                          isPassword: true,
+                          prefixIcon: Icons.lock_outlined,
+                          validator: (v) {
+                            if (v == null || v.isEmpty) {
+                              return 'Password is required';
+                            }
+                            if (v.length < 6) {
+                              return 'Minimum 6 characters';
+                            }
+                            return null;
+                          },
+                        ),
+                      ],
+                    ),
 
                     // Buttons
                     Consumer<AuthProvider>(
-                      builder: (_, auth, __) => Column(
+                      builder: (_, auth, _) => Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           // Error banner
@@ -244,7 +242,9 @@ class _LoginScreenState extends State<LoginScreen>
                                 vertical: 8,
                               ),
                               decoration: BoxDecoration(
-                                color: AppColors.primary.withOpacity(0.08),
+                                color: AppColors.primary.withValues(
+                                  alpha: 0.08,
+                                ),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: const Text(
@@ -279,11 +279,9 @@ class _ErrorBanner extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.error.withOpacity(0.1),
+        color: AppColors.error.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: AppColors.error.withOpacity(0.3),
-        ),
+        border: Border.all(color: AppColors.error.withValues(alpha: 0.3)),
       ),
       child: Row(
         children: [
@@ -292,10 +290,7 @@ class _ErrorBanner extends StatelessWidget {
           Expanded(
             child: Text(
               message,
-              style: const TextStyle(
-                color: AppColors.error,
-                fontSize: 13,
-              ),
+              style: const TextStyle(color: AppColors.error, fontSize: 13),
             ),
           ),
         ],

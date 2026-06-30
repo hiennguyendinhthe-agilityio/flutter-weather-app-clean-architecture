@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import '../models/user_model.dart';
+import 'package:flutter_application_2/devhub/features/auth/models/user_model.dart';
 
 // 🎓 LESSON — Auth State Ownership
 // AuthNotifier is the ROOT of the dependency graph.

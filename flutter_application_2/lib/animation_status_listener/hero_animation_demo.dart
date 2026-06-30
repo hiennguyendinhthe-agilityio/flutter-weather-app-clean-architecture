@@ -180,8 +180,8 @@ class ProductDetailScreen extends StatelessWidget {
 
           ElevatedButton.icon(
             onPressed: () {},
-            label: Text('Add Product'),
-            icon: Icon(Icons.shopping_cart),
+            label: const Text('Add Product'),
+            icon: const Icon(Icons.shopping_cart),
           ),
         ],
       ),

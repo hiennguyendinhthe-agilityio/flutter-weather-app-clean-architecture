@@ -1,0 +1,350 @@
+# Async State Management — Learning & Implementation Plan
+> **Project**: `fitness_app` · Flutter + Riverpod 3.x
+> **Mục tiêu**: Master 3 chủ đề async state trong thực tế, áp dụng trực tiếp vào codebase hiện có.
+
+---
+
+## Bức tranh hiện tại (Current State)
+
+| Thành phần | Hiện trạng |
+|---|---|
+| Provider | ✅ `@riverpod` với `fitness_provider.dart` (sync) |
+| Data layer | ⚠️ `FitnessRepository` chỉ có static methods, trả về dữ liệu hardcode |
+| Screens | ⚠️ `HealthStatsScreen` vẫn dùng `StatefulWidget` + gọi repo trực tiếp |
+| Async | ❌ Chưa có `AsyncValue`, chưa có `FutureProvider`, chưa có params |
+| Combining | ❌ Chưa có provider nào `ref.watch()` provider khác |
+
+**Khoảng cách cần lấp đầy**: Đưa toàn bộ data flow từ sync hardcode → async với loading/error states → parameterized → composed providers.
+
+---
+
+## Lộ trình 3 Giai đoạn
+
+```
+Phase 1          Phase 2              Phase 3
+─────────        ──────────────       ─────────────────────
+API              Parameters           Combining
+Integration  →   với @riverpod    →   Multiple Providers
+(AsyncValue,     (Family providers,   (ref.watch chains,
+FutureProvider)  date filter, etc.)   derived/computed state)
+```
+
+---
+
+## Phase 1 — API Integration & AsyncValue
+
+### Mục tiêu học
+- Hiểu `AsyncValue<T>` = `AsyncData | AsyncLoading | AsyncError`
+- Dùng `@riverpod` để tạo `FutureProvider` (async provider)
+- Xử lý `when(data:, loading:, error:)` trong UI
+- Simulate network delay (mock API) để thực hành thực tế
+
+### Concept cốt lõi
+
+```dart
+// TRƯỚC (sync — hiện tại)
+@riverpod
+HealthStatsData healthStats(Ref ref) {
+  return FitnessRepository.getCurrentHealthStats(); // ❌ sync, không có loading/error
+}
+
+// SAU (async — Phase 1)
+@riverpod
+Future<HealthStatsData> healthStats(Ref ref) async {
+  final repo = ref.watch(fitnessRepositoryProvider);
+  return repo.getHealthStats(); // ✅ async, có loading & error state
+}
+```
+
+### Những gì sẽ thay đổi trong project
+
+#### [MODIFY] `fitness_repository.dart`
+Chuyển từ `static` class → injectable instance, thêm `async` methods với delay giả lập:
+```dart
+class FitnessRepository {
+  Future<HealthStatsData> getHealthStats() async {
+    await Future.delayed(const Duration(milliseconds: 800)); // simulate API
+    return const HealthStatsData(...);
+  }
+
+  Future<List<DailyFitnessData>> getWeekData() async {
+    await Future.delayed(const Duration(milliseconds: 600));
+    return [...];
+  }
+}
+```
+
+#### [NEW] `fitness_repository_provider.dart`
+Provider cung cấp instance repository cho toàn app:
+```dart
+@riverpod
+FitnessRepository fitnessRepository(Ref ref) {
+  return FitnessRepository();
+}
+```
+
+#### [MODIFY] `fitness_provider.dart`
+Tất cả providers trở thành `Future<T>`:
+```dart
+@riverpod
+Future<HealthStatsData> healthStats(Ref ref) async {
+  final repo = ref.watch(fitnessRepositoryProvider);
+  return repo.getHealthStats();
+}
+```
+
+#### [MODIFY] `health_stats_screen.dart`
+`StatefulWidget` → `ConsumerWidget`, xử lý async states:
+```dart
+class HealthStatsScreen extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final healthStatsAsync = ref.watch(healthStatsProvider);
+
+    return healthStatsAsync.when(
+      loading: () => const FitnessLoadingWidget(),
+      error: (e, st) => FitnessErrorWidget(message: e.toString()),
+      data: (stats) => _buildContent(context, stats),
+    );
+  }
+}
+```
+
+#### [NEW] `fitness_loading_widget.dart` + `fitness_error_widget.dart`
+Reusable loading skeleton và error UI có nút retry.
+
+### Kết quả Phase 1
+- Màn hình Health Stats hiển thị loading skeleton → data (hoặc error với retry)
+- Hiểu rõ `AsyncValue` qua thực hành
+- Data flow: `UI → watch provider → async repo → AsyncValue`
+
+---
+
+## Phase 2 — Parameters với `@riverpod` (Family Providers)
+
+### Mục tiêu học
+- Dùng parameters để tạo providers có tham số (`family`)
+- Truyền `DateTime` để lấy data theo ngày cụ thể
+- Truyền `ActivityType` để filter activities
+- Kết nối với WeeklyCalendar hiện có (chọn ngày → load data đúng ngày)
+
+### Concept cốt lõi
+
+```dart
+// Provider KHÔNG có params (hiện tại)
+@riverpod
+Future<DailyFitnessData> dailyFitness(Ref ref) async { ... }
+
+// Provider CÓ params (Phase 2) — tự động tạo FitnessDataFamily
+@riverpod
+Future<DailyFitnessData> dailyFitness(Ref ref, DateTime date) async {
+  final repo = ref.watch(fitnessRepositoryProvider);
+  return repo.getDailyData(date); // data khác nhau theo ngày
+}
+
+// UI gọi với tham số
+final todayData = ref.watch(dailyFitnessProvider(DateTime.now()));
+final mondayData = ref.watch(dailyFitnessProvider(monday));
+```
+
+### Những gì sẽ thay đổi trong project
+
+#### [MODIFY] `fitness_repository.dart`
+Thêm method nhận `DateTime`:
+```dart
+Future<DailyFitnessData> getDailyData(DateTime date) async {
+  await Future.delayed(const Duration(milliseconds: 400));
+  // Lấy index theo ngày trong tuần (simulate)
+  final dayIndex = date.weekday - 1;
+  return _weekData[dayIndex % _weekData.length];
+}
+```
+
+#### [MODIFY] `fitness_provider.dart`
+Thêm tham số `DateTime date`:
+```dart
+@riverpod
+Future<DailyFitnessData> dailyFitness(Ref ref, DateTime date) async {
+  final repo = ref.watch(fitnessRepositoryProvider);
+  return repo.getDailyData(date);
+}
+
+// Provider cho filter activity type
+@riverpod
+Future<List<ActivityLevelData>> filteredActivities(
+  Ref ref,
+  String activityType, // 'all', 'cardio', 'strength'
+) async {
+  final stats = await ref.watch(healthStatsProvider.future);
+  // Filter logic here
+  return stats.activityLevels.where(...).toList();
+}
+```
+
+#### [NEW] `selected_date_provider.dart`
+State provider lưu ngày đang được chọn (kết nối với WeeklyCalendar):
+```dart
+@riverpod
+class SelectedDate extends _$SelectedDate {
+  @override
+  DateTime build() => DateTime.now();
+
+  void selectDate(DateTime date) => state = date;
+}
+```
+
+#### [MODIFY] `fitness_goals_screen.dart`
+Kết nối calendar selection với data provider:
+```dart
+// Khi user tap ngày trên weekly calendar:
+ref.read(selectedDateProvider.notifier).selectDate(tappedDate);
+
+// Data tự động cập nhật:
+final selectedDate = ref.watch(selectedDateProvider);
+final dataAsync = ref.watch(dailyFitnessProvider(selectedDate));
+```
+
+### Kết quả Phase 2
+- Tap vào ngày bất kỳ trên Weekly Calendar → data panel bên dưới cập nhật
+- Hiểu `family` providers hoạt động như thế nào
+- Mỗi ngày có cache riêng biệt (Riverpod tự xử lý)
+
+---
+
+## Phase 3 — Combining Multiple Providers
+
+### Mục tiêu học
+- `ref.watch()` một provider từ provider khác (dependency chain)
+- Computed/derived state: tính toán từ nhiều nguồn
+- `ref.listen()` để side effects
+- Invalidation và refresh theo cascade
+
+### Concept cốt lõi
+
+```
+selectedDateProvider (State)
+        │
+        ▼
+dailyFitnessProvider(date) (Future)
+        │
+        ├──────────────────────────────────┐
+        ▼                                  ▼
+healthStatsProvider (Future)     fitnessInsightProvider (Derived)
+                                  - So sánh hôm nay vs tuần
+                                  - Tính streak
+                                  - Tạo motivation message
+```
+
+### Những gì sẽ thay đổi trong project
+
+#### [NEW] `fitness_insight_provider.dart`
+Provider kết hợp nhiều sources để tạo "insight" thông minh:
+```dart
+@riverpod
+Future<FitnessInsight> fitnessInsight(Ref ref) async {
+  // Watch nhiều providers cùng lúc
+  final selectedDate = ref.watch(selectedDateProvider);
+  final todayData = await ref.watch(dailyFitnessProvider(selectedDate).future);
+  final weekData = await ref.watch(currentWeekDataProvider.future);
+  final healthStats = await ref.watch(healthStatsProvider.future);
+
+  // Derived computation từ nhiều nguồn
+  final averageSteps = weekData.map((d) => d.currentSteps).average;
+  final isAboveAverage = todayData.currentSteps > averageSteps;
+  final streak = _calculateStreak(weekData);
+
+  return FitnessInsight(
+    streakDays: streak,
+    isAboveWeeklyAverage: isAboveAverage,
+    motivationalMessage: _generateMessage(healthStats, streak),
+    weeklyAvgSteps: averageSteps.round(),
+  );
+}
+```
+
+#### [NEW] `fitness_insight.dart` (model)
+Data class cho combined insight.
+
+#### [NEW] `fitness_summary_card.dart` (widget)
+Widget hiển thị insight tổng hợp, watch `fitnessInsightProvider`.
+
+#### [MODIFY] `health_stats_screen.dart`
+Thêm section hiển thị insights tổng hợp:
+```dart
+// Cả hai providers chạy song song, UI render khi cả hai sẵn sàng
+final healthAsync = ref.watch(healthStatsProvider);
+final insightAsync = ref.watch(fitnessInsightProvider);
+
+// Dùng .when() với skipLoadingOnReload để smooth UX khi refresh
+```
+
+#### [NEW] Nút "Refresh" + `ref.invalidate()`
+Dạy cách force-refresh một provider và toàn bộ dependency tree của nó:
+```dart
+IconButton(
+  onPressed: () {
+    // Invalidate tất cả providers liên quan
+    ref.invalidate(healthStatsProvider);
+    ref.invalidate(currentWeekDataProvider);
+    // fitnessInsightProvider tự động re-run vì nó watch hai cái trên
+  },
+  icon: const Icon(Icons.refresh),
+)
+```
+
+### Kết quả Phase 3
+- 1 UI action (chọn ngày) → nhiều providers cascade update
+- Insight card hiển thị data tính từ nhiều nguồn
+- Nút refresh invalidate toàn bộ graph
+- Hiểu rõ dependency graph của providers
+
+---
+
+## Tổng quan các files sẽ thay đổi / thêm mới
+
+### Phase 1
+| File | Action |
+|---|---|
+| `fitness_repository.dart` | MODIFY — thêm async methods |
+| `fitness_repository_provider.dart` | NEW |
+| `fitness_provider.dart` | MODIFY — sync → async |
+| `health_stats_screen.dart` | MODIFY — ConsumerWidget + AsyncValue |
+| `fitness_loading_widget.dart` | NEW |
+| `fitness_error_widget.dart` | NEW |
+
+### Phase 2
+| File | Action |
+|---|---|
+| `fitness_provider.dart` | MODIFY — thêm params |
+| `selected_date_provider.dart` | NEW |
+| `fitness_goals_screen.dart` | MODIFY — kết nối calendar |
+
+### Phase 3
+| File | Action |
+|---|---|
+| `fitness_insight.dart` | NEW (model) |
+| `fitness_insight_provider.dart` | NEW |
+| `fitness_summary_card.dart` | NEW (widget) |
+| `health_stats_screen.dart` | MODIFY — thêm insight section + refresh |
+
+---
+
+## Open Questions
+
+> [!IMPORTANT]
+> **Mock API hay Real API?**
+> Plan hiện tại dùng `Future.delayed()` để simulate network. Nếu bạn muốn tích hợp API thật (ví dụ: OpenFoodFacts, Strava, hoặc một REST API fitness nào đó) thì Phase 1 sẽ cần thêm `http`/`dio` package. **Bạn muốn dùng mock hay real API?**
+
+> [!IMPORTANT]
+> **Thứ tự thực hiện**: Plan được thiết kế để làm **tuần tự Phase 1 → 2 → 3**. Bạn có muốn bắt đầu Phase 1 ngay sau khi approve plan này không, hay muốn điều chỉnh gì trước?
+
+> [!NOTE]
+> **Scope của Phase 2**: Việc kết nối với Weekly Calendar (`weekly_calendar_theme.dart` bạn đang mở) đòi hỏi xem thêm logic calendar hiện tại. Tôi sẽ khảo sát kỹ hơn khi bắt đầu Phase 2 để đảm bảo tích hợp đúng.
+
+---
+
+## Verification Plan
+
+- **Phase 1**: Chạy app → Health Stats screen hiển thị loading spinner ~800ms → data render đúng; force error (throw exception) → error widget với retry button hoạt động
+- **Phase 2**: Tap ngày khác nhau trên Weekly Calendar → stats panel cập nhật đúng data của ngày đó
+- **Phase 3**: Tap refresh → skeleton flashes → data reload; đổi ngày → insight card tính lại đúng

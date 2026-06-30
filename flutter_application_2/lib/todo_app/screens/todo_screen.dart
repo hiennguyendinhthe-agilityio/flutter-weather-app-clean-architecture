@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/todo_app/providers/todo_provider.dart';
+import 'package:flutter_application_2/todo_app/widgets/todo_item_widget.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../providers/todo_provider.dart';
-import '../widgets/todo_item_widget.dart';
 
 class TodoScreen extends ConsumerWidget {
   const TodoScreen({super.key});
@@ -15,7 +14,10 @@ class TodoScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
-        title: const Text('Riverpod To-Do', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text(
+          'Riverpod To-Do',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Colors.blueAccent,
       ),
       body: SafeArea(
@@ -33,12 +35,17 @@ class TodoScreen extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide.none,
                   ),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 18,
+                  ),
                   suffixIcon: IconButton(
                     icon: const Icon(Icons.add, color: Colors.blueAccent),
                     onPressed: () {
                       if (textController.text.trim().isNotEmpty) {
-                        ref.read(todoListProvider.notifier).add(textController.text.trim());
+                        ref
+                            .read(todoListProvider.notifier)
+                            .add(textController.text.trim());
                         textController.clear();
                         FocusScope.of(context).unfocus();
                       }
@@ -68,15 +75,21 @@ class TodoScreen extends ConsumerWidget {
             else
               Expanded(
                 child: ListView.separated(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
                   itemCount: todos.length,
-                  separatorBuilder: (context, index) => const SizedBox(height: 8),
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 8),
                   itemBuilder: (context, index) {
                     return Dismissible(
                       key: ValueKey(todos[index].id),
                       direction: DismissDirection.endToStart,
                       onDismissed: (_) {
-                        ref.read(todoListProvider.notifier).remove(todos[index].id);
+                        ref
+                            .read(todoListProvider.notifier)
+                            .remove(todos[index].id);
                       },
                       background: Container(
                         alignment: Alignment.centerRight,
@@ -110,7 +123,10 @@ class _Toolbar extends ConsumerWidget {
         children: [
           Text(
             '$activeCount items left',
-            style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.w600),
+            style: const TextStyle(
+              color: Colors.grey,
+              fontWeight: FontWeight.w600,
+            ),
           ),
           Row(
             children: [
@@ -155,9 +171,13 @@ class _FilterButton extends ConsumerWidget {
         ref.read(todoFilterStateProvider.notifier).changeFilter(filter);
       },
       style: TextButton.styleFrom(
-        foregroundColor: currentFilter == filter ? Colors.blueAccent : Colors.grey,
+        foregroundColor: currentFilter == filter
+            ? Colors.blueAccent
+            : Colors.grey,
         textStyle: TextStyle(
-          fontWeight: currentFilter == filter ? FontWeight.bold : FontWeight.normal,
+          fontWeight: currentFilter == filter
+              ? FontWeight.bold
+              : FontWeight.normal,
         ),
       ),
       child: Text(label),

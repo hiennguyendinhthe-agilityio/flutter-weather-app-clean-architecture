@@ -1,6 +1,6 @@
+import 'package:flutter_application_2/fitness_app/features/sandbox/projects/data/project_repository.dart';
+import 'package:flutter_application_2/fitness_app/features/sandbox/projects/models/project_data.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import '../data/project_repository.dart';
-import '../models/project_data.dart';
 
 part 'project_provider.g.dart';
 

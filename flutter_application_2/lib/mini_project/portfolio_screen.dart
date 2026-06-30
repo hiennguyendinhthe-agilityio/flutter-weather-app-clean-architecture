@@ -101,9 +101,7 @@ class _PortfolioScreenState extends State<PortfolioScreen>
                 'Total Value',
                 style: TextStyle(color: Colors.white60, fontSize: 14),
               ),
-
               const SizedBox(height: 4),
-
               Text(
                 '\$${lastValue.toStringAsFixed(0)}',
                 style: const TextStyle(
@@ -112,9 +110,7 @@ class _PortfolioScreenState extends State<PortfolioScreen>
                   fontWeight: FontWeight.bold,
                 ),
               ),
-
               const SizedBox(height: 4),
-
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 10,
@@ -122,8 +118,8 @@ class _PortfolioScreenState extends State<PortfolioScreen>
                 ),
                 decoration: BoxDecoration(
                   color: isPositive
-                      ? Colors.green.withOpacity(0.2)
-                      : Colors.red.withOpacity(0.2),
+                      ? Colors.green.withValues(alpha: 0.2)
+                      : Colors.red.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
@@ -136,9 +132,7 @@ class _PortfolioScreenState extends State<PortfolioScreen>
                   ),
                 ),
               ),
-
               const SizedBox(height: 30),
-
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
@@ -153,14 +147,11 @@ class _PortfolioScreenState extends State<PortfolioScreen>
                       child: CustomPaint(
                         painter: ChartPainter(
                           data: portfolioData,
-
                           animationValue: _drawAnimation.value,
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 12),
-
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: portfolioData.map((point) {
@@ -176,9 +167,7 @@ class _PortfolioScreenState extends State<PortfolioScreen>
                   ],
                 ),
               ),
-
               const SizedBox(height: 24),
-
               Row(
                 children: [
                   _buildStatCard(
@@ -272,7 +261,7 @@ class ChartPainter extends CustomPainter {
     }
 
     final gridPaint = Paint()
-      ..color = Colors.white.withOpacity(0.05)
+      ..color = Colors.white.withValues(alpha: 0.05)
       ..strokeWidth = 1;
 
     for (int i = 0; i <= 4; i++) {
@@ -319,8 +308,8 @@ class ChartPainter extends CustomPainter {
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
         colors: [
-          Colors.blueAccent.withOpacity(0.4),
-          Colors.blueAccent.withOpacity(0.0),
+          Colors.blueAccent.withValues(alpha: 0.4),
+          Colors.blueAccent.withValues(alpha: 0.0),
         ],
       );
 
@@ -371,16 +360,16 @@ class ChartPainter extends CustomPainter {
 
         final opacity =
             ((animationValue - pointProgress) / (1 / (data.length - 1))).clamp(
-              0.0,
-              1.0,
-            );
+          0.0,
+          1.0,
+        );
 
         final dotPaint = Paint()
-          ..color = Colors.white.withOpacity(opacity)
+          ..color = Colors.white.withValues(alpha: opacity)
           ..style = PaintingStyle.fill;
 
         final dotBorderPaint = Paint()
-          ..color = Colors.blueAccent.withOpacity(opacity)
+          ..color = Colors.blueAccent.withValues(alpha: opacity)
           ..style = PaintingStyle.stroke
           ..strokeWidth = 2;
 

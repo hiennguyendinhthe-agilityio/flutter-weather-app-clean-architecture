@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/devhub/features/bookmarks/providers/bookmark_notifier.dart';
+import 'package:flutter_application_2/devhub/features/feed/providers/feed_notifier.dart';
+import 'package:flutter_application_2/devhub/features/feed/widgets/post_card.dart';
 import 'package:provider/provider.dart';
-import '../../bookmarks/providers/bookmark_notifier.dart';
-import '../../feed/providers/feed_notifier.dart';
-import '../../feed/widgets/post_card.dart';
 
 // 🎓 LESSON — Cross-feature State Consumption
 // BookmarksScreen consumes state from TWO different features:
@@ -39,10 +39,8 @@ class BookmarksScreen extends StatelessWidget {
                     children: [
                       Text(
                         'Bookmarks',
-                        style:
-                            Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                ),
+                        style: Theme.of(context).textTheme.headlineSmall
+                            ?.copyWith(fontWeight: FontWeight.w700),
                       ),
                       const SizedBox(width: 10),
                       // 🎓 Selector for the badge count — only rebuilds
@@ -50,10 +48,12 @@ class BookmarksScreen extends StatelessWidget {
                       // the IDs inside change (unless count changes too)
                       Selector<BookmarkNotifier, int>(
                         selector: (_, bm) => bm.count,
-                        builder: (_, count, __) => count > 0
+                        builder: (_, count, _) => count > 0
                             ? Container(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 3),
+                                  horizontal: 8,
+                                  vertical: 3,
+                                ),
                                 decoration: BoxDecoration(
                                   color: Theme.of(context).colorScheme.primary,
                                   borderRadius: BorderRadius.circular(12),
@@ -61,9 +61,10 @@ class BookmarksScreen extends StatelessWidget {
                                 child: Text(
                                   '$count',
                                   style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w700),
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w700,
+                                  ),
                                 ),
                               )
                             : const SizedBox.shrink(),
@@ -81,33 +82,23 @@ class BookmarksScreen extends StatelessWidget {
                           Icon(
                             Icons.bookmark_border_rounded,
                             size: 64,
-                            color: Theme.of(context)
-                                .colorScheme
-                                .outlineVariant,
+                            color: Theme.of(context).colorScheme.outlineVariant,
                           ),
                           const SizedBox(height: 16),
                           Text(
                             'No bookmarks yet',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
+                            style: Theme.of(context).textTheme.titleMedium
                                 ?.copyWith(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSurface
+                                  color: Theme.of(context).colorScheme.onSurface
                                       .withValues(alpha: 0.5),
                                 ),
                           ),
                           const SizedBox(height: 8),
                           Text(
                             'Tap the bookmark icon on any post',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall
+                            style: Theme.of(context).textTheme.bodySmall
                                 ?.copyWith(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSurface
+                                  color: Theme.of(context).colorScheme.onSurface
                                       .withValues(alpha: 0.4),
                                 ),
                           ),
@@ -120,8 +111,7 @@ class BookmarksScreen extends StatelessWidget {
                     child: ListView.builder(
                       padding: const EdgeInsets.only(bottom: 24),
                       itemCount: bookmarkedPosts.length,
-                      itemBuilder: (_, i) =>
-                          PostCard(post: bookmarkedPosts[i]),
+                      itemBuilder: (_, i) => PostCard(post: bookmarkedPosts[i]),
                     ),
                   ),
               ],

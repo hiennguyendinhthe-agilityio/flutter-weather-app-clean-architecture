@@ -15,7 +15,7 @@ class _DraggableCardDemoState extends State<DraggableCardDemo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFE5E5E5),
+      backgroundColor: const Color(0xFFE5E5E5),
       appBar: AppBar(
         title: const Text('Draggable Card Demo'),
         backgroundColor: Colors.deepPurple,
@@ -23,7 +23,7 @@ class _DraggableCardDemoState extends State<DraggableCardDemo> {
       ),
       body: Stack(
         children: [
-          Center(
+          const Center(
             child: Text(
               'Draggable Card',
               style: TextStyle(
@@ -40,7 +40,6 @@ class _DraggableCardDemoState extends State<DraggableCardDemo> {
               onPanStart: (details) {
                 _startPosition = _position;
               },
-
               onPanUpdate: (details) {
                 setState(() {
                   _position += details.delta;
@@ -72,7 +71,7 @@ class _DraggableCardDemoState extends State<DraggableCardDemo> {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.4),
+            color: Colors.black.withValues(alpha: 0.4),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
@@ -82,7 +81,6 @@ class _DraggableCardDemoState extends State<DraggableCardDemo> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(Icons.drag_indicator, size: 40, color: Colors.white),
-
           SizedBox(height: 10),
           Text('Push to move', style: TextStyle(color: Colors.white)),
         ],

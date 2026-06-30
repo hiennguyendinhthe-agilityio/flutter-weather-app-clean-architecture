@@ -69,7 +69,7 @@ mixin RingInteractionMixin<T extends StatefulWidget>
     final maxRadius = size / 2;
     int? hitIndex;
 
-    List<double> radii = [];
+    final List<double> radii = [];
     double currentOuter = maxRadius;
 
     for (int i = strokeWidths.length - 1; i >= 0; i--) {

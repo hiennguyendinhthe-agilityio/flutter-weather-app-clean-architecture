@@ -1,9 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-
-import '../models/bar_item_data.dart';
-import '../widgets/bar_chart/bar_chart.dart';
+import 'package:flutter_application_2/chart_demo/models/bar_item_data.dart';
+import 'package:flutter_application_2/chart_demo/widgets/bar_chart/bar_chart.dart';
 
 const _kMaxValue = 100.0;
 
@@ -221,7 +220,7 @@ class _PotentialScreenState extends State<PotentialScreen> {
 
               Row(
                 children: [
-                  _LegendDot(color: const Color(0xFF6C63FF), label: 'Reality'),
+                  const _LegendDot(color: Color(0xFF6C63FF), label: 'Reality'),
                   const SizedBox(width: 12),
                   _LegendDot(
                     color: const Color(0xFF6C63FF).withValues(alpha: 0.35),
@@ -237,7 +236,7 @@ class _PotentialScreenState extends State<PotentialScreen> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              _YAxisLabels(maxValue: _kMaxValue),
+              const _YAxisLabels(maxValue: _kMaxValue),
               const SizedBox(width: 12),
 
               Expanded(

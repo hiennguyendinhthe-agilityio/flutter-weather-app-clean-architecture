@@ -43,3 +43,26 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Generated files
+*.g.dart
+*.freezed.dart
+
+# ─── Environment & Secrets (NEVER commit these) ────────────────────────────
+# env/ JSON files contain API keys, secrets — use env/*.example.json as template
+env/dev.json
+env/staging.json
+env/prod.json
+# Legacy .env files
+.env
+.env.*
+# Android keystore
+*.keystore
+*.jks
+android/app/release.keystore
+# iOS certs
+*.p12
+*.mobileprovision
+# Obfuscation debug info (generated at build time)
+debug-info/
+

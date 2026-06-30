@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../theme/theme_context_ext.dart';
+import 'package:flutter_application_2/fitness_app/core/theme/theme_context_ext.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SalesKpiCard — Refactored

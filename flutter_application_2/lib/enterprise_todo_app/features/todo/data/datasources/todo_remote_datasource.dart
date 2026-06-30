@@ -1,9 +1,8 @@
 import 'package:dio/dio.dart';
-
-import '../../../../core/error/app_exception.dart';
-import '../../../../core/logger/app_logger.dart';
-import '../../../../core/network/endpoints.dart';
-import '../models/todo_model.dart';
+import 'package:flutter_application_2/enterprise_todo_app/core/error/app_exception.dart';
+import 'package:flutter_application_2/enterprise_todo_app/core/logger/app_logger.dart';
+import 'package:flutter_application_2/enterprise_todo_app/core/network/endpoints.dart';
+import 'package:flutter_application_2/enterprise_todo_app/features/todo/data/models/todo_model.dart';
 
 class TodoRemoteDatasource {
   final Dio _dio;

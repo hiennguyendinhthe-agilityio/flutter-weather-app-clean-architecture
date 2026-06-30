@@ -1,4 +1,4 @@
-import '../repositories/todo_repository.dart';
+import 'package:flutter_application_2/enterprise_todo_app/features/todo/domain/repositories/todo_repository.dart';
 
 class DeleteTodoUseCase {
   final TodoRepository _repository;

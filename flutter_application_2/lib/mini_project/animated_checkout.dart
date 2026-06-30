@@ -45,9 +45,7 @@ class _CheckoutScreenState extends State<CheckoutScreen>
         ).chain(CurveTween(curve: Curves.easeInOut)),
         weight: 30,
       ),
-
       TweenSequenceItem(tween: ConstantTween<double>(60), weight: 40),
-
       TweenSequenceItem(tween: ConstantTween<double>(60), weight: 30),
     ]).animate(_controller);
 
@@ -59,7 +57,6 @@ class _CheckoutScreenState extends State<CheckoutScreen>
         ).chain(CurveTween(curve: Curves.easeIn)),
         weight: 30,
       ),
-
       TweenSequenceItem(tween: ConstantTween<double>(0.0), weight: 70),
     ]).animate(_controller);
 
@@ -76,7 +73,6 @@ class _CheckoutScreenState extends State<CheckoutScreen>
 
     _checkOpacityAnimation = TweenSequence<double>([
       TweenSequenceItem(tween: ConstantTween<double>(0.0), weight: 70),
-
       TweenSequenceItem(
         tween: Tween<double>(
           begin: 0.0,
@@ -159,13 +155,13 @@ class _CheckoutScreenState extends State<CheckoutScreen>
           children: [
             Container(
               width: 300,
-              padding: EdgeInsets.all(20),
+              padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.08),
+                    color: Colors.black.withValues(alpha: 0.08),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -203,11 +199,10 @@ class _CheckoutScreenState extends State<CheckoutScreen>
               ),
             ),
             const SizedBox(height: 20),
-
             GestureDetector(
               onTap: _onCheckoutPressed,
               child: AnimatedContainer(
-                duration: Duration(milliseconds: 300),
+                duration: const Duration(milliseconds: 300),
                 width: _widthAnimation.value,
                 height: 60,
                 decoration: BoxDecoration(
@@ -215,7 +210,7 @@ class _CheckoutScreenState extends State<CheckoutScreen>
                   borderRadius: BorderRadius.circular(30),
                   boxShadow: [
                     BoxShadow(
-                      color: _buttonColor.withOpacity(0.4),
+                      color: _buttonColor.withValues(alpha: 0.4),
                       blurRadius: 12,
                       offset: const Offset(0, 6),
                     ),
@@ -263,7 +258,6 @@ class _CheckoutScreenState extends State<CheckoutScreen>
               ),
             ),
             const SizedBox(height: 24),
-
             if (_buttonState == _ButtonState.done)
               TextButton.icon(
                 icon: const Icon(Icons.refresh),

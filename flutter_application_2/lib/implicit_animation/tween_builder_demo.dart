@@ -20,13 +20,13 @@ class _TweenBuilderDemoState extends State<TweenBuilderDemo> {
           children: [
             TweenAnimationBuilder<double>(
               tween: Tween(begin: 0, end: _angle),
-              duration: Duration(seconds: 2),
+              duration: const Duration(seconds: 2),
               curve: Curves.elasticOut,
               builder: (context, value, child) =>
                   Transform.rotate(angle: value, child: child),
-              child: Icon(Icons.refresh, size: 50, color: Colors.purple),
+              child: const Icon(Icons.refresh, size: 50, color: Colors.purple),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 setState(() {

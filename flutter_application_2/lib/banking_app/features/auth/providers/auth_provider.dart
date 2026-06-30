@@ -1,17 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/banking_app/core/constants/app_constants.dart';
+import 'package:flutter_application_2/banking_app/features/auth/models/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../../core/constants/app_constants.dart';
-import '../models/user_model.dart';
-
-enum AuthStatus {
-  initial,
-  loading,
-  authenticated,
-  unauthenticated,
-  error,
-}
+enum AuthStatus { initial, loading, authenticated, unauthenticated, error }
 
 class AuthProvider extends ChangeNotifier {
   AuthStatus _status = AuthStatus.initial;
@@ -36,11 +29,7 @@ class AuthProvider extends ChangeNotifier {
   // -- Check stored session --
   Future<void> checkStatus() async {
     _setStatus(AuthStatus.loading);
-    await Future.delayed(
-      const Duration(
-        milliseconds: 500,
-      ),
-    );
+    await Future.delayed(const Duration(milliseconds: 500));
 
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -126,10 +115,7 @@ class AuthProvider extends ChangeNotifier {
   // ── Helpers ───────────────────────────────────
   Future<void> _persistUser(UserModel user) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(
-      AppConstants.keyUserJson,
-      user.toJsonString(),
-    );
+    await prefs.setString(AppConstants.keyUserJson, user.toJsonString());
   }
 
   void _setStatus(AuthStatus s) {

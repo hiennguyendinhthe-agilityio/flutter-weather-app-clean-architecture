@@ -131,7 +131,7 @@ class _SliverDemo extends StatelessWidget {
         SliverToBoxAdapter(
           child: Container(
             padding: const EdgeInsets.all(12),
-            color: const Color(0xFF6C63FF).withOpacity(0.1),
+            color: const Color(0xFF6C63FF).withValues(alpha: 0.1),
             child: const Text(
               'CustomScrollView + Sliver\n'
               'Lazy rendering + Collapsible AppBar\n'
@@ -172,7 +172,7 @@ Widget _buildItem({
     decoration: BoxDecoration(
       color: Colors.white,
       borderRadius: BorderRadius.circular(10),
-      border: Border.all(color: color.withOpacity(0.15)),
+      border: Border.all(color: color.withValues(alpha: 0.15)),
     ),
     child: Row(
       children: [
@@ -180,7 +180,7 @@ Widget _buildItem({
           width: 36,
           height: 36,
           decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
+            color: color.withValues(alpha: 0.1),
             shape: BoxShape.circle,
           ),
           child: Center(

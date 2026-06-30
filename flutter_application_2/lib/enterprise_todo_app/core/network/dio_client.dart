@@ -1,10 +1,10 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_application_2/enterprise_todo_app/core/error/app_exception.dart';
+import 'package:flutter_application_2/enterprise_todo_app/core/logger/app_logger.dart';
+import 'package:flutter_application_2/enterprise_todo_app/core/network/auth_interceptor.dart';
+import 'package:flutter_application_2/enterprise_todo_app/core/network/endpoints.dart';
 import 'package:flutter_application_2/enterprise_todo_app/core/network/retry_interceptor.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../error/app_exception.dart';
-import '../logger/app_logger.dart';
-import 'endpoints.dart';
 
 class DioClient {
   DioClient._();
@@ -36,7 +36,12 @@ class DioClient {
 
     refeshDio.interceptors.add(_LoggingInterceptor());
 
-    dio.interceptors.addAll([_LoggingInterceptor(), _ErrorInterceptor(),RetryInterceptor(ref)]);
+    dio.interceptors.addAll([
+      _LoggingInterceptor(),
+      AuthInterceptor(ref),
+      _ErrorInterceptor(),
+      RetryInterceptor(ref),
+    ]);
 
     return dio;
   }

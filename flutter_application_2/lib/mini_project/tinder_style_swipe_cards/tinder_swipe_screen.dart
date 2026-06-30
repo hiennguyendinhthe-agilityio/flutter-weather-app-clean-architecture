@@ -91,7 +91,7 @@ class _TinderSwipeScreenState extends State<TinderSwipeScreen> {
                           borderRadius: BorderRadius.circular(12),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.08),
+                              color: Colors.black.withValues(alpha: 0.08),
                               blurRadius: 8,
                             ),
                           ],
@@ -289,7 +289,7 @@ class _TinderSwipeScreenState extends State<TinderSwipeScreen> {
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
-              color: color.withOpacity(0.25),
+              color: color.withValues(alpha: 0.25),
               blurRadius: 16,
               offset: const Offset(0, 6),
             ),
@@ -524,7 +524,7 @@ class _SwipeCardState extends State<SwipeCard>
           gradient: LinearGradient(
             colors: [
               widget.cardData.color,
-              widget.cardData.color.withOpacity(0.7),
+              widget.cardData.color.withValues(alpha: 0.7),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -532,7 +532,7 @@ class _SwipeCardState extends State<SwipeCard>
           borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
-              color: widget.cardData.color.withOpacity(0.35),
+              color: widget.cardData.color.withValues(alpha: 0.35),
               blurRadius: 24,
               offset: const Offset(0, 12),
             ),
@@ -545,7 +545,7 @@ class _SwipeCardState extends State<SwipeCard>
               width: 100,
               height: 100,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
+                color: Colors.white.withValues(alpha: 0.2),
                 shape: BoxShape.circle,
               ),
               child: Icon(widget.cardData.icon, color: Colors.white, size: 52),
@@ -563,7 +563,7 @@ class _SwipeCardState extends State<SwipeCard>
             Text(
               widget.cardData.role,
               style: TextStyle(
-                color: Colors.white.withOpacity(0.8),
+                color: Colors.white.withValues(alpha: 0.8),
                 fontSize: 16,
               ),
             ),
@@ -579,9 +579,10 @@ class _SwipeCardState extends State<SwipeCard>
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
+                    color: Colors.white.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.white.withOpacity(0.3)),
+                    border:
+                        Border.all(color: Colors.white.withValues(alpha: 0.3)),
                   ),
                   child: Text(
                     tag,
@@ -600,14 +601,14 @@ class _SwipeCardState extends State<SwipeCard>
               children: [
                 Icon(
                   Icons.swipe,
-                  color: Colors.white.withOpacity(0.5),
+                  color: Colors.white.withValues(alpha: 0.5),
                   size: 18,
                 ),
                 const SizedBox(width: 6),
                 Text(
                   'Swipe left or right',
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.5),
+                    color: Colors.white.withValues(alpha: 0.5),
                     fontSize: 13,
                   ),
                 ),

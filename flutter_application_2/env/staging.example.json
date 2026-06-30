@@ -1,0 +1,7 @@
+{
+    "APP_ENV": "staging",
+    "APP_NAME": "Todo Staging",
+    "API_BASE_URL": "https://staging-api.your-domain.com",
+    "ENABLE_LOGGING": "true",
+    "ENABLE_CRASHLYTICS": "true"
+}

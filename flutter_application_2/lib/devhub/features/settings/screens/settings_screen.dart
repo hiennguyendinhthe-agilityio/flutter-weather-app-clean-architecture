@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/devhub/features/auth/providers/auth_notifier.dart';
+import 'package:flutter_application_2/devhub/features/settings/providers/settings_notifier.dart';
 import 'package:provider/provider.dart';
-import '../../auth/providers/auth_notifier.dart';
-import '../../settings/providers/settings_notifier.dart';
 
 // 🎓 LESSON — context.read() vs context.watch() in one screen
 // SettingsScreen uses BOTH:
@@ -29,11 +29,12 @@ class SettingsScreen extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           children: [
             const SizedBox(height: 20),
-            Text('Settings',
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineSmall
-                    ?.copyWith(fontWeight: FontWeight.w700)),
+            Text(
+              'Settings',
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
+            ),
 
             const SizedBox(height: 24),
 
@@ -43,7 +44,9 @@ class SettingsScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 color: cs.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: cs.outlineVariant.withValues(alpha: 0.5)),
+                border: Border.all(
+                  color: cs.outlineVariant.withValues(alpha: 0.5),
+                ),
               ),
               child: Row(
                 children: [
@@ -63,15 +66,17 @@ class SettingsScreen extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(user,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium
-                              ?.copyWith(fontWeight: FontWeight.w700)),
-                      Text('dev@devhub.io',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: cs.onSurface.withValues(alpha: 0.5),
-                              )),
+                      Text(
+                        user,
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.w700),
+                      ),
+                      Text(
+                        'dev@devhub.io',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: cs.onSurface.withValues(alpha: 0.5),
+                        ),
+                      ),
                     ],
                   ),
                 ],
@@ -80,11 +85,13 @@ class SettingsScreen extends StatelessWidget {
 
             const SizedBox(height: 24),
 
-            Text('Appearance',
-                style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                      color: cs.primary,
-                      fontWeight: FontWeight.w700,
-                    )),
+            Text(
+              'Appearance',
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                color: cs.primary,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
             const SizedBox(height: 8),
 
             // ── Theme toggle tile ──
@@ -92,21 +99,28 @@ class SettingsScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 color: cs.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: cs.outlineVariant.withValues(alpha: 0.5)),
+                border: Border.all(
+                  color: cs.outlineVariant.withValues(alpha: 0.5),
+                ),
               ),
               child: SwitchListTile(
                 secondary: Icon(
-                  settings.isDark ? Icons.dark_mode_rounded : Icons.light_mode_rounded,
+                  settings.isDark
+                      ? Icons.dark_mode_rounded
+                      : Icons.light_mode_rounded,
                   color: cs.primary,
                 ),
                 title: const Text('Dark Mode'),
-                subtitle: Text(settings.isDark ? 'Currently dark' : 'Currently light'),
+                subtitle: Text(
+                  settings.isDark ? 'Currently dark' : 'Currently light',
+                ),
                 value: settings.isDark,
                 // 🎓 context.read() in the callback — correct!
                 // We already watch settings above via context.watch.
                 // No need to subscribe again inside onChanged.
-                onChanged: (_) => context.read<SettingsNotifier>().toggleTheme(),
-                activeColor: cs.primary,
+                onChanged: (_) =>
+                    context.read<SettingsNotifier>().toggleTheme(),
+                activeThumbColor: cs.primary,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
@@ -115,39 +129,45 @@ class SettingsScreen extends StatelessWidget {
 
             const SizedBox(height: 24),
 
-            Text('State Management Info',
-                style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                      color: cs.primary,
-                      fontWeight: FontWeight.w700,
-                    )),
+            Text(
+              'State Management Info',
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                color: cs.primary,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
             const SizedBox(height: 8),
 
             // ── Info cards explaining what each provider does ──
-            _InfoCard(
+            const _InfoCard(
               icon: Icons.lock_outline_rounded,
               title: 'AuthNotifier',
-              description: 'Root provider. Owns isLoggedIn + currentUser. '
+              description:
+                  'Root provider. Owns isLoggedIn + currentUser. '
                   'FeedNotifier and BookmarkNotifier depend on this.',
             ),
             const SizedBox(height: 8),
-            _InfoCard(
+            const _InfoCard(
               icon: Icons.article_outlined,
               title: 'FeedNotifier',
-              description: 'Created via ProxyProvider<AuthNotifier>. '
+              description:
+                  'Created via ProxyProvider<AuthNotifier>. '
                   'Stores _allPosts. filteredPosts() is a computed method, not stored state.',
             ),
             const SizedBox(height: 8),
-            _InfoCard(
+            const _InfoCard(
               icon: Icons.filter_list_rounded,
               title: 'FilterNotifier + SearchNotifier',
-              description: 'Independent notifiers. When changed, only '
+              description:
+                  'Independent notifiers. When changed, only '
                   '_FilterSection and _PostListSection rebuild — not the whole screen.',
             ),
             const SizedBox(height: 8),
-            _InfoCard(
+            const _InfoCard(
               icon: Icons.bookmark_outline_rounded,
               title: 'BookmarkNotifier',
-              description: 'Uses Selector in PostCard so ONLY the bookmark '
+              description:
+                  'Uses Selector in PostCard so ONLY the bookmark '
                   'icon of the toggled post rebuilds. Zero wasted renders.',
             ),
 
@@ -162,7 +182,8 @@ class SettingsScreen extends StatelessWidget {
                 side: BorderSide(color: cs.error.withValues(alpha: 0.5)),
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
               // 🎓 context.read() — correct in event handlers
               // After logout(), AuthNotifier calls notifyListeners()
@@ -216,16 +237,20 @@ class _InfoCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title,
-                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                          fontWeight: FontWeight.w700,
-                        )),
+                Text(
+                  title,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
+                ),
                 const SizedBox(height: 4),
-                Text(description,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: cs.onSurface.withValues(alpha: 0.6),
-                          height: 1.5,
-                        )),
+                Text(
+                  description,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: cs.onSurface.withValues(alpha: 0.6),
+                    height: 1.5,
+                  ),
+                ),
               ],
             ),
           ),

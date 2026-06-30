@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Flavor: dev — Override resources nếu cần (icon, color banner, v.v.) -->
+<resources>
+    <!-- Dùng resValue trong build.gradle.kts để set app_name,
+         file này dành cho resource override bổ sung nếu cần -->
+</resources>

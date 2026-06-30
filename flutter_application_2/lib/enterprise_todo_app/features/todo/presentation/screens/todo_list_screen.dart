@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/enterprise_todo_app/features/todo/presentation/providers/todo_filter_notifier.dart';
+import 'package:flutter_application_2/enterprise_todo_app/features/todo/presentation/providers/todo_list_notifier.dart';
+import 'package:flutter_application_2/enterprise_todo_app/features/todo/presentation/widgets/todo_card.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../providers/todo_filter_notifier.dart';
-import '../providers/todo_list_notifier.dart';
-import '../widgets/todo_card.dart';
 
 class TodoListScreen extends ConsumerStatefulWidget {
   const TodoListScreen({super.key});

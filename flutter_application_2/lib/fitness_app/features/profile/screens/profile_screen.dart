@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/fitness_app/features/profile/widgets/profile_avatar_section.dart';
+import 'package:flutter_application_2/fitness_app/features/profile/widgets/profile_developer_section.dart';
+import 'package:flutter_application_2/fitness_app/features/profile/widgets/profile_health_stats_row.dart';
+import 'package:flutter_application_2/fitness_app/features/profile/widgets/profile_settings_section.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../widgets/profile_avatar_section.dart';
-import '../widgets/profile_developer_section.dart';
-import '../widgets/profile_health_stats_row.dart';
-import '../widgets/profile_settings_section.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});

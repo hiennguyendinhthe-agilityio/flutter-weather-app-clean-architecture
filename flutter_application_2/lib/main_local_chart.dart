@@ -23,7 +23,7 @@ class ChartDemoApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Color(0xFF6C63FF),
+          seedColor: const Color(0xFF6C63FF),
           brightness: Brightness.light,
         ),
         fontFamily: 'SF Pro Display',

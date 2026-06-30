@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/chart_demo/models/statistic_data.dart';
 import 'package:flutter_application_2/chart_demo/core/account_stats_theme.dart';
+import 'package:flutter_application_2/chart_demo/models/statistic_data.dart';
 
 // ─────────────────────────────────────────────────────────────
 // USER STAT TABLE
 // ─────────────────────────────────────────────────────────────
 
 class UserStatTable extends StatelessWidget {
-  const UserStatTable({
-    super.key,
-    required this.users,
-  });
+  const UserStatTable({super.key, required this.users});
 
   final List<AttributedUser> users;
 
@@ -20,18 +17,12 @@ class UserStatTable extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Header row
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 4),
           child: Row(
-            children: const [
-              Expanded(
-                flex: 4,
-                child: _HeaderCell('Nickname'),
-              ),
-              Expanded(
-                flex: 3,
-                child: _HeaderCell('Date'),
-              ),
+            children: [
+              Expanded(flex: 4, child: _HeaderCell('Nickname')),
+              Expanded(flex: 3, child: _HeaderCell('Date')),
               Expanded(
                 flex: 3,
                 child: _HeaderCell('Resource', align: TextAlign.right),

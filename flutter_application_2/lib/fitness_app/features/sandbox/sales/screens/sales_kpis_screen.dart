@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:flutter_application_2/fitness_app/core/theme/theme_context_ext.dart';
 import 'package:flutter_application_2/fitness_app/core/widgets/sales_kpi/sales_donut_chart.dart';
 import 'package:flutter_application_2/fitness_app/core/widgets/sales_kpi/sales_kpi_card.dart';
 import 'package:flutter_application_2/fitness_app/core/widgets/sales_kpi/sales_time_filter.dart';
-import '../providers/sales_provider.dart';
+import 'package:flutter_application_2/fitness_app/features/sandbox/sales/providers/sales_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SalesKpisScreen extends ConsumerWidget {
   const SalesKpisScreen({super.key});

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MaterialApp(home: FadeDemo()));
+  runApp(const MaterialApp(home: FadeDemo()));
 }
 
 class FadeDemo extends StatefulWidget {
@@ -22,13 +22,13 @@ class _FadeDemoState extends State<FadeDemo> {
           children: [
             AnimatedOpacity(
               opacity: _opacity,
-              duration: Duration(seconds: 2),
+              duration: const Duration(seconds: 2),
               curve: Curves.elasticOut,
               child: Container(
                 width: 200,
                 height: 200,
                 color: Colors.purple,
-                child: Center(
+                child: const Center(
                   child: Text(
                     'Hello World',
                     style: TextStyle(color: Colors.white, fontSize: 20),
@@ -36,7 +36,7 @@ class _FadeDemoState extends State<FadeDemo> {
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 setState(() {

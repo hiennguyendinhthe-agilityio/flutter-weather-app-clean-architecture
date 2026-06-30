@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-
-import '../../core/constants.dart';
-import '../../models/bar_item_data.dart';
+import 'package:flutter_application_2/chart_demo/core/constants.dart';
+import 'package:flutter_application_2/chart_demo/models/bar_item_data.dart';
 
 class BarColumnPainter extends CustomPainter {
   BarColumnPainter({

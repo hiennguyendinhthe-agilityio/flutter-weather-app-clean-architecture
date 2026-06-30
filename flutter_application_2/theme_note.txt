@@ -1,0 +1,82 @@
+# Chuyên Đề: Master Theming & State Management Trong Flutter
+
+Gửi quản lý và team,
+
+Dựa trên yêu cầu đi sâu vào gốc rễ của **Theming** và **State Management**, tôi đã thực hiện một đợt "Audit" (kiểm toán) mã nguồn hiện tại. Quả thật, nhận định *"chưa ai thực sự làm đúng Flutter theme"* là hoàn toàn chính xác trong ngành. Đa số mọi người dùng Flutter Theming như một bảng màu tĩnh (Static Palette) thay vì một hệ thống ngữ nghĩa (Semantic System).
+
+Dưới đây là bản phân tích chuyên sâu và lộ trình từ cơ bản đến cốt lõi để nâng cấp kiến trúc dự án.
+
+---
+
+## 1. Phân Tích Thực Trạng Của Dự Án
+
+### Lỗi Sai Kinh Điển Về Theming (Đang tồn tại trong app)
+Hiện tại, ứng dụng sử dụng các file `colors.dart` và `text_styles.dart` chứa các biến static:
+```dart
+static const Color activityCardBg = Color(0xFF1E1E30);
+static const TextStyle projectHeader = TextStyle(...);
+```
+**Tại sao sai?**
+1. **Khóa chết UI (Hardcoded):** Nếu ngày mai ứng dụng cần làm chế độ Sáng (Light Mode) hoặc thay đổi bộ nhận diện thương hiệu, chúng ta phải sửa tay từng file, hoặc rải các lệnh `if (isDarkMode)` khắp mọi nơi.
+2. **Sai thiết kế Material:** Không tận dụng được các widget mặc định của Flutter (như `AppBar`, `Card`, `Text`) vì chúng tự động lấy màu từ `Theme.of(context)` chứ không biết biến `FitnessColors` là gì.
+
+### Vấn Đề Về State Management
+Hiện tại app đang dùng `setState` và truyền dữ liệu qua constructor (Prop-drilling).
+Ví dụ: `WeeklyCalendar` nhận `selectedIndex` và hàm `onDaySelected` từ Widget cha. Khi người dùng bấm chọn ngày, `setState` ở Widget cha được gọi, dẫn đến **Toàn bộ màn hình FitnessGoalsScreen bị build lại (Rebuild) không cần thiết**.
+
+---
+
+## 2. Kế Hoạch Giải Quyết 1: Theming "The Right Way"
+
+Flutter Theming đúng chuẩn phải trải qua 3 cấp độ:
+
+### Cấp độ 1: ColorScheme & TextTheme (Cơ bản)
+Sử dụng `ThemeData(colorScheme: ColorScheme.dark(...))` để định nghĩa các màu cốt lõi (Primary, Secondary, Surface, Background). Bất cứ widget mặc định nào của Flutter cũng sẽ tự động đổi màu.
+
+### Cấp độ 2: Semantic Theming (Ngữ nghĩa)
+Thay vì gọi tên màu là `Yellow` hay `Red`, phải gọi theo mục đích sử dụng như `activityColor` hay `errorColor`. Tránh tư duy "Hardcode màu".
+
+### Cấp độ 3: Đỉnh cao với `ThemeExtension` (Flutter 3.0+)
+Với các thiết kế UI đặc thù (như dự án chúng ta có các màu `healthTrack`, gradient riêng biệt mà Material không hỗ trợ sẵn), Flutter cung cấp `ThemeExtension`.
+Chúng ta sẽ tạo một class `FitnessThemeExtension` kế thừa `ThemeExtension`.
+**Lợi ích:** 
+- Gắn chặt vào `Theme.of(context)`. 
+- Type-safe (Bảo vệ kiểu dữ liệu).
+- Hỗ trợ hàm `lerp()` giúp **chuyển màu mượt mà (animation)** khi người dùng chuyển từ Dark sang Light mode.
+
+---
+
+## 3. Kế Hoạch Giải Quyết 2: State Management Cốt Lõi
+
+Thay vì nhảy ngay vào các thư viện bên ngoài (BLoC, Riverpod) mà không hiểu bản chất, lộ trình học và áp dụng tốt nhất là:
+
+### Bước 1: `ValueNotifier` & `ListenableBuilder` (Trái tim của Flutter)
+- Dùng `ValueNotifier<int>` để lưu trữ ngày được chọn.
+- Dùng `ListenableBuilder` (hoặc `ValueListenableBuilder`) bọc đúng Widget biểu đồ và lịch.
+- **Kết quả:** Khi đổi ngày, chỉ đúng 2 Widget đó rebuild. Tối ưu O(1) hiệu suất.
+
+### Bước 2: `InheritedWidget` / `InheritedNotifier` (Giao tiếp xuyên không)
+- Khi Widget con nằm quá sâu, truyền biến `ValueNotifier` qua 10 constructor là thảm hoạ.
+- `InheritedWidget` cho phép Widget con "lấy" dữ liệu trực tiếp từ trên đỉnh cây UI với độ phức tạp O(1) (`context.dependOnInheritedWidgetOfExactType`).
+- Đây là cơ chế cốt lõi tạo nên thư viện `Provider` hay `Riverpod` ngày nay.
+
+---
+
+## 4. Đề Xuất Action Plan (Thực Hành Trực Tiếp)
+
+Để chứng minh kiến thức trên bằng code thực tế, tôi đề xuất:
+
+1. **Refactor Theming (ThemeExtension):**
+   - Viết một class `FitnessThemeExtension` để chứa các màu đặc thù (`activityColor`, `healthColor`, `cardGradient`,...).
+   - Khởi tạo `ThemeData` chuẩn tại `main.dart`.
+   - Chuyển đổi một màn hình (`health_stats_screen.dart`) sang dùng `Theme.of(context).extension<FitnessThemeExtension>()` thay vì gọi static `FitnessColors`.
+
+2. **Refactor State (Tối ưu Rebuild):**
+   - Ở màn hình `fitness_goals_screen.dart`, loại bỏ hoàn toàn hàm `setState()`.
+   - Thay thế bằng `ValueNotifier<int> _selectedDayNotifier`.
+   - Wrap `WeeklyCalendar` và Biểu đồ bằng `ValueListenableBuilder`. Chứng minh cho quản lý thấy số lần Rebuild của màn hình giảm từ N xuống 0.
+
+## User Review Required
+
+> [!IMPORTANT]
+> Quản lý / Bạn hãy xem xét bản đánh giá kiến trúc này. Đây chính xác là cách các kỹ sư ở Google hoặc các dự án Flutter Enterprise thiết kế Theming và State Management. Nếu bạn đồng ý, tôi sẽ triển khai **Action Plan** ngay lập tức vào codebase!

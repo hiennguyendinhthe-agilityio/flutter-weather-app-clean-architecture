@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/banking_app/core/constants/app_colors.dart';
+import 'package:flutter_application_2/banking_app/features/auth/providers/auth_notifier.dart';
+import 'package:flutter_application_2/banking_app/features/home/providers/home_provider.dart';
+import 'package:flutter_application_2/banking_app/features/home/screens/dashboard_tab.dart';
+import 'package:flutter_application_2/banking_app/features/portfolio/providers/transaction_provider.dart';
+import 'package:flutter_application_2/banking_app/features/portfolio/screens/analytics_screen.dart';
+import 'package:flutter_application_2/banking_app/features/portfolio/screens/transactions_screen.dart';
+import 'package:flutter_application_2/banking_app/features/profile/screens/profile_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:provider/provider.dart';
-
-import '../../../core/constants/app_colors.dart';
-import '../../auth/providers/auth_notifier.dart';
-import '../../portfolio/providers/transaction_provider.dart';
-import '../../portfolio/screens/analytics_screen.dart';
-import '../../portfolio/screens/transactions_screen.dart';
-import '../../profile/screens/profile_screen.dart';
-import '../providers/home_provider.dart';
-import 'dashboard_tab.dart';
-
-
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -83,7 +80,7 @@ class _BottomNav extends StatelessWidget {
         color: isDark ? AppColors.darkSurface : Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.07),
+            color: Colors.black.withValues(alpha: 0.07),
             blurRadius: 16,
             offset: const Offset(0, -4),
           ),
@@ -136,7 +133,7 @@ class _NavItem extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppColors.primary.withOpacity(0.1)
+              ? AppColors.primary.withValues(alpha: 0.1)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
         ),

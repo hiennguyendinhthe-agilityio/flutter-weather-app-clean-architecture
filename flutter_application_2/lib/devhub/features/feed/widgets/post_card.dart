@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/devhub/features/bookmarks/providers/bookmark_notifier.dart';
+import 'package:flutter_application_2/devhub/features/feed/models/post_model.dart';
 import 'package:provider/provider.dart';
-import '../../bookmarks/providers/bookmark_notifier.dart';
-import '../models/post_model.dart';
 
 // 🎓 LESSON — Rebuild Precision with Selector
 // PostCard receives the full Post object, but it does NOT watch any provider.

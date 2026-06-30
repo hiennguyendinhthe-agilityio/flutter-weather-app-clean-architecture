@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/fitness_app/core/theme/theme_context_ext.dart';
-
-import '../models/active_workout_state.dart';
+import 'package:flutter_application_2/fitness_app/features/workouts/models/active_workout_state.dart';
 
 class ActiveWorkoutPanel extends StatelessWidget {
   final ActiveWorkoutState state;

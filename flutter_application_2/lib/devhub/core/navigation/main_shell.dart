@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/devhub/features/bookmarks/providers/bookmark_notifier.dart';
+import 'package:flutter_application_2/devhub/features/bookmarks/screens/bookmarks_screen.dart';
+import 'package:flutter_application_2/devhub/features/feed/screens/feed_screen.dart';
+import 'package:flutter_application_2/devhub/features/settings/screens/settings_screen.dart';
 import 'package:provider/provider.dart';
-import '../../features/bookmarks/providers/bookmark_notifier.dart';
-import '../../features/bookmarks/screens/bookmarks_screen.dart';
-import '../../features/feed/screens/feed_screen.dart';
-import '../../features/settings/screens/settings_screen.dart';
 
 // 🎓 LESSON — Navigation Shell & State Persistence
 // MainShell uses IndexedStack to keep all tabs alive simultaneously.
@@ -25,19 +25,12 @@ class _MainShellState extends State<MainShell> {
   // which tab is active. It should NOT be in a global Provider.
   int _currentIndex = 0;
 
-  static const _screens = [
-    FeedScreen(),
-    BookmarksScreen(),
-    SettingsScreen(),
-  ];
+  static const _screens = [FeedScreen(), BookmarksScreen(), SettingsScreen()];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _screens,
-      ),
+      body: IndexedStack(index: _currentIndex, children: _screens),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,
         onDestinationSelected: (i) => setState(() => _currentIndex = i),
@@ -47,7 +40,7 @@ class _MainShellState extends State<MainShell> {
             selectedIcon: Icon(Icons.article_rounded),
             label: 'Feed',
           ),
-          NavigationDestination(
+          const NavigationDestination(
             icon: _BookmarksBadge(isSelected: false),
             selectedIcon: _BookmarksBadge(isSelected: true),
             label: 'Bookmarks',

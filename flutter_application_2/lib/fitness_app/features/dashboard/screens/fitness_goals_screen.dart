@@ -3,13 +3,12 @@ import 'package:flutter_application_2/fitness_app/core/theme/theme_context_ext.d
 import 'package:flutter_application_2/fitness_app/core/widgets/charts/heart_rate_chart.dart';
 import 'package:flutter_application_2/fitness_app/core/widgets/charts/nested_rings_chart.dart';
 import 'package:flutter_application_2/fitness_app/core/widgets/charts/steps_gauge_chart.dart';
+import 'package:flutter_application_2/fitness_app/core/widgets/common/fitness_error_widget.dart';
+import 'package:flutter_application_2/fitness_app/core/widgets/common/fitness_loading_widget.dart';
 import 'package:flutter_application_2/fitness_app/core/widgets/fitness/weekly_calendar.dart';
 import 'package:flutter_application_2/fitness_app/features/shared/providers/fitness_provider.dart';
 import 'package:flutter_application_2/fitness_app/features/shared/providers/selected_date_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../core/widgets/common/fitness_error_widget.dart';
-import '../../../core/widgets/common/fitness_loading_widget.dart';
 
 const double _kExpandedHeight = 160.0;
 

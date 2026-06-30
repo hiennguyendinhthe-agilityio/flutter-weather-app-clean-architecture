@@ -160,16 +160,16 @@ class RiverpodPlayground extends ConsumerWidget {
 }
 
 void main(List<String> args) {
-  runApp(ProviderScope(child: MyApp()));
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: DefaultTabController(length: 3, child: RiverpodPlayground()),
+      home: DefaultTabController(length: 5, child: RiverpodPlayground()),
     );
   }
 }

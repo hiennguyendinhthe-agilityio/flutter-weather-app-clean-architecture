@@ -1,13 +1,12 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
-
 import 'package:flutter_application_2/fitness_app/core/theme/theme_context_ext.dart';
 import 'package:flutter_application_2/fitness_app/core/widgets/expense_category_list.dart';
 import 'package:flutter_application_2/fitness_app/core/widgets/expense_donut_chart.dart';
-import '../providers/expenses_provider.dart';
+import 'package:flutter_application_2/fitness_app/features/sandbox/expenses/providers/expenses_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 class ExpensesDashboardScreen extends ConsumerWidget {
   const ExpensesDashboardScreen({super.key});

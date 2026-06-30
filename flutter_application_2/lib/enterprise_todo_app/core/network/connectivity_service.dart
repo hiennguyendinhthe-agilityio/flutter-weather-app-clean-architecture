@@ -1,6 +1,5 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
-
-import '../logger/app_logger.dart';
+import 'package:flutter_application_2/enterprise_todo_app/core/logger/app_logger.dart';
 
 class ConnectivityService {
   final Connectivity _connectivity;

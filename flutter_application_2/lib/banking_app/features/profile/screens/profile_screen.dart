@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/banking_app/core/constants/app_colors.dart';
+import 'package:flutter_application_2/banking_app/core/router/app_router.dart';
+import 'package:flutter_application_2/banking_app/features/auth/providers/auth_notifier.dart';
+import 'package:flutter_application_2/banking_app/features/profile/widgets/profile_menu_item.dart';
+import 'package:flutter_application_2/banking_app/features/profile/widgets/profile_user_info.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../core/constants/app_colors.dart';
-import '../../../core/router/app_router.dart';
-import '../../auth/providers/auth_notifier.dart';
-import '../widgets/profile_menu_item.dart';
-import '../widgets/profile_user_info.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -79,7 +78,7 @@ class ProfileScreen extends ConsumerWidget {
                     onPressed: () async {
                       await ref.read(authProvider.notifier).logout();
                       if (context.mounted) {
-                        Navigator.pushReplacementNamed(
+                        await Navigator.pushReplacementNamed(
                           context,
                           AppRoutes.login,
                         );
@@ -94,7 +93,9 @@ class ProfileScreen extends ConsumerWidget {
                       style: TextStyle(color: AppColors.error),
                     ),
                     style: OutlinedButton.styleFrom(
-                      side: BorderSide(color: AppColors.error.withOpacity(0.4)),
+                      side: BorderSide(
+                        color: AppColors.error.withValues(alpha: 0.4),
+                      ),
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -112,4 +113,3 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 }
-

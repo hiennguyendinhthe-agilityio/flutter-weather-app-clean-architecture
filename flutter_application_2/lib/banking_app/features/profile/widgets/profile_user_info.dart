@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../core/constants/app_colors.dart';
+import 'package:flutter_application_2/banking_app/core/constants/app_colors.dart';
 
 class ProfileUserInfo extends StatelessWidget {
   final String initials;
@@ -56,10 +56,7 @@ class ProfileUserInfo extends StatelessWidget {
 
         Text(
           email,
-          style: const TextStyle(
-            color: AppColors.grey600,
-            fontSize: 14,
-          ),
+          style: const TextStyle(color: AppColors.grey600, fontSize: 14),
         ),
       ],
     );

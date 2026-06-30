@@ -247,9 +247,9 @@ class _AllFilterChip extends StatelessWidget {
         color: AccountStatsTheme.filterBg,
         borderRadius: BorderRadius.circular(10),
       ),
-      child: Row(
+      child: const Row(
         mainAxisSize: MainAxisSize.min,
-        children: const [
+        children: [
           Icon(
             Icons.people_alt_outlined,
             color: AccountStatsTheme.filterText,

@@ -1,6 +1,5 @@
+import 'package:flutter_application_2/enterprise_todo_app/core/logger/app_logger.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-
-import '../logger/app_logger.dart';
 
 class HiveBoxNames {
   HiveBoxNames._();

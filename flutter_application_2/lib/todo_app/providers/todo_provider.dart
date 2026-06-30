@@ -1,7 +1,6 @@
+import 'package:flutter_application_2/todo_app/models/todo.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:uuid/uuid.dart';
-
-import '../models/todo.dart';
 
 part 'todo_provider.g.dart';
 

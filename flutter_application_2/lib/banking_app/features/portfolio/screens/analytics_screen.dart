@@ -1,14 +1,13 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-
-import '../../../core/constants/app_colors.dart';
+import 'package:flutter_application_2/banking_app/core/constants/app_colors.dart';
 
 // ════════════════════════════════════════════════
 // SPENDING BAR CHART – CustomPainter + Animation
 // ════════════════════════════════════════════════
 class SpendingBarChart extends StatefulWidget {
-  final List<_ChartData> data;
+  final List<ChartData> data;
 
   const SpendingBarChart({super.key, required this.data});
 
@@ -28,10 +27,7 @@ class _SpendingBarChartState extends State<SpendingBarChart>
       vsync: this,
       duration: const Duration(milliseconds: 1400),
     );
-    _anim = CurvedAnimation(
-      parent: _ctrl,
-      curve: Curves.easeOutCubic,
-    );
+    _anim = CurvedAnimation(parent: _ctrl, curve: Curves.easeOutCubic);
     _ctrl
       ..addListener(() => setState(() {}))
       ..forward();
@@ -95,15 +91,15 @@ class _SpendingBarChartState extends State<SpendingBarChart>
   }
 }
 
-class _ChartData {
+class ChartData {
   final String label;
   final double amount;
   final Color color;
-  const _ChartData(this.label, this.amount, this.color);
+  const ChartData(this.label, this.amount, this.color);
 }
 
 class _BarPainter extends CustomPainter {
-  final List<_ChartData> data;
+  final List<ChartData> data;
   final double animValue;
   final bool isDark;
 
@@ -127,16 +123,12 @@ class _BarPainter extends CustomPainter {
 
     // Grid
     final gridPaint = Paint()
-      ..color = (isDark ? Colors.white : Colors.black).withOpacity(0.05)
+      ..color = (isDark ? Colors.white : Colors.black).withValues(alpha: 0.05)
       ..strokeWidth = 1;
 
     for (int g = 0; g <= 4; g++) {
       final y = size.height * 0.06 + maxBarH * g / 4;
-      canvas.drawLine(
-        Offset(0, y),
-        Offset(size.width, y),
-        gridPaint,
-      );
+      canvas.drawLine(Offset(0, y), Offset(size.width, y), gridPaint);
     }
 
     for (int i = 0; i < data.length; i++) {
@@ -145,12 +137,7 @@ class _BarPainter extends CustomPainter {
       final left = i * (barWidth + gap);
 
       final rRect = RRect.fromRectAndRadius(
-        Rect.fromLTWH(
-          left,
-          baseY - barH,
-          barWidth,
-          barH,
-        ),
+        Rect.fromLTWH(left, baseY - barH, barWidth, barH),
         const Radius.circular(6),
       );
 
@@ -159,7 +146,7 @@ class _BarPainter extends CustomPainter {
         rRect,
         Paint()
           ..shader = LinearGradient(
-            colors: [d.color, d.color.withOpacity(0.5)],
+            colors: [d.color, d.color.withValues(alpha: 0.5)],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ).createShader(rRect.outerRect),
@@ -172,7 +159,7 @@ class _BarPainter extends CustomPainter {
           text: TextSpan(
             text: '\$${d.amount.toStringAsFixed(0)}',
             style: TextStyle(
-              color: d.color.withOpacity(opacity),
+              color: d.color.withValues(alpha: opacity),
               fontSize: 10,
               fontWeight: FontWeight.bold,
             ),
@@ -194,7 +181,9 @@ class _BarPainter extends CustomPainter {
         text: TextSpan(
           text: d.label,
           style: TextStyle(
-            color: (isDark ? Colors.white : Colors.black).withOpacity(0.4),
+            color: (isDark ? Colors.white : Colors.black).withValues(
+              alpha: 0.4,
+            ),
             fontSize: 10,
           ),
         ),
@@ -203,10 +192,7 @@ class _BarPainter extends CustomPainter {
 
       lblPainter.paint(
         canvas,
-        Offset(
-          left + (barWidth - lblPainter.width) / 2,
-          baseY + 6,
-        ),
+        Offset(left + (barWidth - lblPainter.width) / 2, baseY + 6),
       );
     }
   }
@@ -223,11 +209,11 @@ class AnalyticsScreen extends StatelessWidget {
   const AnalyticsScreen({super.key});
 
   static const _chartData = [
-    _ChartData('Food', 320, AppColors.error),
-    _ChartData('Shop', 480, AppColors.primary),
-    _ChartData('Trans', 180, AppColors.accent),
-    _ChartData('Health', 215, Color(0xFF4CAF50)),
-    _ChartData('Entmt', 156, AppColors.warning),
+    ChartData('Food', 320, AppColors.error),
+    ChartData('Shop', 480, AppColors.primary),
+    ChartData('Trans', 180, AppColors.accent),
+    ChartData('Health', 215, Color(0xFF4CAF50)),
+    ChartData('Entmt', 156, AppColors.warning),
   ];
 
   @override
@@ -254,7 +240,7 @@ class AnalyticsScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Summary row
-                Row(
+                const Row(
                   children: [
                     _SummaryCard(
                       label: 'Total Spent',
@@ -262,7 +248,7 @@ class AnalyticsScreen extends StatelessWidget {
                       color: AppColors.expense,
                       icon: Icons.arrow_upward_rounded,
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: 12),
                     _SummaryCard(
                       label: 'Saved',
                       value: '\$5,258',
@@ -293,14 +279,12 @@ class AnalyticsScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.04),
+                        color: Colors.black.withValues(alpha: 0.04),
                         blurRadius: 10,
                       ),
                     ],
                   ),
-                  child: const SpendingBarChart(
-                    data: _chartData,
-                  ),
+                  child: const SpendingBarChart(data: _chartData),
                 ),
 
                 const SizedBox(height: 80),
@@ -334,11 +318,9 @@ class _SummaryCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.08),
+          color: color.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-            color: color.withOpacity(0.2),
-          ),
+          border: Border.all(color: color.withValues(alpha: 0.2)),
         ),
         child: Row(
           children: [
@@ -346,7 +328,7 @@ class _SummaryCard extends StatelessWidget {
               width: 36,
               height: 36,
               decoration: BoxDecoration(
-                color: color.withOpacity(0.12),
+                color: color.withValues(alpha: 0.12),
                 shape: BoxShape.circle,
               ),
               child: Icon(icon, color: color, size: 18),

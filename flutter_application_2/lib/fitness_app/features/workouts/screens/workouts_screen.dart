@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_2/fitness_app/core/theme/theme_context_ext.dart';
 import 'package:flutter_application_2/fitness_app/features/shared/providers/fitness_provider.dart';
 import 'package:flutter_application_2/fitness_app/features/shared/providers/selected_date_provider.dart';
+import 'package:flutter_application_2/fitness_app/features/workouts/models/workout_log.dart';
+import 'package:flutter_application_2/fitness_app/features/workouts/providers/active_workout_provider.dart';
+import 'package:flutter_application_2/fitness_app/features/workouts/providers/workout_provider.dart';
+import 'package:flutter_application_2/fitness_app/features/workouts/widgets/active_workout_panel.dart';
+import 'package:flutter_application_2/fitness_app/features/workouts/widgets/workout_card.dart';
+import 'package:flutter_application_2/fitness_app/features/workouts/widgets/workout_summary_card.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../models/workout_log.dart';
-import '../providers/active_workout_provider.dart';
-import '../providers/workout_provider.dart';
-import '../widgets/active_workout_panel.dart';
-import '../widgets/workout_card.dart';
-import '../widgets/workout_summary_card.dart';
 
 class WorkoutsScreen extends ConsumerWidget {
   const WorkoutsScreen({super.key});

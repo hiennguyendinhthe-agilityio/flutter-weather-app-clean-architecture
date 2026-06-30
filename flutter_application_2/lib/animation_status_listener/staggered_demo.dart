@@ -36,12 +36,13 @@ class _StaggeredDemoState extends State<StaggeredDemo>
       ),
     );
 
-    _slide1 = Tween<Offset>(begin: Offset(0, 0.5), end: Offset.zero).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0, 0.5, curve: Curves.elasticOut),
-      ),
-    );
+    _slide1 = Tween<Offset>(begin: const Offset(0, 0.5), end: Offset.zero)
+        .animate(
+          CurvedAnimation(
+            parent: _controller,
+            curve: const Interval(0, 0.5, curve: Curves.elasticOut),
+          ),
+        );
 
     _opacity2 = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(
@@ -50,23 +51,25 @@ class _StaggeredDemoState extends State<StaggeredDemo>
       ),
     );
 
-    _slide2 = Tween<Offset>(begin: Offset(0, 0.5), end: Offset.zero).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0.3, 0.7, curve: Curves.elasticOut),
-      ),
-    );
+    _slide2 = Tween<Offset>(begin: const Offset(0, 0.5), end: Offset.zero)
+        .animate(
+          CurvedAnimation(
+            parent: _controller,
+            curve: const Interval(0.3, 0.7, curve: Curves.elasticOut),
+          ),
+        );
 
     _opacity3 = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(parent: _controller, curve: const Interval(0.6, 1)),
     );
 
-    _slide3 = Tween<Offset>(begin: Offset(0, 0.5), end: Offset.zero).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0.6, 1, curve: Curves.elasticOut),
-      ),
-    );
+    _slide3 = Tween<Offset>(begin: const Offset(0, 0.5), end: Offset.zero)
+        .animate(
+          CurvedAnimation(
+            parent: _controller,
+            curve: const Interval(0.6, 1, curve: Curves.elasticOut),
+          ),
+        );
   }
 
   @override
@@ -92,13 +95,16 @@ class _StaggeredDemoState extends State<StaggeredDemo>
         );
       },
       child: Card(
-        margin: EdgeInsets.symmetric(vertical: 20, horizontal: 8),
+        margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
         child: ListTile(
           leading: CircleAvatar(
             backgroundColor: color,
             child: Icon(icon, color: Colors.white),
           ),
-          title: Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
+          title: Text(
+            title,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
           subtitle: Text(subtitle),
         ),
       ),

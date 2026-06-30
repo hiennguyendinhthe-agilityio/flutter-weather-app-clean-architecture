@@ -309,7 +309,7 @@ class DonutNormalizer {
           .toList();
     }
 
-    var normalized = slices
+    final normalized = slices
         .map(
           (s) =>
               NormalizedSlice(original: s, percentage: s.value / total * 100),

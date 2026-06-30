@@ -212,7 +212,7 @@ class _GridPainter extends CustomPainter {
       ..strokeWidth = 0.8
       ..style = PaintingStyle.stroke;
 
-    final labelStyle = TextStyle(
+    final labelStyle = const TextStyle(
       fontSize: 10,
       color: AccountStatsTheme.axisLabel,
       fontFamily: 'SF Pro Display',

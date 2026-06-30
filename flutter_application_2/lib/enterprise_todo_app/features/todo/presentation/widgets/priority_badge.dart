@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-
-import '../../../../core/theme/app_theme.dart';
-import '../../domain/entities/priority.dart';
+import 'package:flutter_application_2/enterprise_todo_app/core/theme/app_theme.dart';
+import 'package:flutter_application_2/enterprise_todo_app/features/todo/domain/entities/priority.dart';
 
 class PriorityBadge extends StatelessWidget {
   final Priority priority;

@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/fitness_app/core/theme/theme_context_ext.dart';
+import 'package:flutter_application_2/fitness_app/core/widgets/charts/fitness_activity_rings.dart';
+import 'package:flutter_application_2/fitness_app/core/widgets/common/fitness_error_widget.dart';
+import 'package:flutter_application_2/fitness_app/core/widgets/common/fitness_loading_widget.dart';
+import 'package:flutter_application_2/fitness_app/core/widgets/fitness/activity_levels_list.dart';
+import 'package:flutter_application_2/fitness_app/core/widgets/fitness/fitness_summary_card.dart';
+import 'package:flutter_application_2/fitness_app/core/widgets/fitness/user_profile_header.dart';
 import 'package:flutter_application_2/fitness_app/features/shared/providers/fitness_provider.dart';
+import 'package:flutter_application_2/fitness_app/features/stats/providers/fitness_insight_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../core/theme/theme_context_ext.dart';
-import '../../../core/widgets/charts/fitness_activity_rings.dart';
-import '../../../core/widgets/common/fitness_error_widget.dart';
-import '../../../core/widgets/common/fitness_loading_widget.dart';
-import '../../../core/widgets/fitness/activity_levels_list.dart';
-import '../../../core/widgets/fitness/fitness_summary_card.dart';
-import '../../../core/widgets/fitness/user_profile_header.dart';
-import '../providers/fitness_insight_provider.dart';
 
 class HealthStatsScreen extends ConsumerWidget {
   const HealthStatsScreen({super.key});

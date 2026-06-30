@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../tokens/radius_tokens.dart';
+import 'package:flutter_application_2/fitness_app/core/theme/tokens/radius_tokens.dart';
 
 /// Layer 3: Component Theme — Card.
 ///

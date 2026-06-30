@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/enterprise_todo_app/features/todo/domain/entities/priority.dart';
+import 'package:flutter_application_2/enterprise_todo_app/features/todo/presentation/providers/todo_stats_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../domain/entities/priority.dart';
-import '../providers/todo_stats_provider.dart';
 
 class TodoStatsScreen extends ConsumerWidget {
   const TodoStatsScreen({super.key});

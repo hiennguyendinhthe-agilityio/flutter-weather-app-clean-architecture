@@ -5,5 +5,4 @@ abstract class AuthRepository {
   Future<User> refreshToken();
   Future<void> logout();
   Future<User?> getAuthenticatedUser();
-  Future<bool> isAuthenticated();
 }

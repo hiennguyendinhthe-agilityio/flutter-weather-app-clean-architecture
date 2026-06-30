@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/banking_app/core/constants/app_colors.dart';
+import 'package:flutter_application_2/banking_app/core/utils/formatters.dart';
+import 'package:flutter_application_2/banking_app/features/auth/models/user_model.dart';
+import 'package:flutter_application_2/banking_app/features/auth/providers/auth_provider.dart';
+import 'package:flutter_application_2/banking_app/features/home/models/account_model.dart';
+import 'package:flutter_application_2/banking_app/features/home/providers/home_provider.dart';
+import 'package:flutter_application_2/banking_app/features/portfolio/models/transaction_model.dart';
+import 'package:flutter_application_2/banking_app/features/portfolio/providers/transaction_provider.dart';
 import 'package:provider/provider.dart';
-
-import '../../../core/constants/app_colors.dart';
-import '../../../core/utils/formatters.dart';
-import '../../auth/providers/auth_provider.dart';
-import '../../portfolio/providers/transaction_provider.dart';
-import '../models/account_model.dart';
-import '../providers/home_provider.dart';
 
 class DashboardTab extends StatefulWidget {
   const DashboardTab({super.key});
@@ -49,12 +50,9 @@ class _DashboardTabState extends State<DashboardTab>
 
     _staggerCtrl.addListener(() => setState(() {}));
 
-    Future.delayed(
-      const Duration(milliseconds: 300),
-      () {
-        if (mounted) _staggerCtrl.forward();
-      },
-    );
+    Future.delayed(const Duration(milliseconds: 300), () {
+      if (mounted) _staggerCtrl.forward();
+    });
   }
 
   @override
@@ -76,7 +74,7 @@ class _DashboardTabState extends State<DashboardTab>
       // Back-to-top FAB — only rebuilds FAB widget
       floatingActionButton: ValueListenableBuilder<bool>(
         valueListenable: _showFab,
-        builder: (_, show, __) => AnimatedSwitcher(
+        builder: (_, show, _) => AnimatedSwitcher(
           duration: const Duration(milliseconds: 250),
           child: show
               ? FloatingActionButton.small(
@@ -112,19 +110,14 @@ class _DashboardTabState extends State<DashboardTab>
                 child: home.isLoading
                     ? const _SkeletonBox(height: 180)
                     : home.account != null
-                        ? _BalanceCard(account: home.account!)
-                        : const _EmptyCard(),
+                    ? _BalanceCard(account: home.account!)
+                    : const _EmptyCard(),
               ),
             ),
           ),
 
           // ── Quick Actions ──────────────────────
-          SliverToBoxAdapter(
-            child: _stagger(
-              1,
-              const _QuickActions(),
-            ),
-          ),
+          SliverToBoxAdapter(child: _stagger(1, const _QuickActions())),
 
           // ── Recent Transactions header ─────────
           SliverToBoxAdapter(
@@ -164,7 +157,7 @@ class _DashboardTabState extends State<DashboardTab>
           if (txProvider.isLoading)
             SliverList(
               delegate: SliverChildBuilderDelegate(
-                (_, __) => const Padding(
+                (_, _) => const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                   child: _SkeletonBox(height: 68),
                 ),
@@ -172,24 +165,16 @@ class _DashboardTabState extends State<DashboardTab>
               ),
             )
           else if (txProvider.transactions.isEmpty)
-            const SliverToBoxAdapter(
-              child: _EmptyTransactions(),
-            )
+            const SliverToBoxAdapter(child: _EmptyTransactions())
           else
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 100),
               sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final tx = txProvider.transactions.take(5).elementAt(index);
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final tx = txProvider.transactions.take(5).elementAt(index);
 
-                    return _stagger(
-                      3,
-                      _TransactionRow(transaction: tx),
-                    );
-                  },
-                  childCount: txProvider.transactions.take(5).length,
-                ),
+                  return _stagger(3, _TransactionRow(transaction: tx));
+                }, childCount: txProvider.transactions.take(5).length),
               ),
             ),
         ],
@@ -215,7 +200,7 @@ class _DashboardTabState extends State<DashboardTab>
 // FIX: Uses LayoutBuilder to prevent overflow
 // ════════════════════════════════════════════════
 class _DashboardAppBar extends StatelessWidget {
-  final user;
+  final UserModel? user;
 
   const _DashboardAppBar({required this.user});
 
@@ -258,8 +243,9 @@ class _DashboardAppBar extends StatelessWidget {
                             'Good morning 👋',
                             style: TextStyle(
                               fontSize: 12,
-                              color:
-                                  isDark ? Colors.white54 : AppColors.grey600,
+                              color: isDark
+                                  ? Colors.white54
+                                  : AppColors.grey600,
                             ),
                           ),
                           const SizedBox(height: 2),
@@ -280,10 +266,7 @@ class _DashboardAppBar extends StatelessWidget {
                       height: 42,
                       decoration: const BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [
-                            AppColors.primary,
-                            AppColors.primaryDark,
-                          ],
+                          colors: [AppColors.primary, AppColors.primaryDark],
                         ),
                         shape: BoxShape.circle,
                       ),
@@ -313,10 +296,7 @@ class _DashboardAppBar extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        titlePadding: const EdgeInsetsDirectional.only(
-          start: 20,
-          bottom: 14,
-        ),
+        titlePadding: const EdgeInsetsDirectional.only(start: 20, bottom: 14),
       ),
     );
   }
@@ -346,14 +326,8 @@ class _BalanceCardState extends State<_BalanceCard>
       vsync: this,
       duration: const Duration(milliseconds: 1200),
     );
-    _balanceAnim = CurvedAnimation(
-      parent: _ctrl,
-      curve: Curves.easeOutCubic,
-    );
-    _fadeAnim = CurvedAnimation(
-      parent: _ctrl,
-      curve: const Interval(0, 0.4),
-    );
+    _balanceAnim = CurvedAnimation(parent: _ctrl, curve: Curves.easeOutCubic);
+    _fadeAnim = CurvedAnimation(parent: _ctrl, curve: const Interval(0, 0.4));
     _ctrl
       ..addListener(() => setState(() {}))
       ..forward();
@@ -382,7 +356,7 @@ class _BalanceCardState extends State<_BalanceCard>
         borderRadius: BorderRadius.circular(22),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.3),
+            color: AppColors.primary.withValues(alpha: 0.3),
             blurRadius: 24,
             offset: const Offset(0, 10),
           ),
@@ -402,7 +376,7 @@ class _BalanceCardState extends State<_BalanceCard>
                 child: Text(
                   widget.account.accountNumber,
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.65),
+                    color: Colors.white.withValues(alpha: 0.65),
                     fontSize: 13,
                     letterSpacing: 0.8,
                   ),
@@ -416,7 +390,7 @@ class _BalanceCardState extends State<_BalanceCard>
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.15),
+                    color: Colors.white.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: const Text(
@@ -439,7 +413,7 @@ class _BalanceCardState extends State<_BalanceCard>
           Text(
             'Total Balance',
             style: TextStyle(
-              color: Colors.white.withOpacity(0.6),
+              color: Colors.white.withValues(alpha: 0.6),
               fontSize: 12,
             ),
           ),
@@ -511,7 +485,7 @@ class _MiniStat extends StatelessWidget {
           width: 28,
           height: 28,
           decoration: BoxDecoration(
-            color: color.withOpacity(0.15),
+            color: color.withValues(alpha: 0.15),
             shape: BoxShape.circle,
           ),
           child: Icon(icon, color: color, size: 14),
@@ -523,7 +497,7 @@ class _MiniStat extends StatelessWidget {
             Text(
               label,
               style: TextStyle(
-                color: Colors.white.withOpacity(0.5),
+                color: Colors.white.withValues(alpha: 0.5),
                 fontSize: 11,
               ),
             ),
@@ -562,11 +536,7 @@ class _QuickActions extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: _actions
-            .map((a) => _ActionItem(
-                  icon: a.$1,
-                  label: a.$2,
-                  color: a.$3,
-                ))
+            .map((a) => _ActionItem(icon: a.$1, label: a.$2, color: a.$3))
             .toList(),
       ),
     );
@@ -597,7 +567,7 @@ class _ActionItem extends StatelessWidget {
             width: 52,
             height: 52,
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
+              color: color.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Icon(icon, color: color, size: 24),
@@ -620,7 +590,7 @@ class _ActionItem extends StatelessWidget {
 // TRANSACTION ROW (on dashboard)
 // ════════════════════════════════════════════════
 class _TransactionRow extends StatelessWidget {
-  final transaction;
+  final TransactionModel transaction;
 
   const _TransactionRow({required this.transaction});
 
@@ -636,10 +606,7 @@ class _TransactionRow extends StatelessWidget {
         color: isDark ? AppColors.darkCard : Colors.white,
         borderRadius: BorderRadius.circular(14),
         boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 8,
-          ),
+          BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8),
         ],
       ),
       child: Row(
@@ -652,11 +619,11 @@ class _TransactionRow extends StatelessWidget {
               height: 44,
               decoration: BoxDecoration(
                 color: (isExpense ? AppColors.expense : AppColors.income)
-                    .withOpacity(0.1),
+                    .withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
-                transaction.icon as IconData,
+                transaction.icon,
                 color: isExpense ? AppColors.expense : AppColors.income,
                 size: 20,
               ),
@@ -668,7 +635,7 @@ class _TransactionRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  transaction.title as String,
+                  transaction.title,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 14,
@@ -677,7 +644,7 @@ class _TransactionRow extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  transaction.subtitle as String,
+                  transaction.subtitle,
                   style: const TextStyle(
                     fontSize: 12,
                     color: AppColors.grey600,
@@ -688,7 +655,7 @@ class _TransactionRow extends StatelessWidget {
           ),
           Text(
             '${isExpense ? '-' : '+'}'
-            '\$${(transaction.amount as double).toStringAsFixed(2)}',
+            '\$${transaction.amount.toStringAsFixed(2)}',
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 14,
@@ -741,16 +708,8 @@ class _SkeletonBoxState extends State<_SkeletonBox>
       height: widget.height,
       decoration: BoxDecoration(
         color: isDark
-            ? Color.lerp(
-                AppColors.darkCard,
-                AppColors.darkSurface,
-                _anim.value,
-              )
-            : Color.lerp(
-                AppColors.grey200,
-                AppColors.grey100,
-                _anim.value,
-              ),
+            ? Color.lerp(AppColors.darkCard, AppColors.darkSurface, _anim.value)
+            : Color.lerp(AppColors.grey200, AppColors.grey100, _anim.value),
         borderRadius: BorderRadius.circular(16),
       ),
     );
@@ -792,10 +751,7 @@ class _EmptyTransactions extends StatelessWidget {
           SizedBox(height: 12),
           Text(
             'No transactions yet',
-            style: TextStyle(
-              color: AppColors.grey600,
-              fontSize: 15,
-            ),
+            style: TextStyle(color: AppColors.grey600, fontSize: 15),
           ),
         ],
       ),

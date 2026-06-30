@@ -26,6 +26,7 @@ class ModernCounter extends _$ModernCounter {
   int build() => 0;
 
   void increment() => state++;
+
   void reset() => state = 0;
 }
 
@@ -97,6 +98,13 @@ class _Lesson4ScreenState extends ConsumerState<Lesson4Screen> {
                 });
               },
               child: const Text('Change Local State (SetState)'),
+            ),
+            const SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+                ref.read(modernCounterProvider.notifier).reset();
+              },
+              child: const Text('Reset Counter'),
             ),
           ],
         ),

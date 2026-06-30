@@ -1,8 +1,7 @@
+import 'package:flutter_application_2/fitness_app/features/shared/models/daily_fitness_data.dart';
+import 'package:flutter_application_2/fitness_app/features/shared/providers/fitness_repository_provider.dart';
 import 'package:flutter_application_2/fitness_app/features/stats/models/health_stats_data.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../models/daily_fitness_data.dart';
-import 'fitness_repository_provider.dart';
 
 part 'fitness_provider.g.dart';
 

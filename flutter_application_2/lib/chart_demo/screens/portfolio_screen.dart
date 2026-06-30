@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-
-import '../models/donut_slice_data.dart';
-import '../widgets/donut_chart/donut_chart.dart';
+import 'package:flutter_application_2/chart_demo/models/donut_slice_data.dart';
+import 'package:flutter_application_2/chart_demo/widgets/donut_chart/donut_chart.dart';
 
 const _kInitialSlices = [
   DonutSliceData(

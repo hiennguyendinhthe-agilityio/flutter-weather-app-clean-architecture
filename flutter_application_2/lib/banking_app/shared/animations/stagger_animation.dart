@@ -19,17 +19,17 @@ class StaggerConfig {
     this.curve = Curves.easeOut,
   });
 
-  static StaggerConfig fast = StaggerConfig(
+  static StaggerConfig fast = const StaggerConfig(
     intervalMs: 50,
     itemDurationMs: 300,
   );
 
-  static StaggerConfig slow = StaggerConfig(
+  static StaggerConfig slow = const StaggerConfig(
     intervalMs: 120,
     itemDurationMs: 500,
   );
 
-  static StaggerConfig slideFromRigt = StaggerConfig(
+  static StaggerConfig slideFromRigt = const StaggerConfig(
     intervalMs: 80,
     itemDurationMs: 400,
     slideVertical: false,
@@ -37,7 +37,7 @@ class StaggerConfig {
     curve: Curves.easeOutCubic,
   );
 
-  static StaggerConfig gentle = StaggerConfig(
+  static StaggerConfig gentle = const StaggerConfig(
     intervalMs: 100,
     itemDurationMs: 450,
     curve: Curves.easeInOut,

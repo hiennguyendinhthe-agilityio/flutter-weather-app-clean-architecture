@@ -1,6 +1,5 @@
 import 'package:flutter_application_2/fitness_app/core/constants/colors.dart';
-
-import '../models/project_data.dart';
+import 'package:flutter_application_2/fitness_app/features/sandbox/projects/models/project_data.dart';
 
 class ProjectRepository {
   static ProjectSummary getSummary(String period) {

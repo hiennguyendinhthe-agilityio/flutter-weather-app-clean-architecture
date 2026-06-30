@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'profile_info_card.dart';
+import 'package:flutter_application_2/fitness_app/features/profile/widgets/profile_info_card.dart';
 
 class ProfileHealthStatsRow extends StatelessWidget {
   const ProfileHealthStatsRow({super.key});

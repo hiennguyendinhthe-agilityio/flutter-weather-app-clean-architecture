@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
-
-import '../models/account_model.dart';
+import 'package:flutter_application_2/banking_app/features/home/models/account_model.dart';
 
 enum HomeStatus { initial, loading, loaded, error }
 

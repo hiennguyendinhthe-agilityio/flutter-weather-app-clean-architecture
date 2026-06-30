@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-
-import '../../core/constants.dart';
-import '../../models/bar_item_data.dart';
-import 'bar_chart_painter.dart';
+import 'package:flutter_application_2/chart_demo/core/constants.dart';
+import 'package:flutter_application_2/chart_demo/models/bar_item_data.dart';
+import 'package:flutter_application_2/chart_demo/widgets/bar_chart/bar_chart_painter.dart';
 
 class BarColumn extends StatefulWidget {
   const BarColumn({

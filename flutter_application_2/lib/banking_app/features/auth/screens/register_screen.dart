@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/banking_app/core/constants/app_colors.dart';
+import 'package:flutter_application_2/banking_app/core/router/app_router.dart';
+import 'package:flutter_application_2/banking_app/features/auth/providers/auth_provider.dart';
+import 'package:flutter_application_2/banking_app/shared/widgets/app_button.dart';
+import 'package:flutter_application_2/banking_app/shared/widgets/app_text_field.dart';
 import 'package:provider/provider.dart';
-
-import '../../../core/constants/app_colors.dart';
-import '../../../core/router/app_router.dart';
-import '../../../shared/widgets/app_button.dart';
-import '../../../shared/widgets/app_text_field.dart';
-import '../providers/auth_provider.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -69,7 +68,7 @@ class _RegisterScreenState extends State<RegisterScreen>
     );
 
     if (ok && mounted) {
-      Navigator.pushReplacementNamed(context, AppRoutes.home);
+      await Navigator.pushReplacementNamed(context, AppRoutes.home);
     }
   }
 
@@ -97,102 +96,106 @@ class _RegisterScreenState extends State<RegisterScreen>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _fade(
-                    0,
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Create Account',
-                          style: TextStyle(
-                            fontSize: 26,
-                            fontWeight: FontWeight.bold,
-                            color: isDark ? Colors.white : AppColors.grey900,
-                          ),
+                  0,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Create Account',
+                        style: TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold,
+                          color: isDark ? Colors.white : AppColors.grey900,
                         ),
-                        const SizedBox(height: 6),
-                        Text(
-                          'Join and manage your finances',
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: isDark ? Colors.white54 : AppColors.grey600,
-                          ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        'Join and manage your finances',
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: isDark ? Colors.white54 : AppColors.grey600,
                         ),
-                        const SizedBox(height: 28),
-                      ],
-                    )),
+                      ),
+                      const SizedBox(height: 28),
+                    ],
+                  ),
+                ),
                 _fade(
-                    1,
-                    AppTextField(
-                      label: 'Full Name',
-                      hint: 'Enter your full name',
-                      controller: _nameCtrl,
-                      prefixIcon: Icons.person_outlined,
-                      validator: (v) => (v?.trim().isEmpty ?? true)
-                          ? 'Name is required'
-                          : null,
-                    )),
+                  1,
+                  AppTextField(
+                    label: 'Full Name',
+                    hint: 'Enter your full name',
+                    controller: _nameCtrl,
+                    prefixIcon: Icons.person_outlined,
+                    validator: (v) =>
+                        (v?.trim().isEmpty ?? true) ? 'Name is required' : null,
+                  ),
+                ),
                 const SizedBox(height: 14),
                 _fade(
-                    2,
-                    AppTextField(
-                      label: 'Email',
-                      hint: 'Enter your email',
-                      controller: _emailCtrl,
-                      keyboardType: TextInputType.emailAddress,
-                      prefixIcon: Icons.email_outlined,
-                      validator: (v) {
-                        if (v?.isEmpty ?? true) {
-                          return 'Required';
-                        }
-                        if (!v!.contains('@')) {
-                          return 'Invalid email';
-                        }
-                        return null;
-                      },
-                    )),
+                  2,
+                  AppTextField(
+                    label: 'Email',
+                    hint: 'Enter your email',
+                    controller: _emailCtrl,
+                    keyboardType: TextInputType.emailAddress,
+                    prefixIcon: Icons.email_outlined,
+                    validator: (v) {
+                      if (v?.isEmpty ?? true) {
+                        return 'Required';
+                      }
+                      if (!v!.contains('@')) {
+                        return 'Invalid email';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
                 const SizedBox(height: 14),
                 _fade(
-                    3,
-                    AppTextField(
-                      label: 'Password',
-                      hint: 'Min 6 characters',
-                      controller: _passCtrl,
-                      isPassword: true,
-                      prefixIcon: Icons.lock_outlined,
-                      validator: (v) {
-                        if (v?.isEmpty ?? true) {
-                          return 'Required';
-                        }
-                        if (v!.length < 6) {
-                          return 'Min 6 chars';
-                        }
-                        return null;
-                      },
-                    )),
+                  3,
+                  AppTextField(
+                    label: 'Password',
+                    hint: 'Min 6 characters',
+                    controller: _passCtrl,
+                    isPassword: true,
+                    prefixIcon: Icons.lock_outlined,
+                    validator: (v) {
+                      if (v?.isEmpty ?? true) {
+                        return 'Required';
+                      }
+                      if (v!.length < 6) {
+                        return 'Min 6 chars';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
                 const SizedBox(height: 14),
                 _fade(
-                    3,
-                    AppTextField(
-                      label: 'Confirm Password',
-                      hint: 'Re-enter password',
-                      controller: _confirmCtrl,
-                      isPassword: true,
-                      prefixIcon: Icons.lock_outlined,
-                      validator: (v) =>
-                          v != _passCtrl.text ? 'Passwords do not match' : null,
-                    )),
+                  3,
+                  AppTextField(
+                    label: 'Confirm Password',
+                    hint: 'Re-enter password',
+                    controller: _confirmCtrl,
+                    isPassword: true,
+                    prefixIcon: Icons.lock_outlined,
+                    validator: (v) =>
+                        v != _passCtrl.text ? 'Passwords do not match' : null,
+                  ),
+                ),
                 const SizedBox(height: 28),
                 _fade(
                   4,
                   Consumer<AuthProvider>(
-                    builder: (_, auth, __) => Column(
+                    builder: (_, auth, _) => Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         if (auth.errorMessage != null) ...[
                           Container(
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
-                              color: AppColors.error.withOpacity(0.1),
+                              color: AppColors.error.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Text(

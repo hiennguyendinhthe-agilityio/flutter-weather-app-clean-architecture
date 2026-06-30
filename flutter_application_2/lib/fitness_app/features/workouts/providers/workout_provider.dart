@@ -1,10 +1,9 @@
+import 'package:flutter_application_2/fitness_app/features/workouts/models/workout_filter_state.dart';
+import 'package:flutter_application_2/fitness_app/features/workouts/models/workout_item.dart';
+import 'package:flutter_application_2/fitness_app/features/workouts/models/workout_log.dart';
+import 'package:flutter_application_2/fitness_app/features/workouts/models/workout_summary.dart';
+import 'package:flutter_application_2/fitness_app/features/workouts/providers/workout_repository_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../models/workout_filter_state.dart';
-import '../models/workout_item.dart';
-import '../models/workout_log.dart';
-import '../models/workout_summary.dart';
-import 'workout_repository_provider.dart';
 
 part 'workout_provider.g.dart';
 

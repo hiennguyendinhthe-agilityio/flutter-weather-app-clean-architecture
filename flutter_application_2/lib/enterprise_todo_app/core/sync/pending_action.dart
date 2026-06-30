@@ -48,7 +48,7 @@ class PendingAction {
       'type': type.name,
       'todoId': todoId,
       'payload': payload,
-      'creatAt': createdAt.toIso8601String(),
+      'createdAt': createdAt.toIso8601String(),
       'retryCount': retryCount,
     };
   }
@@ -63,7 +63,7 @@ class PendingAction {
       payload: map['payload'] != null
           ? Map<String, dynamic>.from(map['payload'] as Map)
           : null,
-      createdAt: DateTime.parse(map['createAt'] as String),
+      createdAt: DateTime.parse(map['createdAt'] as String),
       retryCount: map['retryCount'] as int? ?? 0,
     );
   }

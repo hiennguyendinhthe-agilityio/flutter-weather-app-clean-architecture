@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/todo_app/models/todo.dart';
+import 'package:flutter_application_2/todo_app/providers/todo_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../models/todo.dart';
-import '../providers/todo_provider.dart';
 
 class TodoItemWidget extends ConsumerStatefulWidget {
   final Todo todo;
@@ -21,7 +21,9 @@ class _TodoItemWidgetState extends ConsumerState<TodoItemWidget> {
   @override
   void initState() {
     super.initState();
-    _textEditingController = TextEditingController(text: widget.todo.description);
+    _textEditingController = TextEditingController(
+      text: widget.todo.description,
+    );
     _itemFocusNode = FocusNode();
     _textFieldFocusNode = FocusNode();
   }
@@ -39,10 +41,9 @@ class _TodoItemWidgetState extends ConsumerState<TodoItemWidget> {
       _isEditing = false;
     });
     if (_textEditingController.text.trim().isNotEmpty) {
-      ref.read(todoListProvider.notifier).edit(
-            widget.todo.id,
-            _textEditingController.text.trim(),
-          );
+      ref
+          .read(todoListProvider.notifier)
+          .edit(widget.todo.id, _textEditingController.text.trim());
     } else {
       _textEditingController.text = widget.todo.description;
     }
@@ -81,9 +82,7 @@ class _TodoItemWidgetState extends ConsumerState<TodoItemWidget> {
               ? TextField(
                   controller: _textEditingController,
                   focusNode: _textFieldFocusNode,
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                  ),
+                  decoration: const InputDecoration(border: InputBorder.none),
                   onSubmitted: (_) => _submitEdit(),
                   autofocus: true,
                 )

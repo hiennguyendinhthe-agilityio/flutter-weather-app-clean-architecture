@@ -1,7 +1,6 @@
+import 'package:flutter_application_2/enterprise_todo_app/core/logger/app_logger.dart';
+import 'package:flutter_application_2/enterprise_todo_app/core/sync/pending_action.dart';
 import 'package:hive/hive.dart';
-
-import '../logger/app_logger.dart';
-import 'pending_action.dart';
 
 class SyncQueueDatasource {
   static const String _boxName = 'pending_queue_box';
