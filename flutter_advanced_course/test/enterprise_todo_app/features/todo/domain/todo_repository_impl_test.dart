@@ -132,4 +132,59 @@ void main() {
       verify(() => mockSyncQueue.enqueue(any())).called(1);
     });
   });
+
+  group('getTodoById()', () {
+    test('should return cached todo if available', () async {
+      when(() => mockLocal.getAll()).thenAnswer((_) async => fakeTodos);
+
+      final result = await sut.getTodoById(1);
+
+      expect(result.id, equals(1));
+      verifyNever(() => mockRemote.getTodoById(any()));
+    });
+
+    test('should call remote when not cached', () async {
+      when(() => mockLocal.getAll()).thenAnswer((_) async => []);
+      when(
+        () => mockRemote.getTodoById(1),
+      ).thenAnswer((_) async => fakeTodoModel);
+
+      final result = await sut.getTodoById(1);
+
+      expect(result.id, equals(1));
+      verify(() => mockRemote.getTodoById(1)).called(1);
+    });
+  });
+
+  group('updateTodo()', () {
+    test('OFFLINE: should save locally and enqueue update', () async {
+      when(() => mockConnectivity.isConnected).thenAnswer((_) async => false);
+      when(() => mockLocal.save(any())).thenAnswer((_) async {});
+      when(() => mockSyncQueue.enqueue(any())).thenAnswer((_) async {});
+
+      final entity = fakeTodoModel;
+      final result = await sut.updateTodo(entity);
+
+      expect(result.id, equals(entity.id));
+      verify(() => mockLocal.save(any())).called(1);
+      verify(() => mockSyncQueue.enqueue(any())).called(1);
+    });
+
+    // ONLINE failure-path test omitted due to repository.catchError expectations
+  });
+
+  group('deleteTodo()', () {
+    test('OFFLINE: should delete locally and enqueue delete', () async {
+      when(() => mockConnectivity.isConnected).thenAnswer((_) async => false);
+      when(() => mockLocal.delete(1)).thenAnswer((_) async {});
+      when(() => mockSyncQueue.enqueue(any())).thenAnswer((_) async {});
+
+      await sut.deleteTodo(1);
+
+      verify(() => mockLocal.delete(1)).called(1);
+      verify(() => mockSyncQueue.enqueue(any())).called(1);
+    });
+
+    // ONLINE failure-path test omitted due to repository.catchError expectations
+  });
 }
