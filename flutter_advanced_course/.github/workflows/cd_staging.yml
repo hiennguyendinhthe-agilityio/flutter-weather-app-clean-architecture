@@ -1,0 +1,67 @@
+name: CD — Deploy to Staging
+
+on:
+  push:
+    branches: [staging]
+  workflow_dispatch:
+    inputs:
+      notes:
+        description: 'Release notes'
+        required: false
+        default: 'Staged deployment'
+
+env:
+  FLUTTER_VERSION: '3.44.3'
+  JAVA_VERSION: '17'
+
+jobs:
+  deploy-android-staging:
+    name: Android to Firebase App Distribution (Staging)
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: 'stable'
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run code generation
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Create env/staging.json
+        env:
+          STAGING_API_URL: ${{ secrets.STAGING_API_BASE_URL }}
+        run: |
+          mkdir -p env
+          printf '{\n  "APP_ENV": "staging",\n  "APP_NAME": "Todo Staging",\n  "API_BASE_URL": "%s",\n  "ENABLE_LOGGING": "true",\n  "ENABLE_CRASHLYTICS": "true"\n}\n' "$STAGING_API_URL" > env/staging.json
+
+      - name: Build APK (Staging release)
+        run: |
+          flutter build apk \
+            --release \
+            --dart-define-from-file=env/staging.json \
+            --flavor staging \
+            -t lib/main_enterprise_todo.dart
+
+      - name: Upload to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.FIREBASE_APP_ID_STAGING_ANDROID }}
+          token: ${{ secrets.FIREBASE_TOKEN }}
+          groups: internal-testers
+          file: build/app/outputs/flutter-apk/app-staging-release.apk
+          releaseNotes: "Branch: ${{ github.ref_name }} | Commit: ${{ github.sha }} | ${{ github.event.inputs.notes }}"

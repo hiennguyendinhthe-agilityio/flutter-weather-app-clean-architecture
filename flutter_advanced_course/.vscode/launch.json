@@ -1,0 +1,58 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        // ─── Enterprise Todo App ─────────────────────────────────────────────
+        {
+            "name": "🟢 Todo — Dev",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main_enterprise_todo.dart",
+            "args": [
+                "--dart-define-from-file=env/dev.json",
+                "--flavor=dev"
+            ]
+        },
+        {
+            "name": "🟡 Todo — Staging",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main_enterprise_todo.dart",
+            "args": [
+                "--dart-define-from-file=env/staging.json",
+                "--flavor=staging"
+            ]
+        },
+        {
+            "name": "🔴 Todo — Production",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main_enterprise_todo.dart",
+            "flutterMode": "release",
+            "args": [
+                "--dart-define-from-file=env/prod.json",
+                "--flavor=prod"
+            ]
+        },
+        // ─── Default Flutter configs ─────────────────────────────────────────
+        {
+            "name": "flutter_application_2",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "flutter_application_2 (profile mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "flutter_application_2 (release mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        }
+    ]
+}

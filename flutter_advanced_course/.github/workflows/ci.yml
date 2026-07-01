@@ -1,0 +1,163 @@
+name: 🔍 CI — Analyze, Test & Build
+
+on:
+  push:
+    branches: [main, develop, staging]
+  pull_request:
+    branches: [main, develop, staging]
+
+# Cancel in-progress runs for the same branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  FLUTTER_VERSION: '3.44.3'
+  JAVA_VERSION: '17'
+
+jobs:
+  # ─────────────────────────────────────────────────────────────────────────
+  # Job 1: Static Analysis & Format Check
+  # ─────────────────────────────────────────────────────────────────────────
+  analyze:
+    name: 🔍 Static Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: ☕ Setup Java ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: 🐦 Setup Flutter ${{ env.FLUTTER_VERSION }}
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: 'stable'
+          cache: true
+
+      - name: 📦 Install dependencies
+        run: flutter pub get
+
+      - name: ⚙️ Run code generation
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: 🔍 Flutter Analyze
+        run: flutter analyze --fatal-infos
+
+      - name: 🎨 Dart Format Check
+        run: dart format .
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # Job 2: Unit & Widget Tests
+  # ─────────────────────────────────────────────────────────────────────────
+  test:
+    name: 🧪 Tests & Coverage
+    runs-on: ubuntu-latest
+    needs: analyze
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: ☕ Setup Java ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: 🐦 Setup Flutter ${{ env.FLUTTER_VERSION }}
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: 'stable'
+          cache: true
+
+      - name: 📦 Install dependencies
+        run: flutter pub get
+
+      - name: ⚙️ Run code generation
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: 🧰 Install coverage tools
+        run: sudo apt-get update && sudo apt-get install -y lcov bc
+
+      - name: 🧪 Run tests with coverage
+        run: flutter test --coverage
+
+      - name: 📊 Check coverage threshold (>= 40%)
+        run: |
+          COVERAGE=$(lcov --summary coverage/lcov.info 2>&1 | grep -oP '\d+\.\d+(?=%)' | head -1)
+          echo "Coverage: $COVERAGE%"
+          if (( $(echo "$COVERAGE < 40" | bc -l) )); then
+            echo "Coverage $COVERAGE% is below 40% threshold!"
+            exit 1
+          fi
+          echo "Coverage $COVERAGE% passed threshold"
+
+      - name: 📤 Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: coverage/lcov.info
+          fail_ci_if_error: false
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # Job 3: Build Verification (Android Dev Flavor)
+  # ─────────────────────────────────────────────────────────────────────────
+  build-android-dev:
+    name: 🤖 Build Android (Dev)
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: ☕ Setup Java ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: 🐦 Setup Flutter ${{ env.FLUTTER_VERSION }}
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: 'stable'
+          cache: true
+
+      - name: 📦 Install dependencies
+        run: flutter pub get
+
+      - name: ⚙️ Run code generation
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: 🔑 Create env/dev.json from GitHub Secrets
+        run: |
+          mkdir -p env
+          cat > env/dev.json << EOF
+          {
+            "APP_ENV": "dev",
+            "APP_NAME": "Todo Dev",
+            "API_BASE_URL": "${{ secrets.DEV_API_BASE_URL }}",
+            "ENABLE_LOGGING": "true",
+            "ENABLE_CRASHLYTICS": "false"
+          }
+          EOF
+
+      - name: 📦 Build APK (Dev flavor, debug)
+        run: |
+          flutter build apk \
+            --debug \
+            --dart-define-from-file=env/dev.json \
+            --flavor dev \
+            -t lib/main_enterprise_todo.dart
+
+      - name: 📤 Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk-dev-${{ github.sha }}
+          path: build/app/outputs/flutter-apk/app-dev-debug.apk
+          retention-days: 7

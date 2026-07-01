@@ -1,0 +1,7 @@
+{
+    "APP_ENV": "production",
+    "APP_NAME": "Todo App",
+    "API_BASE_URL": "https://api.your-domain.com",
+    "ENABLE_LOGGING": "false",
+    "ENABLE_CRASHLYTICS": "true"
+}
