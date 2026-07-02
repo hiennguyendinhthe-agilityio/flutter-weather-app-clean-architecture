@@ -41,10 +41,21 @@ dev:
 		--flavor dev \
 		-t $(APP_ENTRY)
 
+
+dev-nf:
+	flutter run \
+		--dart-define-from-file=env/dev.json \
+		-t $(APP_ENTRY)
+
 staging:
 	flutter run \
 		--dart-define-from-file=env/staging.json \
 		--flavor staging \
+		-t $(APP_ENTRY)
+
+staging-nf:
+	flutter run \
+		--dart-define-from-file=env/staging.json \
 		-t $(APP_ENTRY)
 
 prod:

@@ -22,6 +22,4 @@ void main() {
       expect(dio.interceptors.whereType<RetryInterceptor>(), isNotEmpty);
     },
   );
-
-  test('DioClient', () {});
 }

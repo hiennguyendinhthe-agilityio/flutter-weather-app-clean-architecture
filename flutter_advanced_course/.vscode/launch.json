@@ -6,9 +6,31 @@
     "configurations": [
         // ─── Enterprise Todo App ─────────────────────────────────────────────
         {
-            "name": "🟢 Todo — Dev",
+            "name": "🟢 Todo — Dev (iOS Simulator)",
             "request": "launch",
             "type": "dart",
+            "deviceId": "apple_ios_simulator",
+            "program": "lib/main_enterprise_todo.dart",
+            "args": [
+                "--dart-define-from-file=env/dev.json",
+                "--flavor=dev"
+            ]
+        },
+        {
+            "name": "🟢 Todo — Dev (macOS)",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "macos",
+            "program": "lib/main_enterprise_todo.dart",
+            "args": [
+                "--dart-define-from-file=env/dev.json"
+            ]
+        },
+        {
+            "name": "🟢 Todo — Dev (Chrome)",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "chrome",
             "program": "lib/main_enterprise_todo.dart",
             "args": [
                 "--dart-define-from-file=env/dev.json",
@@ -19,6 +41,7 @@
             "name": "🟡 Todo — Staging",
             "request": "launch",
             "type": "dart",
+            "deviceId": "apple_ios_simulator",
             "program": "lib/main_enterprise_todo.dart",
             "args": [
                 "--dart-define-from-file=env/staging.json",
@@ -29,6 +52,7 @@
             "name": "🔴 Todo — Production",
             "request": "launch",
             "type": "dart",
+            "deviceId": "apple_ios_simulator",
             "program": "lib/main_enterprise_todo.dart",
             "flutterMode": "release",
             "args": [
@@ -36,23 +60,41 @@
                 "--flavor=prod"
             ]
         },
-        // ─── Default Flutter configs ─────────────────────────────────────────
+        // ─── Default Flutter configs ────────────────────────────────────────
         {
             "name": "flutter_application_2",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
+            "deviceId": "apple_ios_simulator",
+            "program": "lib/main_enterprise_todo.dart",
+            "args": [
+                "--dart-define-from-file=env/dev.json",
+                "--flavor=dev"
+            ]
         },
         {
             "name": "flutter_application_2 (profile mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "profile"
+            "deviceId": "apple_ios_simulator",
+            "program": "lib/main_enterprise_todo.dart",
+            "flutterMode": "profile",
+            "args": [
+                "--dart-define-from-file=env/dev.json",
+                "--flavor=dev"
+            ]
         },
         {
             "name": "flutter_application_2 (release mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "release"
+            "deviceId": "apple_ios_simulator",
+            "program": "lib/main_enterprise_todo.dart",
+            "flutterMode": "release",
+            "args": [
+                "--dart-define-from-file=env/prod.json",
+                "--flavor=prod"
+            ]
         }
     ]
 }

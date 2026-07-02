@@ -27,7 +27,7 @@ class RetryInterceptor extends Interceptor {
         err.type == DioExceptionType.badResponse &&
         err.response?.statusCode == 503;
 
-    final attempt = (requestOptions.extra['retry_attempt'] as int?) ?? 0 + 1;
+    final attempt = (requestOptions.extra['retry_attempt'] as int? ?? 0) + 1;
 
     if ((isTimeout || isServerError) && attempt < maxRetries) {
       requestOptions.extra['retry_attempt'] = attempt;

@@ -14,7 +14,7 @@ class EnvConfig {
 
   static const String apiBaseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://localhost:3000',
+    defaultValue: 'https://jsonplaceholder.typicode.com',
   );
 
   static const String appName = String.fromEnvironment(

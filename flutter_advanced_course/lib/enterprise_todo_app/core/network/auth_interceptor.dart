@@ -49,6 +49,7 @@ class AuthInterceptor extends Interceptor {
 
       _isRefreshing = true;
       _refreshTokenCompleter = Completer<String>();
+      _refreshTokenCompleter?.future.ignore();
 
       try {
         final authRepository = _ref.read(authRepositoryProvider);
