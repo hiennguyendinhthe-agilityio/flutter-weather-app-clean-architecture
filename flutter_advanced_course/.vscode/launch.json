@@ -9,7 +9,6 @@
             "name": "🟢 Todo — Dev (iOS Simulator)",
             "request": "launch",
             "type": "dart",
-            "deviceId": "apple_ios_simulator",
             "program": "lib/main_enterprise_todo.dart",
             "args": [
                 "--dart-define-from-file=env/dev.json",
@@ -41,7 +40,6 @@
             "name": "🟡 Todo — Staging",
             "request": "launch",
             "type": "dart",
-            "deviceId": "apple_ios_simulator",
             "program": "lib/main_enterprise_todo.dart",
             "args": [
                 "--dart-define-from-file=env/staging.json",

@@ -1,6 +1,6 @@
 {
-    "name": "gohenry_mapp",
-    "short_name": "gohenry_mapp",
+    "name": "flutter_advanced_course",
+    "short_name": "flutter_advanced_course",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
