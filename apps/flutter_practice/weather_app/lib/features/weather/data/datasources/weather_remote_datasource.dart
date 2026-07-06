@@ -1,0 +1,18 @@
+// Data Source interface — Weather.
+//
+// Defines the contract for fetching weather and location data.
+
+import 'package:weather_app/features/weather/data/models/current_weather_model.dart';
+import 'package:weather_app/features/weather/data/models/forecast_model.dart';
+import 'package:weather_app/features/weather/data/models/location_model.dart';
+
+abstract interface class WeatherRemoteDatasource {
+  /// Fetches current weather for a specific city.
+  Future<CurrentWeatherModel> getCurrentWeather(String city);
+
+  /// Fetches 5-day / 3-hour forecast for a specific city.
+  Future<ForecastModel> getForecast(String city);
+
+  /// Searches for cities matching a query.
+  Future<List<LocationModel>> searchLocation(String query);
+}
