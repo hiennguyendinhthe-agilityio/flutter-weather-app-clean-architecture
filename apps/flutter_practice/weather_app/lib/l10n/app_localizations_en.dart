@@ -12,6 +12,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get searchCityHint => 'Ready to check the weather?';
 
   @override
+  String get searchCityPlaceholder => 'Search city...';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
   String get feelsLike => 'Feels like';
 
   @override
@@ -100,5 +106,62 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String couldNotAccessLocation(String error) {
     return 'Could not access location: $error';
+  }
+
+  @override
+  String get noInternetConnection =>
+      'No internet connection. Please check your network and try again.';
+
+  @override
+  String get searchCityBtn => 'Search City';
+
+  @override
+  String get viewAll => 'View all';
+
+  @override
+  String get couldNotLoadForecast => 'Could not load forecast';
+
+  @override
+  String get sevenDayForecast => '7-Day Forecast';
+
+  @override
+  String get now => 'Now';
+
+  @override
+  String get appTitle => 'Weather App';
+
+  @override
+  String get london => 'London';
+
+  @override
+  String get tokyo => 'Tokyo';
+
+  @override
+  String get newYork => 'New York';
+
+  @override
+  String get weatherConditions => 'Weather Conditions';
+
+  @override
+  String get celsius => 'Celsius (°C)';
+
+  @override
+  String get actual => 'Actual';
+
+  @override
+  String get feelsLikeWeather => 'Feels like';
+
+  @override
+  String get actualTempDesc => 'Actual temperature.';
+
+  @override
+  String get feelsLikeTempDesc => 'Feels like temperature.';
+
+  @override
+  String get probabilityOfPrecip => 'Probability of precipitation';
+
+  @override
+  String probabilityOnDay(String day, String pop) {
+    return 'Probability of precipitation on $day: $pop%';
   }
 }
