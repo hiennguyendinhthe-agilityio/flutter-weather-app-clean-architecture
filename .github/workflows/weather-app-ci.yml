@@ -2,12 +2,12 @@ name: Weather App CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "training-flutter-advance" ]
     paths:
       - 'apps/flutter_practice/weather_app/**'
       - '.github/workflows/weather-app-ci.yml'
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "training-flutter-advance" ]
     paths:
       - 'apps/flutter_practice/weather_app/**'
       - '.github/workflows/weather-app-ci.yml'
