@@ -49,6 +49,23 @@ jobs:
             }
           }
           EOF
+          cat << 'EOF' > android/app/google-services.json
+          {
+            "project_info": { "project_number": "123", "project_id": "dummy" },
+            "client": [
+              {
+                "client_info": {
+                  "mobilesdk_app_id": "1:123:android:abc",
+                  "android_client_info": { "package_name": "com.example.weather_app" }
+                },
+                "oauth_client": [],
+                "api_key": [ { "current_key": "dummy" } ],
+                "services": { "appinvite_service": { "other_platform_oauth_client": [] } }
+              }
+            ],
+            "configuration_version": "1"
+          }
+          EOF
           
       - name: Get dependencies
         run: flutter pub get
