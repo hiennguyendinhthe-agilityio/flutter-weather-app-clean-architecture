@@ -7,37 +7,47 @@ import 'package:weather_app/features/weather/domain/usecases/search_location_use
 class MockWeatherRepository extends Mock implements WeatherRepository {}
 
 void main() {
-  late SearchLocationUseCase usecase;
-  late MockWeatherRepository mockWeatherRepository;
+  late SearchLocationUseCase useCase;
+  late MockWeatherRepository mockRepository;
+
+  final tLocation = LocationEntity(
+    name: 'London',
+    lat: 51.5074,
+    lon: -0.1278,
+    country: 'GB',
+  );
 
   setUp(() {
-    mockWeatherRepository = MockWeatherRepository();
-    usecase = SearchLocationUseCase(mockWeatherRepository);
+    mockRepository = MockWeatherRepository();
+    useCase = SearchLocationUseCase(mockRepository);
   });
 
-  final tLocations = [
-    LocationEntity(
-      name: 'London',
-      lat: 51.5074,
-      lon: -0.1278,
-      country: 'GB',
-      state: 'England',
-    ),
-  ];
+  group('SearchLocationUseCase', () {
+    test('returns List<LocationEntity> from repository on success', () async {
+      when(() => mockRepository.searchLocation('London'))
+          .thenAnswer((_) async => [tLocation]);
 
-  const tQuery = 'London';
+      final result = await useCase.execute('London');
 
-  test('should search locations from the repository', () async {
-    // Arrange
-    when(() => mockWeatherRepository.searchLocation(tQuery))
-        .thenAnswer((_) async => tLocations);
+      expect(result, [tLocation]);
+      verify(() => mockRepository.searchLocation('London')).called(1);
+    });
 
-    // Act
-    final result = await usecase.execute(tQuery);
+    test('throws ArgumentError when query is empty', () {
+      expect(
+        () => useCase.execute('   '),
+        throwsA(isA<ArgumentError>()),
+      );
+    });
 
-    // Assert
-    expect(result, tLocations);
-    verify(() => mockWeatherRepository.searchLocation(tQuery)).called(1);
-    verifyNoMoreInteractions(mockWeatherRepository);
+    test('rethrows repository exceptions', () async {
+      when(() => mockRepository.searchLocation('London'))
+          .thenThrow(Exception('Error'));
+
+      expect(
+        () => useCase.execute('London'),
+        throwsA(isA<Exception>()),
+      );
+    });
   });
 }

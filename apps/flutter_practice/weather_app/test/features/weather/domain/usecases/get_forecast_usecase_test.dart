@@ -7,46 +7,52 @@ import 'package:weather_app/features/weather/domain/usecases/get_forecast_usecas
 class MockWeatherRepository extends Mock implements WeatherRepository {}
 
 void main() {
-  late GetForecastUseCase usecase;
-  late MockWeatherRepository mockWeatherRepository;
+  late GetForecastUseCase useCase;
+  late MockWeatherRepository mockRepository;
+
+  final tForecast = ForecastEntity(cityName: 'London', items: []);
 
   setUp(() {
-    mockWeatherRepository = MockWeatherRepository();
-    usecase = GetForecastUseCase(mockWeatherRepository);
+    mockRepository = MockWeatherRepository();
+    useCase = GetForecastUseCase(mockRepository);
   });
 
-  final tForecast = ForecastEntity(
-    cityName: 'London',
-    items: [],
-  );
+  group('GetForecastUseCase', () {
+    test('returns ForecastEntity from repository on success', () async {
+      when(() => mockRepository.getForecast(city: 'London', lang: 'en'))
+          .thenAnswer((_) async => tForecast);
 
-  const tCity = 'London';
-  const tLang = 'en';
+      final result = await useCase.execute(city: 'London', lang: 'en');
 
-  test('should get forecast for the city from the repository', () async {
-    // Arrange
-    when(() => mockWeatherRepository.getForecast(city: tCity, lang: tLang))
-        .thenAnswer((_) async => tForecast);
+      expect(result, tForecast);
+      verify(() => mockRepository.getForecast(city: 'London', lang: 'en')).called(1);
+    });
 
-    // Act
-    final result = await usecase.execute(city: tCity, lang: tLang);
+    test('passes forceRefresh to repository', () async {
+      when(() => mockRepository.getForecast(city: 'London', lang: 'en', forceRefresh: true))
+          .thenAnswer((_) async => tForecast);
 
-    // Assert
-    expect(result, tForecast);
-    verify(() => mockWeatherRepository.getForecast(city: tCity, lang: tLang)).called(1);
-    verifyNoMoreInteractions(mockWeatherRepository);
-  });
+      await useCase.execute(city: 'London', lang: 'en', forceRefresh: true);
 
-  test('should propagate exceptions from repository', () async {
-    // Arrange
-    when(() => mockWeatherRepository.getForecast(city: tCity, lang: tLang))
-        .thenThrow(Exception('Network Error'));
+      verify(() => mockRepository.getForecast(city: 'London', lang: 'en', forceRefresh: true))
+          .called(1);
+    });
 
-    // Act
-    final call = usecase.execute;
+    test('throws ArgumentError when city is empty', () {
+      expect(
+        () => useCase.execute(city: '   ', lang: 'en'),
+        throwsA(isA<ArgumentError>()),
+      );
+    });
 
-    // Assert
-    expect(() => call(city: tCity, lang: tLang), throwsA(isA<Exception>()));
-    verify(() => mockWeatherRepository.getForecast(city: tCity, lang: tLang)).called(1);
+    test('rethrows repository exceptions', () async {
+      when(() => mockRepository.getForecast(city: 'London', lang: 'en'))
+          .thenThrow(Exception('Error'));
+
+      expect(
+        () => useCase.execute(city: 'London', lang: 'en'),
+        throwsA(isA<Exception>()),
+      );
+    });
   });
 }

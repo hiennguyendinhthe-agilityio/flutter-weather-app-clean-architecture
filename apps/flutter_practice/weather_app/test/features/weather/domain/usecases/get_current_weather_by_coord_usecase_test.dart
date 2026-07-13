@@ -7,46 +7,69 @@ import 'package:weather_app/features/weather/domain/usecases/get_current_weather
 class MockWeatherRepository extends Mock implements WeatherRepository {}
 
 void main() {
-  late GetCurrentWeatherByCoordUseCase usecase;
-  late MockWeatherRepository mockWeatherRepository;
+  late GetCurrentWeatherByCoordUseCase useCase;
+  late MockWeatherRepository mockRepository;
 
-  setUp(() {
-    mockWeatherRepository = MockWeatherRepository();
-    usecase = GetCurrentWeatherByCoordUseCase(mockWeatherRepository);
-  });
-
+  final tNow = DateTime(2024, 7, 15, 12, 0);
   final tWeather = WeatherEntity(
     cityName: 'London',
     countryCode: 'GB',
     temperature: 20.0,
-    feelsLike: 19.5,
+    feelsLike: 21.0,
     minTemp: 18.0,
     maxTemp: 22.0,
-    condition: 'Clouds',
-    iconCode: '04d',
-    humidity: 70,
+    condition: 'Clear',
+    iconCode: '01d',
+    humidity: 50,
     windSpeed: 5.0,
-    lastUpdated: DateTime.now(),
-    localTime: DateTime.now(),
-    sunriseTime: DateTime.now(),
-    sunsetTime: DateTime.now(),
+    lastUpdated: tNow,
+    localTime: tNow,
+    sunriseTime: tNow,
+    sunsetTime: tNow,
   );
 
-  const tLat = 51.5074;
-  const tLon = -0.1278;
-  const tLang = 'en';
+  setUp(() {
+    mockRepository = MockWeatherRepository();
+    useCase = GetCurrentWeatherByCoordUseCase(mockRepository);
+  });
 
-  test('should get current weather by coordinates from the repository', () async {
-    // Arrange
-    when(() => mockWeatherRepository.getCurrentWeatherByCoord(lat: tLat, lon: tLon, lang: tLang))
-        .thenAnswer((_) async => tWeather);
+  group('GetCurrentWeatherByCoordUseCase', () {
+    test('returns WeatherEntity from repository on success', () async {
+      when(() => mockRepository.getCurrentWeatherByCoord(lat: 1.0, lon: 2.0, lang: 'en'))
+          .thenAnswer((_) async => tWeather);
 
-    // Act
-    final result = await usecase.execute(lat: tLat, lon: tLon, lang: tLang);
+      final result = await useCase.execute(lat: 1.0, lon: 2.0, lang: 'en');
 
-    // Assert
-    expect(result, tWeather);
-    verify(() => mockWeatherRepository.getCurrentWeatherByCoord(lat: tLat, lon: tLon, lang: tLang)).called(1);
-    verifyNoMoreInteractions(mockWeatherRepository);
+      expect(result, tWeather);
+      verify(() => mockRepository.getCurrentWeatherByCoord(lat: 1.0, lon: 2.0, lang: 'en')).called(1);
+    });
+
+    test('passes forceRefresh to repository', () async {
+      when(() => mockRepository.getCurrentWeatherByCoord(
+            lat: 1.0,
+            lon: 2.0,
+            lang: 'en',
+            forceRefresh: true,
+          )).thenAnswer((_) async => tWeather);
+
+      await useCase.execute(lat: 1.0, lon: 2.0, lang: 'en', forceRefresh: true);
+
+      verify(() => mockRepository.getCurrentWeatherByCoord(
+            lat: 1.0,
+            lon: 2.0,
+            lang: 'en',
+            forceRefresh: true,
+          )).called(1);
+    });
+
+    test('rethrows repository exceptions', () async {
+      when(() => mockRepository.getCurrentWeatherByCoord(lat: 1.0, lon: 2.0, lang: 'en'))
+          .thenThrow(Exception('Error'));
+
+      expect(
+        () => useCase.execute(lat: 1.0, lon: 2.0, lang: 'en'),
+        throwsA(isA<Exception>()),
+      );
+    });
   });
 }
