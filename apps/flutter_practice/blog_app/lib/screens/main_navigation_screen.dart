@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import '../widgets/custom_bottom_nav_bar.dart';
-import 'create_post_screen.dart';
-import 'feed_screen.dart';
-import 'profile_screen.dart';
+import '../widgets/cocoloco_bottom_nav_bar.dart';
+import 'browse_screen.dart';
+import 'chat_screen.dart';
+import 'favorites_screen.dart';
+import 'orders_screen.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
@@ -13,36 +14,55 @@ class MainNavigationScreen extends StatefulWidget {
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   int _currentIndex = 0;
+  final List<String> _cartItems = [];
+  double _totalAmount = 0.0;
+
+  void _addToCart(String title, double price) {
+    setState(() {
+      _cartItems.add(title);
+      _totalAmount += price;
+    });
+  }
+
+  void _clearCart() {
+    setState(() {
+      _cartItems.clear();
+      _totalAmount = 0.0;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Order completed! See you at the pickup counter.')),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final List<Widget> screens = [
-      FeedScreen(onOpenCreatePost: () => setState(() => _currentIndex = 2)),
-      const Center(child: Text('Explore Categories')),
-      CreatePostScreen(onPostCreated: () => setState(() => _currentIndex = 0)),
-      const Center(child: Text('Saved Bookmarks')),
-      const ProfileScreen(),
+      BrowseScreen(
+        onAddToCart: _addToCart,
+      ),
+      FavoritesScreen(
+        onAddToCart: _addToCart,
+      ),
+      OrdersScreen(
+        cartItems: _cartItems,
+        totalAmount: _totalAmount,
+        onClearCart: _clearCart,
+      ),
+      const ChatScreen(),
     ];
 
     return Scaffold(
-      body: Stack(
-        children: [
-          IndexedStack(
-            index: _currentIndex,
-            children: screens,
-          ),
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: CustomBottomNavBar(
-              currentIndex: _currentIndex,
-              onIndexChanged: (index) {
-                setState(() => _currentIndex = index);
-              },
-            ),
-          ),
-        ],
+      body: IndexedStack(
+        index: _currentIndex,
+        children: screens,
+      ),
+      bottomNavigationBar: CocolocoBottomNavBar(
+        currentIndex: _currentIndex,
+        onIndexChanged: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
       ),
     );
   }

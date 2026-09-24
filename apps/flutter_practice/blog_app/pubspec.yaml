@@ -56,11 +56,46 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
-  # The following line ensures that the Material Icons font is
-  # included with your application, so that you can use the icons in
-  # the material Icons class.
   uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/fonts/
+
+  fonts:
+    - family: Chap
+      fonts:
+        - asset: assets/fonts/ChapTrial-Light.otf
+          weight: 300
+        - asset: assets/fonts/ChapTrial-LightItalic.otf
+          weight: 300
+          style: italic
+        - asset: assets/fonts/ChapTrial-Regular.otf
+          weight: 400
+        - asset: assets/fonts/ChapTrial-RegularItalic.otf
+          weight: 400
+          style: italic
+        - asset: assets/fonts/ChapTrial-Medium.otf
+          weight: 500
+        - asset: assets/fonts/ChapTrial-MediumItalic.otf
+          weight: 500
+          style: italic
+        - asset: assets/fonts/ChapTrial-Semibold.otf
+          weight: 600
+        - asset: assets/fonts/ChapTrial-SemiboldItalic.otf
+          weight: 600
+          style: italic
+        - asset: assets/fonts/ChapTrial-Bold.otf
+          weight: 700
+        - asset: assets/fonts/ChapTrial-BoldItalic.otf
+          weight: 700
+          style: italic
+        - asset: assets/fonts/ChapTrial-Black.otf
+          weight: 900
+        - asset: assets/fonts/ChapTrial-BlackItalic.otf
+          weight: 900
+          style: italic
+
+
 
   # To add assets to your application, add an assets section, like this:
   # assets:

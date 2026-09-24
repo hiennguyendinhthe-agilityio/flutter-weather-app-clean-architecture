@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'core/theme/app_theme.dart';
 import 'screens/main_navigation_screen.dart';
 
@@ -9,18 +10,19 @@ void main() {
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.dark,
+      statusBarBrightness: Brightness.light,
     ),
   );
-  runApp(const BlogApp());
+  runApp(const CocolocoApp());
 }
 
-class BlogApp extends StatelessWidget {
-  const BlogApp({super.key});
+class CocolocoApp extends StatelessWidget {
+  const CocolocoApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Cocoloco - Daily Journal',
+      title: 'Cocoloco - Artisanal Coffee & Bakery',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       home: const MainNavigationScreen(),
